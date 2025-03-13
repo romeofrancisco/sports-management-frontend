@@ -1,11 +1,16 @@
-import React from 'react'
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
+import Loading from "@/components/Loading";
+import { useFetchUser } from "@/hooks/queries/useFetchUser";
 
 const App = () => {
-  return (
-    <div>
-      <p className='text-red-700'>asdasd</p>
-    </div>
-  )
-}
+  const { isLoading } = useFetchUser();
+  
+  if (isLoading) {
+    return <Loading />;
+  }
 
-export default App
+  return <RouterProvider router={router} />;
+};
+
+export default App;
