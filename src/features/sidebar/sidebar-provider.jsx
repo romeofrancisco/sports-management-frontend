@@ -9,10 +9,14 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
+import { useFetchUser } from "@/hooks/queries/useFetchUser";
+import Loading from "@/components/Loading";
 
 export default function Layout() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isLoading } = useFetchUser(); // Ensure user data is fetched before checking auth state
 
+  if (isLoading) return <Loading/>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (

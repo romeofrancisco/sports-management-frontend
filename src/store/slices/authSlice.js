@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { use } from "react";
+import storage from "redux-persist/lib/storage";
 
 const initialState = {
   user: null,
@@ -12,13 +12,12 @@ const authSlice = createSlice({
   reducers: {
     login(state, action) {
       state.user = action.payload;
-      console.log(action.payload)
-      state.isAuthenticated = true
+      state.isAuthenticated = true;
     },
     logout(state) {
       state.user = null;
-      state.role = null;
       state.isAuthenticated = false;
+      storage.removeItem("persist:auth"); // Clears persisted auth data
     },
   },
 });

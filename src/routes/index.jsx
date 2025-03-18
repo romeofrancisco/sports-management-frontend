@@ -1,4 +1,3 @@
-// router.jsx
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "@/features/auth/LoginPage";
 import { RoleRoutes } from "./RoleRoutes";

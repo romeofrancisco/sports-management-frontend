@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Volleyball, Users } from "lucide-react";
-
 import { AdminManagementNav } from "./admin-management-nav";
 import { NavUser } from "./nav-user";
 import {
@@ -13,53 +11,9 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { useSports } from "@/hooks/queries/useSports";
+import { navItems } from "./navItems";
 
 export function AppSidebar({ ...props }) {
-  const { data, isLoading, isError } = useSports();
-
-  if(isLoading) return null
-
-  const datas = {
-    user: {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
-    },
-    navMain: [
-      {
-        title: "Sports",
-        url: "#",
-        icon: Volleyball,
-        isActive: true,
-        items: [
-          ...data?.map((item) => ({
-            title: item.name,
-            url: "#",
-          })) || [],
-        ],
-      },
-      {
-        title: "Teams",
-        url: "#",
-        icon: Users,
-        items: [
-          {
-            title: "Genesis",
-            url: "#",
-          },
-          {
-            title: "Explorer",
-            url: "#",
-          },
-          {
-            title: "Quantum",
-            url: "#",
-          },
-        ],
-      },
-    ],
-  };
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -85,10 +39,10 @@ export function AppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <AdminManagementNav items={datas.navMain} />
+        <AdminManagementNav items={navItems.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={datas.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
