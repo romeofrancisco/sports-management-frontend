@@ -1,28 +1,23 @@
-// useRoleRoutes.jsx
 import { useRoutes } from "react-router-dom";
-import { ADMIN, COACH, PLAYER } from "@/features/auth/constants";
+import { USER_ROLES } from "@/constants/roles";
 import { adminRoutes } from "./AdminRoutes";
 import { coachRoutes } from "./CoachRoutes";
 import { playerRoutes } from "./playerRoutes";
 import PageNotFound from "@/pages/PageNotFound";
 import { useSelector } from "react-redux";
-import { useMemo } from "react";
 
 const routeMap = {
-  [ADMIN]: adminRoutes,
-  [COACH]: coachRoutes,
-  [PLAYER]: playerRoutes,
+  [USER_ROLES.ADMIN]: adminRoutes,
+  [USER_ROLES.COACH]: coachRoutes,
+  [USER_ROLES.PLAYER]: playerRoutes,
 };
-
-const fallbackRoute = { path: "*", element: <PageNotFound /> };
 
 export const RoleRoutes = () => {
   const role = useSelector((state) => state.auth.user?.role);
-
-  const routes = useMemo(
-    () => [...(routeMap[role] || []), fallbackRoute],
-    [role]
-  );
+  const routes = [
+    ...(routeMap[role] ?? []),
+    { path: "*", element: <PageNotFound /> },
+  ];
 
   return useRoutes(routes);
 };

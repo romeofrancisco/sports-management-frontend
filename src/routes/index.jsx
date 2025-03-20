@@ -1,9 +1,8 @@
-// router.jsx
 import { createBrowserRouter } from "react-router-dom";
-import LoginPage from "@/features/auth/LoginPage";
+import LoginPage from "@/pages/auth/LoginPage";
 import { RoleRoutes } from "./RoleRoutes";
 import PageNotFound from "@/pages/PageNotFound";
-import Layout from "@/features/sidebar/sidebar-provider";
+import Layout from "@/layout/sidebar-provider";
 
 
 export const router = createBrowserRouter([

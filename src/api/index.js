@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "sonner";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api/",
@@ -13,8 +14,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle server connection errors (e.g., server is down)
+    if (!error.response) {
+      toast.error("Unable to connect to the server", {
+        description:
+          "Please check your internet connection or try again later.",
+        richColors: true,
+      });
+      return Promise.reject(error);
+    }
+
     // Prevent retry loop on refresh endpoint
-    if (originalRequest.url === 'refresh/') {
+    if (originalRequest.url === "refresh/") {
       return Promise.reject(error);
     }
 
@@ -24,8 +35,8 @@ api.interceptors.response.use(
 
       try {
         // Attempt to refresh the token
-        await api.post('refresh/');
-        
+        await api.post("refresh/");
+
         // Retry the original request with the new access token
         return api(originalRequest);
       } catch (refreshError) {
@@ -37,6 +48,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default api;

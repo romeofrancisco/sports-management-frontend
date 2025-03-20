@@ -1,16 +1,14 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
-import Loading from "@/components/Loading";
-import { useFetchUser } from "@/hooks/queries/useFetchUser";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
-  const { isLoading } = useFetchUser();
-  
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster />
+    </>
+  );
 };
 
 export default App;
