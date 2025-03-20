@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners";
 
 const Loading = () => {
   return (
-    <div className="w-screen h-screen bg-background content-center text-center">
+    <div className="w-full h-full bg-background content-center text-center">
       <ClipLoader size={35} color="var(--primary)" />
     </div>
   );

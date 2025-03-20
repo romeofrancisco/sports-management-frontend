@@ -1,6 +1,10 @@
 import AdminDashboard from "@/pages/admin/AdminDashboard";
-import Sports from "@/pages/admin/Sports";
-import Teams from "@/pages/admin/Teams";
+import SportsList from "@/pages/admin/SportsList";
+import Sport from "@/pages/admin/SportDetails";
+import TeamsList from "@/pages/admin/TeamsList";
+import Team from "@/pages/admin/TeamDetails";
+import GameSchedule from "@/pages/admin/GameSchedule";
+import path from "path";
 
 export const adminRoutes = [
   {
@@ -9,10 +13,22 @@ export const adminRoutes = [
   },
   {
     path: "/sports",
-    element: <Sports />,
+    element: <SportsList />,
+  },
+  {
+    path: "/sports/:sport",
+    element: <Sport />,
   },
   {
     path: "/teams",
-    element: <Teams />,
+    element: <TeamsList />,
+  },
+  {
+    path: "/teams/:team",
+    element: <Team />,
+  },
+  {
+    path: "game-schedules",
+    element: <GameSchedule />,
   },
 ];
