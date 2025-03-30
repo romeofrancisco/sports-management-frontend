@@ -9,16 +9,25 @@ const TeamsListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (
-    <header className="border-b py-4 grid grid-cols-2 grid-rows-2 items-center">
-      <Link to="/" className="flex text-muted-foreground text-xs">
+    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
+      <Link
+        to="/"
+        className="flex text-muted-foreground text-xs max-w-[8.5rem]"
+      >
         <ChevronLeft size={18} />
         Back to Dashboard
       </Link>
-      <span className="font-medium text-sm row-start-2 md:text-lg">Team Management</span>
-      <Button onClick={openModal} className="ml-auto row-span-2 col-start-2 md:py-5" size="sm">
-        <Users />
-        Create Team
-      </Button>
+      <span className="font-medium text-sm row-start-2 md:text-lg">
+        Team Management
+      </span>
+        <Button
+          onClick={openModal}
+          className="ml-auto row-span-2 col-start-2 md:py-5"
+          size="sm"
+        >
+          <Users />
+          Create Team
+        </Button>
       <AddTeamModal isOpen={isOpen} onClose={closeModal} />
     </header>
   );

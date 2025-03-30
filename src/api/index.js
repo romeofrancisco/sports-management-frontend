@@ -9,6 +9,26 @@ const api = axios.create({
   withCredentials: true,
 });
 
+
+api.interceptors.request.use(config => {
+  // Convert to JSON for specific endpoints
+  if (config.url?.includes('/starting_lineup/')) {
+    config.headers['Content-Type'] = 'application/json';
+    
+    // Convert FormData to JSON if needed
+    if (config.data instanceof FormData) {
+      const jsonData = {};
+      config.data.forEach((value, key) => {
+        jsonData[key] = value;
+      });
+      config.data = jsonData;
+    }
+  }
+  
+  return config;
+});
+
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {

@@ -1,5 +1,14 @@
 import api from ".";
 
+export const createCoach = async (coachData) => {
+  try {
+    const { data } = await api.post("register-coach", coachData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const loginUser = async (formData) => {
   try {
     const { data } = await api.post("login/", formData);
@@ -13,6 +22,7 @@ export const logoutUser = async () => {
   try {
     await api.post("logout/", null);
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };

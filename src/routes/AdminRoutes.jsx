@@ -1,10 +1,12 @@
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import SportsList from "@/pages/admin/SportsList";
-import Sport from "@/pages/admin/SportDetails";
+import SportDetails from "@/pages/admin/SportDetails";
 import TeamsList from "@/pages/admin/TeamsList";
-import Team from "@/pages/admin/TeamDetails";
+import TeamDetails from "@/pages/admin/TeamDetails";
 import GameSchedule from "@/pages/admin/GameSchedule";
-import path from "path";
+import PlayersList from "@/pages/admin/PlayersList";
+import PlayerDetails from "@/pages/admin/PlayerDetails";
+import GameScoring from "@/pages/common/GameScoring";
 
 export const adminRoutes = [
   {
@@ -17,7 +19,7 @@ export const adminRoutes = [
   },
   {
     path: "/sports/:sport",
-    element: <Sport />,
+    element: <SportDetails />,
   },
   {
     path: "/teams",
@@ -25,10 +27,22 @@ export const adminRoutes = [
   },
   {
     path: "/teams/:team",
-    element: <Team />,
+    element: <TeamDetails />,
   },
   {
-    path: "game-schedules",
+    path: "/players",
+    element: <PlayersList />,
+  },
+  {
+    path: "/players/:player",
+    element: <PlayerDetails />,
+  },
+  {
+    path: "/games",
     element: <GameSchedule />,
+  },
+  {
+    path: "/games/:id",
+    element: <GameScoring />,
   },
 ];

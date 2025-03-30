@@ -1,4 +1,4 @@
-import { Volleyball, Users, CalendarCog } from "lucide-react";
+import { Volleyball, Users, CalendarCog, User } from "lucide-react";
 
 export const useNavItems = () => {
   return [
@@ -13,9 +13,14 @@ export const useNavItems = () => {
       icon: Users,
     },
     {
+      title: "Players",
+      url: "/players",
+      icon: User,
+    },
+    {
       title: "Game Schedules",
-      url: "/game-schedules",
-      icon: CalendarCog
-    }
+      url: "/games",
+      icon: CalendarCog,
+    },
   ];
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 import { useTeamDetails } from "@/hooks/queries/useTeamDetails";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 
 const TeamDetails = () => {
   const { team } = useParams();
@@ -11,7 +11,8 @@ const TeamDetails = () => {
 
 
 
-  return (<div>{data.name}</div>);
+  return (
+  <div>{data.name}</div>);
 };
 
 export default TeamDetails;

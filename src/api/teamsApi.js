@@ -35,3 +35,22 @@ export const createTeam = async (teamData) => {
     throw error;
   }
 };
+
+export const deleteTeam = async (team) => {
+  try {
+    const { data } = await api.delete(`teams/${team}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateTeam = async (teamData, team) => {
+  try {
+    const { data } = await api.patch(`teams/${team}/`, teamData);
+    return data;
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+};

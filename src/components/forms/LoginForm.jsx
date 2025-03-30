@@ -4,14 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useLogin } from "@/hooks/mutations/useLogin";
+import { useLogin } from "@/hooks/mutations/auth/useLogin";
 
 const LoginForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const login = useLogin();
 
   const onSubmit = (formData) => {

@@ -23,7 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogout } from "@/hooks/mutations/useLogout";
+import { useLogout } from "@/hooks/mutations/auth/useLogout";
 import { useSelector } from "react-redux";
 
 export function NavUser() {

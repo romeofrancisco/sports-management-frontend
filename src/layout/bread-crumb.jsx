@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +13,19 @@ const BreadCrumb = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
+  // Helper function to format segment names
+  const formatSegmentName = (segment) => {
+    const parts = segment.split("-");
+    // Remove numeric suffix if exists
+    if (/\d+$/.test(parts[parts.length - 1])) {
+      parts.pop();
+    }
+    // Capitalize each part and join with spaces
+    return parts
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  };
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -25,20 +38,17 @@ const BreadCrumb = () => {
         {pathSegments.map((segment, index) => {
           const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
           const isLast = index === pathSegments.length - 1;
+          const displayName = formatSegmentName(segment);
 
           return (
             <React.Fragment key={index}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {isLast ? (
-                  <BreadcrumbPage>
-                    {segment.charAt(0).toUpperCase() + segment.slice(1)}
-                  </BreadcrumbPage>
+                  <BreadcrumbPage>{displayName}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
-                    <Link to={path}>
-                      {segment.charAt(0).toUpperCase() + segment.slice(1)}
-                    </Link>
+                    <Link to={path}>{displayName}</Link>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
