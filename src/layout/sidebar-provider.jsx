@@ -5,12 +5,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
 import { useFetchUser } from "@/hooks/queries/useFetchUser";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 import BreadCrumb from "./bread-crumb";
 
 export default function Layout() {
@@ -26,7 +26,7 @@ export default function Layout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="relative">
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

@@ -5,18 +5,17 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
 import { useCoaches } from "@/hooks/queries/useCoaches";
 import { useSports } from "@/hooks/queries/useSports";
 import CreateTeamForm from "../forms/CreateTeamForm";
+import Loading from "../common/Loading";
 
 const CreateTeamModal = ({ isOpen, onClose }) => {
-  const { data: coaches, isFetched: isCoachesFetched } = useCoaches(isOpen);
-  const { data: sports, isFetched: isSportsFetched } = useSports(isOpen);
+  const { data: coaches, isLoading: isCoachesLoading } = useCoaches(isOpen);
+  const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
 
-  if (!isCoachesFetched || !isSportsFetched) return null;
+  if (isCoachesLoading || isSportsLoading) return <Loading />;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

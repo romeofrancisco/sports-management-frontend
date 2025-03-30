@@ -18,14 +18,14 @@ export function AppSidebar({ ...props }) {
   const nav = useNavItems();
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/">
-                <div className="flex aspect-square size-7 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-                  <img src={logo} alt="Perpetual Logo" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                  <img src={logo} alt="Perpetual Logo" className="max-h-8" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-extrabold text-yellow-500">

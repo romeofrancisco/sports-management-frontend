@@ -13,15 +13,13 @@ import {
 } from "@/components/ui/select";
 import MultiSelect from "../common/MultiSelect";
 import { Button } from "../ui/button";
-import { useCreateTeam } from "@/hooks/mutations/useCreateTeam";
+import { useCreateTeam } from "@/hooks/mutations/team/useCreateTeam";
+import { Loader2 } from "lucide-react";
+import { convertToFormData } from "@/utils/convertToFormData";
 
 const CreateTeamForm = ({ coaches, sports, onClose }) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const { mutate: createTeam, isPending } = useCreateTeam();
+  const { control, handleSubmit, formState: { errors }, setError } = useForm({
     defaultValues: {
       name: "",
       sport: "",
@@ -30,12 +28,23 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
     },
   });
 
-  const createTeam = useCreateTeam();
   const onSubmit = (teamData) => {
-    createTeam.mutate(teamData, {
+    const formData = convertToFormData(teamData)
+
+    createTeam(formData, {
       onSuccess: () => {
-        reset();
         onClose();
+      },
+      onError: (e) => {
+        const error = e.response.data;
+        if (error) {
+          Object.keys(error).forEach((fieldName) => {
+            setError(fieldName, {
+              type: "server",
+              message: error[fieldName],
+            });
+          });
+        }
       },
     });
   };
@@ -48,7 +57,6 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
         <Controller
           name="name"
           control={control}
-          rules={{ required: "Team name is required" }}
           render={({ field }) => <Input {...field} />}
         />
         {errors.name && (
@@ -57,13 +65,13 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
           </p>
         )}
       </div>
+
       {/* Sport */}
       <div className="grid gap-1">
         <Label className="text-sm text-left">Sport</Label>
         <Controller
           name="sport"
           control={control}
-          rules={{ required: "Sport selection is required" }}
           render={({ field }) => (
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="w-full">
@@ -88,13 +96,13 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
           </p>
         )}
       </div>
+
       {/* Coach */}
       <div className="grid gap-1">
         <Label className="text-sm text-left">Coach</Label>
         <Controller
           name="coach"
           control={control}
-          rules={{ required: "At least one coach must be selected" }}
           render={({ field }) => (
             <MultiSelect
               options={coaches.map((coach) => ({
@@ -120,10 +128,10 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
         <Controller
           name="logo"
           control={control}
-          rules={{ required: "Team logo is required" }}
           render={({ field }) => (
             <Input
               type="file"
+              accept="image/*"
               onChange={(e) => field.onChange(e.target.files[0])}
             />
           )}
@@ -134,8 +142,15 @@ const CreateTeamForm = ({ coaches, sports, onClose }) => {
           </p>
         )}
       </div>
-      <Button type="submit" className="mt-4">
-        Create Team
+      <Button type="submit" className="mt-4" disabled={isPending}>
+        {isPending ? (
+          <>
+            <Loader2 className="animate-spin" />
+            Please wait
+          </>
+        ) : (
+          "Create Team"
+        )}
       </Button>
     </form>
   );

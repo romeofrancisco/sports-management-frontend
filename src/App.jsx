@@ -3,6 +3,7 @@ import { router } from "./routes";
 import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
+
   return (
     <>
       <RouterProvider router={router} />

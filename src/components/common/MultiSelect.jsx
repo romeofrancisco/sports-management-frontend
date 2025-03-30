@@ -40,28 +40,30 @@ const MultiSelect = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn("w-full justify-between h-auto min-h-10", className)}
         >
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 overflow-y-auto max-h-32">
             {value.length > 0 ? (
               options
                 .filter((option) => value.includes(option.value))
                 .map((option) => (
                   <Badge
                     key={option.value}
-                    variant="secondary"
-                    className="rounded-sm px-1 font-medium"
+                    className="rounded-sm px-1 font-medium truncate bg-muted text-accent-foreground"
+                    style={{ maxWidth: "200px" }}
                   >
                     {option.label}
                   </Badge>
                 ))
             ) : (
-              <span className="text-muted-foreground font-normal">{placeholder}</span>
+              <span className="text-muted-foreground font-normal">
+                {placeholder}
+              </span>
             )}
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
-      </PopoverTrigger>
+      </PopoverTrigger> 
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search..." />

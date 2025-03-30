@@ -8,9 +8,9 @@ export const useCreateTeam = () => {
 
   return useMutation({
     mutationFn: (teamData) => createTeam(teamData),
-    onSuccess: () => {
+    onSuccess: (teamData) => {
       toast.success("Team created successfully!", {
-        description: `'{teamName}' is now registered. You can assign players.`,
+        description: `${teamData.name} team is now registered.`,
         richColors: true,
       });
       // Refetch teams
