@@ -7,12 +7,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CreateGameForm from "../forms/CreateGameForm";
-import { useSports } from "@/hooks/queries/useSports";
-import { useTeams } from "@/hooks/queries/useTeams";
+import { useTeams } from "@/hooks/useTeams";
+import { useSports } from "@/hooks/useSports";
 import Loading from "../common/Loading";
 
 const CreateGameModal = ({ isOpen, onClose }) => {
-  const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
+  const { data: sports, isLoading: isSportsLoading, isFetched } = useSports(isOpen);
   const { data: teams, isLoading: isTeamsLoading } = useTeams(isOpen);
 
   if (isSportsLoading || isTeamsLoading) return <Loading/>

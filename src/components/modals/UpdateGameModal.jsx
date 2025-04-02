@@ -7,8 +7,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import UpdateGameForm from "../forms/UpdateGameForm";
-import { useSports } from "@/hooks/queries/useSports";
-import { useTeams } from "@/hooks/queries/useTeams";
+import { useSports } from "@/hooks/useSports";
+import { useTeams } from "@/hooks/useTeams";
 import Loading from "../common/Loading";
 
 const UpdateGameModal = ({ isOpen, onClose, game }) => {

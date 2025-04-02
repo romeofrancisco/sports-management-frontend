@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { TeamSelect } from "../common/TeamSelect";
 import MultiSelect from "../common/MultiSelect";
-import { useUpdatePlayer } from "@/hooks/mutations/player/useUpdatePlayer";
+import { useUpdatePlayer } from "@/hooks/usePlayers";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
@@ -144,7 +144,7 @@ const UpdatePlayerForm = ({ teams, sports, positions, onClose, player }) => {
           name="sport_id"
           control={control}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value} disabled>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select sport" />
               </SelectTrigger>

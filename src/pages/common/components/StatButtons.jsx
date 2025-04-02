@@ -38,9 +38,9 @@ const backendConfig = mobile
       ],
     };
 
-const StatButtons = ({ statTypes }) => {
+const StatButtons = ({ statTypes, className = "" }) => {
   const [buttons, setButtons] = useState([]);
-  const columns = 4
+  const columns = 4;
   const rows = 4;
 
   useEffect(() => {
@@ -98,11 +98,11 @@ const StatButtons = ({ statTypes }) => {
 
   return (
     <DndProvider backend={MultiBackend} options={backendConfig}>
-      <div className="flex justify-center">
+      <div className={`flex justify-center ${className}`}>
         <div
           className={`grid ${
             mobile ? "grid-cols-4" : "grid-cols-4"
-          } grid-rows-4 gap-2 md:h-[80vh] max-h-[50rem] bg-gray-100 rounded-lg p-2`}
+          } grid-rows-4 gap-2 md:h-[80vh] max-h-[50rem] bg-background rounded-lg`}
         >
           {renderGrid()}
         </div>

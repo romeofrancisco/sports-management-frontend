@@ -1,5 +1,5 @@
 import React from "react";
-import { useTeams } from "@/hooks/queries/useTeams";
+import { useTeams } from "@/hooks/useTeams";
 import TeamsListHeader from "./components/team/TeamsListHeader";
 import Loading from "@/components/common/Loading";
 import PageError from "../PageError";

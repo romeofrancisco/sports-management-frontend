@@ -18,9 +18,9 @@ export const fetchTeamDetails = async (team) => {
   }
 };
 
-export const fetchCoaches = async () => {
+export const fetchSportTeams = async (sport) => {
   try {
-    const { data } = await api.get("coaches/");
+    const { data } = await api.get(`sports/${sport}/teams`);
     return data;
   } catch (error) {
     throw error;
@@ -50,7 +50,7 @@ export const updateTeam = async (teamData, team) => {
     const { data } = await api.patch(`teams/${team}/`, teamData);
     return data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw error;
   }
 };

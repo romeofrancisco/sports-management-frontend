@@ -7,6 +7,9 @@ import GameSchedule from "@/pages/admin/GameSchedule";
 import PlayersList from "@/pages/admin/PlayersList";
 import PlayerDetails from "@/pages/admin/PlayerDetails";
 import GameScoring from "@/pages/common/GameScoring";
+import LeaguesList from "@/pages/admin/LeaguesList";
+import CoachList from "@/pages/admin/CoachList";
+import CoachDetails from "@/pages/admin/CoachDetails";
 
 export const adminRoutes = [
   {
@@ -36,6 +39,18 @@ export const adminRoutes = [
   {
     path: "/players/:player",
     element: <PlayerDetails />,
+  },
+  {
+    path: "/coaches",
+    element: <CoachList />,
+  },
+  {
+    path: "/coaches/:coach",
+    element: <CoachDetails />,
+  },
+  {
+    path: "/leagues",
+    element: <LeaguesList />,
   },
   {
     path: "/games",

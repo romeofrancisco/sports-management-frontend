@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeletePlayer } from "@/hooks/mutations/player/useDeletePlayer";
+import { useDeletePlayer } from "@/hooks/usePlayers";
 
 const DeletePlayerModal = ({ isOpen, onClose, player }) => {
     

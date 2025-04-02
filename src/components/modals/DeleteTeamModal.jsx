@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteTeam } from "@/hooks/mutations/team/useDeleteTeam";
+import { useDeleteTeam } from "@/hooks/useTeams";
 
 const DeleteTeamModal = ({ isOpen, onClose, team }) => {
   const deleteTeam = useDeleteTeam();

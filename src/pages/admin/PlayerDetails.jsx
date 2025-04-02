@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router";
-import { usePlayerDetails } from "@/hooks/queries/usePlayerDetails";
+import { usePlayerDetails } from "@/hooks/usePlayers";
 import Loading from "@/components/common/Loading";
 
 const PlayerDetails = () => {

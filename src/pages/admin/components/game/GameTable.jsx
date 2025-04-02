@@ -26,21 +26,9 @@ import CreateStartingLineupModal from "@/components/modals/CreateStartingLineupM
 
 export const GameTable = ({ games }) => {
   const [selectedGame, setSelectedGame] = useState(null);
-  const {
-    isOpen: isDeleteOpen,
-    openModal: openDeleteModal,
-    closeModal: closeDeleteModal,
-  } = useModal();
-  const {
-    isOpen: isUpdateOpen,
-    openModal: openUpdateModal,
-    closeModal: closeUpdateModal,
-  } = useModal();
-  const {
-    isOpen: isStartOpen,
-    openModal: openStartModal,
-    closeModal: closeStartModal,
-  } = useModal();
+  const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
+  const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
+  const { isOpen: isStartOpen, openModal: openStartModal, closeModal: closeStartModal } = useModal();
 
   const navigate = useNavigate();
 
@@ -103,6 +91,7 @@ export const GameTable = ({ games }) => {
       id: "actions",
       cell: ({ row }) => {
         const game = row.original;
+        const lineup = row.original.lineup_status;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -114,7 +103,24 @@ export const GameTable = ({ games }) => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleStartGame(game)}>
+              <DropdownMenuItem 
+                onClick={() => handleStartGame(game)}
+                disabled={lineup.home_ready && lineup.away_ready}
+              >
+                <ClipboardPenLine />
+                Register Starting Lineup
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStartGame(game)}
+                disabled={!lineup.home_ready && !lineup.away_ready}
+              >
+                <ClipboardPenLine />
+                Update Starting Lineup
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate(`/games/${game.id}`)}       
+                disabled={!lineup.home_ready && !lineup.away_ready}
+              >
                 <ClipboardPenLine />
                 Start Game
               </DropdownMenuItem>

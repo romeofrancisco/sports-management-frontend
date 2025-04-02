@@ -9,7 +9,7 @@ import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
-import { useFetchUser } from "@/hooks/queries/useFetchUser";
+import { useFetchUser } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
 import BreadCrumb from "./bread-crumb";
 
@@ -37,7 +37,7 @@ export default function Layout() {
           </div>
           <ThemeToggle />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-5 pt-0">
+        <div className="flex flex-1 flex-col gap-4 p-3 lg-p-5 pt-0">
           <Outlet />
         </div>
       </SidebarInset>

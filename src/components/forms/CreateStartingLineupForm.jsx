@@ -14,7 +14,7 @@ import {
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { TEAM_SIDES } from "@/constants/game";
-import { useCreateStartingLineup } from "@/hooks/mutations/game/useCreateStartingLineup";
+import { useCreateStartingLineup } from "@/hooks/useStartingLineup";
 
 const TeamLineupSection = ({
   team,
@@ -143,7 +143,7 @@ const PositionSelect = ({
   );
 };
 
-const CreateStartingLineupForm = ({ teams, game, positions }) => {
+const CreateStartingLineupForm = ({ teams, game, positions, onClose }) => {
   const {mutate: createLineup} = useCreateStartingLineup(game.id)
   const { control, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
@@ -155,7 +155,6 @@ const CreateStartingLineupForm = ({ teams, game, positions }) => {
   const formValues = watch();
 
   const onSubmit = (data) => {
-
     const formatTeamData = (teamPositions, selectedPlayers) =>
       teamPositions.map((pos, index) => ({
         position: pos.position, // Get position from default values
@@ -169,7 +168,7 @@ const CreateStartingLineupForm = ({ teams, game, positions }) => {
   
     createLineup(formattedData, {
       onSuccess: () => {
-        onclose()
+        onClose()
       }
     })
   };

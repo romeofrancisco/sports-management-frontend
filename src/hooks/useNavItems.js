@@ -1,6 +1,16 @@
-import { Volleyball, Users, CalendarCog, User } from "lucide-react";
+import { Volleyball, Users, CalendarCog, User, Trophy, Gauge } from "lucide-react";
 
-export const useNavItems = () => {
+export const adminMain = () => {
+  return [
+    {
+      title: "Dashboard",
+      url: "/",
+      icon: Gauge,
+    },
+  ]
+}
+
+export const adminManagement = () => {
   return [
     {
       title: "Sports",
@@ -16,6 +26,16 @@ export const useNavItems = () => {
       title: "Players",
       url: "/players",
       icon: User,
+    },
+    {
+      title: "Coaches",
+      url: "/coaches",
+      icon: User
+    },
+    {
+      title: "Leagues",
+      url: "/leagues",
+      icon: Trophy
     },
     {
       title: "Game Schedules",

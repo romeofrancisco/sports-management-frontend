@@ -30,6 +30,7 @@ export const fetchPositions = async () => {
 export const fetchSportPositions = async (sport) => {
   try {
     const { data } = await api.get(`positions/?sport=${sport}`);
+    console.log(data)
     return data;
   } catch (error) {
     throw error;

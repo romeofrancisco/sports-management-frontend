@@ -15,7 +15,7 @@ import {
 } from "../ui/select";
 import { TeamSelect } from "../common/TeamSelect";
 import { DateTimePicker } from "../ui/date-time-picker";
-import { useCreateGame } from "@/hooks/mutations/game/useCreateGame";
+import { useCreateGame } from "@/hooks/useGames";
 import { Loader2 } from "lucide-react";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
 import { convertToFormData } from "@/utils/convertToFormData";
@@ -41,6 +41,7 @@ const CreateGameForm = ({ sports, teams, onClose }) => {
   const filteredTeams = useFilteredTeams(teams, sports, selectedSport);
 
   const onSubmit = (gameData) => {
+    console.log(gameData)
     const formData = convertToFormData(gameData);
 
     createGame(formData, {

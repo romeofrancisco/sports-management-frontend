@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteGame } from "@/hooks/mutations/game/useDeleteGame";
+import { useDeleteGame } from "@/hooks/useGames";
 import { Loader2 } from "lucide-react";
 
 const DeleteGameModal = ({ isOpen, onClose, game }) => {

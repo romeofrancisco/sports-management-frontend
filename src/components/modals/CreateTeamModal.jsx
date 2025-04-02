@@ -6,8 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCoaches } from "@/hooks/queries/useCoaches";
-import { useSports } from "@/hooks/queries/useSports";
+import { useCoaches } from "@/hooks/useCoaches";
+import { useSports } from "@/hooks/useSports";
 import CreateTeamForm from "../forms/CreateTeamForm";
 import Loading from "../common/Loading";
 

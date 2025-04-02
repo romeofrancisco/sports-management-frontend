@@ -1,5 +1,5 @@
 import React from "react";
-import { useSports } from "@/hooks/queries/useSports";
+import { useSports } from "@/hooks/useSports";
 import Loading from "@/components/common/Loading";
 import PageError from "../PageError";
 

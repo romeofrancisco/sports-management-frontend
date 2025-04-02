@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { TeamSelect } from "../common/TeamSelect";
 import MultiSelect from "../common/MultiSelect";
-import { useCreatePlayer } from "@/hooks/mutations/player/useCreatePlayer";
+import { useCreatePlayer } from "@/hooks/usePlayers";
 import { Loader2 } from "lucide-react";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
 import { convertToFormData } from "@/utils/convertToFormData";

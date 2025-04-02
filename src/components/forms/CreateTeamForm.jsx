@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import MultiSelect from "../common/MultiSelect";
 import { Button } from "../ui/button";
-import { useCreateTeam } from "@/hooks/mutations/team/useCreateTeam";
+import { useCreateTeam } from "@/hooks/useTeams";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 

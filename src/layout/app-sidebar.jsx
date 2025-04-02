@@ -11,11 +11,13 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { useNavItems } from "@/hooks/useNavItems";
+import { adminManagement, adminMain } from "@/hooks/useNavItems";
 import logo from "@/assets/perpetual_logo.png";
+import AdminMainNav from "./admin-main-nav";
 
 export function AppSidebar({ ...props }) {
-  const nav = useNavItems();
+  const management = adminManagement();
+  const main = adminMain();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -40,8 +42,9 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <AdminMainNav items={main} />
       <SidebarContent>
-        <AdminManagementNav items={nav} />
+        <AdminManagementNav items={management} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

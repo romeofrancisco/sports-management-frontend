@@ -33,13 +33,13 @@ const DraggableButton = ({ button, position }) => {
         drag(node);
         buttonRef.current = node;
       }}
-      className={`cursor-move transition-opacity ${
+      className={`cursor-move rounded-lg transition-opacity ${
         isDragging ? "opacity-0" : "opacity-100"
       }`}
     >
       <Button
         onClick={() => console.log(button.button_type)}
-        className={`w-full h-full text-[0.5rem] md:text-sm transition-transform duration-150 active:scale-95 break-words whitespace-normal
+        className={`w-full h-full text-[0.7rem] p-0 transition-transform duration-150 active:scale-95 break-words whitespace-normal
           ${
             button.button_type === "made"
               ? "bg-green-900 hover:bg-green-800"

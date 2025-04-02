@@ -24,7 +24,7 @@ const DragLayer = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 z-50 pointer-events-none"
+      className="fixed top-0 left-0 z-50 rounded-lg pointer-events-none"
       style={{
         transform: `translate(${adjustedX}px, ${adjustedY}px)`,
         width: `${width}px`,

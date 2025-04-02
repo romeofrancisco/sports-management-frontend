@@ -23,13 +23,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogout } from "@/hooks/mutations/auth/useLogout";
+import { useLogout } from "@/hooks/useAuth";
 import { useSelector } from "react-redux";
 
 export function NavUser() {
   const { user } = useSelector((state) => state.auth);
   const { isMobile } = useSidebar();
   const logOut = useLogout();
+
+  const handleLogout = () => {
+    
+  }
 
   return (
     <SidebarMenu>
