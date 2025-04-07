@@ -1,5 +1,10 @@
 import axios from "axios";
 import { toast } from "sonner";
+import store from "@/store";
+import { logout } from "@/store/slices/authSlice";
+import { persistor } from "@/store";
+import { queryClient } from "@/context/QueryProvider";
+import { navigateTo } from "@/utils/navigate";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api/",
@@ -9,12 +14,11 @@ const api = axios.create({
   withCredentials: true,
 });
 
-
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   // Convert to JSON for specific endpoints
-  if (config.url?.includes('/starting_lineup/')) {
-    config.headers['Content-Type'] = 'application/json';
-    
+  if (config.url?.includes("/starting_lineup/")) {
+    config.headers["Content-Type"] = "application/json";
+
     // Convert FormData to JSON if needed
     if (config.data instanceof FormData) {
       const jsonData = {};
@@ -23,18 +27,22 @@ api.interceptors.request.use(config => {
       });
       config.data = jsonData;
     }
-  }  
-  
+  }
+
   return config;
 });
-
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle server connection errors (e.g., server is down)
+    // Prevent retry loop on refresh endpoint
+    if (originalRequest.url === "refresh/") {
+      return Promise.reject(error);
+    }
+
+    // If there's no response at all (server is down, CORS, etc.)
     if (!error.response) {
       toast.error("Unable to connect to the server", {
         description:
@@ -44,23 +52,31 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Prevent retry loop on refresh endpoint
-    if (originalRequest.url === "refresh/") {
-      return Promise.reject(error);
-    }
-
-    // If access token is expired (401), attempt to refresh
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark request to avoid loops
+    // Token expired
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
       try {
-        // Attempt to refresh the token
         await api.post("refresh/");
-
-        // Retry the original request with the new access token
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed - logout the user
+        try {
+          await api.post("logout/", null);
+        } catch (logoutError) {
+
+        }
+
+        await persistor.purge();
+        queryClient.clear();
+        store.dispatch(logout());
+
+        toast.error("Session Expired", {
+          description:
+            "Your session has expired. Please log in again to continue.",
+          richColors: true,
+        });
+
+        navigateTo("/login");
         return Promise.reject(refreshError);
       }
     }

@@ -32,7 +32,7 @@ const DragLayer = () => {
       }}
     >
       <Button
-        className={`w-full h-full text-[0.5rem] md:text-sm transition-transform duration-150 active:scale-95 break-words whitespace-normal
+        className={`w-full h-full p-0 text-[0.7rem] lg:text-[0.9rem] lg:p-3 transition-transform duration-150 active:scale-95 break-words whitespace-normal
           ${
             item.button.button_type === "made"
               ? "bg-green-900 hover:bg-green-800"

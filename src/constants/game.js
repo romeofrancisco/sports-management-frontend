@@ -10,3 +10,10 @@ export const TEAM_SIDES = {
   HOME_TEAM: "home_team",
   AWAY_TEAM: "away_team",
 }
+
+export const GAME_ACTIONS = {
+  START: "start",
+  COMPLETE: "complete",
+  POSTPONE: "postpone",
+  NEXT_PERIOD: "next_period",
+}

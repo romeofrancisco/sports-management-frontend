@@ -58,6 +58,7 @@ export const createStartingLineup = async (lineup, gameId) => {
     const { data } = await api.post(`games/${gameId}/starting_lineup/`, lineup);
     return data;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
@@ -70,3 +71,25 @@ export const fetchStartingLineup = async (gameId) => {
     throw error;
   }
 };
+
+export const fetchCurrentPlayers = async (gameId) => {
+  try {
+    const { data } = await api.get(`games/${gameId}/current_players/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const manageGame = async (gameId, action) => {
+  try {
+    const { data } = await api.post(`games/${gameId}/manage/`, {
+      action: action,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+

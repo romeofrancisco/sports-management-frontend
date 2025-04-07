@@ -23,12 +23,37 @@ import { formatShortDate, formatTime } from "@/utils/formatDate";
 import UpdateGameModal from "@/components/modals/UpdateGameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import CreateStartingLineupModal from "@/components/modals/CreateStartingLineupModal";
+import UpdateStartingLineupModal from "@/components/modals/UpdateStartingLineupModal";
+import { GAME_STATUS } from "@/constants/game";
+import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 
 export const GameTable = ({ games }) => {
   const [selectedGame, setSelectedGame] = useState(null);
-  const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
-  const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
-  const { isOpen: isStartOpen, openModal: openStartModal, closeModal: closeStartModal } = useModal();
+  const {
+    isOpen: isDeleteOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+  const {
+    isOpen: isUpdateOpen,
+    openModal: openUpdateModal,
+    closeModal: closeUpdateModal,
+  } = useModal();
+  const {
+    isOpen: isRegisterLineupOpen,
+    openModal: openRegisterLineupModal,
+    closeModal: closeRegisterLineupModal,
+  } = useModal();
+  const {
+    isOpen: isUpdateLineupOpen,
+    openModal: openUpdateLineupModal,
+    closeModal: closeUpdateLineupModal,
+  } = useModal();
+  const {
+    isOpen: isStartGameOpen,
+    openModal: openStartGameModal,
+    closeModal: closeStartGameModal,
+  } = useModal();
 
   const navigate = useNavigate();
 
@@ -42,9 +67,19 @@ export const GameTable = ({ games }) => {
     openDeleteModal();
   };
 
+  const handleRegisterStartingLineup = (game) => {
+    setSelectedGame(game);
+    openRegisterLineupModal();
+  };
+
+  const handleUpdateStartingLineup = (game) => {
+    setSelectedGame(game);
+    openUpdateLineupModal();
+  };
+
   const handleStartGame = (game) => {
     setSelectedGame(game);
-    openStartModal();
+    openStartGameModal();
   };
 
   const columns = [
@@ -103,22 +138,27 @@ export const GameTable = ({ games }) => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={() => handleStartGame(game)}
-                disabled={lineup.home_ready && lineup.away_ready}
-              >
-                <ClipboardPenLine />
-                Register Starting Lineup
-              </DropdownMenuItem>
+              {game.status !== GAME_STATUS.IN_PROGRESS && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => handleRegisterStartingLineup(game)}
+                    disabled={lineup.home_ready && lineup.away_ready}
+                  >
+                    <ClipboardPenLine />
+                    Register Starting Lineup
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleUpdateStartingLineup(game)}
+                    disabled={!lineup.home_ready && !lineup.away_ready}
+                  >
+                    <ClipboardPenLine />
+                    Update Starting Lineup
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <DropdownMenuItem
                 onClick={() => handleStartGame(game)}
-                disabled={!lineup.home_ready && !lineup.away_ready}
-              >
-                <ClipboardPenLine />
-                Update Starting Lineup
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(`/games/${game.id}`)}       
                 disabled={!lineup.home_ready && !lineup.away_ready}
               >
                 <ClipboardPenLine />
@@ -156,8 +196,18 @@ export const GameTable = ({ games }) => {
         game={selectedGame}
       />
       <CreateStartingLineupModal
-        isOpen={isStartOpen}
-        onClose={closeStartModal}
+        isOpen={isRegisterLineupOpen}
+        onClose={closeRegisterLineupModal}
+        game={selectedGame}
+      />
+      <UpdateStartingLineupModal
+        isOpen={isUpdateLineupOpen}
+        onClose={closeUpdateLineupModal}
+        game={selectedGame}
+      />
+      <StartGameConfirmation
+        isOpen={isStartGameOpen}
+        onClose={closeStartGameModal}
         game={selectedGame}
       />
     </>

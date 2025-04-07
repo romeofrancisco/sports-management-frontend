@@ -1,50 +1,71 @@
-import React from "react";
-import StatButtons from "./components/StatButtons";
-import Loading from "@/components/common/Loading";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useRecordableStats } from "@/hooks/useSports";
-import { useGamePlayers } from "@/hooks/useGames";
+import { useDispatch } from "react-redux";
+import Loading from "@/components/common/Loading";
 import PageError from "../PageError";
+import ScoreBoard from "./components/ScoreBoard";
 import TeamSide from "./components/TeamSide";
-import { useStartingLineup } from "@/hooks/useStartingLineup";
-import { useSportDetails } from "@/hooks/useSports";
-import { useGameDetails } from "@/hooks/useGames";
+import StatButtons from "./components/StatButtons";
+import { useRecordableStats } from "@/hooks/useSports";
+import { useGamePlayers, useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
+import { setGameDetails } from "@/store/slices/gameSlice";
+import { setGame, setPeriod } from "@/store/slices/playerStatSlice";
+import GameSettings from "./components/GameSettings";
+import RequireLandscape from "./components/RequireLandscape";
 
 const GameScoring = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  // Data fetching
   const { data: game, isLoading: isGameLoading, isError: isGameError } = useGameDetails(id);
   const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(id);
-  const { data: players, isLoading: isPlayersLoading, isError: isPlayersError } =  useGamePlayers(id)
-  const { data: startingLineup, isLoading: isStartingLineupLoading, isError: isStartingLineupError } =  useStartingLineup(id)
-  const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
+  const { data: players, isLoading: isPlayersLoading, isError: isPlayersError } = useGamePlayers(id);
+  const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(id);
 
-  const isLoading = isPlayersLoading || isStatTypesLoading || isStartingLineupLoading
-  const isError = isPlayersError || isStatTypesError || isStartingLineupError
+  // Unified loading/error states
+  const isLoading = isGameLoading ||isStatTypesLoading ||isPlayersLoading || isCurrentPlayersLoading;
+  const isError = isGameError || isStatTypesError || isPlayersError || isCurrentPlayersError;
 
-  if (isLoading) return <Loading/>
-  if (isError) return <PageError/>
+  // Store game in Redux on load
+  useEffect(() => {
+    if (game) {
+      dispatch(setGameDetails(game));
+      dispatch(setGame(id));
+      dispatch(setPeriod(game.current_period));
+    }
+  }, [game, dispatch]);
 
-  
-  const { home_team, away_team } = players
-  const { home_starting_lineup, away_starting_lineup } = startingLineup
+  // Orientation detection
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(orientation: portrait)");
+    const handleOrientationChange = (e) => setIsPortrait(e.matches);
+
+    mediaQuery.addEventListener("change", handleOrientationChange);
+    setIsPortrait(mediaQuery.matches); // Initial check
+
+    return () =>
+      mediaQuery.removeEventListener("change", handleOrientationChange);
+  }, []);
+
+  // Loading/Error UI
+  if (isLoading) return <Loading />;
+  if (isError) return <PageError />;
+  if (isPortrait) return <RequireLandscape />;
+
+  const { home_players, away_players } = currentPlayers;
 
   return (
-  <div className="grid grid-cols-2 gap-5 lg:grid-cols-[auto_auto_auto]">
-    <TeamSide 
-      className="order-1 md:order-none"
-      players={home_team} 
-      startingLineup={home_starting_lineup} 
-    />
-    <StatButtons 
-      className="order-3 col-span-2 lg:col-span-1 lg:order-none" 
-      statTypes={statTypes} 
-    />
-    <TeamSide 
-      className="order-2 lg:order-none"
-      players={away_team} 
-      startingLineup={away_starting_lineup} 
-    />
-  </div>
+    <div className="relative h-full content-center">
+      <ScoreBoard />
+      <GameSettings />
+      <div className="grid gap-2 md:gap-5 grid-cols-[1fr_auto_1fr]">
+        <TeamSide players={home_players} />
+        <StatButtons statTypes={statTypes} />
+        <TeamSide players={away_players} />
+      </div>
+    </div>
   );
 };
 

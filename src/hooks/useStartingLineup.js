@@ -15,11 +15,8 @@ export const useCreateStartingLineup = (gameId) => {
   return useMutation({
     mutationFn: (lineup) => createStartingLineup(lineup, gameId),
     onSuccess: () => {
-      toast.success("Added starting lineup", {
-        description: "You can now start the game",
-        richColors: true,
-      });
       queryClient.invalidateQueries(["starting-lineup", gameId]);
     },
   });
 };
+

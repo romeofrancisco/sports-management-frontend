@@ -2,6 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import gameReducer from "./slices/gameSlice"
+import playerStatReducer from "./slices/playerStatSlice"
 
 const persistConfig = {
   key: "auth",
@@ -14,6 +16,8 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    game: gameReducer,
+    playerStat: playerStatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

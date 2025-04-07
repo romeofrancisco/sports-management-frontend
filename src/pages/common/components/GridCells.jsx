@@ -12,7 +12,7 @@ const GridCell = ({ x, y, moveButton, children }) => {
   return (
     <div
       ref={drop}
-      className="border rounded-lg aspect-square md:aspect-square grid bg-muted transition-colors duration-150 hover:bg-muted/50"
+      className="border rounded-lg select-none aspect-square grid bg-muted transition-colors duration-150 hover:bg-muted/50"
     >
       {children}
     </div>

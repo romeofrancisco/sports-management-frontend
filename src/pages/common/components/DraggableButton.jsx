@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDrag } from "react-dnd";
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
 
 const ItemTypes = { BUTTON: "button" };
 
-const DraggableButton = ({ button, position }) => {
+const DraggableButton = ({ button, position, onRecord, isCreatingStat }) => {
+  const { playerId } = useSelector((state) => state.playerStat);
   const buttonRef = React.useRef(null);
 
   const [{ isDragging }, drag] = useDrag({
@@ -26,6 +28,16 @@ const DraggableButton = ({ button, position }) => {
       isDragging: monitor.isDragging(),
     }),
   });
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    if (!playerId || isClicked || isCreatingStat) return;
+    setIsClicked(true);
+    onRecord(button.id, button.point_value);
+
+    // Reset after debounce time (300ms) to match API call
+    setTimeout(() => setIsClicked(false), 300);
+  };
 
   return (
     <div
@@ -38,15 +50,17 @@ const DraggableButton = ({ button, position }) => {
       }`}
     >
       <Button
-        onClick={() => console.log(button.button_type)}
-        className={`w-full h-full text-[0.7rem] p-0 transition-transform duration-150 active:scale-95 break-words whitespace-normal
+        onClick={handleClick}
+        className={`w-full h-full p-0 text-[0.7rem] lg:text-[0.9rem] lg:p-3 transition-transform duration-150 active:scale-95 break-words whitespace-normal
           ${
             button.button_type === "made"
               ? "bg-green-900 hover:bg-green-800"
-              : button.button_type === "miss" || button.button_type === "negative"
+              : button.button_type === "miss" ||
+                button.button_type === "negative"
               ? "bg-red-900 hover:bg-red-800"
               : "bg-blue-900 hover:bg-blue-800"
           }`}
+          disabled={!playerId || isClicked || isCreatingStat}
       >
         {button.name}
       </Button>

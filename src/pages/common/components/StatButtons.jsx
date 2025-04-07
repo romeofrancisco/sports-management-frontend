@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebouncedCallback } from "use-debounce";
+import { useCreatePlayerStat } from "@/hooks/usePlayerStats";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { MultiBackend } from "react-dnd-multi-backend";
-import Loading from "@/components/common/Loading";
 import DragLayer from "./DragLayer";
 import DraggableButton from "./DraggableButton";
 import GridCells from "./GridCells";
+import { incrementHomeScore } from "@/store/slices/gameSlice";
+import { incrementAwayScore } from "@/store/slices/gameSlice";
+import { TEAM_SIDES } from "@/constants/game";
 
 // Mobile detection
 const isMobile = () => {
@@ -38,7 +43,39 @@ const backendConfig = mobile
       ],
     };
 
-const StatButtons = ({ statTypes, className = "" }) => {
+const StatButtons = ({ statTypes }) => {
+  const { playerId, gameId, period, team } = useSelector(
+    (state) => state.playerStat
+  );
+  const { mutate: createPlayerStat, isPending: isCreatingStat } = useCreatePlayerStat();
+  const dispatch = useDispatch();
+
+  const debouncedStat = useDebouncedCallback(
+    (stat) => createPlayerStat(stat),
+    300,
+    { leading: true, trailing: false }
+  );
+
+  const handleStatRecord = (statId, point_value) => {
+    if (point_value > 0) {
+      if (team === TEAM_SIDES.HOME_TEAM) {
+        console.log(point_value)
+        dispatch(incrementHomeScore(point_value));
+      }
+
+      if (team === TEAM_SIDES.AWAY_TEAM) {
+        dispatch(incrementAwayScore(point_value));
+      }
+    }
+
+    debouncedStat({
+      player: playerId,
+      game: gameId,
+      period: period,
+      stat_type: statId,
+    });
+  };
+
   const [buttons, setButtons] = useState([]);
   const columns = 4;
   const rows = 4;
@@ -87,6 +124,8 @@ const StatButtons = ({ statTypes, className = "" }) => {
               <DraggableButton
                 button={buttonInCell}
                 position={buttonInCell.position}
+                onRecord={handleStatRecord}
+                isCreatingStat={isCreatingStat}
               />
             )}
           </GridCells>
@@ -96,13 +135,23 @@ const StatButtons = ({ statTypes, className = "" }) => {
     return gridCells;
   };
 
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+  
+    setVH();
+    window.addEventListener('resize', setVH);
+    return () => window.removeEventListener('resize', setVH);
+  }, []);
+
   return (
     <DndProvider backend={MultiBackend} options={backendConfig}>
-      <div className={`flex justify-center ${className}`}>
+      <div className="flex justify-center">
         <div
-          className={`grid ${
-            mobile ? "grid-cols-4" : "grid-cols-4"
-          } grid-rows-4 gap-2 md:h-[80vh] max-h-[50rem] bg-background rounded-lg`}
+          className={`grid grid-cols-4 grid-rows-4 gap-2 max-h-[35rem] bg-background rounded-lg`}
+          style={{ height: `calc(var(--vh, 1vh) * ${mobile ? 75 : 80})` }}
         >
           {renderGrid()}
         </div>

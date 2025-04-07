@@ -1,5 +1,14 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchGames, createGame, deleteGame, updateGame, fetchGamePlayers, fetchGameDetails } from "@/api/gamesApi";
+import {
+  fetchGames,
+  createGame,
+  deleteGame,
+  updateGame,
+  fetchGamePlayers,
+  fetchGameDetails,
+  manageGame,
+  fetchCurrentPlayers,
+} from "@/api/gamesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
@@ -12,11 +21,10 @@ export const useGames = (enabled = true) => {
   });
 };
 
-export const useGameDetails = (gameId, enabled = true) => {
+export const useGameDetails = (gameId) => {
   return useQuery({
     queryKey: ["game", gameId],
     queryFn: () => fetchGameDetails(gameId),
-    enabled,
   });
 };
 
@@ -64,5 +72,19 @@ export const useGamePlayers = (gameId, enabled = true) => {
     queryKey: ["game", gameId, "players"],
     queryFn: () => fetchGamePlayers(gameId),
     enabled,
+  });
+};
+
+export const useCurrentGamePlayers = (gameId, enabled = true) => {
+  return useQuery({
+    queryKey: ["game", gameId, "current_players"],
+    queryFn: () => fetchCurrentPlayers(gameId),
+    enabled,
+  });
+};
+
+export const useManageGame = (gameId) => {
+  return useMutation({
+    mutationFn: (action) => manageGame(gameId, action),
   });
 };
