@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebouncedCallback } from "use-debounce";
-import { useCreatePlayerStat } from "@/hooks/usePlayerStats";
+import { useCreatePlayerStat } from "@/hooks/useStats";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -44,9 +44,8 @@ const backendConfig = mobile
     };
 
 const StatButtons = ({ statTypes }) => {
-  const { playerId, gameId, period, team } = useSelector(
-    (state) => state.playerStat
-  );
+  const { playerId, team } = useSelector((state) => state.playerStat);
+  const { game_id, current_period } = useSelector((state) => state.game);
   const { mutate: createPlayerStat, isPending: isCreatingStat } = useCreatePlayerStat();
   const dispatch = useDispatch();
 
@@ -59,7 +58,7 @@ const StatButtons = ({ statTypes }) => {
   const handleStatRecord = (statId, point_value) => {
     if (point_value > 0) {
       if (team === TEAM_SIDES.HOME_TEAM) {
-        console.log(point_value)
+        console.log(point_value);
         dispatch(incrementHomeScore(point_value));
       }
 
@@ -70,8 +69,8 @@ const StatButtons = ({ statTypes }) => {
 
     debouncedStat({
       player: playerId,
-      game: gameId,
-      period: period,
+      game: game_id,
+      period: current_period,
       stat_type: statId,
     });
   };
@@ -138,12 +137,12 @@ const StatButtons = ({ statTypes }) => {
   useEffect(() => {
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
-  
+
     setVH();
-    window.addEventListener('resize', setVH);
-    return () => window.removeEventListener('resize', setVH);
+    window.addEventListener("resize", setVH);
+    return () => window.removeEventListener("resize", setVH);
   }, []);
 
   return (

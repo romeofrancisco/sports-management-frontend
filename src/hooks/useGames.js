@@ -86,5 +86,8 @@ export const useCurrentGamePlayers = (gameId, enabled = true) => {
 export const useManageGame = (gameId) => {
   return useMutation({
     mutationFn: (action) => manageGame(gameId, action),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["game", gameId])
+    }
   });
 };

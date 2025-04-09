@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const DataTable = ({ columns, data, showPagination = true }) => {
+const DataTable = ({ columns, data, showPagination = true, className="" }) => {
   const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
@@ -32,7 +32,7 @@ const DataTable = ({ columns, data, showPagination = true }) => {
   return (
     <div>
       <div className="rounded-md border mt-2">
-        <Table className="text-[0.7rem] md:text-sm">
+        <Table className={`${className}`}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

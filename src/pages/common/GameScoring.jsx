@@ -5,11 +5,11 @@ import Loading from "@/components/common/Loading";
 import PageError from "../PageError";
 import ScoreBoard from "./components/ScoreBoard";
 import TeamSide from "./components/TeamSide";
-import StatButtons from "./components/StatButtons";
-import { useRecordableStats } from "@/hooks/useSports";
+import StatButtons from "./components/StatButtons/StatButtons";
+import { useRecordableStats, useSportDetails } from "@/hooks/useSports";
 import { useGamePlayers, useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
 import { setGameDetails } from "@/store/slices/gameSlice";
-import { setGame, setPeriod } from "@/store/slices/playerStatSlice";
+import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
 import RequireLandscape from "./components/RequireLandscape";
 
@@ -23,19 +23,24 @@ const GameScoring = () => {
   const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(id);
   const { data: players, isLoading: isPlayersLoading, isError: isPlayersError } = useGamePlayers(id);
   const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(id);
+  const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
 
   // Unified loading/error states
-  const isLoading = isGameLoading ||isStatTypesLoading ||isPlayersLoading || isCurrentPlayersLoading;
-  const isError = isGameError || isStatTypesError || isPlayersError || isCurrentPlayersError;
+  const isLoading = isGameLoading ||isStatTypesLoading ||isPlayersLoading || isCurrentPlayersLoading || isSportLoading
+  const isError = isGameError || isStatTypesError || isPlayersError || isCurrentPlayersError || isSportError;
 
   // Store game in Redux on load
   useEffect(() => {
     if (game) {
       dispatch(setGameDetails(game));
-      dispatch(setGame(id));
-      dispatch(setPeriod(game.current_period));
     }
   }, [game, dispatch]);
+
+  useEffect(() => {
+    if (sport) {
+      dispatch(setSport(sport))
+    }
+  }, [sport, dispatch])
 
   // Orientation detection
   useEffect(() => {

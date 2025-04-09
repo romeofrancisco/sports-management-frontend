@@ -1,104 +1,161 @@
-import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import React, { useMemo } from "react";
+import DataTable from "@/components/common/DataTable";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
 
-const PlayerStatsSummaryTable = ({ players }) => {
-  // Collect all stat keys from both base and calculated stats
-  const allStatKeys = [
-    ...new Set(
-      players.flatMap((player) => [
-        ...Object.keys(player.total_stats.base_stats),
-        ...Object.keys(player.total_stats.calculated_stats),
-      ])
-    ),
-  ];
-
-  // Group keys by stat prefix
-  const statGroups = allStatKeys.reduce((groups, key) => {
+// Helper to calculate total points
+const addTotalPoints = (players) =>
+  players.map((player) => ({
+    ...player,
+    total_points: player.periods.reduce((sum, p) => sum + p.points, 0),
+  }));
+// Extract all unique stat keys
+const getAllStatKeys = (players) => [
+  ...new Set(
+    players.flatMap(({ total_stats }) => [
+      ...Object.keys(total_stats.base_stats),
+      ...Object.keys(total_stats.calculated_stats),
+    ])
+  ),
+];
+// Group stats by prefix and mark composites
+const groupStatKeys = (keys) =>
+  keys.reduce((acc, key) => {
     const match = key.match(/^(.*?)(?:_(MA|AT|PC))?$/);
     const prefix = match[1];
-
-    if (!groups[prefix]) {
-      groups[prefix] = {
-        keys: [],
-        isComposite: false,
-      };
+    if (!acc[prefix]) {
+      acc[prefix] = { keys: [], isComposite: false };
     }
-
-    groups[prefix].keys.push(key);
-
+    acc[prefix].keys.push(key);
     if (/_MA$|_AT$|_PC$/.test(key)) {
-      groups[prefix].isComposite = true;
+      acc[prefix].isComposite = true;
     }
-
-    return groups;
+    return acc;
   }, {});
+// Sort groups: non-composites first
+const sortGroups = (groups) =>
+  Object.entries(groups).sort(([, a], [, b]) =>
+    a.isComposite === b.isComposite ? 0 : a.isComposite ? 1 : -1
+  );
 
-  const sortedGroupEntries = Object.entries(statGroups).sort(([, a], [, b]) => {
-    if (a.isComposite === b.isComposite) return 0;
-    return a.isComposite ? 1 : -1;
-  });
+const PlayerStatsSummaryTable = ({ players }) => {
+  const playersWithTotalPoints = useMemo(
+    () => addTotalPoints(players),
+    [players]
+  );
+
+  const allStatKeys = useMemo(
+    () => getAllStatKeys(playersWithTotalPoints),
+    [playersWithTotalPoints]
+  );
+
+  const statGroups = useMemo(() => groupStatKeys(allStatKeys), [allStatKeys]);
+
+  const sortedGroupEntries = useMemo(
+    () => sortGroups(statGroups),
+    [statGroups]
+  );
+
+  const columns = useMemo(() => {
+    const baseColumns = [
+      {
+        accessorKey: "player",
+        header: () => <span className="ps-4">Player</span>,
+        cell: ({ row }) => {
+          const { jersey_number, name } = row.original;
+          return (
+            <div className="grid grid-cols-[1rem_auto] gap-2 ps-1">
+              <span className="text-muted-foreground text-end">
+                {jersey_number}
+              </span>
+              <span>{name}</span>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "total_points",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="text-xs"
+            size="xs"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            PTS <ArrowUpDown className="size-3" />
+          </Button>
+        ),
+        cell: ({ row }) => <span className="text-muted-foreground">{row.original.total_points}</span>,
+      },
+    ];
+
+    const statGroupColumns = sortedGroupEntries.flatMap(
+      ([groupName, group]) => {
+        if (group.isComposite) {
+          return [
+            {
+              accessorKey: `${groupName}_composite`,
+              header: groupName,
+              cell: ({ row }) => {
+                const stats = row.original.total_stats.calculated_stats;
+                const made = stats[`${groupName}_MA`] ?? 0;
+                const att = stats[`${groupName}_AT`] ?? 0;
+                return (
+                  <span className="text-muted-foreground">{`${made}/${att}`}</span>
+                );
+              },
+            },
+            {
+              accessorKey: `${groupName}_pct`,
+              header: `${groupName}%`,
+              cell: ({ row }) => {
+                const pc =
+                  row.original.total_stats.calculated_stats[
+                    `${groupName}_PC`
+                  ] ?? 0;
+                return (
+                  <span className="text-muted-foreground">{`${pc.toFixed(
+                    1
+                  )}%`}</span>
+                );
+              },
+            },
+          ];
+        }
+
+        return {
+          id: groupName,
+          accessorFn: ({ total_stats }) =>
+            total_stats.base_stats[groupName] ??
+            total_stats.calculated_stats[groupName] ??
+            0,
+          header: ({ column }) => (
+            <Button
+              variant="ghost"
+              className="text-xs"
+              size="xs"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              {groupName} <ArrowUpDown className="size-3" />
+            </Button>
+          ),
+          cell: ({ getValue }) => <span className="text-muted-foreground">{getValue()}</span>,
+        };
+      }
+    );
+
+    return [...baseColumns, ...statGroupColumns];
+  }, [sortedGroupEntries]);
 
   return (
-    <Table>
-      <TableHeader className="text-[0.5rem] md:text-sm">
-        <TableRow>
-          <TableHead>Player</TableHead>
-          <TableHead>PTS</TableHead>
-          {sortedGroupEntries.map(([groupName, group]) =>
-            group.isComposite ? (
-              <React.Fragment key={groupName}>
-                <TableHead>{groupName}</TableHead>
-                <TableHead>{`${groupName}%`}</TableHead>
-              </React.Fragment>
-            ) : (
-              <TableHead key={groupName}>{groupName}</TableHead>
-            )
-          )}
-        </TableRow>
-      </TableHeader>
-
-      <TableBody className="text-[0.5rem] md:text-sm">
-        {players.map((player) => (
-          <TableRow key={player.id}>
-            <TableCell className="grid grid-cols-[1rem_auto] gap-2 ps-1">
-              <span className="text-muted-foreground text-end">
-                {player.jersey_number}
-              </span>
-              <span>{player.name}</span>
-            </TableCell>
-            <TableCell>{player.total_points}</TableCell>
-
-            {sortedGroupEntries.map(([groupName, group]) => {
-              const base = player.total_stats.base_stats;
-              const calc = player.total_stats.calculated_stats;
-
-              if (group.isComposite) {
-                const made = calc[`${groupName}_MA`] ?? 0;
-                const att = calc[`${groupName}_AT`] ?? 0;
-                const pc = calc[`${groupName}_PC`] ?? 0;
-
-                return (
-                  <React.Fragment key={groupName}>
-                    <TableCell>{`${made}/${att}`}</TableCell>
-                    <TableCell>{`${pc.toFixed(1)}%`}</TableCell>
-                  </React.Fragment>
-                );
-              } else {
-                const value = base[groupName] ?? calc[groupName] ?? 0;
-                return <TableCell key={groupName}>{value}</TableCell>;
-              }
-            })}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <DataTable
+      columns={columns}
+      data={playersWithTotalPoints}
+      showPagination={false}
+      className="text-xs"
+    />
   );
 };
 

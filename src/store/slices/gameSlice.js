@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id: null,
+  game_id: null,
   sport: null,
   league: null,
   season: null,
   home_team: null,
   away_team: null,
   current_period: null,
+  max_period: null,
   home_team_score: 0,
   away_team_score: 0,
 };
@@ -27,8 +28,9 @@ const gameSlice = createSlice({
         home_team_score,
         away_team_score,
         current_period,
+        max_period
       } = action.payload;
-      state.id = id
+      state.game_id = id
       state.sport = sport;
       state.league = league;
       state.season = season;
@@ -37,9 +39,7 @@ const gameSlice = createSlice({
       state.home_team_score = home_team_score;
       state.away_team_score = away_team_score;
       state.current_period = current_period;
-    },
-    incrementPeriod(state) {
-      state.current_period = Number(state.current_period) + 1
+      state.max_period = max_period
     },
     incrementHomeScore(state, action) {
       state.home_team_score += action.payload;
@@ -58,7 +58,6 @@ const gameSlice = createSlice({
 
 export const {
   setGameDetails,
-  incrementPeriod,
   incrementHomeScore,
   decrementHomeScore,
   incrementAwayScore,

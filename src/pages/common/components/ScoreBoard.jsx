@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import formatPeriod from "@/utils/formatPeriod"
 
 const ScoreBoard = () => {
   // Destructure state values from Redux store
@@ -10,6 +11,7 @@ const ScoreBoard = () => {
     home_team,
     away_team,
   } = useSelector((state) => state.game);
+  const { max_period } = useSelector((state) => state.sport);
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] place-items-center mb-2 md:mb-5">
@@ -38,7 +40,7 @@ const ScoreBoard = () => {
         <div>
           <div className="flex flex-col h-full justify-center text-center">
             <p className="text-sm md:text-lg lg:text-xl">Period</p>
-            <span className="md:text-xl">{current_period}</span>
+            <span className="md:text-xl">{formatPeriod(current_period, max_period)}</span>
           </div>
         </div>
 

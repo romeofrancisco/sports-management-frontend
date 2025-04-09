@@ -7,33 +7,43 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { usePlayerSummaryStats } from "@/hooks/usePlayerStats";
+import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
 import Loading from "../common/Loading";
 import PlayerStatsSummaryTable from "@/pages/common/components/PlayerStatsSummaryTable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";
+import TeamStatsSummaryTable from "@/pages/common/components/TeamStatsSummaryTable";
+import { useTeamStatsSummary } from "@/hooks/useStats";
+import { Separator } from "../ui/separator";
+
 
 const SummaryStatsModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState(TEAM_SIDES.HOME_TEAM);
-  const { id, home_team, away_team } = useSelector((state) => state.game);
+  const { game_id, home_team, away_team } = useSelector((state) => state.game);
 
   const {
     data: playerStats,
     isLoading: isPlayerStatsLoading,
-    refetch,
-  } = usePlayerSummaryStats(id, activeTab, isOpen);
+    refetch: refetchPlayerStats,
+  } = usePlayerStatsSummary(game_id, activeTab, isOpen);
+  const {
+    data: teamStats,
+    isLoading: isTeamStatsLoading,
+    refetch: refetchTeamStats,
+  } = useTeamStatsSummary(game_id, isOpen);
 
   useEffect(() => {
     if (isOpen) {
       setActiveTab(TEAM_SIDES.HOME_TEAM);
-      refetch();
+      refetchPlayerStats();
+      refetchTeamStats();
     }
   }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
-      refetch();
+      refetchPlayerStats();
     }
   }, [activeTab]);
 
@@ -41,13 +51,13 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[60rem]">
+      <DialogContent className="sm:max-w-[80rem]">
         <DialogHeader>
           <DialogTitle>Summary Stats</DialogTitle>
           <DialogDescription />
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] w-full overflow-x-auto min-h-[15rem]">
+        <ScrollArea className="max-h-[70vh] w-full overflow-x-auto lg:overflow-x-hidden min-h-[15rem]">
           <Tabs
             value={activeTab}
             className="min-w-[10rem]"
@@ -73,7 +83,11 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
                 <TabsContent value={TEAM_SIDES.AWAY_TEAM}>
                   <PlayerStatsSummaryTable players={playerStats} />
                 </TabsContent>
-                <TabsContent value="team_stats">Team Stats</TabsContent>
+                <TabsContent value="team_stats">
+                  <TeamStatsSummaryTable team={teamStats.home_team} />
+                  <Separator className="my-5"/>
+                  <TeamStatsSummaryTable team={teamStats.away_team} />
+                </TabsContent>
               </>
             )}
           </Tabs>

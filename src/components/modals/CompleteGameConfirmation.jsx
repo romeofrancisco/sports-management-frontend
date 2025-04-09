@@ -12,24 +12,34 @@ import {
 import { useManageGame } from "@/hooks/useGames";
 import { useSelector } from "react-redux";
 import { GAME_ACTIONS } from "@/constants/game";
+import { useNavigate } from "react-router";
 
-const NextPeriodConfirmation = ({ isOpen, onClose }) => {
+const CompleteGameConfirmation = ({ isOpen, onClose }) => {
   const { game_id } = useSelector((state) => state.game);
-  const { mutate: nextPeriod } = useManageGame(game_id);
+  const { mutate: completeGame } = useManageGame(game_id);
+  const navigate = useNavigate()
+
+  const handleCompleteGame = () => {
+    completeGame(GAME_ACTIONS.COMPLETE, {
+        onSuccess: () => {
+            navigate("/games")
+        }
+    })
+  }
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Proceed to the Next Period?</AlertDialogTitle>
+          <AlertDialogTitle>Finish the game?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to proceed to the next period?
+            Are you sure you want to finish the game?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => nextPeriod(GAME_ACTIONS.NEXT_PERIOD)}
+            onClick={handleCompleteGame}
           >
             Confirm
           </AlertDialogAction>
@@ -39,4 +49,4 @@ const NextPeriodConfirmation = ({ isOpen, onClose }) => {
   );
 };
 
-export default NextPeriodConfirmation;
+export default CompleteGameConfirmation;
