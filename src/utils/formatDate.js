@@ -11,6 +11,7 @@ export const formatDate = (dateString, locale = "en-PH") => {
 };
 
 export const formatShortDate = (dateString, locale = "en-PH") => {
+  if (!dateString) return "TBA"
   const date = new Date(dateString);
   return date.toLocaleString(locale, {
     month: "short",
@@ -19,8 +20,9 @@ export const formatShortDate = (dateString, locale = "en-PH") => {
   });
 };
 
-export const formatTime = (dateString, locale = "en-PH") => {
-  const date = new Date(dateString);
+export const formatTime = (time, locale = "en-PH") => {
+  if (!time) return "--"
+  const date = new Date(time);
   return date.toLocaleString(locale, {
     hour: "2-digit",
     minute: "2-digit",

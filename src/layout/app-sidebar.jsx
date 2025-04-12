@@ -11,14 +11,20 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { useNavItems } from "@/hooks/useNavItems";
+import { adminManagement, adminMain } from "@/constants/navItems";
 import logo from "@/assets/perpetual_logo.png";
+import AdminMainNav from "./admin-main-nav";
 
 export function AppSidebar({ ...props }) {
-  const nav = useNavItems();
+  const management = adminManagement();
+  const main = adminMain();
+
+  // Check if the path matches "/games/{anyNumber}"
+  const path = window.location.pathname;
+  const isScoring = /\/games\/(\d+)/.exec(path); // Matches "/games/{id}"
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible={isScoring ? "offcanvas" : "icon"} {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -40,8 +46,9 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <AdminMainNav items={main} />
       <SidebarContent>
-        <AdminManagementNav items={nav} />
+        <AdminManagementNav items={management} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

@@ -8,10 +8,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import UpdatePlayerForm from "../forms/UpdatePlayerForm";
-import { useSports } from "@/hooks/queries/useSports";
-import { useTeams } from "@/hooks/queries/useTeams";
-import { usePositions } from "@/hooks/queries/usePositions";
-import { Button } from "../ui/button";
+import { useSports } from "@/hooks/useSports";
+import { useTeams } from "@/hooks/useTeams";
+import { usePositions } from "@/hooks/useSports";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import Loading from "../common/Loading";

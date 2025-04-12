@@ -2,6 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import gameReducer from "./slices/gameSlice"
+import playerStatReducer from "./slices/playerStatSlice"
+import sportReducer from "./slices/sportSlice"
 
 const persistConfig = {
   key: "auth",
@@ -14,11 +17,14 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    game: gameReducer,
+    playerStat: playerStatReducer,
+    sport: sportReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"], // Ignore redux-persist actions
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE", "persist/PURGE" ], // Ignore redux-persist actions
         ignoredPaths: ["register"], // Ignore problematic path
       },
     }),

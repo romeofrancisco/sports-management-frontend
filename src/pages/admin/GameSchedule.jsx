@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import GameScheduleHeader from "./components/game/GameScheduleHeader";
-import { useGames } from "@/hooks/queries/game/useGames";
+import { useGames } from "@/hooks/useGames";
 import Loading from "@/components/common/Loading";
 import { GameTable } from "./components/game/GameTable";
 import FilterGameStatus from "./components/game/FilterGameStatus";

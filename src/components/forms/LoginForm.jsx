@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useLogin } from "@/hooks/mutations/auth/useLogin";
+import { useLogin } from "@/hooks/useAuth";
+import logo from "@/assets/perpetual_logo.png"
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -64,7 +65,7 @@ const LoginForm = () => {
           </div>
         </form>
         <div className="bg-primary hidden md:block content-center place-items-center">
-          <img src="perpetual_logo.png" alt="Image" />
+          <img src={logo} alt="Image" />
         </div>
       </CardContent>
     </Card>

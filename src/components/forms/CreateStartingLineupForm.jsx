@@ -14,7 +14,9 @@ import {
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { TEAM_SIDES } from "@/constants/game";
-import { useCreateStartingLineup } from "@/hooks/mutations/game/useCreateStartingLineup";
+import { useCreateStartingLineup } from "@/hooks/useStartingLineup";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const TeamLineupSection = ({
   team,
@@ -143,11 +145,16 @@ const PositionSelect = ({
   );
 };
 
-const CreateStartingLineupForm = ({ teams, game, positions }) => {
-  const {mutate: createLineup} = useCreateStartingLineup(game.id)
-  const { control, handleSubmit, watch, formState: { errors } } = useForm({
+const CreateStartingLineupForm = ({ teams, game, positions, onClose }) => {
+  const { mutate: createLineup, isPending } = useCreateStartingLineup(game.id);
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      home_team: positions?.map((pos) => ({ position: pos.id,player: null })),
+      home_team: positions?.map((pos) => ({ position: pos.id, player: null })),
       away_team: positions?.map((pos) => ({ position: pos.id, player: null })),
     },
   });
@@ -155,23 +162,26 @@ const CreateStartingLineupForm = ({ teams, game, positions }) => {
   const formValues = watch();
 
   const onSubmit = (data) => {
-
     const formatTeamData = (teamPositions, selectedPlayers) =>
       teamPositions.map((pos, index) => ({
         position: pos.position, // Get position from default values
         player: Number(selectedPlayers[index]?.player), // Get player from selected values
       }));
-  
+
     const formattedData = {
       home_team: formatTeamData(data.home_team, data.home_positions),
       away_team: formatTeamData(data.away_team, data.away_positions),
     };
-  
+
     createLineup(formattedData, {
       onSuccess: () => {
-        onclose()
-      }
-    })
+        onClose();
+        toast.success("Added starting lineup", {
+          description: "You can now start the game",
+          richColors: true,
+        });
+      },
+    });
   };
 
   return (
@@ -198,10 +208,15 @@ const CreateStartingLineupForm = ({ teams, game, positions }) => {
         errors={errors}
       />
 
-      <Button type="submit" className="btn btn-primary mt-3">
-        {game.lineup_status.home_ready && game.lineup_status.away_ready
-          ? "Update Lineups"
-          : "Submit Lineups"}
+      <Button type="submit" className="mt-4" disabled={isPending}>
+        {isPending ? (
+          <>
+            <Loader2 className="animate-spin" />
+            Please wait
+          </>
+        ) : (
+          "Submit Lineup"
+        )}
       </Button>
     </form>
   );

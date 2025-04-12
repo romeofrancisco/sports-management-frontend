@@ -23,6 +23,9 @@ import { formatShortDate, formatTime } from "@/utils/formatDate";
 import UpdateGameModal from "@/components/modals/UpdateGameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import CreateStartingLineupModal from "@/components/modals/CreateStartingLineupModal";
+import UpdateStartingLineupModal from "@/components/modals/UpdateStartingLineupModal";
+import { GAME_STATUS } from "@/constants/game";
+import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 
 export const GameTable = ({ games }) => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -37,9 +40,19 @@ export const GameTable = ({ games }) => {
     closeModal: closeUpdateModal,
   } = useModal();
   const {
-    isOpen: isStartOpen,
-    openModal: openStartModal,
-    closeModal: closeStartModal,
+    isOpen: isRegisterLineupOpen,
+    openModal: openRegisterLineupModal,
+    closeModal: closeRegisterLineupModal,
+  } = useModal();
+  const {
+    isOpen: isUpdateLineupOpen,
+    openModal: openUpdateLineupModal,
+    closeModal: closeUpdateLineupModal,
+  } = useModal();
+  const {
+    isOpen: isStartGameOpen,
+    openModal: openStartGameModal,
+    closeModal: closeStartGameModal,
   } = useModal();
 
   const navigate = useNavigate();
@@ -54,9 +67,19 @@ export const GameTable = ({ games }) => {
     openDeleteModal();
   };
 
+  const handleRegisterStartingLineup = (game) => {
+    setSelectedGame(game);
+    openRegisterLineupModal();
+  };
+
+  const handleUpdateStartingLineup = (game) => {
+    setSelectedGame(game);
+    openUpdateLineupModal();
+  };
+
   const handleStartGame = (game) => {
     setSelectedGame(game);
-    openStartModal();
+    openStartGameModal();
   };
 
   const columns = [
@@ -68,14 +91,15 @@ export const GameTable = ({ games }) => {
           {formatShortDate(row.original.date)}
         </span>
       ),
+      size: 100
     },
     {
       id: "teams",
-      header: "Teams",
+      header: () => <h1 className="ms-10">Teams</h1>,
       cell: ({ row }) => {
         const { home_team, away_team } = row.original;
         return (
-          <div className="grid grid-cols-[auto_auto_auto_auto_auto] items-center gap-4 font-medium text-center max-w-[25rem]">
+          <div className="grid grid-cols-5 items-center gap-4 font-medium text-center max-w-[25rem]">
             <Avatar className="place-self-end">
               <AvatarImage src={home_team.logo} />
             </Avatar>
@@ -88,21 +112,25 @@ export const GameTable = ({ games }) => {
           </div>
         );
       },
+      size: 300
     },
     {
       id: "location",
       header: "Location",
-      cell: ({ row }) => row.original.location,
+      cell: ({ row }) => row.original.location ? row.original.location : "TBA",
+      size: 300
     },
     {
       id: "time",
-      header: "Time",
-      cell: ({ row }) => formatTime(row.original.date),
+      header: () => "Time",
+      cell: ({ row }) =>  formatTime(row.original.date),
+      size: 100,
     },
     {
       id: "actions",
       cell: ({ row }) => {
         const game = row.original;
+        const lineup = row.original.lineup_status;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -114,7 +142,29 @@ export const GameTable = ({ games }) => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleStartGame(game)}>
+              {game.status !== GAME_STATUS.IN_PROGRESS && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => handleRegisterStartingLineup(game)}
+                    disabled={lineup.home_ready && lineup.away_ready}
+                  >
+                    <ClipboardPenLine />
+                    Register Starting Lineup
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleUpdateStartingLineup(game)}
+                    disabled={!lineup.home_ready && !lineup.away_ready}
+                  >
+                    <ClipboardPenLine />
+                    Update Starting Lineup
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <DropdownMenuItem
+                onClick={() => handleStartGame(game)}
+                disabled={!lineup.home_ready && !lineup.away_ready}
+              >
                 <ClipboardPenLine />
                 Start Game
               </DropdownMenuItem>
@@ -133,6 +183,7 @@ export const GameTable = ({ games }) => {
           </DropdownMenu>
         );
       },
+      size: 40
     },
   ];
 
@@ -150,8 +201,18 @@ export const GameTable = ({ games }) => {
         game={selectedGame}
       />
       <CreateStartingLineupModal
-        isOpen={isStartOpen}
-        onClose={closeStartModal}
+        isOpen={isRegisterLineupOpen}
+        onClose={closeRegisterLineupModal}
+        game={selectedGame}
+      />
+      <UpdateStartingLineupModal
+        isOpen={isUpdateLineupOpen}
+        onClose={closeUpdateLineupModal}
+        game={selectedGame}
+      />
+      <StartGameConfirmation
+        isOpen={isStartGameOpen}
+        onClose={closeStartGameModal}
         game={selectedGame}
       />
     </>

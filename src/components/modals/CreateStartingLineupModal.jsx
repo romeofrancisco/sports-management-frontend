@@ -8,15 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { ScrollArea } from "../ui/scroll-area";
-import { useGamePlayers } from "@/hooks/queries/game/useGamePlayers";
 import Loading from "../common/Loading";
 import CreateStartingLineupForm from "../forms/CreateStartingLineupForm";
-import { useSportDetails } from "@/hooks/queries/useSportDetails";
-import { useSportPositions } from "@/hooks/queries/useSportPositions";
+import { useSportPositions } from "@/hooks/useSports";
+import { useGamePlayers } from "@/hooks/useGames";
 
 const CreateStartingLineupModal = ({ isOpen, onClose, game }) => {
   const { data: gamePlayers, isLoading: isGamePlayersLoading } = useGamePlayers(game?.id, isOpen);
-  const { data: positions, isLoading: isPositionsLoading } = useSportPositions(game?.sport, isOpen)
+  const { data: positions, isLoading: isPositionsLoading } = useSportPositions(game?.sport_slug, isOpen)
+
 
   const isLoading = isGamePlayersLoading || isPositionsLoading
 

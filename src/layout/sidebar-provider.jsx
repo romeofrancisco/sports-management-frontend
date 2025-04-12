@@ -5,17 +5,26 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
-import { useFetchUser } from "@/hooks/queries/useFetchUser";
+import { useFetchUser } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
 import BreadCrumb from "./bread-crumb";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { setNavigate } from "@/utils/navigate";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 
 export default function Layout() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { isLoading } = useFetchUser(); // Ensure user data is fetched before checking auth state
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setNavigate(navigate);
+  }, [navigate]);
 
   if (isLoading)
     return (
@@ -29,15 +38,17 @@ export default function Layout() {
     <SidebarProvider className="relative">
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex h-auto shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <BreadCrumb />
           </div>
-          <ThemeToggle />
+          <div>
+            <ThemeToggle/>
+          </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-5 pt-0">
+        <div className="flex flex-1 flex-col gap-4 p-3 px-5 pt-0">
           <Outlet />
         </div>
       </SidebarInset>

@@ -15,7 +15,7 @@ import MultiSelect from "../common/MultiSelect";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
-import { useUpdateTeam } from "@/hooks/mutations/team/useUpdateTeam";
+import { useUpdateTeam } from "@/hooks/useTeams";
 
 const UpdateTeamForm = ({ coaches, sports, onClose, team }) => {
   const { mutate: updateTeam, isPending } = useUpdateTeam(team.slug);
@@ -74,7 +74,7 @@ const UpdateTeamForm = ({ coaches, sports, onClose, team }) => {
           name="sport"
           control={control}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value} disabled>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select sport" />
               </SelectTrigger>
