@@ -87,7 +87,12 @@ export const useManageGame = (gameId) => {
   return useMutation({
     mutationFn: (action) => manageGame(gameId, action),
     onSuccess: () => {
-      queryClient.invalidateQueries(["game", gameId])
-    }
+      queryClient.invalidateQueries(["game", gameId]);
+    },
+    onError: ({ response }) => {
+      toast.info(response.data.error, {
+        richColors: true
+      })
+    },
   });
 };

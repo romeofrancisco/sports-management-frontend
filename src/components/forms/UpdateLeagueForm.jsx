@@ -11,73 +11,13 @@ import {
   SelectGroup,
   SelectItem,
 } from "../ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Checkbox } from "../ui/checkbox";
 import { Avatar } from "../ui/avatar";
 import { AvatarImage } from "../ui/avatar";
-import { useCreateLeague, useUpdateLeague } from "@/hooks/useLeagues";
+import { useUpdateLeague } from "@/hooks/useLeagues";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Separator } from "../ui/separator";
 import { convertToFormData } from "@/utils/convertToFormData";
-
-// DatePicker Component
-const DatePicker = ({ label, control, name, error }) => (
-  <div>
-    <Label className="text-sm text-left">{label}</Label>
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, value } }) => (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-xs text-left font-normal md:text-sm",
-                !value && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon />
-              {value ? (
-                format(value, "PPP")
-              ) : (
-                <span>Pick {label.toLowerCase()}</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={value ? new Date(value + "T00:00:00") : null}
-              onSelect={(date) => {
-                const localDate = new Date(
-                  date.getFullYear(),
-                  date.getMonth(),
-                  date.getDate()
-                );
-                const formatted = format(localDate, "yyyy-MM-dd");
-                onChange(formatted);
-              }}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      )}
-    />
-    {error && (
-      <p className="text-xs text-left text-destructive">{error.message}</p>
-    )}
-  </div>
-);
 
 // TeamSelection Component
 const TeamSelection = ({
@@ -129,9 +69,7 @@ const UpdateLeagueForm = ({ sports, teams, onClose, league }) => {
   } = useForm({
     defaultValues: {
         name: league.name,
-        sport: String(league.sport),
-        start_date: league.start_date,
-        end_date: league.end_date,
+        sport: String(league.sport.id),
         teams: league.teams.map(team => team.id),
     },
   });
@@ -224,24 +162,6 @@ const UpdateLeagueForm = ({ sports, teams, onClose, league }) => {
             {errors.sport.message}
           </p>
         )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        {/* Start Date Picker */}
-        <DatePicker
-          label="Start Date"
-          control={control}
-          name="start_date"
-          error={errors.start_date}
-        />
-
-        {/* End Date Picker */}
-        <DatePicker
-          label="End Date"
-          control={control}
-          name="end_date"
-          error={errors.end_date}
-        />
       </div>
 
       {/* Teams Selection */}

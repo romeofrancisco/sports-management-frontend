@@ -1,4 +1,13 @@
-import { Volleyball, Users, CalendarCog, User, Trophy, Gauge } from "lucide-react";
+import {
+  Volleyball,
+  ClipboardList,
+  CalendarCog,
+  Users,
+  User,
+  Trophy,
+  Gauge,
+  Medal,
+} from "lucide-react";
 
 export const adminMain = () => {
   return [
@@ -7,8 +16,8 @@ export const adminMain = () => {
       url: "/",
       icon: Gauge,
     },
-  ]
-}
+  ];
+};
 
 export const adminManagement = () => {
   return [
@@ -30,12 +39,17 @@ export const adminManagement = () => {
     {
       title: "Coaches",
       url: "/coaches",
-      icon: User
+      icon: ClipboardList,
     },
     {
       title: "Leagues",
       url: "/leagues",
-      icon: Trophy
+      icon: Trophy,
+    },
+    {
+      title: "Tournaments",
+      url: "/tournaments",
+      icon: Medal,
     },
     {
       title: "Game Schedules",

@@ -47,7 +47,7 @@ const TeamStatsSummaryTable = ({ team }) => {
 
   const allStatKeys = useMemo(() => {
     const sample = periodsWithTotal[0] || {};
-    return Object.keys(sample).filter((key) => key !== "period");
+    return Object.keys(sample).filter((key) => key !== "period" && key !== "points");
   }, [periodsWithTotal]);
 
   const groupedStats = useMemo(() => {
@@ -84,10 +84,11 @@ const TeamStatsSummaryTable = ({ team }) => {
         const value = getValue();
         return (
           <span className="font-medium text-muted-foreground">
-            {typeof value === "number" ? value : "–"}
+            {value}
           </span>
         );
       },
+      size: 50
     };
 
     const statColumns = groupedStats.flatMap(([prefix, group]) => {
@@ -109,6 +110,7 @@ const TeamStatsSummaryTable = ({ team }) => {
                 </span>
               );
             },
+            size: 50
           },
           {
             id: `${prefix}_pct`,
@@ -122,6 +124,7 @@ const TeamStatsSummaryTable = ({ team }) => {
                 {getValue().toFixed(1)}%
               </span>
             ),
+            size: 50
           },
         ];
       }
@@ -148,6 +151,7 @@ const TeamStatsSummaryTable = ({ team }) => {
             </span>
           );
         },
+        size: 50
       };
     });
 
@@ -166,6 +170,7 @@ const TeamStatsSummaryTable = ({ team }) => {
       />
     </>
   );
+  
 };
 
 export default TeamStatsSummaryTable;

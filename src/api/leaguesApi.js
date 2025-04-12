@@ -18,6 +18,15 @@ export const fetchLeagues = async () => {
   }
 };
 
+export const fetchLeagueDetails = async (leagueId) => {
+  try {
+    const { data } = await api.get(`leagues/${leagueId}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateLeague = async (leagueId, leagueData) => {
   try {
     const { data } = await api.patch(`leagues/${leagueId}/`, leagueData);

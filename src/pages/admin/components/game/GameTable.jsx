@@ -91,14 +91,15 @@ export const GameTable = ({ games }) => {
           {formatShortDate(row.original.date)}
         </span>
       ),
+      size: 100
     },
     {
       id: "teams",
-      header: "Teams",
+      header: () => <h1 className="ms-10">Teams</h1>,
       cell: ({ row }) => {
         const { home_team, away_team } = row.original;
         return (
-          <div className="grid grid-cols-[auto_auto_auto_auto_auto] items-center gap-4 font-medium text-center max-w-[25rem]">
+          <div className="grid grid-cols-5 items-center gap-4 font-medium text-center max-w-[25rem]">
             <Avatar className="place-self-end">
               <AvatarImage src={home_team.logo} />
             </Avatar>
@@ -111,16 +112,19 @@ export const GameTable = ({ games }) => {
           </div>
         );
       },
+      size: 300
     },
     {
       id: "location",
       header: "Location",
-      cell: ({ row }) => row.original.location,
+      cell: ({ row }) => row.original.location ? row.original.location : "TBA",
+      size: 300
     },
     {
       id: "time",
-      header: "Time",
-      cell: ({ row }) => formatTime(row.original.date),
+      header: () => "Time",
+      cell: ({ row }) =>  formatTime(row.original.date),
+      size: 100,
     },
     {
       id: "actions",
@@ -179,6 +183,7 @@ export const GameTable = ({ games }) => {
           </DropdownMenu>
         );
       },
+      size: 40
     },
   ];
 

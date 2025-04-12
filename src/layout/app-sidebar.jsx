@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { adminManagement, adminMain } from "@/hooks/useNavItems";
+import { adminManagement, adminMain } from "@/constants/navItems";
 import logo from "@/assets/perpetual_logo.png";
 import AdminMainNav from "./admin-main-nav";
 

@@ -4,6 +4,7 @@ import {
   createLeague,
   updateLeague,
   deleteLeague,
+  fetchLeagueDetails,
 } from "@/api/leaguesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -12,6 +13,14 @@ export const useLeagues = (enabled = true) => {
   return useQuery({
     queryKey: ["leagues"],
     queryFn: fetchLeagues,
+    enabled,
+  });
+};
+
+export const useLeagueDetails = (leagueId, enabled = true) => {
+  return useQuery({
+    queryKey: ["league", leagueId],
+    queryFn: () => fetchLeagueDetails(leagueId),
     enabled,
   });
 };

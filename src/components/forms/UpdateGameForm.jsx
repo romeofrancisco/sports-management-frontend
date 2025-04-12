@@ -28,7 +28,7 @@ const UpdateGameForm = ({ sports, teams, onClose, game }) => {
       sport: String(sport),
       home_team_id: String(home_team.id),
       away_team_id: String(away_team.id),
-      date: new Date(date),
+      date: date ? new Date(date) : null,
       location: location,
     },
   });

@@ -4,7 +4,7 @@ import DataTable from "@/components/common/DataTable";
 import {
     Trash,
     MoreHorizontal,
-    ClipboardPenLine,
+    Settings,
     SquarePen,
   } from "lucide-react";
 import {
@@ -19,12 +19,15 @@ import { Button } from "@/components/ui/button";
 import { formatShortDate } from "@/utils/formatDate";
 import DeleteLeagueModal from "@/components/modals/DeleteLeagueModal";
 import UpdateLeagueModal from "@/components/modals/UpdateLeagueModal";
+import { useNavigate } from "react-router";
 
 const LeaguesTable = ({ leagues }) => {
   const [selectedLeague, setSelectedLeague] = useState(null);
   const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
   const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
   const { isOpen: isStartOpen, openModal: openStartModal, closeModal: closeStartModal } = useModal();
+
+  const navigate = useNavigate()
 
 
   const handleDeleteLeague = (league) => {
@@ -44,16 +47,6 @@ const LeaguesTable = ({ leagues }) => {
         cell: ({ row }) => row.original.name
     },
     {
-        id: "start_date",
-        header: "Start Date",
-        cell: ({ row }) => formatShortDate(row.original.start_date)
-    },
-    {
-        id: "end_date",
-        header: "End Date",
-        cell: ({ row }) => formatShortDate(row.original.end_date)
-    },
-    {
         id: "actions",
         cell: ({ row }) => {
             const league = row.original;
@@ -68,9 +61,9 @@ const LeaguesTable = ({ leagues }) => {
                 <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleStartLeague(league)}>
-                    <ClipboardPenLine />
-                    Start League
+                <DropdownMenuItem onClick={() => navigate(`/leagues/${league.id}`)}>
+                    <Settings />
+                    Manage League
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleUpdateLeague(league)}>
                     <SquarePen />

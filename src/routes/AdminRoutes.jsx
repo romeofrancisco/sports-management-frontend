@@ -10,6 +10,9 @@ import GameScoring from "@/pages/common/GameScoring";
 import LeaguesList from "@/pages/admin/LeaguesList";
 import CoachList from "@/pages/admin/CoachList";
 import CoachDetails from "@/pages/admin/CoachDetails";
+import LeagueDetails from "@/pages/admin/LeagueDetails";
+import SeasonBracket from "@/pages/admin/SeasonBracket";
+import TournamentsList from "@/pages/admin/TournamentsList";
 
 export const adminRoutes = [
   {
@@ -51,6 +54,18 @@ export const adminRoutes = [
   {
     path: "/leagues",
     element: <LeaguesList />,
+  },
+  {
+    path: "/leagues/:league",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/bracket/:season",
+    element: <SeasonBracket/>,
+  },
+  {
+    path: "/tournaments",
+    element: <TournamentsList/>
   },
   {
     path: "/games",

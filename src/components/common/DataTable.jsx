@@ -16,7 +16,12 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const DataTable = ({ columns, data, showPagination = true, className="" }) => {
+const DataTable = ({
+  columns,
+  data,
+  showPagination = true,
+  className = "",
+}) => {
   const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
@@ -37,7 +42,13 @@ const DataTable = ({ columns, data, showPagination = true, className="" }) => {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      minWidth: header.column.columnDef.size,
+                      maxWidth: header.column.columnDef.size,
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -54,7 +65,13 @@ const DataTable = ({ columns, data, showPagination = true, className="" }) => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        minWidth: cell.column.columnDef.size,
+                        maxWidth: cell.column.columnDef.size,
+                      }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -1,11 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { createSeason, deleteSeason, fetchSeasons, updateSeason } from "@/api/seasonsApi";
+import { createSeason, deleteSeason, fetchSeasons, updateSeason, fetchSeasonDetails, fetchSeasonStandings } from "@/api/seasonsApi";
 
 export const useSeasons = (leagueId, enabled = true) => {
   return useQuery({
     queryKey: ["seasons", leagueId],
     queryFn: () => fetchSeasons(leagueId),
     enabled,
+  });
+};
+
+export const useSeasonDetails = (leagueId, seasonId) => {
+  return useQuery({
+    queryKey: ["seasons", seasonId, leagueId],
+    queryFn: () => fetchSeasonDetails(leagueId, seasonId),
+    enabled: !!leagueId && !!seasonId,
+  });
+};
+
+export const useSeasonStandings = (leagueId, seasonId) => {
+  return useQuery({
+    queryKey: ["seasons_standings", seasonId, leagueId],
+    queryFn: () => fetchSeasonStandings(leagueId, seasonId),
+    enabled: !!leagueId && !!seasonId,
   });
 };
 
@@ -44,3 +60,5 @@ export const useDeleteSeason = (leagueId) => {
     },
   });
 };
+
+

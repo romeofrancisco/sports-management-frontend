@@ -85,7 +85,12 @@ const PlayerStatsSummaryTable = ({ players }) => {
             PTS <ArrowUpDown className="size-3" />
           </Button>
         ),
-        cell: ({ row }) => <span className="text-muted-foreground">{row.original.total_points}</span>,
+        cell: ({ row }) => (
+          <span className="text-muted-foreground">
+            {row.original.total_points}
+          </span>
+        ),
+        size: 40,
       },
     ];
 
@@ -104,6 +109,7 @@ const PlayerStatsSummaryTable = ({ players }) => {
                   <span className="text-muted-foreground">{`${made}/${att}`}</span>
                 );
               },
+              size: 40,
             },
             {
               accessorKey: `${groupName}_pct`,
@@ -119,6 +125,7 @@ const PlayerStatsSummaryTable = ({ players }) => {
                   )}%`}</span>
                 );
               },
+              size: 40,
             },
           ];
         }
@@ -141,7 +148,10 @@ const PlayerStatsSummaryTable = ({ players }) => {
               {groupName} <ArrowUpDown className="size-3" />
             </Button>
           ),
-          cell: ({ getValue }) => <span className="text-muted-foreground">{getValue()}</span>,
+          cell: ({ getValue }) => (
+            <span className="text-muted-foreground">{getValue()}</span>
+          ),
+          size: 40,
         };
       }
     );
