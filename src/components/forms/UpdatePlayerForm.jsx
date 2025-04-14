@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -18,157 +18,155 @@ import { useUpdatePlayer } from "@/hooks/usePlayers";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
+import { COURSE_CHOICES, YEAR_LEVEL_CHOICES } from "@/constants/player";
+
+const FormField = ({ label, error, children }) => (
+  <div className="grid gap-0.5">
+    <Label className="text-sm text-left">{label}</Label>
+    {children}
+    {error && <p className="text-xs text-left text-destructive">{error}</p>}
+  </div>
+);
 
 const UpdatePlayerForm = ({ teams, sports, positions, onClose, player }) => {
   const { mutate: updatePlayer, isPending } = useUpdatePlayer(player.slug);
-  const { control, handleSubmit, formState: { errors }, watch, setError } = useForm({
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setError,
+  } = useForm({
     defaultValues: {
       first_name: player.first_name,
       last_name: player.last_name,
       email: player.email,
+      year_level: player.year_level,
+      course: player.course,
       profile: null,
       sport_id: String(player.sport.id),
       height: player.height,
       weight: player.weight,
       jersey_number: player.jersey_number,
       team_id: String(player.team.id),
-      position_ids: player.positions?.map((position) => position.id),
+      position_ids: player.positions?.map((p) => p.id),
     },
   });
 
   const selectedSport = watch("sport_id");
-
   const filteredTeams = useFilteredTeams(teams, sports, selectedSport);
 
-  const onSubmit = (playerData) => {
-    const formData = convertToFormData(playerData);
+  const onSubmit = (data) => {
+    const formData = convertToFormData(data);
 
     updatePlayer(formData, {
-      onSuccess: () => {
-        onClose();
-      },
+      onSuccess: onClose,
       onError: (e) => {
-        const error = e.response.data;
+        const error = e.response?.data;
         if (error) {
-          Object.keys(error).forEach((fieldName) => {
-            setError(fieldName, {
-              type: "server",
-              message: error[fieldName],
-            });
-          });
+          Object.entries(error).forEach(([field, message]) =>
+            setError(field, { type: "server", message })
+          );
         }
       },
     });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 px-1"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 px-1">
       <h1 className="font-medium mb-2 text-lg">Personal Information</h1>
-      {/* First Name */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left ">First Name</Label>
-        <Controller
-          name="first_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.first_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.first_name.message}
-          </p>
-        )}
-      </div>
 
-      {/* Last Name */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Last Name</Label>
-        <Controller
-          name="last_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.last_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.last_name.message}
-          </p>
-        )}
-      </div>
+      <FormField label="First Name" error={errors.first_name?.message}>
+        <Controller name="first_name" control={control} render={({ field }) => <Input {...field} />} />
+      </FormField>
 
-      {/* Email */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Email</Label>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input type="email" {...field} />}
-        />
-        {errors.email && (
-          <p className="text-xs text-left text-destructive">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      <FormField label="Last Name" error={errors.last_name?.message}>
+        <Controller name="last_name" control={control} render={({ field }) => <Input {...field} />} />
+      </FormField>
 
-      {/* Profile */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Profile</Label>
+      <FormField label="Email" error={errors.email?.message}>
+        <Controller name="email" control={control} render={({ field }) => <Input type="email" {...field} />} />
+      </FormField>
+
+      <FormField label="Year Level" error={errors.year_level?.message}>
         <Controller
-          name="profile"
+          name="year_level"
           control={control}
           render={({ field }) => (
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => field.onChange(e.target.files[0])}
-            />
-          )}
-        />
-        {errors.profile && (
-          <p className="text-xs text-left text-destructive">
-            {errors.profile.message}
-          </p>
-        )}
-      </div>
-
-      <h1 className="font-medium text-lg mt-5 py-2 border-t">
-        Player Information
-      </h1>
-
-      {/* Sport */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Sport</Label>
-        <Controller
-          name="sport_id"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value} disabled>
+            <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select sport" />
+                <SelectValue placeholder="Select Year Level" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Sports</SelectLabel>
-                  {sports.map((sport) => (
-                    <SelectItem key={sport.id} value={String(sport.id)}>
-                      {sport.name}
-                    </SelectItem>
+                  <SelectLabel>Year Level</SelectLabel>
+                  {YEAR_LEVEL_CHOICES.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
           )}
         />
-        {errors.sport_id && (
-          <p className="text-xs text-left text-destructive">
-            {errors.sport_id.message}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Team */}
+      <FormField label="Course" error={errors.course?.message}>
+        <Controller
+          name="course"
+          control={control}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Course</SelectLabel>
+                  {COURSE_CHOICES.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </FormField>
+
+      <FormField label="Profile" error={errors.profile?.message}>
+        <Controller
+          name="profile"
+          control={control}
+          render={({ field }) => (
+            <Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files[0])} />
+          )}
+        />
+      </FormField>
+
+      <h1 className="font-medium text-lg mt-5 py-2 border-t">Player Information</h1>
+
+      <FormField label="Sport" error={errors.sport_id?.message}>
+        <Controller
+          name="sport_id"
+          control={control}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value} disabled>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Sport" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Sport</SelectLabel>
+                  {sports.map(({ id, name }) => (
+                    <SelectItem key={id} value={String(id)}>{name}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </FormField>
+
       <TeamSelect
         control={control}
         name="team_id"
@@ -178,18 +176,13 @@ const UpdatePlayerForm = ({ teams, sports, positions, onClose, player }) => {
         errorMessage={errors.team_id?.message}
       />
 
-      {/* Position */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Position</Label>
+      <FormField label="Position" error={errors.position_ids?.message}>
         <Controller
           name="position_ids"
           control={control}
           render={({ field }) => (
             <MultiSelect
-              options={positions.map((position) => ({
-                value: position.id,
-                label: position.name,
-              }))}
+              options={positions.map((pos) => ({ value: pos.id, label: pos.name }))}
               max={3}
               value={field.value}
               onChange={field.onChange}
@@ -197,62 +190,24 @@ const UpdatePlayerForm = ({ teams, sports, positions, onClose, player }) => {
             />
           )}
         />
-        {errors.position_ids && (
-          <p className="text-xs text-left text-destructive">
-            {errors.position_ids.message}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Jersey # */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Jersey #</Label>
-        <Controller
-          name="jersey_number"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.jersey_number && (
-          <p className="text-xs text-left text-destructive">
-            {errors.jersey_number.message}
-          </p>
-        )}
-      </div>
+      <FormField label="Jersey #" error={errors.jersey_number?.message}>
+        <Controller name="jersey_number" control={control} render={({ field }) => <Input type="number" {...field} />} />
+      </FormField>
 
-      {/* Height */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Height</Label>
-        <Controller
-          name="height"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.height && (
-          <p className="text-xs text-left text-destructive">
-            {errors.height.message}
-          </p>
-        )}
-      </div>
+      <FormField label="Height" error={errors.height?.message}>
+        <Controller name="height" control={control} render={({ field }) => <Input type="number" {...field} />} />
+      </FormField>
 
-      {/* Weight */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Weight</Label>
-        <Controller
-          name="weight"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.weight && (
-          <p className="text-xs text-left text-destructive">
-            {errors.weight.message}
-          </p>
-        )}
-      </div>
+      <FormField label="Weight" error={errors.weight?.message}>
+        <Controller name="weight" control={control} render={({ field }) => <Input type="number" {...field} />} />
+      </FormField>
 
       <Button type="submit" className="mt-4" disabled={isPending}>
         {isPending ? (
           <>
-            <Loader2 className="animate-spin" />
+            <Loader2 className="animate-spin mr-2" />
             Please wait
           </>
         ) : (

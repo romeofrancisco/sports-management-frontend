@@ -24,3 +24,4 @@ export const SPORT_STANDING_CONFIG = {
     sortKey: "point_ratio",
   },
 };
+

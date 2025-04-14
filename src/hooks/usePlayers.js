@@ -9,11 +9,19 @@ import {
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const usePlayers = (enabled = true) => {
+export const usePlayers = (filter, enabled = true) => {
+  const apiFilter = {
+    ...filter,
+    sport: filter.sport === "all" ? "" : filter.sport,
+    year_level: filter.year_level === "all" ? "" : filter.year_level,
+    course: filter.course === "all" ? "" : filter.course,
+  };
+
   return useQuery({
-    queryKey: ["players"],
-    queryFn: fetchPlayers,
+    queryKey: ["players", apiFilter],
+    queryFn: () => fetchPlayers(apiFilter),
     enabled,
+    keepPreviousData: true,
   });
 };
 

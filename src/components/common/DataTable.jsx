@@ -36,7 +36,7 @@ const DataTable = ({
 
   return (
     <div>
-      <div className="rounded-md border mt-2">
+      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.6rem)]">
         <Table className={`${className}`}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -94,7 +94,7 @@ const DataTable = ({
         </Table>
       </div>
       {showPagination && (
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end space-x-2 pt-4">
           <Button
             variant="outline"
             size="sm"

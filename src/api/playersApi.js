@@ -26,9 +26,10 @@ export const deletePlayer = async (slug) => {
   }
 };
 
-export const fetchPlayers = async () => {
+export const fetchPlayers = async (filter) => {
+  console.log(filter)
   try {
-    const { data } = await api.get("players");
+    const { data } = await api.get("players", { params: filter });
     return data;
   } catch (error) {
     throw error;

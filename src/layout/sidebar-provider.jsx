@@ -48,7 +48,7 @@ export default function Layout() {
             <ThemeToggle/>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-3 px-5 pt-0">
+        <div className="flex md:max-w-[50vw-3rem] flex-1 flex-col gap-4 md:px-5 pt-0">
           <Outlet />
         </div>
       </SidebarInset>
