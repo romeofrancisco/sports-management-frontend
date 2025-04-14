@@ -5,6 +5,7 @@ import {
   updateLeague,
   deleteLeague,
   fetchLeagueDetails,
+  fetchLeagueRankings,
 } from "@/api/leaguesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -60,3 +61,10 @@ export const useDeleteLeague = () => {
     },
   });
 };
+
+export const useLeagueRankings = (leagueId) => {
+  return useQuery({
+    queryKey: ["league_rankings", leagueId],
+    queryFn: () => fetchLeagueRankings(leagueId)
+  })
+}

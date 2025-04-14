@@ -1,9 +1,13 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/useModal";
+import CreateUpdateSeasonModal from "@/components/modals/CreateUpdateSeasonModal";
 
-const LeagueDetailsHeader = ({ name }) => {
+const LeagueDetailsHeader = ({ name, sport }) => {
+  const { isOpen, openModal, closeModal } = useModal();
+  const { league } = useParams();
   return (
     <header className="border-b p-4 mb-4 grid grid-cols-2 grid-rows-2 items-center">
       <Link
@@ -14,10 +18,16 @@ const LeagueDetailsHeader = ({ name }) => {
         Back to Leagues
       </Link>
       <span className="font-medium text-sm row-start-2 md:text-lg">{name}</span>
-      <Button className="ml-auto row-span-2 col-start-2 md:py-5">
+      <Button onClick={openModal} className="ml-auto row-span-2 col-start-2 md:py-5">
         <Plus />
         New Season
       </Button>
+      <CreateUpdateSeasonModal
+        isOpen={isOpen}
+        onClose={closeModal}
+        league={league}
+        sport={sport}
+      />
     </header>
   );
 };

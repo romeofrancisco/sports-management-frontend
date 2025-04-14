@@ -2,9 +2,10 @@ import api from ".";
 
 export const createSeason = async (leagueId, seasonData) => {
     try {
-      const { data } = await api.post(`leagues/${leagueId}/`, seasonData);
+      const { data } = await api.post(`leagues/${leagueId}/seasons/`, seasonData);
       return data;
     } catch (error) {
+      console.log(error)
       throw error;
     }
   };
@@ -37,18 +38,18 @@ export const createSeason = async (leagueId, seasonData) => {
   };
 
 
-  export const updateSeason = async (leagueId, seasonData) => {
+  export const updateSeason = async (leagueId, seasonId, seasonData) => {
     try {
-      const { data } = await api.patch(`leagues/${leagueId}/`, seasonData);
+      const { data } = await api.patch(`leagues/${leagueId}/seasons/${seasonId}/`, seasonData);
       return data;
     } catch (error) {
       throw error;
     }
   };
   
-  export const deleteSeason = async (leagueId) => {
+  export const deleteSeason = async (leagueId, seasonId) => {
     try {
-      const { data } = await api.delete(`leagues/${leagueId}/`);
+      const { data } = await api.delete(`leagues/${leagueId}/seasons/${seasonId}/`);
       return data;
     } catch (error) {
       throw error;

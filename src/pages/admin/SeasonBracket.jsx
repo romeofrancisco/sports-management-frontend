@@ -6,6 +6,7 @@ import PageError from "../PageError";
 import SingleElimination from "./components/bracket/SingleElimination";
 import RoundRobin from "./components/bracket/RoundRobin";
 import { BRACKET_TYPES } from "@/constants/bracket";
+import SeasonBracketHeader from "./components/league/SeasonBracketHeader";
 
 const SeasonBracket = () => {
   const { season } = useParams();
@@ -33,8 +34,11 @@ const SeasonBracket = () => {
     return <PageError error="Bracket type not supported" status={400} />;
   }
 
+  const { season_name, league_name } = bracket;
+
   return (
     <div className="p-4">
+      <SeasonBracketHeader seasonName={season_name} leagueName={league_name} />
       <BracketComponent bracket={bracket} />
     </div>
   );

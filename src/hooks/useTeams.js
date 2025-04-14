@@ -29,7 +29,7 @@ export const useSportTeams = (sport) => {
   return useQuery({
     queryKey: [sport, "teams"],
     queryFn: () => fetchSportTeams(sport),
-    enabled,
+    enabled: !!sport,
   });
 }
 

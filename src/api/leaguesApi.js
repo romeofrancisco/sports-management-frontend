@@ -43,3 +43,12 @@ export const deleteLeague = async (leagueId) => {
     throw error;
   }
 };
+
+export const fetchLeagueRankings = async (leagueId) => {
+  try {
+    const { data } = await api.get(`leagues/${leagueId}/standings`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

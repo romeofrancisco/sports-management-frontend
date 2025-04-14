@@ -76,7 +76,7 @@ const RoundRobin = ({ bracket }) => {
     })),
   }));
 
-  return <Bracket bracketClassName="flex-wrap" roundClassName="mb-10" rounds={rounds} renderSeedComponent={TeamSeed} />;
+  return <Bracket bracketClassName="flex-wrap justify-center" roundClassName="mb-10" rounds={rounds} renderSeedComponent={TeamSeed} />;
 };
 
 export default RoundRobin;

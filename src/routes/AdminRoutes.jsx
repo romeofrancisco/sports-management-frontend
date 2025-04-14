@@ -13,6 +13,7 @@ import CoachDetails from "@/pages/admin/CoachDetails";
 import LeagueDetails from "@/pages/admin/LeagueDetails";
 import SeasonBracket from "@/pages/admin/SeasonBracket";
 import TournamentsList from "@/pages/admin/TournamentsList";
+import SeasonDetails from "@/pages/admin/SeasonDetails";
 
 export const adminRoutes = [
   {
@@ -60,12 +61,16 @@ export const adminRoutes = [
     element: <LeagueDetails />,
   },
   {
+    path: "/leagues/:league/season/:season",
+    element: <SeasonDetails />,
+  },
+  {
     path: "/leagues/:league/bracket/:season",
-    element: <SeasonBracket/>,
+    element: <SeasonBracket />,
   },
   {
     path: "/tournaments",
-    element: <TournamentsList/>
+    element: <TournamentsList />,
   },
   {
     path: "/games",

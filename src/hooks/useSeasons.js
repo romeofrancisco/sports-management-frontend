@@ -1,5 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { createSeason, deleteSeason, fetchSeasons, updateSeason, fetchSeasonDetails, fetchSeasonStandings } from "@/api/seasonsApi";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  createSeason,
+  deleteSeason,
+  fetchSeasons,
+  updateSeason,
+  fetchSeasonDetails,
+  fetchSeasonStandings,
+} from "@/api/seasonsApi";
+import { toast } from "sonner";
+import { queryClient } from "@/context/QueryProvider";
 
 export const useSeasons = (leagueId, enabled = true) => {
   return useQuery({
@@ -39,7 +48,7 @@ export const useCreateSeason = (leagueId) => {
 
 export const useUpdateSeason = (leagueId) => {
   return useMutation({
-    mutationFn: (seasonData) => updateSeason(leagueId, seasonData),
+    mutationFn: ({id, data}) => updateSeason(leagueId, id, data),
     onSuccess: () => {
       toast.success("Season Updated", {
         richColors: true,
@@ -49,16 +58,14 @@ export const useUpdateSeason = (leagueId) => {
   });
 };
 
-export const useDeleteSeason = (leagueId) => {
+export const useDeleteSeason = () => {
   return useMutation({
-    mutationFn: () => deleteSeason(leagueId),
+    mutationFn: ({ leagueId, seasonId }) => deleteSeason(leagueId, seasonId),
     onSuccess: () => {
-      toast.success("Season Updated", {
+      toast.info("Season Deleted", {
         richColors: true,
       });
       queryClient.invalidateQueries(["seasons"]);
     },
   });
 };
-
-
