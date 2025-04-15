@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks/useAuth";
 import { useSelector } from "react-redux";
+import { setManualLogout } from "@/utils/logoutFlag";
 
 export function NavUser() {
   const { user } = useSelector((state) => state.auth);
@@ -32,7 +33,8 @@ export function NavUser() {
   const logOut = useLogout();
 
   const handleLogout = () => {
-    
+    setManualLogout(true)
+    logOut.mutate()
   }
 
   return (
@@ -101,7 +103,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => logOut.mutate()}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

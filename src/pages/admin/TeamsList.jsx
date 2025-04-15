@@ -1,20 +1,13 @@
 import React from "react";
-import { useTeams } from "@/hooks/useTeams";
 import TeamsListHeader from "./components/team/TeamsListHeader";
-import Loading from "@/components/common/Loading";
-import PageError from "../PageError";
-import TeamTable from "./components/team/TeamTable";
+import TeamTable from "./components/team/TeamsContainer";
 
 const TeamsList = () => {
-  const { data: teams, isLoading, isError } = useTeams();
-
-  if (isLoading) return <Loading />;
-  if (isError) return <PageError />;
 
   return (
     <div>
       <TeamsListHeader />
-      <TeamTable teams={teams} />
+      <TeamTable />
     </div>
   );
 };

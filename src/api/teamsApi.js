@@ -1,8 +1,8 @@
 import api from ".";
 
-export const fetchTeams = async () => {
+export const fetchTeams = async (filter) => {
   try {
-    const { data } = await api.get("teams/");
+    const { data } = await api.get("teams/", { params: filter });
     return data;
   } catch (error) {
     throw error;

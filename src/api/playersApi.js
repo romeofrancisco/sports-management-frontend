@@ -27,7 +27,6 @@ export const deletePlayer = async (slug) => {
 };
 
 export const fetchPlayers = async (filter) => {
-  console.log(filter)
   try {
     const { data } = await api.get("players", { params: filter });
     return data;

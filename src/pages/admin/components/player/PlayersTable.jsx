@@ -21,6 +21,7 @@ import UpdatePlayerModal from "@/components/modals/UpdatePlayerModal";
 
 import {
   FilterCourse,
+  FilterSex,
   FilterSport,
   FilterYearLevel,
   SearchFilter,
@@ -128,15 +129,14 @@ export const PlayersTable = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [filter, setFilter] = useState({
     search: "",
+    sex: "male",
     sport: "all",
     year_level: "all",
     course: "all",
   });
 
-  const [debouncedSearch] = useDebounce(filter.search, 500);
-  const debouncedFilter = { ...filter, search: debouncedSearch };
+  const { data: players, isLoading, isError } = usePlayers(filter);
 
-  const { data: players, isLoading, isError } = usePlayers(debouncedFilter);
   const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
   const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
@@ -152,17 +152,20 @@ export const PlayersTable = () => {
     openUpdateModal();
   };
 
-  if (isLoading) return <Loading />;
   if (isError) return <PageError />;
 
   const columns = getColumns(navigate, handleUpdatePlayer, handleDeletePlayer);
 
   return (
     <div className="border md:bg-muted/30 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
-      <div className="grid grid-cols-2 md:grid-cols-[1fr_auto_auto_auto] gap-2 mx-5 md:mx-0 mb-4">
+      <div className="grid grid-cols-2 gap-2 mx-5  mb-4 md:grid-rows-2 md:grid-cols-[auto_auto_auto_auto] lg:grid-rows-1 lg:grid-cols-[1fr_auto_auto_auto_auto] md:mx-0">
         <SearchFilter
           value={filter.search}
           onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
+        />
+        <FilterSex
+          value={filter.sex}
+          onChange={(val) => setFilter((prev) => ({ ...prev, sex: val }))}
         />
         <FilterSport
           value={filter.sport}
@@ -180,7 +183,8 @@ export const PlayersTable = () => {
 
       <DataTable
         columns={columns}
-        data={players}
+        data={players || []}
+        loading={isLoading}
         className="text-xs md:text-sm"
       />
 

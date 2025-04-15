@@ -1,8 +1,8 @@
 import api from ".";
 
-export const fetchGames = async () => {
+export const fetchGames = async (filter) => {
   try {
-    const { data } = await api.get("/games/");
+    const { data } = await api.get("/games/", { params: filter });
     return data;
   } catch (error) {
     throw error;
@@ -79,7 +79,7 @@ export const fetchCurrentPlayers = async (gameId) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
 export const manageGame = async (gameId, action) => {
   try {
@@ -91,5 +91,3 @@ export const manageGame = async (gameId, action) => {
     throw error;
   }
 };
-
-

@@ -10,11 +10,18 @@ import {
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const useTeams = (enabled = true) => {
+export const useTeams = (filter, enabled = true) => {
+  const apiFilter = {
+    ...filter,
+    sport: filter.sport === "all" ? "" : filter.sport,
+    division: filter.division === "all" ? "" : filter.division,
+  };
+
   return useQuery({
-    queryKey: ["teams"],
-    queryFn: () => fetchTeams(),
+    queryKey: ["teams", apiFilter],
+    queryFn: () => fetchTeams(apiFilter),
     enabled,
+    keepPreviousData: true,
   });
 };
 
@@ -31,7 +38,7 @@ export const useSportTeams = (sport) => {
     queryFn: () => fetchSportTeams(sport),
     enabled: !!sport,
   });
-}
+};
 
 export const useCreateTeam = () => {
   return useMutation({

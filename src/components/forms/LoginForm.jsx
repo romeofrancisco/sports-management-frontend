@@ -5,14 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useLogin } from "@/hooks/useAuth";
-import logo from "@/assets/perpetual_logo.png"
+import logo from "@/assets/perpetual_logo.png";
+import { Loader2 } from "lucide-react";
 
 const LoginForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const login = useLogin();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { mutate: login, isPending } = useLogin();
 
   const onSubmit = (formData) => {
-    login.mutate(formData);
+    login(formData);
   };
 
   return (
@@ -20,7 +25,7 @@ const LoginForm = () => {
       <CardContent className="grid p-0 md:grid-cols-2">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="px-5 py-20 md:px-10 md:py-26"
+          className="px-5 py-20 md:px-10 md:py-26 bg-muted/40"
         >
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center">
@@ -49,7 +54,7 @@ const LoginForm = () => {
                   href="#"
                   className="ml-auto text-sm underline-offset-2 hover:underline"
                 >
-                  Forgot your password?
+                  {/* Forgot your password? */}
                 </a>
               </div>
               <Input
@@ -59,8 +64,19 @@ const LoginForm = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full text-white">
-              Login
+            <Button
+              type="submit"
+              className="w-full text-white"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 h-4 w-4" /> Please
+                  wait...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
           </div>
         </form>

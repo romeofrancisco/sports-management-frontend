@@ -5,6 +5,7 @@ import { logout } from "@/store/slices/authSlice";
 import { persistor } from "@/store";
 import { queryClient } from "@/context/QueryProvider";
 import { navigateTo } from "@/utils/navigate";
+import { isManualLogout, setManualLogout } from "@/utils/logoutFlag";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api/",
@@ -62,19 +63,22 @@ api.interceptors.response.use(
       } catch (refreshError) {
         try {
           await api.post("logout/", null);
-        } catch (logoutError) {
-
-        }
+        } catch (logoutError) {}
 
         await persistor.purge();
         queryClient.clear();
         store.dispatch(logout());
 
-        toast.error("Session Expired", {
-          description:
-            "Your session has expired. Please log in again to continue.",
-          richColors: true,
-        });
+        if (!isManualLogout) {
+          toast.error("Session Expired", {
+            description:
+              "Your session has expired. Please log in again to continue.",
+            richColors: true,
+          });
+        }
+
+        // Reset manual flag
+        setManualLogout(false);
 
         navigateTo("/login");
         return Promise.reject(refreshError);

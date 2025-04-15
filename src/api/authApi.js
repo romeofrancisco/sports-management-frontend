@@ -21,7 +21,7 @@ export const loginUser = async (formData) => {
 export const logoutUser = async () => {
   try {
     await api.post("logout/", null);
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     throw error;
   }

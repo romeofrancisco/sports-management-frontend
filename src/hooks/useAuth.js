@@ -54,6 +54,9 @@ export const useLogout = () => {
       } catch (error) {
         console.error("Logout error:", error);
       }
+      toast.info("Loggged out!", {
+        richColors: true
+      })
     },
   });
 };

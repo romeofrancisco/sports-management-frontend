@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import { useUpdateTeam } from "@/hooks/useTeams";
+import { DIVISIONS } from "@/constants/team";
 
 const UpdateTeamForm = ({ coaches, sports, onClose, team }) => {
   const { mutate: updateTeam, isPending } = useUpdateTeam(team.slug);
@@ -24,6 +25,7 @@ const UpdateTeamForm = ({ coaches, sports, onClose, team }) => {
     defaultValues: {
       name: team.name,
       sport: String(team.sport),
+      division: team.division,
       coach: team.coach.map((coach) => coach),
       logo: null,
     },
@@ -94,6 +96,37 @@ const UpdateTeamForm = ({ coaches, sports, onClose, team }) => {
         {errors.sport && (
           <p className="text-xs text-left text-destructive">
             {errors.sport.message}
+          </p>
+        )}
+      </div>
+
+            {/* Division */}
+      <div className="grid gap-1">
+        <Label className="text-sm text-left">Division</Label>
+        <Controller
+          name="division"
+          control={control}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select team's division" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Division</SelectLabel>
+                  {DIVISIONS.map((division) => (
+                    <SelectItem key={division.value} value={String(division.value)}>
+                      {division.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.division && (
+          <p className="text-xs text-left text-destructive">
+            {errors.division.message}
           </p>
         )}
       </div>

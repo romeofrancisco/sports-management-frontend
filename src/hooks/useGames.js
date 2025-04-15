@@ -13,10 +13,10 @@ import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
 
-export const useGames = (enabled = true) => {
+export const useGames = (filter, enabled = true) => {
   return useQuery({
-    queryKey: ["games"],
-    queryFn: fetchGames,
+    queryKey: ["games", filter],
+    queryFn: () => fetchGames(filter),
     enabled,
   });
 };

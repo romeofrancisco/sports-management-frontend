@@ -15,12 +15,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import TableLoading from "./TableLoading";
 
 const DataTable = ({
   columns,
   data,
   showPagination = true,
   className = "",
+  loading = false,
 }) => {
   const [sorting, setSorting] = useState([]);
 
@@ -61,7 +63,16 @@ const DataTable = ({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <TableLoading/>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
