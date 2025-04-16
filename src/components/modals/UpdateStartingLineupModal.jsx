@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { ScrollArea } from "../ui/scroll-area";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 import { useSportPositions } from "@/hooks/useSports";
 import { useGamePlayers } from "@/hooks/useGames";
 import { useStartingLineup } from "@/hooks/useStartingLineup";

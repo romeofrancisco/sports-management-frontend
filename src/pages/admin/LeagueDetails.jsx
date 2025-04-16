@@ -2,7 +2,7 @@ import React from "react";
 import LeagueDetailsHeader from "./components/league/LeagueDetailsHeader";
 import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
 import PageError from "../PageError";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import { useParams } from "react-router";
 import SeasonsTable from "./components/league/SeasonsTable";
 import { useSeasons } from "@/hooks/useSeasons";

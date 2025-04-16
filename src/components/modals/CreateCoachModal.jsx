@@ -8,23 +8,25 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import CreateCoachForm from "../forms/CreateCoachForm";
+import CoachForm from "../forms/CoachForm";
 
-const CreateCoachModal = ({ isOpen, onClose }) => {
+const CoachModal = ({ isOpen, onClose, coach }) => {
+  const isEdit = !!coach
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Register New Coach</DialogTitle>
-          <DialogDescription>Register new coach</DialogDescription>
+          <DialogTitle>{isEdit ? "Update Coach" : "Register New Coach" }</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Separator className="min-h-px" />
         <ScrollArea className="max-h-[75vh]">
-          <CreateCoachForm onClose={onClose} />
+          <CoachForm onClose={onClose} coach={coach} />
         </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default CreateCoachModal;
+export default CoachModal;

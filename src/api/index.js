@@ -53,8 +53,15 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Get current auth state from Redux
+    const { auth } = store.getState();
+
     // Token expired
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      auth.isAuthenticated
+    ) {
       originalRequest._retry = true;
 
       try {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSports } from "@/hooks/useSports";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import PageError from "../PageError";
 
 const SportsList = () => {

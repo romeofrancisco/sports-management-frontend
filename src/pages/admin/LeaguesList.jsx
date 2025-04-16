@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LeaguesListHeader from "./components/league/LeaguesListHeader";
 import { useLeagues } from "@/hooks/useLeagues";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import PageError from "../PageError";
 import { useModal } from "@/hooks/useModal";
 import { Trash, MoreHorizontal, Settings, SquarePen } from "lucide-react";

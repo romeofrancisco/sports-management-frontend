@@ -9,7 +9,7 @@ import {
 import CreateGameForm from "../forms/CreateGameForm";
 import { useTeams } from "@/hooks/useTeams";
 import { useSports } from "@/hooks/useSports";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 
 const CreateGameModal = ({ isOpen, onClose }) => {
   const { data: sports, isLoading: isSportsLoading, isFetched } = useSports(isOpen);

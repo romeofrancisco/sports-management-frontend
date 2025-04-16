@@ -9,7 +9,7 @@ import {
 import UpdateGameForm from "../forms/UpdateGameForm";
 import { useSports } from "@/hooks/useSports";
 import { useTeams } from "@/hooks/useTeams";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 
 const UpdateGameModal = ({ isOpen, onClose, game }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);

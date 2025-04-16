@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchFilter, FilterSport, FilterDivision } from "./TeamFilters";
+import { SearchFilter, FilterSport, FilterDivision } from "@/components/common/Filters";
 
 const TeamFiltersBar = ({ filter, setFilter }) => {
   return (

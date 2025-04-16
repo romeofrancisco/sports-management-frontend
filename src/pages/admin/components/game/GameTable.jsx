@@ -14,11 +14,11 @@ import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import GameFilterBar from "./GameFilterBar";
 import getGameTableColumns from "./GameTableColumns";
 
-
 const GameTable = () => {
   const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState(null);
   const [filter, setFilter] = useState({
+    search: "",
     status: GAME_STATUS_VALUES.SCHEDULED,
     type: GAME_TYPE_VALUES.NORMAL,
     league: "",
@@ -27,11 +27,7 @@ const GameTable = () => {
     end_date: "",
   });
 
-  const {
-    isLoading,
-    isError,
-    data: games,
-  } = useGames(filter);
+  const { isLoading, isError, data: games } = useGames(filter);
 
   const modals = {
     delete: useModal(),
@@ -51,7 +47,7 @@ const GameTable = () => {
   });
 
   return (
-    <div className="border md:bg-muted/30 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
+    <div className="px-5 md:border md:bg-muted/30 md:p-5 lg:p-8 my-5 rounded-lg">
       <GameFilterBar filter={filter} setFilter={setFilter} />
       <DataTable columns={columns} data={games || []} loading={isLoading} className="text-xs md:text-sm" />
       <UpdateGameModal isOpen={modals.update.isOpen} onClose={modals.update.closeModal} game={selectedGame} />

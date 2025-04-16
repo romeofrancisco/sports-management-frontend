@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useDebounce } from "use-debounce";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,24 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Trash, UserPen, UserSearch, MoreHorizontal } from "lucide-react";
-
 import DataTable from "@/components/common/DataTable";
-import Loading from "@/components/common/Loading";
 import PageError from "@/pages/PageError";
 import DeletePlayerModal from "@/components/modals/DeletePlayerModal";
 import UpdatePlayerModal from "@/components/modals/UpdatePlayerModal";
-
-import {
-  FilterCourse,
-  FilterSex,
-  FilterSport,
-  FilterYearLevel,
-  SearchFilter,
-} from "./PlayerFilters";
-
 import { useModal } from "@/hooks/useModal";
 import { usePlayers } from "@/hooks/usePlayers";
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
+import PlayersFilterBar from "./PlayersFilterBar";
 
 const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
   {
@@ -41,9 +30,7 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
         <div className="flex gap-2 items-center ps-3">
           <Avatar>
             <AvatarImage src={profile} alt={first_name} />
-            <AvatarFallback className="rounded-lg bg-accent">
-              CN
-            </AvatarFallback>
+            <AvatarFallback className="rounded-lg bg-accent">CN</AvatarFallback>
           </Avatar>
           <span>
             {first_name} {last_name}
@@ -105,7 +92,9 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate(`/players/${player.slug}`)}>
+            <DropdownMenuItem
+              onClick={() => navigate(`/players/${player.slug}`)}
+            >
               <UserSearch />
               View Player
             </DropdownMenuItem>
@@ -158,46 +147,10 @@ export const PlayersTable = () => {
 
   return (
     <div className="border md:bg-muted/30 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
-      <div className="grid grid-cols-2 gap-2 mx-5  mb-4 md:grid-rows-2 md:grid-cols-[auto_auto_auto_auto] lg:grid-rows-1 lg:grid-cols-[1fr_auto_auto_auto_auto] md:mx-0">
-        <SearchFilter
-          value={filter.search}
-          onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
-        />
-        <FilterSex
-          value={filter.sex}
-          onChange={(val) => setFilter((prev) => ({ ...prev, sex: val }))}
-        />
-        <FilterSport
-          value={filter.sport}
-          onChange={(val) => setFilter((prev) => ({ ...prev, sport: val }))}
-        />
-        <FilterYearLevel
-          value={filter.year_level}
-          onChange={(val) => setFilter((prev) => ({ ...prev, year_level: val }))}
-        />
-        <FilterCourse
-          value={filter.course}
-          onChange={(val) => setFilter((prev) => ({ ...prev, course: val }))}
-        />
-      </div>
-
-      <DataTable
-        columns={columns}
-        data={players || []}
-        loading={isLoading}
-        className="text-xs md:text-sm"
-      />
-
-      <DeletePlayerModal
-        isOpen={isDeleteOpen}
-        onClose={closeDeleteModal}
-        player={selectedPlayer}
-      />
-      <UpdatePlayerModal
-        isOpen={isUpdateOpen}
-        onClose={closeUpdateModal}
-        player={selectedPlayer}
-      />
+      <PlayersFilterBar filter={filter} setFilter={setFilter} />
+      <DataTable columns={columns} data={players || []} loading={isLoading} className="text-xs md:text-sm"/>
+      <DeletePlayerModal isOpen={isDeleteOpen} onClose={closeDeleteModal} player={selectedPlayer}/>
+      <UpdatePlayerModal isOpen={isUpdateOpen} onClose={closeUpdateModal} player={selectedPlayer}/>
     </div>
   );
 };

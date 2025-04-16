@@ -1,7 +1,8 @@
-import { FilterDate, FilterLeague, FilterSeason, FilterStatus, FilterType } from "./GameFilter";
+import { FilterDateRange, FilterLeague, FilterSeason, FilterGameStatus, FilterGameType, SearchFilter } from "@/components/common/Filters";
 import { GAME_TYPE_VALUES } from "@/constants/game";
 
 const GameFilterBar = ({ filter, setFilter }) => {
+
   const handleLeagueChange = (leagueId) => {
     setFilter((prev) => ({ ...prev, league: leagueId, season: "" }));
   };
@@ -16,19 +17,23 @@ const GameFilterBar = ({ filter, setFilter }) => {
   };
 
   return (
-    <div className="flex gap-2 flex-wrap mb-4">
-      <FilterType value={filter.type} onChange={handleTypeChange} />
-      <FilterLeague value={filter.league} type={filter.type} onChange={handleLeagueChange} />
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+      <SearchFilter className="order-1" onChange={(team_name) => setFilter((prev) => ({ ...prev, team_name }))} />
+      <FilterGameType className="order-2" value={filter.type} onChange={handleTypeChange} />
+      <FilterLeague className="" value={filter.league} type={filter.type} onChange={handleLeagueChange} />
       <FilterSeason
+        className=""
         value={filter.season}
         league={filter.league}
         onChange={(seasonId) => setFilter((prev) => ({ ...prev, season: seasonId }))}
       />
-      <FilterStatus
+      <FilterGameStatus
+        className="md:order-3"
         value={filter.status}
         onChange={(status) => setFilter((prev) => ({ ...prev, status }))}
       />
-      <FilterDate
+      <FilterDateRange
+        className=""
         value={{ start_date: filter.start_date, end_date: filter.end_date }}
         onChange={({ start_date, end_date }) =>
           setFilter((prev) => ({ ...prev, start_date, end_date }))

@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 import { useBracket } from "@/hooks/useBrackets";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import PageError from "../PageError";
 import SingleElimination from "./components/bracket/SingleElimination";
 import RoundRobin from "./components/bracket/RoundRobin";

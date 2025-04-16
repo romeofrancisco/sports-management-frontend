@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import PageError from "../PageError";
 import SeasonDetailsHeader from "./components/league/SeasonDetailsHeader";
 import { useSeasonDetails, useSeasonStandings } from "@/hooks/useSeasons";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import { useLeagueDetails } from "@/hooks/useLeagues";
 import SeasonStandings from "./components/league/SeasonStandings";
 

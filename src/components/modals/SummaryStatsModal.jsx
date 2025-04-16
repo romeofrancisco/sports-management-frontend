@@ -9,7 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 import PlayerStatsSummaryTable from "@/pages/common/components/PlayerStatsSummaryTable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";

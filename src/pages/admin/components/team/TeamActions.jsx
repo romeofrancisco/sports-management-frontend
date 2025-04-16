@@ -29,7 +29,7 @@ const TeamActions = ({ onView, onEdit, onDelete }) => (
         <SquarePen className="mr-2 h-4 w-4" />
         Update Team
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={onDelete} className="text-destructive">
+      <DropdownMenuItem variant="destructive" onClick={onDelete} className="text-destructive">
         <Trash className="mr-2 h-4 w-4" />
         Delete Team
       </DropdownMenuItem>

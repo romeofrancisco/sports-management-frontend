@@ -97,7 +97,6 @@ const PositionSelect = ({
       <Controller
         name={currentField}
         control={control}
-        rules={{ required: "Player is required" }}
         render={({ field }) => (
           <Select
             onValueChange={field.onChange}

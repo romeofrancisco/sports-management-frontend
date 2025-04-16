@@ -13,7 +13,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { usePositions } from "@/hooks/useSports";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 
 const UpdatePlayerModal = ({ isOpen, onClose, player }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);

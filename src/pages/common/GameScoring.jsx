@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import PageError from "../PageError";
 import ScoreBoard from "./components/ScoreBoard";
 import TeamSide from "./components/TeamSide";

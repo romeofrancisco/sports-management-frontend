@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import TableLoading from "./TableLoading";
+import TableLoading from "./ContentLoading";
 
 const DataTable = ({
   columns,
@@ -38,7 +38,7 @@ const DataTable = ({
 
   return (
     <div>
-      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.6rem)]">
+      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.1rem)] lg:max-w-[calc(100vw-9.7rem)]">
         <Table className={`${className}`}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -1,7 +1,7 @@
 import React from "react";
 import { ClipLoader } from "react-spinners";
 
-const TableLoading = () => {
+const ContentLoading = () => {
   return (
     <div className="w-full h-full content-center text-center ">
       <ClipLoader size={25} color="var(--primary)" />
@@ -9,4 +9,4 @@ const TableLoading = () => {
   );
 };
 
-export default TableLoading;
+export default ContentLoading;

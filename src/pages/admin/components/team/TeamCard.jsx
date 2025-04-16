@@ -1,30 +1,29 @@
 import React from "react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import TeamActions from "./TeamActions";
 import { getDivisionLabel } from "@/constants/team";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 const TeamCard = ({ team, onView, onEdit, onDelete }) => {
   return (
-    <div className="border p-4 rounded-lg shadow-sm bg-background flex flex-col justify-between">
-      <div className="flex items-center gap-3 mb-3">
-        <Avatar>
-          <AvatarImage src={team.logo} alt={team.name} />
-        </Avatar>
-        <div className="flex-1">
-          <h2 className="font-semibold">{team.name}</h2>
-          <p className="text-sm text-muted-foreground">
-            {team.sport?.name} - {getDivisionLabel(team.division)}
-          </p>
+    <Card className="rounded-lg shadow-sm hover:shadow-md transition-all">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={team.logo} alt={team.name} />
+            <AvatarFallback>{team.name[0]}</AvatarFallback>
+          </Avatar>
+
+          <div>
+            <CardTitle className="text-sm font-medium">{team.name}</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              {getDivisionLabel(team.division)}
+            </p>
+          </div>
         </div>
-
         <TeamActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
-      </div>
-
-      <div className="text-sm text-muted-foreground mt-auto">
-        Record: <span className="font-semibold">{team.record.win}</span>W -{" "}
-        <span className="font-semibold">{team.record.loss}</span>L
-      </div>
-    </div>
+      </CardHeader>
+    </Card>
   );
 };
 

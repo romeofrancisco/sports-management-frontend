@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useSports } from "@/hooks/useSports";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 import PageError from "@/pages/PageError";
 import { ScrollArea } from "../ui/scroll-area";
 import UpdateLeagueForm from "../forms/UpdateLeagueForm";

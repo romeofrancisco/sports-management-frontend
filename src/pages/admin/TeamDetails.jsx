@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 import { useTeamDetails } from "@/hooks/useTeams";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 
 const TeamDetails = () => {
   const { team } = useParams();

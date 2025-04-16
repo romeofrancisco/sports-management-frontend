@@ -9,7 +9,7 @@ import {
 import { useCoaches } from "@/hooks/useCoaches";
 import { useSports } from "@/hooks/useSports";
 import CreateTeamForm from "../forms/CreateTeamForm";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 
 const CreateTeamModal = ({ isOpen, onClose }) => {
   const { data: coaches, isLoading: isCoachesLoading } = useCoaches(isOpen);

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import CreateUpdateSeasonForm from "../forms/CreateUpdateSeasonForm";
 import { useSportTeams } from "@/hooks/useTeams";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
 import { ScrollArea } from "../ui/scroll-area";
 
 const CreateUpdateSeasonModal = ({
