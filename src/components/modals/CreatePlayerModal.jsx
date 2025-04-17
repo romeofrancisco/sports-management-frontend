@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import CreatePlayerForm from "../forms/CreatePlayerForm";
 import { useTeams } from "@/hooks/useTeams";
-import { useSports } from "@/hooks/useSports";
-import { usePositions } from "@/hooks/useSports";
+import { useSportPositions, useSports } from "@/hooks/useSports";
+
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import Loading from "../common/FullLoading";
@@ -17,9 +17,8 @@ import Loading from "../common/FullLoading";
 const CreatePlayerModal = ({ isOpen, onClose }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
   const { data: teams, isLoading: isTeamsLoading } = useTeams(isOpen);
-  const { data: positions, isLoading: isPositionsLoading } = usePositions(isOpen);
 
-  const isLoading = isSportsLoading || isTeamsLoading || isPositionsLoading;
+  const isLoading = isSportsLoading || isTeamsLoading
 
   if (isLoading) return <Loading />;
 
@@ -37,7 +36,6 @@ const CreatePlayerModal = ({ isOpen, onClose }) => {
           <CreatePlayerForm
             sports={sports}
             teams={teams}
-            positions={positions}
             onClose={onClose}
           />
         </ScrollArea>

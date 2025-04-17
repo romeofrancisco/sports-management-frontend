@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchStartingLineup, createStartingLineup } from "@/api/gamesApi";
+import { fetchStartingLineup, updateStartingLineup } from "@/api/gamesApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
@@ -11,11 +11,14 @@ export const useStartingLineup = (gameId, enabled = true) => {
   });
 };
 
-export const useCreateStartingLineup = (gameId) => {
+export const useUpdateStartingLineup = (gameId) => {
   return useMutation({
-    mutationFn: (lineup) => createStartingLineup(lineup, gameId),
+    mutationFn: (lineup) => updateStartingLineup(lineup, gameId),
     onSuccess: () => {
       queryClient.invalidateQueries(["starting-lineup", gameId]);
+      toast.success("Lineup Registered",{
+        richColors: true
+      })
     },
   });
 };

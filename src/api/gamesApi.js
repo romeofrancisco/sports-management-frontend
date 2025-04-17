@@ -53,9 +53,10 @@ export const fetchGamePlayers = async (gameId) => {
   }
 };
 
-export const createStartingLineup = async (lineup, gameId) => {
+export const updateStartingLineup = async (lineup, gameId) => {
   try {
     const { data } = await api.post(`games/${gameId}/starting_lineup/`, lineup);
+    console.log(data)
     return data;
   } catch (error) {
     console.log(error);

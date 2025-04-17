@@ -14,9 +14,14 @@ import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
 
 export const useGames = (filter, enabled = true) => {
+  const apiFilter = {
+    ...filter,
+    sport: filter.sport === "all" ? "" : filter.sport,
+  };
+
   return useQuery({
-    queryKey: ["games", filter],
-    queryFn: () => fetchGames(filter),
+    queryKey: ["games", apiFilter],
+    queryFn: () => fetchGames(apiFilter),
     enabled,
   });
 };
@@ -91,8 +96,8 @@ export const useManageGame = (gameId) => {
     },
     onError: ({ response }) => {
       toast.info(response.data.error, {
-        richColors: true
-      })
+        richColors: true,
+      });
     },
   });
 };

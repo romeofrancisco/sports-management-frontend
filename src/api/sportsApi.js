@@ -18,6 +18,24 @@ export const fetchSportDetails = async (sport) => {
   }
 };
 
+export const createSport = async (sportData) => {
+  try {
+    const { data } = await api.post("sports/", sportData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateSport = async (sportId, sportData) => {
+  try {
+    const { data } = await api.patch(`sports/${sportId}/`, sportData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const fetchPositions = async () => {
   try {
     const { data } = await api.get("positions/");

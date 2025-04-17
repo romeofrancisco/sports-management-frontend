@@ -10,10 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
 import Loading from "../common/FullLoading";
-import PlayerStatsSummaryTable from "@/pages/common/components/PlayerStatsSummaryTable";
+import PlayerStatsSummaryTable from "@/pages/admin/game/components/scoring/PlayerStatsSummaryTable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";
-import TeamStatsSummaryTable from "@/pages/common/components/TeamStatsSummaryTable";
+import TeamStatsSummaryTable from "@/pages/admin/game/components/scoring/TeamStatsSummaryTable";
 import { useTeamStatsSummary } from "@/hooks/useStats";
 import { Separator } from "../ui/separator";
 

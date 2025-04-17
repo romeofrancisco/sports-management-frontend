@@ -18,7 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 const MultiSelect = ({
-  options,
+  options = [],
   value = [],
   onChange,
   placeholder = "Select...",
@@ -41,6 +41,7 @@ const MultiSelect = ({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between h-auto min-h-10", className)}
+          disabled={!options.length > 0}
         >
           <div className="flex flex-wrap gap-1 overflow-y-auto max-h-32">
             {value.length > 0 ? (

@@ -82,7 +82,7 @@ export const FilterSex = ({ value, onChange, className = "" }) => {
 
 export const FilterCourse = ({ value, onChange, className = "" }) => {
   return (
-    <div className={`grid gap-0.5 max-w-[15rem] min-w-[10rem] ${className}`}>
+    <div className={`grid gap-0.5 max-w-[15rem] min-w-[8rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Course</Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="text-xs w-full" size="sm">
@@ -115,7 +115,7 @@ export const FilterSport = ({ value, onChange, className = "" }) => {
   const { data: sports } = useSports();
 
   return (
-    <div className={`grid gap-0.5 lg:w-[8rem] ${className}`}>
+    <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Sport</Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="text-xs w-full" size="sm">
@@ -145,7 +145,7 @@ export const FilterDivision = ({ value, onChange, className = "" }) => {
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Team's Division</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[10rem] max-w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] max-w-full" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -183,10 +183,9 @@ export const SearchFilter = ({ value, onChange, className = "" }) => {
     setSearchInput(value); // sync if value prop changes externally
   }, [value]);
 
-  // order-2 col-span-2 md:order-2 md:col-span-4 lg:col-span-1 lg:order-none
 
   return (
-    <div className={`grid gap-0.5 w-full lg:max-w-[30rem] ${className}`}>
+    <div className={`grid gap-0.5 w-full ${className}`}>
       <Label className="text-xs text-muted-foreground">Search</Label>
       <Input
         value={searchInput}
@@ -203,7 +202,7 @@ export const FilterGameType = ({ value, onChange, className = "" }) => {
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Game Type</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[10rem] w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] w-full" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -230,7 +229,7 @@ export const FilterGameStatus = ({ value, onChange, className = "" }) => {
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Status</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[10rem] w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] w-full" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -260,7 +259,7 @@ export const FilterSeason = ({ value, onChange, league, className = "" }) => {
       <Label className="text-xs text-muted-foreground">Season</Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
-          className="text-xs min-w-[10rem] w-full"
+          className="text-xs min-w-[8rem] w-full"
           size="sm"
           disabled={!!!league}
         >
@@ -295,7 +294,7 @@ export const FilterLeague = ({ value, onChange, type, className = "" }) => {
       <Label className="text-xs text-muted-foreground">League</Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
-          className="text-xs min-w-[10rem] w-full"
+          className="text-xs min-w-[8rem] w-full"
           size="sm"
           disabled={type !== GAME_TYPE_VALUES.LEAGUE}
         >

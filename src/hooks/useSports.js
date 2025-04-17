@@ -1,11 +1,45 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchSports, fetchSportDetails, fetchSportPositions, fetchPositions, fetchRecordableStats } from "@/api/sportsApi";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  fetchSports,
+  fetchSportDetails,
+  fetchSportPositions,
+  fetchPositions,
+  fetchRecordableStats,
+  createSport,
+  updateSport,
+} from "@/api/sportsApi";
+import { toast } from "sonner";
+import { queryClient } from "@/context/QueryProvider";
 
 export const useSports = (enabled = true) => {
   return useQuery({
     queryKey: ["sports"],
     queryFn: fetchSports,
-    enabled
+    enabled,
+  });
+};
+
+export const useCreateSport = () => {
+  return useMutation({
+    queryFn: (sportData) => createSport(sportData),
+    onSuccess: () => {
+      toast.success("New Sport Created", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["sports"]);
+    },
+  });
+};
+
+export const useUpdateSport = () => {
+  return useMutation({
+    queryFn: ({ id, data }) => updateSport(id, data),
+    onSuccess: () => {
+      toast.success("Sport Updated", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["sports"]);
+    },
   });
 };
 
@@ -13,16 +47,16 @@ export const useSportDetails = (sport) => {
   return useQuery({
     queryKey: ["sport", sport],
     queryFn: () => fetchSportDetails(sport),
-    enabled: !!sport
+    enabled: !!sport,
   });
 };
 
 // Fetch all positions from specific sport
-export const useSportPositions = (sport, enabled = true) => {
+export const useSportPositions = (sport) => {
   return useQuery({
     queryKey: ["positions", sport],
     queryFn: () => fetchSportPositions(sport),
-    enabled,
+    enabled: !!sport,
   });
 };
 
@@ -43,5 +77,3 @@ export const useRecordableStats = (gameId, enabled = true) => {
     enabled,
   });
 };
-
-

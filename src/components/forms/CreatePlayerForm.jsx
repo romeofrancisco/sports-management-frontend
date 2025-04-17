@@ -1,31 +1,35 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { TeamSelect } from "../common/TeamSelect";
 import MultiSelect from "../common/MultiSelect";
 import { useCreatePlayer } from "@/hooks/usePlayers";
 import { Loader2 } from "lucide-react";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
 import { convertToFormData } from "@/utils/convertToFormData";
+import { useSportPositions } from "@/hooks/useSports";
+import ControlledInput from "../common/ControlledInput";
+import ControlledSelect from "../common/ControlledSelect";
+import { COURSE_CHOICES, SEX, YEAR_LEVEL_CHOICES } from "@/constants/player";
 
-const CreatePlayerForm = ({ teams, sports, positions, onClose }) => {
+const CreatePlayerForm = ({ teams, sports, onClose }) => {
   const { mutate: createPlayer, isPending } = useCreatePlayer();
-  const { control, handleSubmit, formState: { errors }, watch, setError } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setError,
+  } = useForm({
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
+      sex: "",
+      year_level: "",
+      course: "",
       password: "",
       profile: null,
       sport_id: "",
@@ -38,6 +42,8 @@ const CreatePlayerForm = ({ teams, sports, positions, onClose }) => {
   });
 
   const selectedSport = watch("sport_id");
+
+  const { data: positions } = useSportPositions(selectedSport);
 
   const filteredTeams = useFilteredTeams(teams, sports, selectedSport);
 
@@ -69,120 +75,106 @@ const CreatePlayerForm = ({ teams, sports, positions, onClose }) => {
     >
       <h1 className="font-medium mb-2 text-lg">Personal Information</h1>
       {/* First Name */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">First Name</Label>
-        <Controller
-          name="first_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.first_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.first_name.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="first_name"
+        label="Max Team Players"
+        placeholder="Enter first name"
+        control={control}
+        errors={errors}
+      />
 
       {/* Last Name */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Last Name</Label>
-        <Controller
-          name="last_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.last_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.last_name.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="last_name"
+        label="Last Name"
+        placeholder="Enter last name"
+        control={control}
+        errors={errors}
+      />
 
       {/* Email */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Email</Label>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input type="email" {...field} />}
-        />
-        {errors.email && (
-          <p className="text-xs text-left text-destructive">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="email"
+        label="Email"
+        placeholder="Enter email"
+        control={control}
+        errors={errors}
+      />
+
+      <ControlledSelect
+        name="sex"
+        control={control}
+        label="Sex"
+        placeholder="Select sex"
+        groupLabel="Sex"
+        options={SEX}
+        valueKey="value"
+        labelKey="label"
+        errors={errors}
+      />
+
+      {/* Year Level */}
+      <ControlledSelect
+        name="year_level"
+        control={control}
+        label="Year Level"
+        placeholder="Select Year Level"
+        groupLabel="Year Level"
+        options={YEAR_LEVEL_CHOICES}
+        valueKey="value"
+        labelKey="label"
+        errors={errors}
+      />
+
+      {/* Course */}
+      <ControlledSelect
+        name="course"
+        control={control}
+        label="Course"
+        placeholder="Select Course"
+        groupLabel="Course"
+        options={COURSE_CHOICES}
+        valueKey="value"
+        labelKey="label"
+        errors={errors}
+      />
 
       {/* Password */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Password</Label>
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => <Input type="password" {...field} />}
-        />
-        {errors.password && (
-          <p className="text-xs text-left text-destructive">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="password"
+        label="Password"
+        placeholder="Enter password"
+        type="password"
+        control={control}
+        errors={errors}
+      />
 
       {/* Profile */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Profile</Label>
-        <Controller
-          name="profile"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => field.onChange(e.target.files[0])}
-            />
-          )}
-        />
-        {errors.profile && (
-          <p className="text-xs text-left text-destructive">
-            {errors.profile.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="profile"
+        label="Profile"
+        type="file"
+        accept="image/*"
+        control={control}
+        errors={errors}
+      />
 
       <h1 className="font-medium text-lg mt-5 py-2 border-t">
         Player Information
       </h1>
 
       {/* Sport */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Sport</Label>
-        <Controller
-          name="sport_id"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select sport" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Sports</SelectLabel>
-                  {sports.map((sport) => (
-                    <SelectItem key={sport.id} value={String(sport.id)}>
-                      {sport.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.sport_id && (
-          <p className="text-xs text-left text-destructive">
-            {errors.sport_id.message}
-          </p>
-        )}
-      </div>
+      <ControlledSelect
+        name="sport_id"
+        control={control}
+        label="Sport"
+        placeholder="Select Sport"
+        groupLabel="Sport"
+        options={sports}
+        valueKey="id"
+        labelKey="name"
+        errors={errors}
+      />
 
       {/* Team */}
       <TeamSelect
@@ -202,7 +194,7 @@ const CreatePlayerForm = ({ teams, sports, positions, onClose }) => {
           control={control}
           render={({ field }) => (
             <MultiSelect
-              options={positions.map((position) => ({
+              options={positions?.map((position) => ({
                 value: position.id,
                 label: position.name,
               }))}
@@ -221,49 +213,32 @@ const CreatePlayerForm = ({ teams, sports, positions, onClose }) => {
       </div>
 
       {/* Jersey # */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Jersey #</Label>
-        <Controller
-          name="jersey_number"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.jersey_number && (
-          <p className="text-xs text-left text-destructive">
-            {errors.jersey_number.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="jersey_number"
+        label="Jersey #"
+        type="number"
+        control={control}
+        errors={errors}
+      />
 
       {/* Height */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Height</Label>
-        <Controller
-          name="height"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.height && (
-          <p className="text-xs text-left text-destructive">
-            {errors.height.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="height"
+        label="Height"
+        type="number"
+        control={control}
+        errors={errors}
+      />
 
       {/* Weight */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Weight</Label>
-        <Controller
-          name="weight"
-          control={control}
-          render={({ field }) => <Input type="number" {...field} />}
-        />
-        {errors.weight && (
-          <p className="text-xs text-left text-destructive">
-            {errors.weight.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="weight"
+        label="Weight"
+        type="number"
+        control={control}
+        errors={errors}
+      />
+
       <Button type="submit" className="mt-4" disabled={isPending}>
         {isPending ? (
           <>

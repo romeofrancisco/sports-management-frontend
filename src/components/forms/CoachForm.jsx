@@ -1,56 +1,29 @@
-import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Input } from "../ui/input";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { useCreateCoach, useUpdateCoach } from "@/hooks/useCoaches";
 import { convertToFormData } from "@/utils/convertToFormData";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectLabel,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
+import ControlledSelect from "../common/ControlledSelect";
 import { SEX } from "@/constants/player";
+import ControlledInput from "../common/ControlledInput";
 
 const CoachForm = ({ onClose, coach = null }) => {
   const isEdit = !!coach;
+
   const { mutate: createCoach, isPending: isCreating } = useCreateCoach();
   const { mutate: updateCoach, isPending: isUpdating } = useUpdateCoach();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-    reset,
-  } = useForm({
+  const { control, handleSubmit, formState: { errors }, setError } = useForm({
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      sex: "",
-      email: "",
+      first_name: coach?.first_name || "",
+      last_name: coach?.last_name || "",
+      sex: coach?.sex || "",
+      email: coach?.email || "",
       password: "",
       profile: null,
     },
   });
-
-  useEffect(() => {
-    if (isEdit) {
-      reset({
-        first_name: coach.first_name || "",
-        last_name: coach.last_name || "",
-        sex: coach.sex || "",
-        email: coach.email || "",
-        password: "",
-        profile: null,
-      });
-    }
-  }, [coach, reset, isEdit]);
 
   const onSubmit = (data) => {
     const formData = convertToFormData(data);
@@ -77,125 +50,77 @@ const CoachForm = ({ onClose, coach = null }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 px-1">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-2 px-1"
+    >
       {/* First Name */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">First Name</Label>
-        <Controller
-          name="first_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.first_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.first_name.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="first_name"
+        label="First Name"
+        placeholder="Enter first name"
+        control={control}
+        errors={errors}
+      />
 
       {/* Last Name */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">Last Name</Label>
-        <Controller
-          name="last_name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        {errors.last_name && (
-          <p className="text-xs text-left text-destructive">
-            {errors.last_name.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="last_name"
+        label="Last Name"
+        placeholder="Enter last name"
+        control={control}
+        errors={errors}
+      />
 
       {/* Sex */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">Sex</Label>
-        <Controller
-          name="sex"
-          control={control}
-          render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Sex" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Sex</SelectLabel>
-                  {SEX.map((sex) => (
-                    <SelectItem key={sex.value} value={sex.value}>
-                      {sex.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.sex && (
-          <p className="text-xs text-left text-destructive">
-            {errors.sex.message}
-          </p>
-        )}
-      </div>
+      <ControlledSelect
+        name="sex"
+        control={control}
+        label="Sex"
+        placeholder="Select sex..."
+        groupLabel="Sex"
+        options={SEX}
+        errors={errors}
+      />
 
       {/* Email */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">Email</Label>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input type="email" {...field} />}
-        />
-        {errors.email && (
-          <p className="text-xs text-left text-destructive">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="email"
+        label="Email"
+        placeholder="Enter Email"
+        type="email"
+        control={control}
+        errors={errors}
+      />
 
       {/* Password */}
       {!isEdit && (
-        <div className="grid gap-1">
-          <Label className="text-sm text-left">
-            Password {isEdit && "(Leave blank to keep current password)"}
-          </Label>
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => <Input type="password" {...field} />}
-          />
-          {errors.password && (
-            <p className="text-xs text-left text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+        <ControlledInput
+          name="password"
+          label="Password"
+          placeholder="Enter Password"
+          type="password"
+          control={control}
+          errors={errors}
+        />
       )}
 
       {/* Profile */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">Profile</Label>
-        <Controller
-          name="profile"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => field.onChange(e.target.files[0])}
-            />
-          )}
-        />
-        {errors.profile && (
-          <p className="text-xs text-left text-destructive">
-            {errors.profile.message}
-          </p>
-        )}
-      </div>
+      <ControlledInput
+        name="profile"
+        label="Profile"
+        type="file"
+        accept="image/*"
+        control={control}
+        errors={errors}
+      />
 
-      <Button type="submit" className="mt-4" disabled={isCreating || isUpdating}>
-        {(isCreating || isUpdating) ? (
+      <Button
+        type="submit"
+        className="mt-4"
+        disabled={isCreating || isUpdating}
+      >
+        {isCreating || isUpdating ? (
           <>
             <Loader2 className="animate-spin" />
             Please wait
