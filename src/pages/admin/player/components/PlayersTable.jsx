@@ -14,7 +14,7 @@ import { Trash, UserPen, UserSearch, MoreHorizontal } from "lucide-react";
 import DataTable from "@/components/common/DataTable";
 import PageError from "@/pages/PageError";
 import DeletePlayerModal from "@/components/modals/DeletePlayerModal";
-import UpdatePlayerModal from "@/components/modals/UpdatePlayerModal";
+import PlayerModal from "@/components/modals/PlayerModal";
 import { useModal } from "@/hooks/useModal";
 import { usePlayers } from "@/hooks/usePlayers";
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
@@ -50,7 +50,7 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
     id: "course",
     header: "Course",
     cell: ({ row }) => getCourseLabel(row.original.course),
-    size: 100,
+    size: 150,
   },
   {
     id: "sport",
@@ -150,7 +150,7 @@ export const PlayersTable = () => {
       <PlayersFilterBar filter={filter} setFilter={setFilter} />
       <DataTable columns={columns} data={players || []} loading={isLoading} className="text-xs md:text-sm"/>
       <DeletePlayerModal isOpen={isDeleteOpen} onClose={closeDeleteModal} player={selectedPlayer}/>
-      <UpdatePlayerModal isOpen={isUpdateOpen} onClose={closeUpdateModal} player={selectedPlayer}/>
+      <PlayerModal isOpen={isUpdateOpen} onClose={closeUpdateModal} player={selectedPlayer}/>
     </div>
   );
 };

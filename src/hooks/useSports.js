@@ -7,6 +7,9 @@ import {
   fetchRecordableStats,
   createSport,
   updateSport,
+  fetchSportStats,
+  updateSportStats,
+  createSportStats,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -75,5 +78,31 @@ export const useRecordableStats = (gameId, enabled = true) => {
     queryKey: ["recordable-stats", gameId],
     queryFn: () => fetchRecordableStats(gameId),
     enabled,
+  });
+};
+
+export const useSportStats = (sport, filter) => {
+  return useQuery({
+    queryKey: ["sport-stats", sport, filter],
+    queryFn: () => fetchSportStats(sport, filter),
+    enabled: !!sport,
+  });
+};
+
+export const useCreateSportStats = () => {
+  return useMutation({
+    mutationFn: (data) => createSportStats(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sport-stats"]);
+    },
+  });
+};
+
+export const useUpdateSportStats = () => {
+  return useMutation({
+    mutationFn: ({ id, data }) => updateSportStats(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sport-stats"]);
+    },
   });
 };

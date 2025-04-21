@@ -7,6 +7,7 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
       <SearchFilter
         value={filter.search}
         onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
+         className="max-w-[30rem]"
       />
       <FilterSport
         value={filter.sport}

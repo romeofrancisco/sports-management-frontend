@@ -12,12 +12,7 @@ const SportForm = ({ onClose, sport = null }) => {
   const { data: createSport, isPending: isCreating } = useCreateSport();
   const { date: updateSport, isPending: isUpdating } = useUpdateSport();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({
+  const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       name: sport?.name || "",
       scoring_type: sport?.scoring_type || "",

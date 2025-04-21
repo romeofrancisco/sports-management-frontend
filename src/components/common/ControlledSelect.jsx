@@ -15,14 +15,14 @@ const ControlledSelect = ({
   control,
   label,
   placeholder = "Select an option...",
+  help_text = "",
   options = [],
   groupLabel = "",
   errors,
   className = "",
   valueKey = "value",
-  labelKey = "label", 
+  labelKey = "label",
 }) => {
-
   return (
     <div className={`grid gap-1 ${className}`}>
       {label && (
@@ -30,11 +30,14 @@ const ControlledSelect = ({
           {label}
         </Label>
       )}
+      <span className="text-xs text-muted-foreground font-medium">
+        {help_text}
+      </span>
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
-          <Select value={field.value} onValueChange={field.onChange}>
+          <Select value={String(field.value)} onValueChange={field.onChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>

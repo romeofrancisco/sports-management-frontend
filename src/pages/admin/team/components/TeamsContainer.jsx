@@ -6,7 +6,7 @@ import { useModal } from "@/hooks/useModal";
 import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
 import DeleteTeamModal from "@/components/modals/DeleteTeamModal";
-import UpdateTeamModal from "@/components/modals/UpdateTeamModal";
+import TeamModal from "@/components/modals/TeamModal";
 import TeamFiltersBar from "./TeamFiltersBar";
 import TeamCard from "./TeamCard.jsx";
 import { Separator } from "@/components/ui/separator";
@@ -60,7 +60,7 @@ const TeamsContainer = () => {
         onClose={deleteModal.closeModal}
         team={selectedTeam}
       />
-      <UpdateTeamModal
+      <TeamModal
         isOpen={updateModal.isOpen}
         onClose={updateModal.closeModal}
         team={selectedTeam}

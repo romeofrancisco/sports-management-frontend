@@ -6,19 +6,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CreatePlayerForm from "../forms/CreatePlayerForm";
-import { useTeams } from "@/hooks/useTeams";
+import CreatePlayerForm from "../forms/PlayerForm";
+import { useSportTeams, useTeams } from "@/hooks/useTeams";
 import { useSportPositions, useSports } from "@/hooks/useSports";
 
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import Loading from "../common/FullLoading";
 
-const CreatePlayerModal = ({ isOpen, onClose }) => {
+const PlayerModal = ({ isOpen, onClose, player }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
-  const { data: teams, isLoading: isTeamsLoading } = useTeams(isOpen);
 
-  const isLoading = isSportsLoading || isTeamsLoading
+  const isLoading = isSportsLoading
 
   if (isLoading) return <Loading />;
 
@@ -35,8 +34,8 @@ const CreatePlayerModal = ({ isOpen, onClose }) => {
         <ScrollArea className="max-h-[75vh]">
           <CreatePlayerForm
             sports={sports}
-            teams={teams}
             onClose={onClose}
+            player={player}
           />
         </ScrollArea>
       </DialogContent>
@@ -44,4 +43,4 @@ const CreatePlayerModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreatePlayerModal;
+export default PlayerModal;

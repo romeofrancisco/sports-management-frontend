@@ -52,10 +52,10 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => handleOpen("update")}>
-              Edit
+              Update Game
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleOpen("delete")}>
-              Delete
+              Delete Game
             </DropdownMenuItem>
           </>
         )}

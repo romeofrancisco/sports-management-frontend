@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/dialog";
 import { useCoaches } from "@/hooks/useCoaches";
 import { useSports } from "@/hooks/useSports";
-import UpdateTeamForm from "../forms/UpdateTeamForm";
+import UpdateTeamForm from "../forms/TeamForm";
 import Loading from "../common/FullLoading";
 
-const UpdateTeamModal = ({ isOpen, onClose, team }) => {
-  const { data: coaches, isLoading: isCoachesLoading } = useCoaches(isOpen);
+const TeamModal = ({ isOpen, onClose, team }) => {
+  const { data: coaches, isLoading: isCoachesLoading } = useCoaches("", isOpen);
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
 
   if (isCoachesLoading || isSportsLoading) return <Loading />;
@@ -25,16 +25,16 @@ const UpdateTeamModal = ({ isOpen, onClose, team }) => {
           <DialogDescription>
             Add team for a specific sport and assign a coach.
           </DialogDescription>
-          <UpdateTeamForm
-            coaches={coaches}
-            sports={sports}
-            team={team}
-            onClose={onClose}
-          />
         </DialogHeader>
+        <UpdateTeamForm
+          coaches={coaches}
+          sports={sports}
+          team={team}
+          onClose={onClose}
+        />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default UpdateTeamModal;
+export default TeamModal;

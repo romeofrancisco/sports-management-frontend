@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Users, ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
 import { useModal } from "@/hooks/useModal";
-import AddTeamModal from "@/components/modals/CreateTeamModal";
+import TeamModal from "@/components/modals/TeamModal";
 
 const TeamsListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -28,7 +28,7 @@ const TeamsListHeader = () => {
           <Users />
           Create Team
         </Button>
-      <AddTeamModal isOpen={isOpen} onClose={closeModal} />
+      <TeamModal isOpen={isOpen} onClose={closeModal} />
     </header>
   );
 };

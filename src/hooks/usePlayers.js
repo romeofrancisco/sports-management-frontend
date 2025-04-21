@@ -44,9 +44,9 @@ export const useCreatePlayer = () => {
   });
 };
 
-export const useUpdatePlayer = (playerId) => {
+export const useUpdatePlayer = () => {
   return useMutation({
-    mutationFn: (playerData) => updatePlayer(playerData, playerId),
+    mutationFn: ({ player, data }) => updatePlayer(player, data),
     onSuccess: () => {
       toast.success("Player updated", {
         richColors: true,

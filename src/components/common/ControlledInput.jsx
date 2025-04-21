@@ -23,7 +23,7 @@ const ControlledInput = ({
           </Label>
         )}
         {help_text && (
-          <span className="text-start text-muted-foreground text-xs">({help_text})</span >
+          <span className="text-start text-muted-foreground text-xs">{help_text}</span >
         )}
       </div>
       <Controller

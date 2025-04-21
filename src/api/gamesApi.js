@@ -56,10 +56,8 @@ export const fetchGamePlayers = async (gameId) => {
 export const updateStartingLineup = async (lineup, gameId) => {
   try {
     const { data } = await api.post(`games/${gameId}/starting_lineup/`, lineup);
-    console.log(data)
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -76,6 +74,23 @@ export const fetchStartingLineup = async (gameId) => {
 export const fetchCurrentPlayers = async (gameId) => {
   try {
     const { data } = await api.get(`games/${gameId}/current_players/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createSubstitution = async (substituteData) => {
+  try {
+    const { data } = await api.post(
+      "substitutions/bulk_create/",
+      substituteData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return data;
   } catch (error) {
     throw error;

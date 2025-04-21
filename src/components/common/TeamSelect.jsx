@@ -28,7 +28,7 @@ export const TeamSelect = ({
         render={({ field }) => (
           <Select
             onValueChange={field.onChange}
-            value={field.value}
+            value={String(field.value)}
             disabled={!teams.length > 0}
           >
             <SelectTrigger className="w-full">

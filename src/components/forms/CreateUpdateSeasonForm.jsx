@@ -29,7 +29,6 @@ const CreateUpdateSeasonForm = ({ league, teams, onClose, season }) => {
     setError,
     setValue,
     watch,
-    clearErrors
   } = useForm({
     defaultValues: {
       name: season?.name || "",

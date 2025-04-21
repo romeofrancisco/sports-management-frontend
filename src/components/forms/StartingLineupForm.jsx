@@ -27,17 +27,6 @@ const StartingLineupForm = ({ teams, game, lineup, onClose }) => {
     return [...filled, ...padding];
   };
 
-  const defaultValues = {
-    home_team:
-      lineup && game
-        ? formatLineup(lineup.home_starting_lineup, game.home_team.id)
-        : [],
-    away_team:
-      lineup && game
-        ? formatLineup(lineup.away_starting_lineup, game.away_team.id)
-        : [],
-  };
-
   const { control, handleSubmit } = useForm({
     defaultValues:
       lineup && game

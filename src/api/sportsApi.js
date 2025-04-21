@@ -34,7 +34,7 @@ export const updateSport = async (sportId, sportData) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
 export const fetchPositions = async () => {
   try {
@@ -61,6 +61,38 @@ export const fetchRecordableStats = async (gameId) => {
     );
     return data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchSportStats = async (sport, filter) => {
+  try {
+    const { data } = await api.get(`sport-stats/?sport=${sport}`, {
+      params: filter,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createSportStats = async (statData) => {
+  console.log(statData);
+  try {
+    const { data } = await api.post("sport-stats/", statData);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateSportStats = async (statId, statData) => {
+  try {
+    const { data } = await api.patch(`sport-stats/${statId}/`, statData);
+    return data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

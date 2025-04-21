@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
 import { useModal } from "@/hooks/useModal";
-import CreatePlayerModal from "@/components/modals/CreatePlayerModal";
+import CreatePlayerModal from "@/components/modals/PlayerModal";
 
 const PlayersListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();

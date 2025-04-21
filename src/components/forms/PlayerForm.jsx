@@ -1,21 +1,23 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Input } from "../ui/input";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { TeamSelect } from "../common/TeamSelect";
-import MultiSelect from "../common/MultiSelect";
-import { useCreatePlayer } from "@/hooks/usePlayers";
+import MultiSelect from "../common/ControlledMultiSelect";
+import { useCreatePlayer, useUpdatePlayer } from "@/hooks/usePlayers";
 import { Loader2 } from "lucide-react";
-import useFilteredTeams from "@/hooks/useFilteredTeams";
 import { convertToFormData } from "@/utils/convertToFormData";
 import { useSportPositions } from "@/hooks/useSports";
 import ControlledInput from "../common/ControlledInput";
 import ControlledSelect from "../common/ControlledSelect";
 import { COURSE_CHOICES, SEX, YEAR_LEVEL_CHOICES } from "@/constants/player";
+import { useSportTeams } from "@/hooks/useTeams";
 
-const CreatePlayerForm = ({ teams, sports, onClose }) => {
-  const { mutate: createPlayer, isPending } = useCreatePlayer();
+const PlayerForm = ({ sports, onClose, player }) => {
+  const isEdit = !!player;
+
+  const { mutate: createPlayer, isPending: isCreating } = useCreatePlayer();
+  const { mutate: updatePlayer, isPending: isUpdating } = useUpdatePlayer();
+
   const {
     control,
     handleSubmit,
@@ -24,33 +26,35 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
     setError,
   } = useForm({
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      sex: "",
-      year_level: "",
-      course: "",
-      password: "",
+      first_name: player?.first_name || "",
+      last_name: player?.last_name || "",
+      email: player?.email || "",
+      sex: player?.sex || "",
+      year_level: player?.year_level || "",
+      course: player?.course || "",
+      password: player?.password || "",
       profile: null,
-      sport_id: "",
-      height: "",
-      weight: "",
-      jersey_number: "",
-      team_id: "",
-      position_ids: [],
+      sport_slug: player?.sport.slug || "",
+      height: player?.height || "",
+      weight: player?.weight || "",
+      jersey_number: player?.jersey_number || "",
+      team_id: player?.team.id || "",
+      position_ids: player?.positions.map((pos) => pos.id) || [],
     },
   });
 
-  const selectedSport = watch("sport_id");
+  const selectedSport = watch("sport_slug");
 
   const { data: positions } = useSportPositions(selectedSport);
-
-  const filteredTeams = useFilteredTeams(teams, sports, selectedSport);
+  const { data: teams } = useSportTeams(selectedSport);
 
   const onSubmit = (playerData) => {
     const formData = convertToFormData(playerData);
 
-    createPlayer(formData, {
+    const mutationFn = isEdit ? updatePlayer : createPlayer;
+    const payload = isEdit ? { player: player.slug, data: formData } : formData;
+
+    mutationFn(payload, {
       onSuccess: () => {
         onClose();
       },
@@ -77,7 +81,7 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
       {/* First Name */}
       <ControlledInput
         name="first_name"
-        label="Max Team Players"
+        label="First Name"
         placeholder="Enter first name"
         control={control}
         errors={errors}
@@ -131,8 +135,8 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
         name="course"
         control={control}
         label="Course"
-        placeholder="Select Course"
         groupLabel="Course"
+        placeholder="Select Course"
         options={COURSE_CHOICES}
         valueKey="value"
         labelKey="label"
@@ -140,14 +144,16 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
       />
 
       {/* Password */}
-      <ControlledInput
-        name="password"
-        label="Password"
-        placeholder="Enter password"
-        type="password"
-        control={control}
-        errors={errors}
-      />
+      {!isEdit && (
+        <ControlledInput
+          name="password"
+          label="Password"
+          placeholder="Enter password"
+          type="password"
+          control={control}
+          errors={errors}
+        />
+      )}
 
       {/* Profile */}
       <ControlledInput
@@ -165,13 +171,13 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
 
       {/* Sport */}
       <ControlledSelect
-        name="sport_id"
+        name="sport_slug"
         control={control}
         label="Sport"
         placeholder="Select Sport"
         groupLabel="Sport"
         options={sports}
-        valueKey="id"
+        valueKey="slug"
         labelKey="name"
         errors={errors}
       />
@@ -182,35 +188,19 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
         name="team_id"
         label="Team"
         placeholder="Select team"
-        teams={filteredTeams}
+        teams={teams}
         errorMessage={errors.team_id?.message}
       />
 
       {/* Position */}
-      <div className="grid gap-0.5">
-        <Label className="text-sm text-left">Position</Label>
-        <Controller
-          name="position_ids"
-          control={control}
-          render={({ field }) => (
-            <MultiSelect
-              options={positions?.map((position) => ({
-                value: position.id,
-                label: position.name,
-              }))}
-              max={3}
-              value={field.value}
-              onChange={field.onChange}
-              placeholder="Select player position..."
-            />
-          )}
-        />
-        {errors.position_ids && (
-          <p className="text-xs text-left text-destructive">
-            {errors.position_ids.message}
-          </p>
-        )}
-      </div>
+      <MultiSelect
+        name="position_ids"
+        label="Position"
+        control={control}
+        options={positions}
+        max={3}
+        placeholder="Select player position..."
+      />
 
       {/* Jersey # */}
       <ControlledInput
@@ -239,12 +229,18 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
         errors={errors}
       />
 
-      <Button type="submit" className="mt-4" disabled={isPending}>
-        {isPending ? (
+      <Button
+        type="submit"
+        className="mt-4"
+        disabled={isCreating || isUpdating}
+      >
+        {isCreating || isUpdating ? (
           <>
             <Loader2 className="animate-spin" />
             Please wait
           </>
+        ) : isEdit ? (
+          "Update Player"
         ) : (
           "Register Player"
         )}
@@ -253,4 +249,4 @@ const CreatePlayerForm = ({ teams, sports, onClose }) => {
   );
 };
 
-export default CreatePlayerForm;
+export default PlayerForm;

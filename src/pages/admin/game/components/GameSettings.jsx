@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Clock, Replace, Settings, ChartColumn, Flag } from "lucide-react";
 import {
@@ -12,13 +12,15 @@ import {
 import { useModal } from "@/hooks/useModal";
 import SummaryStatsModal from "@/components/modals/SummaryStatsModal";
 import NextPeriodConfirmation from "@/components/modals/NextPeriodConfirmation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CompleteGameConfirmation from "@/components/modals/CompleteGameConfirmation";
 import SubstitutionModal from "@/components/modals/SubstitutionModal";
+import { reset } from "@/store/slices/playerStatSlice";
 
 const GameSettings = () => {
   const { max_period } = useSelector((state) => state.sport);
   const { current_period } = useSelector((state) => state.game);
+  const dispatch = useDispatch();
 
   const modals = {
     stats: useModal(),
@@ -29,11 +31,18 @@ const GameSettings = () => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChange={(open) => {
+          if (open) {
+            dispatch(reset());
+          }
+        }}
+      >
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             className="size-10 p-0 absolute top-0 right-0"
+            onClick={() => dispatch(reset())}
           >
             <Settings className="size-5" />
           </Button>

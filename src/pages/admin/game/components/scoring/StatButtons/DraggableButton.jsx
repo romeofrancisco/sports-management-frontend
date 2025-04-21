@@ -62,7 +62,7 @@ const DraggableButton = ({ button, position, onRecord, isCreatingStat }) => {
           }`}
           disabled={!playerId || isClicked || isCreatingStat}
       >
-        {button.name}
+        {button.display_name || button.name}
       </Button>
     </div>
   );

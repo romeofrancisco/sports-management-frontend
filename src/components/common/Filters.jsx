@@ -25,6 +25,7 @@ import { Button } from "../ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
+import { STAT_TYPE } from "@/constants/sport";
 
 export const FilterYearLevel = ({ value, onChange, className = "" }) => {
   return (
@@ -48,6 +49,33 @@ export const FilterYearLevel = ({ value, onChange, className = "" }) => {
                 value={year.value}
               >
                 {year.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export const FilterStatType = ({ value, onChange, className = "" }) => {
+  return (
+    <div className={`grid gap-0.5 ${className}`}>
+      <Label className="text-xs text-muted-foreground">Stat Type</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="text-xs w-full" size="sm">
+          <SelectValue placeholder="Select Stat Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Types</SelectLabel>
+            {STAT_TYPE.map((stat) => (
+              <SelectItem
+                className="text-xs"
+                key={stat.value}
+                value={stat.value}
+              >
+                {stat.label}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -140,6 +168,7 @@ export const FilterSport = ({ value, onChange, className = "" }) => {
   );
 };
 
+
 export const FilterDivision = ({ value, onChange, className = "" }) => {
   return (
     <div className={`grid gap-0.5 ${className}`}>
@@ -182,7 +211,6 @@ export const SearchFilter = ({ value, onChange, className = "" }) => {
   useEffect(() => {
     setSearchInput(value); // sync if value prop changes externally
   }, [value]);
-
 
   return (
     <div className={`grid gap-0.5 w-full ${className}`}>
