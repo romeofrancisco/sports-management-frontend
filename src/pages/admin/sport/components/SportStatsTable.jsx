@@ -7,6 +7,7 @@ import SportStatsFilterBar from "./SportStatsFilterBar";
 import { Button } from "@/components/ui/button";
 import SportStatsModal from "@/components/modals/SportStatsModal";
 import { useModal } from "@/hooks/useModal";
+import DeleteStatModal from "@/components/modals/DeleteStatModal";
 
 const SportStatsTable = () => {
   const { sport } = useParams();
@@ -49,6 +50,11 @@ const SportStatsTable = () => {
       <SportStatsModal
         isOpen={modals.stat.isOpen}
         onClose={modals.stat.closeModal}
+        stat={selectedStat}
+      />
+      <DeleteStatModal
+        isOpen={modals.delete.isOpen}
+        onClose={modals.delete.closeModal}
         stat={selectedStat}
       />
     </div>

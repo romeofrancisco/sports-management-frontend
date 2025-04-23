@@ -76,23 +76,34 @@ export const fetchSportStats = async (sport, filter) => {
   }
 };
 
+export const deleteSportStat = async (statId) => {
+  try {
+    const { data } = await api.delete(`sport-stats/${statId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createSportStats = async (statData) => {
-  console.log(statData);
   try {
     const { data } = await api.post("sport-stats/", statData);
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
 export const updateSportStats = async (statId, statData) => {
+  console.log(statData);
   try {
-    const { data } = await api.patch(`sport-stats/${statId}/`, statData);
+    const { data } = await api.patch(`sport-stats/${statId}/`, statData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

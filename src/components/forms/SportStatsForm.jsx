@@ -34,7 +34,7 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
       point_value: stat?.point_value || 0,
       display_name: stat?.display_name || "",
 
-      //   Metric Stats
+      // Metric Stats
       calculation_type: stat?.calculation_type || "none",
       composite_stats: stat?.composite_stats || [],
     },
@@ -69,7 +69,7 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
   useEffect(() => {
     if (isRecord) {
       // Reset metric stat fields when switching to recording stat
-      setValue("calculation_type", "sum");
+      setValue("calculation_type", "none");
       setValue("composite_stats", []);
     } else {
       // Reset recording stat fields when switching to metric stat

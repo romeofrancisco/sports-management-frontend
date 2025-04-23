@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import formatPeriod from "@/utils/formatPeriod"
+import { getPeriodLabel } from "@/constants/sport";
 
 const ScoreBoard = () => {
   // Destructure state values from Redux store
@@ -10,6 +11,7 @@ const ScoreBoard = () => {
     current_period,
     home_team,
     away_team,
+    scoring_type
   } = useSelector((state) => state.game);
   const { max_period } = useSelector((state) => state.sport);
 
@@ -39,7 +41,7 @@ const ScoreBoard = () => {
         {/* Period Info */}
         <div>
           <div className="flex flex-col h-full justify-center text-center">
-            <p className="text-sm md:text-lg lg:text-xl">Period</p>
+            <p className="text-sm md:text-lg lg:text-xl">{getPeriodLabel(scoring_type)}</p>
             <span className="md:text-xl">{formatPeriod(current_period, max_period)}</span>
           </div>
         </div>

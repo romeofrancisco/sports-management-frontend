@@ -12,6 +12,7 @@ const initialState = {
   home_team_score: 0,
   away_team_score: 0,
   max_players_on_field_per_team: 5,
+  scoring_type: ""
 };
 
 const gameSlice = createSlice({
@@ -31,6 +32,7 @@ const gameSlice = createSlice({
         current_period,
         max_period,
         max_players_on_field_per_team,
+        scoring_type
       } = action.payload;
       state.game_id = id;
       state.sport = sport;
@@ -43,6 +45,7 @@ const gameSlice = createSlice({
       state.current_period = current_period;
       state.max_period = max_period;
       state.max_players_on_field_per_team = max_players_on_field_per_team;
+      state.scoring_type = scoring_type
     },
     incrementHomeScore(state, action) {
       state.home_team_score += action.payload;

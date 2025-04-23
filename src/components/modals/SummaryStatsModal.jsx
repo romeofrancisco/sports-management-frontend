@@ -84,9 +84,9 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
                   <PlayerStatsSummaryTable players={playerStats} />
                 </TabsContent>
                 <TabsContent value="team_stats">
-                  <TeamStatsSummaryTable team={teamStats.home_team} />
+                  <TeamStatsSummaryTable team={teamStats?.home_team || []} />
                   <Separator className="my-5"/>
-                  <TeamStatsSummaryTable team={teamStats.away_team} />
+                  <TeamStatsSummaryTable team={teamStats?.away_team || []} />
                 </TabsContent>
               </>
             )}

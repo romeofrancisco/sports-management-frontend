@@ -1,61 +1,117 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import DataTable from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-
-// Helper to calculate total points
-const addTotalPoints = (players) =>
-  players.map((player) => ({
-    ...player,
-    total_points: player.periods.reduce((sum, p) => sum + p.points, 0),
-  }));
-// Extract all unique stat keys
-const getAllStatKeys = (players) => [
-  ...new Set(
-    players.flatMap(({ total_stats }) => [
-      ...Object.keys(total_stats.base_stats),
-      ...Object.keys(total_stats.calculated_stats),
-    ])
-  ),
-];
-// Group stats by prefix and mark composites
-const groupStatKeys = (keys) =>
-  keys.reduce((acc, key) => {
-    const match = key.match(/^(.*?)(?:_(MA|AT|PC))?$/);
-    const prefix = match[1];
-    if (!acc[prefix]) {
-      acc[prefix] = { keys: [], isComposite: false };
-    }
-    acc[prefix].keys.push(key);
-    if (/_MA$|_AT$|_PC$/.test(key)) {
-      acc[prefix].isComposite = true;
-    }
-    return acc;
-  }, {});
-// Sort groups: non-composites first
-const sortGroups = (groups) =>
-  Object.entries(groups).sort(([, a], [, b]) =>
-    a.isComposite === b.isComposite ? 0 : a.isComposite ? 1 : -1
-  );
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSelector } from "react-redux";
+import { getPeriodLabel } from "@/constants/sport";
 
 const PlayerStatsSummaryTable = ({ players }) => {
-  const playersWithTotalPoints = useMemo(
-    () => addTotalPoints(players),
-    [players]
-  );
+  const { current_period, scoring_type } = useSelector((state) => state.game);
+  const [selectedPeriod, setSelectedPeriod] = useState(String(current_period));
 
-  const allStatKeys = useMemo(
-    () => getAllStatKeys(playersWithTotalPoints),
-    [playersWithTotalPoints]
-  );
+  // Get available periods from the first player's stats
+  const availablePeriods = useMemo(() => {
+    const periods = new Set(["total"]);
+    if (players.length > 0 && players[0].stats.length > 0) {
+      Object.keys(players[0].stats[0].period_values || {}).forEach((period) => {
+        periods.add(period);
+      });
+    }
+    return Array.from(periods).sort((a, b) => {
+      if (a === "total") return 1;
+      if (b === "total") return -1;
+      return parseInt(a) - parseInt(b);
+    });
+  }, [players]);
 
-  const statGroups = useMemo(() => groupStatKeys(allStatKeys), [allStatKeys]);
+  // Process data for the table based on selected period
+  const tableData = useMemo(() => {
+    return players.map((player) => {
+      const rowData = {
+        id: player.id,
+        name: player.name,
+        jersey_number: player.jersey_number,
+        team_id: player.team_id,
+        total_points: player.total_points,
+        total_stats: player.total_stats, // Include total_stats for reference
+      };
 
-  const sortedGroupEntries = useMemo(
-    () => sortGroups(statGroups),
-    [statGroups]
-  );
+      // Add stats to row data
+      player.stats.forEach((stat) => {
+        if (selectedPeriod === "total") {
+          rowData[stat.display_name] = stat.value;
+        } else {
+          rowData[stat.display_name] = stat.period_values[selectedPeriod] || 0;
+        }
+      });
 
+      return rowData;
+    });
+  }, [players, selectedPeriod]);
+
+  // Get all stat display names for columns
+  const allStatDisplayNames = useMemo(() => {
+    if (players.length === 0 || players[0].stats.length === 0) return [];
+    return players[0].stats.map((stat) => stat.display_name);
+  }, [players]);
+
+  // Group related stats (e.g., FGM, FGA, FG%)
+  const groupedStats = useMemo(() => {
+    const groups = {};
+
+    allStatDisplayNames.forEach((stat) => {
+      // Remove special characters to find base stat name
+      const baseStat = stat
+        .replace(/[%_]/g, "")
+        .replace(/(M|A|MA|AT|PC|P|%)$/, "");
+
+      if (!groups[baseStat]) groups[baseStat] = [];
+      groups[baseStat].push(stat);
+    });
+
+    // Sort each group in logical order (M, A, %)
+    Object.values(groups).forEach((group) => {
+      group.sort((a, b) => {
+        const order = { M: 0, MA: 0, P: 0, A: 1, AT: 1, "%": 2, PC: 2 };
+        const getSuffix = (s) => {
+          const match = s.match(/(M|A|MA|AT|%|PC|P)$/);
+          return match ? match[1] : "";
+        };
+        return (order[getSuffix(a)] || 0) - (order[getSuffix(b)] || 0);
+      });
+    });
+
+    return groups;
+  }, [allStatDisplayNames]);
+
+  // Calculate period points
+  const calculatePeriodPoints = (row, period) => {
+    if (period === "total") return row.total_points;
+
+    // Find point-contributing stats (PTS, 3PM, FTM, FGM)
+    const pointStats = ["PTS", "3PM", "FTM", "FGM"].filter(
+      (stat) => row.total_stats && row.total_stats[stat] !== undefined
+    );
+
+    if (pointStats.length === 0) return 0;
+
+    // Calculate proportional points for the period
+    const mainStat = pointStats[0];
+    const totalValue = row.total_stats[mainStat];
+    const periodValue = row[mainStat] || 0;
+
+    if (totalValue === 0) return 0;
+    return Math.round((periodValue / totalValue) * row.total_points);
+  };
+
+  // Generate columns
   const columns = useMemo(() => {
     const baseColumns = [
       {
@@ -74,7 +130,7 @@ const PlayerStatsSummaryTable = ({ players }) => {
         },
       },
       {
-        accessorKey: "total_points",
+        accessorKey: "points",
         header: ({ column }) => (
           <Button
             variant="ghost"
@@ -86,86 +142,65 @@ const PlayerStatsSummaryTable = ({ players }) => {
           </Button>
         ),
         cell: ({ row }) => (
-          <span className="text-muted-foreground">
-            {row.original.total_points}
+          <span className="font-medium">
+            {calculatePeriodPoints(row.original, selectedPeriod)}
           </span>
         ),
-        size: 40,
+        size: 50,
       },
     ];
 
-    const statGroupColumns = sortedGroupEntries.flatMap(
-      ([groupName, group]) => {
-        if (group.isComposite) {
-          return [
-            {
-              accessorKey: `${groupName}_composite`,
-              header: groupName,
-              cell: ({ row }) => {
-                const stats = row.original.total_stats.calculated_stats;
-                const made = stats[`${groupName}_MA`] ?? 0;
-                const att = stats[`${groupName}_AT`] ?? 0;
-                return (
-                  <span className="text-muted-foreground">{`${made}/${att}`}</span>
-                );
-              },
-              size: 40,
-            },
-            {
-              accessorKey: `${groupName}_pct`,
-              header: `${groupName}%`,
-              cell: ({ row }) => {
-                const pc =
-                  row.original.total_stats.calculated_stats[
-                    `${groupName}_PC`
-                  ] ?? 0;
-                return (
-                  <span className="text-muted-foreground">{`${pc.toFixed(
-                    1
-                  )}%`}</span>
-                );
-              },
-              size: 40,
-            },
-          ];
-        }
-
-        return {
-          id: groupName,
-          accessorFn: ({ total_stats }) =>
-            total_stats.base_stats[groupName] ??
-            total_stats.calculated_stats[groupName] ??
-            0,
-          header: ({ column }) => (
-            <Button
-              variant="ghost"
-              className="text-xs"
-              size="xs"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              {groupName} <ArrowUpDown className="size-3" />
-            </Button>
-          ),
-          cell: ({ getValue }) => (
-            <span className="text-muted-foreground">{getValue()}</span>
-          ),
-          size: 40,
-        };
-      }
+    const statColumns = Object.entries(groupedStats).flatMap(
+      ([groupName, statKeys]) =>
+        statKeys.map((stat) => ({
+          id: stat,
+          accessorKey: stat,
+          header: () => <span className="text-xs">{stat}</span>,
+          cell: ({ getValue }) => {
+            const value = getValue();
+            return (
+              <span className="text-muted-foreground">
+                {typeof value === "number" && value % 1 !== 0
+                  ? value.toFixed(1)
+                  : value}
+              </span>
+            );
+          },
+          size: 50,
+        }))
     );
 
-    return [...baseColumns, ...statGroupColumns];
-  }, [sortedGroupEntries]);
+    return [...baseColumns, ...statColumns];
+  }, [groupedStats, selectedPeriod]);
 
   return (
-    <DataTable
-      columns={columns}
-      data={playersWithTotalPoints}
-      showPagination={false}
-      className="text-xs"
-    />
+    <>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Player Stats</h3>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">Period:</span>
+          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+            <SelectTrigger className="w-[100px] text-xs" size="sm">
+              <SelectValue placeholder="Period" />
+            </SelectTrigger>
+            <SelectContent>
+              {availablePeriods.map((period) => (
+                <SelectItem className="text-xs" key={period} value={period}>
+                  {period === "total" ? "Total" : `${getPeriodLabel(scoring_type)} ${period}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <DataTable
+        columns={columns}
+        data={tableData}
+        showPagination={false}
+        className="text-xs"
+      />
+    </>
   );
 };
 

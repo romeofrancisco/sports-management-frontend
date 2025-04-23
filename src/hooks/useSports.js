@@ -10,6 +10,7 @@ import {
   fetchSportStats,
   updateSportStats,
   createSportStats,
+  deleteSportStat,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -93,6 +94,21 @@ export const useCreateSportStats = () => {
   return useMutation({
     mutationFn: (data) => createSportStats(data),
     onSuccess: () => {
+      toast.success("Stat Created", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["sport-stats"]);
+    },
+  });
+};
+
+export const useDeleteSportStat = () => {
+  return useMutation({
+    mutationFn: ({ id }) => deleteSportStat(id),
+    onSuccess: () => {
+      toast.info("Stat Deleted", {
+        richColors: true,
+      });
       queryClient.invalidateQueries(["sport-stats"]);
     },
   });
@@ -102,6 +118,9 @@ export const useUpdateSportStats = () => {
   return useMutation({
     mutationFn: ({ id, data }) => updateSportStats(id, data),
     onSuccess: () => {
+      toast.success("Stat Updated", {
+        richColors: true,
+      });
       queryClient.invalidateQueries(["sport-stats"]);
     },
   });

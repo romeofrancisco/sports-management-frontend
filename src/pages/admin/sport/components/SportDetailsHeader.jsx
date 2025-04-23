@@ -8,7 +8,7 @@ const SportDetailsHeader = () => {
   return (
     <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
       <Link
-        to="/"
+        to="/sports"
         className="flex text-muted-foreground text-xs max-w-[8.5rem]"
       >
         <ChevronLeft size={18} />

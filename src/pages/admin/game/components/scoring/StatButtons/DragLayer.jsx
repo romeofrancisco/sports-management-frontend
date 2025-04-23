@@ -42,7 +42,7 @@ const DragLayer = () => {
           } ${isDragging ? "opacity-80" : "opacity-100"}`}
           
       >
-        {item.button.display_name || item.button.name}
+        {item.button.name.toUpperCase()}
       </Button>
     </div>
   );

@@ -34,6 +34,7 @@ const SportStatsActions = ({ modals, stat, setSelectedStat }) => {
         <DropdownMenuItem
           variant="destructive"
           className="text-destructive"
+          onClick={() => handleOpen("delete")}
         >
           <Trash className="mr-2 h-4 w-4" />
           Delete Stat

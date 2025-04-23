@@ -2,175 +2,143 @@ import React, { useMemo } from "react";
 import DataTable from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import formatPeriod from "@/utils/formatPeriod";
 import { useSelector } from "react-redux";
 
-const groupStatKeys = (keys) =>
-  keys.reduce((acc, key) => {
-    const match = key.match(/^(.*?)(?:_(MA|AT|PC))?$/);
-    const prefix = match[1];
-    if (!acc[prefix]) {
-      acc[prefix] = { keys: [], isComposite: false };
-    }
-    acc[prefix].keys.push(key);
-    if (/_MA$|_AT$|_PC$/.test(key)) {
-      acc[prefix].isComposite = true;
-    }
-    return acc;
-  }, {});
+// Helper functions (same as PlayerStatsSummaryTable)
+const extractStatFamily = (stat) =>
+  stat.replace(/(_MA|_AT|_PC|M|A|%|_M|_A|_%)$/, "");
 
-const sortGroups = (groups) =>
-  Object.entries(groups).sort(([, a], [, b]) =>
-    a.isComposite === b.isComposite ? 0 : a.isComposite ? 1 : -1
+const groupStatsByDynamicFamily = (stats) => {
+  const groups = {};
+
+  stats.forEach((stat) => {
+    const family = extractStatFamily(stat);
+    if (!groups[family]) groups[family] = [];
+    groups[family].push(stat);
+  });
+
+  // Sort each group logically (M, A, %)
+  const suffixOrder = ["MA", "M", "AT", "A", "PC", "%"];
+  const getRank = (stat) =>
+    suffixOrder.findIndex((s) => stat.endsWith(s)) !== -1
+      ? suffixOrder.findIndex((s) => stat.endsWith(s))
+      : 99;
+
+  Object.values(groups).forEach((group) =>
+    group.sort((a, b) => getRank(a) - getRank(b))
   );
+
+  return groups;
+};
 
 const TeamStatsSummaryTable = ({ team }) => {
   const { max_period } = useSelector((state) => state.sport);
 
-  const periodsWithTotal = useMemo(() => {
-    const periods = team.periods.map((p) => ({
-      period: p.period,
-      points: p.points,
-      ...p.base_stats,
-      ...p.calculated_stats,
-    }));
-
-    const total = {
-      period: "Total",
-      ...team.total_stats.base_stats,
-      ...team.total_stats.calculated_stats,
-      points: team.total_points,
-    };
-
-    return [...periods, total];
+  // Combine all stats from periods and totals
+  const allStats = useMemo(() => {
+    const stats = new Set();
+    
+    // Get stats from periods
+    team.periods?.forEach(period => {
+      Object.keys(period.stats || {}).forEach(key => stats.add(key));
+    });
+    
+    // Get stats from totals
+    Object.keys(team.total_stats || {}).forEach(key => stats.add(key));
+    
+    return Array.from(stats);
   }, [team]);
 
-  const allStatKeys = useMemo(() => {
-    const sample = periodsWithTotal[0] || {};
-    return Object.keys(sample).filter((key) => key !== "period" && key !== "points");
-  }, [periodsWithTotal]);
+  // Group stats by their family (similar to player table)
+  const groupedStats = useMemo(
+    () => groupStatsByDynamicFamily(allStats),
+    [allStats]
+  );
 
-  const groupedStats = useMemo(() => {
-    const groups = groupStatKeys(allStatKeys);
-    return sortGroups(groups);
-  }, [allStatKeys]);
+  // Format data for the table
+  const tableData = useMemo(() => {
+    const periods = team.periods?.map(period => ({
+      period: period.period,
+      points: period.points,
+      ...period.stats
+    })) || [];
+    
+    const totalRow = {
+      period: "Total",
+      points: team.total_points,
+      ...team.total_stats
+    };
+    
+    return [...periods, totalRow];
+  }, [team]);
 
   const columns = useMemo(() => {
-    const periodColumn = {
-      accessorKey: "period",
-      header: "Period",
-      cell: ({ getValue }) => {
-        const value = getValue();
-        const display =
-          typeof value === "number" ? formatPeriod(value, max_period) : value;
-
-        return <span className="font-medium">{display}</span>;
+    const baseColumns = [
+      {
+        accessorKey: "period",
+        header: "Period",
+        cell: ({ getValue }) => {
+          const value = getValue();
+          const display = 
+            typeof value === "number" ? `Q${value}` : value;
+          return <span className="font-medium">{display}</span>;
+        },
       },
-    };
-
-    const pointsColumn = {
-      accessorKey: "points",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          className="text-xs"
-          size="xs"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          PTS <ArrowUpDown className="size-3" />
-        </Button>
-      ),
-      cell: ({ getValue }) => {
-        const value = getValue();
-        return (
-          <span className="font-medium text-muted-foreground">
-            {value}
-          </span>
-        );
-      },
-      size: 50
-    };
-
-    const statColumns = groupedStats.flatMap(([prefix, group]) => {
-      if (group.isComposite) {
-        return [
-          {
-            id: `${prefix}_composite`,
-            header: `${prefix}`,
-            accessorFn: (row) => {
-              const made = row[`${prefix}_MA`] ?? 0;
-              const att = row[`${prefix}_AT`] ?? 0;
-              return { made, att };
-            },
-            cell: ({ getValue }) => {
-              const { made, att } = getValue();
-              return (
-                <span className="text-muted-foreground">
-                  {made}/{att}
-                </span>
-              );
-            },
-            size: 50
-          },
-          {
-            id: `${prefix}_pct`,
-            header: `${prefix}%`,
-            accessorFn: (row) => {
-              const pc = row[`${prefix}_PC`] ?? 0;
-              return pc;
-            },
-            cell: ({ getValue }) => (
-              <span className="text-muted-foreground">
-                {getValue().toFixed(1)}%
-              </span>
-            ),
-            size: 50
-          },
-        ];
-      }
-
-      return {
-        accessorKey: prefix,
+      {
+        accessorKey: "points",
         header: ({ column }) => (
           <Button
             variant="ghost"
             className="text-xs"
             size="xs"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} // Optional sorting
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {prefix} <ArrowUpDown className="size-3" />
+            PTS <ArrowUpDown className="size-3" />
           </Button>
         ),
-        cell: ({ getValue }) => {
-          const value = getValue();
-          return (
-            <span className="text-muted-foreground">
-              {typeof value === "number"
-                ? value.toFixed(1).replace(/\.0$/, "")
-                : value}
-            </span>
-          );
-        },
-        size: 50
-      };
-    });
+        cell: ({ getValue }) => (
+          <span className="font-medium text-muted-foreground">
+            {getValue()}
+          </span>
+        ),
+        size: 50,
+      },
+    ];
 
-    // PTS is second column now
-    return [periodColumn, pointsColumn, ...statColumns];
+    const statColumns = Object.entries(groupedStats).flatMap(
+      ([groupName, statKeys]) =>
+        statKeys.map((stat) => ({
+          id: stat,
+          accessorKey: stat,
+          header: () => <span className="text-xs">{stat}</span>,
+          cell: ({ getValue }) => {
+            const value = getValue();
+            return (
+              <span className="text-muted-foreground">
+                {typeof value === "number" && value % 1 !== 0
+                  ? value.toFixed(1)
+                  : value}
+              </span>
+            );
+          },
+          size: 50,
+        }))
+    );
+
+    return [...baseColumns, ...statColumns];
   }, [groupedStats]);
 
   return (
-    <>
+    <div className="space-y-2">
       <h1 className="text-xl font-medium">{team.team_name}</h1>
       <DataTable
         columns={columns}
-        data={periodsWithTotal}
+        data={tableData}
         showPagination={false}
         className="text-xs"
       />
-    </>
+    </div>
   );
-  
 };
 
 export default TeamStatsSummaryTable;

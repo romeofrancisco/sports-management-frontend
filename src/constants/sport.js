@@ -41,3 +41,9 @@ export const CALCULATION_TYPE_VALUES = {
   SUM: "sum",
   PERCENTAGE: "percentage",
 };
+
+export const getPeriodLabel = (sport) => {
+  if (sport == "points") return "Quarter"
+  if (sport == "sets") return "Set"
+  return "Period"
+}
