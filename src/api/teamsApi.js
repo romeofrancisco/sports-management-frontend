@@ -50,7 +50,6 @@ export const updateTeam = async (teamData, team) => {
     const { data } = await api.patch(`teams/${team}/`, teamData);
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

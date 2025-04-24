@@ -10,13 +10,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
-import { useDeleteSportStat } from "@/hooks/useStats";
+import { useDeleteFormula } from "@/hooks/useFormula";
 
-const DeleteStatModal = ({ isOpen, onClose, stat }) => {
-  const { mutate: deleteStat, isPending } = useDeleteSportStat();
+const DeleteFormulaModal = ({ isOpen, onClose, formula }) => {
+  const { mutate: deleteFormula, isPending } = useDeleteFormula();
 
-  const handleDeleteStat = () => {
-    deleteStat({id: stat.id});
+  const handleDeleteFormula = () => {
+    deleteFormula({ id: formula.id });
   };
 
   return (
@@ -25,7 +25,7 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete stat
+            This action cannot be undone. This will permanently delete formula
             and its data
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -41,7 +41,7 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
           ) : (
             <>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteStat}>
+              <AlertDialogAction onClick={handleDeleteFormula}>
                 Confirm
               </AlertDialogAction>
             </>
@@ -52,4 +52,4 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
   );
 };
 
-export default DeleteStatModal;
+export default DeleteFormulaModal;

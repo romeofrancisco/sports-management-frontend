@@ -16,18 +16,32 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // Convert to JSON for specific endpoints
-  if (config.url?.includes("/starting_lineup/")) {
-    config.headers["Content-Type"] = "application/json";
+  const isFormData = config.data instanceof FormData;
+  let hasFile = false;
 
-    // Convert FormData to JSON if needed
-    if (config.data instanceof FormData) {
+  if (isFormData) {
+    for (let value of config.data.values()) {
+      if (value instanceof File || value instanceof Blob) {
+        hasFile = true;
+        break;
+      }
+    }
+
+    if (!hasFile) {
+      // Convert to JSON if no file is found
       const jsonData = {};
       config.data.forEach((value, key) => {
         jsonData[key] = value;
       });
       config.data = jsonData;
+      config.headers["Content-Type"] = "application/json";
+    } else {
+      // Let the browser set proper multipart/form-data headers
+      delete config.headers["Content-Type"];
     }
+  } else {
+    // Not FormData? Assume JSON
+    config.headers["Content-Type"] = "application/json";
   }
 
   return config;

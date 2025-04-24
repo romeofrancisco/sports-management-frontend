@@ -10,13 +10,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
-import { useDeleteSportStat } from "@/hooks/useStats";
+import { useDeletePosition } from "@/hooks/useSports";
 
-const DeleteStatModal = ({ isOpen, onClose, stat }) => {
-  const { mutate: deleteStat, isPending } = useDeleteSportStat();
+const DeletePositionModal = ({ isOpen, onClose, position }) => {
+  const { mutate: deletePosition, isPending } = useDeletePosition();
 
-  const handleDeleteStat = () => {
-    deleteStat({id: stat.id});
+  const handleDeletePosition = () => {
+    deletePosition(position.id);
   };
 
   return (
@@ -25,7 +25,7 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete stat
+            This action cannot be undone. This will permanently delete position
             and its data
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -41,7 +41,7 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
           ) : (
             <>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteStat}>
+              <AlertDialogAction onClick={handleDeletePosition}>
                 Confirm
               </AlertDialogAction>
             </>
@@ -52,4 +52,4 @@ const DeleteStatModal = ({ isOpen, onClose, stat }) => {
   );
 };
 
-export default DeleteStatModal;
+export default DeletePositionModal;

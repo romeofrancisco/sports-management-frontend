@@ -11,8 +11,6 @@ const initialState = {
   max_period: null,
   home_team_score: 0,
   away_team_score: 0,
-  max_players_on_field_per_team: 5,
-  scoring_type: ""
 };
 
 const gameSlice = createSlice({

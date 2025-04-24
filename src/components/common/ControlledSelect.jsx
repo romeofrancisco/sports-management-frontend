@@ -21,10 +21,12 @@ const ControlledSelect = ({
   errors,
   className = "",
   valueKey = "value",
+  secondaryLabel = "",
   labelKey = "label",
+  size = "",
 }) => {
   return (
-    <div className={`grid gap-1 ${className}`}>
+    <div className={`grid gap-0.5 ${className}`}>
       {label && (
         <Label htmlFor={name} className="text-sm text-left">
           {label}
@@ -38,15 +40,23 @@ const ControlledSelect = ({
         control={control}
         render={({ field }) => (
           <Select value={String(field.value)} onValueChange={field.onChange}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" size={size}>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 {groupLabel && <SelectLabel>{groupLabel}</SelectLabel>}
                 {options.map((opt) => (
-                  <SelectItem key={opt[valueKey]} value={String(opt[valueKey])}>
-                    {opt[labelKey]}
+                  <SelectItem
+                    key={String(opt[valueKey])}
+                    value={String(opt[valueKey])}
+                  >
+                    <div className="grid text-start">
+                      {opt[labelKey]}{" "}
+                      <span className="text-xs text-muted-foreground">
+                        {opt[secondaryLabel]}
+                      </span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectGroup>

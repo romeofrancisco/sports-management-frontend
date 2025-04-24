@@ -2,14 +2,12 @@ import React, { useEffect } from "react";
 import ControlledInput from "../common/ControlledInput";
 import { useForm } from "react-hook-form";
 import ControlledCheckbox from "../common/ControlledCheckbox";
-import ControlledSelect from "../common/ControlledSelect";
-import { CALCULATION_TYPE, CALCULATION_TYPE_VALUES } from "@/constants/sport";
-import ControlledMultiSelect from "../common/ControlledMultiSelect";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { useCreateSportStats, useUpdateSportStats } from "@/hooks/useSports";
+import { useCreateSportStats, useUpdateSportStats } from "@/hooks/useStats";
+import ControlledSelect from "../common/ControlledSelect";
 
-const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
+const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   const isEdit = !!stat;
   const { mutate: createStat, isPending: isCreating } = useCreateSportStats();
   const { mutate: updateStat, isPending: isUpdating } = useUpdateSportStats();
@@ -25,23 +23,22 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
     defaultValues: {
       sport: sport,
       name: stat?.name || "",
+      display_name: stat?.display_name || "",
       code: stat?.code || "",
+      is_metrics: stat?.is_metrics || false,
       is_record: stat?.is_record || false,
 
       // Recording Stats
       is_counter: stat?.is_counter || false,
       is_negative: stat?.is_negative || false,
       point_value: stat?.point_value || 0,
-      display_name: stat?.display_name || "",
 
       // Metric Stats
-      calculation_type: stat?.calculation_type || "none",
-      composite_stats: stat?.composite_stats || [],
+      formula: stat?.formula || "",
     },
   });
 
   const isRecord = watch("is_record");
-  const calculationType = watch("calculation_type");
   const isCounter = watch("is_counter");
 
   const onSubmit = (data) => {
@@ -69,11 +66,9 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
   useEffect(() => {
     if (isRecord) {
       // Reset metric stat fields when switching to recording stat
-      setValue("calculation_type", "none");
-      setValue("composite_stats", []);
+      setValue("formula", "");
     } else {
       // Reset recording stat fields when switching to metric stat
-      setValue("display_name", "");
       setValue("is_counter", false);
       setValue("point_value", 0);
       setValue("is_negative", false);
@@ -93,37 +88,26 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
         errors={errors}
       />
       <ControlledInput
+        name="display_name"
+        label="Display Name"
+        control={control}
+        help_text="Label that will shown in summary stats (e.g, FGA (Field Goal Attempt), FG% (Field Goal Percentage))"
+        placeholder="Enter Display Name"
+        errors={errors}
+      />
+      <ControlledInput
         name="code"
         label="Stat Code"
-        help_text={
-          <>
-            <p>
-              <strong>Important:</strong> This short code identifies
-              the stat and is used in automated calculations. Use clear,
-              consistent codes.
-            </p>
-            <p className="mt-2">Common suffixes:</p>
-            <ul className="ml-4 list-disc">
-              <li>
-                <code>_AT</code>: Attempts
-              </li>
-              <li>
-                <code>_MA</code>: Made
-              </li>
-              <li>
-                <code>_MS</code>: Missed
-              </li>
-              <li>
-                <code>_PC</code>: Percentage
-              </li>
-            </ul>
-            <p className="mt-2 text-muted-foreground">
-              Example: <code>FT_MA</code> for Free Throws Made.
-            </p>
-          </>
-        }
+        help_text="Code for formula"
         control={control}
         placeholder="Enter Stat Code"
+        errors={errors}
+      />
+      <ControlledCheckbox
+        name="is_metrics"
+        label="Show in Metrics / Summary Stats"
+        control={control}
+        help_text="Check this if you want to show the stat in metrics or summary stats"
         errors={errors}
       />
       <ControlledCheckbox
@@ -136,14 +120,6 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
 
       {isRecord ? (
         <>
-          <ControlledInput
-            name="display_name"
-            label="Display Name"
-            control={control}
-            help_text='Label shown on action buttons (e.g. "Block", "Assist", "2PT Made", etc.). If left blank, the main stat name will be used.'
-            placeholder="Enter Display Name"
-            errors={errors}
-          />
           <ControlledCheckbox
             name="is_negative"
             label="Negative Stat"
@@ -173,41 +149,17 @@ const SportStatsForm = ({ onClose, compositeStats, stat = null, sport }) => {
       ) : (
         <>
           <ControlledSelect
-            name="calculation_type"
+            name="formula"
             control={control}
-            label="Calculation Type"
-            help_text={
-              <>
-                <p>How this stat is calculated:</p>
-                <ul className="ml-4 list-disc">
-                  <li>
-                    <strong>Sum</strong>: Total of selected composite stats.
-                  </li>
-                  <li>
-                    <strong>Percentage</strong>: First stat ÷ second stat × 100.
-                  </li>
-                </ul>
-              </>
-            }
-            placeholder="Select Calculation Type"
-            options={CALCULATION_TYPE}
+            label="Formula"
+            help_text="Formula that will use in this stat"
+            placeholder="Select Formula"
+            options={formulas}
+            valueKey="id"
+            labelKey="name"
+            secondaryLabel="expression"
             errors={errors}
-          />
-
-          <ControlledMultiSelect
-            name="composite_stats"
-            control={control}
-            label="Stats Used for Calculation"
-            placeholder="Select Stats"
-            help_text="Select the stats that are used to calculate this stat. For percentages, use two stats (e.g., Made and Attempted). For totals, select all stats to be summed."
-            options={compositeStats}
-            errors={errors}
-            max={
-              calculationType === CALCULATION_TYPE_VALUES.PERCENTAGE
-                ? 2
-                : Infinity
-            }
-            secondaryKey="code"
+            size="lg"
           />
         </>
       )}

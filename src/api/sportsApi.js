@@ -36,6 +36,34 @@ export const updateSport = async (sportId, sportData) => {
   }
 };
 
+export const createPosition = async (positionData) => {
+  try {
+    const { data } = await api.post("positions/", positionData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updatePosition = async (positionId, positionData) => {
+  try {
+    const { data } = await api.patch(`positions/${positionId}/`, positionData);
+    return data;
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+};
+
+export const deletePosition = async (positionId) => {
+  try {
+    const { data } = await api.delete(`positions/${positionId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchPositions = async () => {
   try {
     const { data } = await api.get("positions/");
@@ -90,18 +118,14 @@ export const createSportStats = async (statData) => {
     const { data } = await api.post("sport-stats/", statData);
     return data;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
 
 export const updateSportStats = async (statId, statData) => {
-  console.log(statData);
   try {
-    const { data } = await api.patch(`sport-stats/${statId}/`, statData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const { data } = await api.patch(`sport-stats/${statId}/`, statData);
     return data;
   } catch (error) {
     throw error;

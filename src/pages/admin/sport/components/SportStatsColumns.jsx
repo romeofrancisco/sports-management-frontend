@@ -11,7 +11,6 @@ const baseColumns = [
     accessorKey: "code",
     header: "Code",
     cell: ({ getValue }) => getValue(),
-    size:70
   },
 ];
 
@@ -28,7 +27,7 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
           modals={modals}
         />
       ),
-      size: 50,
+      size: 50
     },
   ];
 
@@ -50,11 +49,12 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
   } else {
     return withActionCol([
       {
-        accessorKey: "calculation_type",
-        header: "Calculation Type",
-        cell: ({ getValue }) =>
-          getValue()[0].toUpperCase() + getValue().slice(1),
-      },
+        accessorKey: "expression",
+        header: "Formula",
+        cell: ({ getValue }) => (
+          <div className="whitespace-normal break-words text-xs text-muted-foreground">{getValue()}</div>
+        ),
+      }
     ]);
   }
 };

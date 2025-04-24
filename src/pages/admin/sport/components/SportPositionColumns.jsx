@@ -1,7 +1,7 @@
 import React from "react";
-import SportStatsActions from "./SportStatsActions";
+import SportPositionActions from "./SportPositionActions";
 
-const getSportPositionsColumn = ({ setSelectedStat, modals }) => {
+const getSportPositionsColumn = ({ setSelectedPosition, modals }) => {
   return [
     {
       accessorKey: "name",
@@ -9,16 +9,16 @@ const getSportPositionsColumn = ({ setSelectedStat, modals }) => {
       cell: ({ getValue }) => getValue(),
     },
     {
-        accessorKey: "abbreviation",
-        header: "Abbreviation",
-        cell: ({ getValue }) => getValue(),
-      },
+      accessorKey: "abbreviation",
+      header: "Abbreviation",
+      cell: ({ getValue }) => getValue(),
+    },
     {
       id: "actions",
       cell: ({ row }) => (
-        <SportStatsActions
-          stat={row.original}
-          setSelectedGame={setSelectedStat}
+        <SportPositionActions
+          position={row.original}
+          setSelectedPosition={setSelectedPosition}
           modals={modals}
         />
       ),

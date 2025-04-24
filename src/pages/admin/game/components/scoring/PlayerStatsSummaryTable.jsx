@@ -13,7 +13,8 @@ import { useSelector } from "react-redux";
 import { getPeriodLabel } from "@/constants/sport";
 
 const PlayerStatsSummaryTable = ({ players }) => {
-  const { current_period, scoring_type } = useSelector((state) => state.game);
+  const { current_period } = useSelector((state) => state.game);
+  const { scoring_type } = useSelector((state) => state.sport);
   const [selectedPeriod, setSelectedPeriod] = useState(String(current_period));
 
   // Get available periods from the first player's stats

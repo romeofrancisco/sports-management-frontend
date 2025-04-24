@@ -9,10 +9,15 @@ import ControlledCheckbox from "../common/ControlledCheckbox";
 const SportForm = ({ onClose, sport = null }) => {
   const isEdit = !!sport;
 
-  const { data: createSport, isPending: isCreating } = useCreateSport();
-  const { date: updateSport, isPending: isUpdating } = useUpdateSport();
+  const { mutate: createSport, isPending: isCreating } = useCreateSport();
+  const { mutate: updateSport, isPending: isUpdating } = useUpdateSport();
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm({
     defaultValues: {
       name: sport?.name || "",
       scoring_type: sport?.scoring_type || "",
@@ -26,7 +31,25 @@ const SportForm = ({ onClose, sport = null }) => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    const mutationFn = isEdit ? updateSport : createSport;
+    const payload = isEdit ? { id: sport.id, data: data } : data;
+
+    mutationFn(payload, {
+      onSuccess: () => {
+        onClose();
+      },
+      onError: (e) => {
+        const error = e.response?.data;
+        if (error) {
+          Object.keys(error).forEach((fieldName) => {
+            setError(fieldName, {
+              type: "server",
+              message: error[fieldName],
+            });
+          });
+        }
+      },
+    });
   };
 
   return (

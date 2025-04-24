@@ -11,9 +11,8 @@ const ScoreBoard = () => {
     current_period,
     home_team,
     away_team,
-    scoring_type
   } = useSelector((state) => state.game);
-  const { max_period } = useSelector((state) => state.sport);
+  const { max_period, scoring_type } = useSelector((state) => state.sport);
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] place-items-center mb-2 md:mb-5">

@@ -21,13 +21,12 @@ const GameScoring = () => {
   // Data fetching
   const { data: game, isLoading: isGameLoading, isError: isGameError } = useGameDetails(id);
   const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(id);
-  const { data: players, isLoading: isPlayersLoading, isError: isPlayersError } = useGamePlayers(id);
   const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(id);
   const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
 
   // Unified loading/error states
-  const isLoading = isGameLoading ||isStatTypesLoading ||isPlayersLoading || isCurrentPlayersLoading || isSportLoading
-  const isError = isGameError || isStatTypesError || isPlayersError || isCurrentPlayersError || isSportError;
+  const isLoading = isGameLoading ||isStatTypesLoading || isCurrentPlayersLoading || isSportLoading
+  const isError = isGameError || isStatTypesError || isCurrentPlayersError || isSportError;
 
   // Store game in Redux on load
   useEffect(() => {

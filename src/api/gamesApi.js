@@ -84,12 +84,7 @@ export const createSubstitution = async (substituteData) => {
   try {
     const { data } = await api.post(
       "substitutions/bulk_create/",
-      substituteData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      substituteData
     );
     return data;
   } catch (error) {

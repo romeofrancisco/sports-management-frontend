@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSportStats } from "@/hooks/useSports";
+import { useSportStats } from "@/hooks/useStats";
 import DataTable from "@/components/common/DataTable";
 import getSportStatsColumn from "./SportStatsColumns";
 import { useParams } from "react-router";
@@ -17,10 +17,7 @@ const SportStatsTable = () => {
     is_record: true, //True if the stat is recordable
   });
 
-  const { data: stats, isLoading: isStatsLoading } = useSportStats(
-    sport,
-    filter
-  );
+  const { data: stats, isLoading: isStatsLoading } = useSportStats(sport,filter);
 
   const modals = {
     stat: useModal(),
@@ -35,10 +32,10 @@ const SportStatsTable = () => {
   };
 
   return (
-    <div className="px-5 md:border md:bg-muted/30 md:p-5 lg:p-8 my-5 rounded-lg">
+    <div className="px-5 md:border md:bg-muted/30 md:p-5 lg:p-8 rounded-lg">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl semibold">Stats Types</h1>
-        <Button onClick={handleCreateStat}>Create New Stat Type</Button>
+        <Button onClick={handleCreateStat}>Create New Stat</Button>
       </div>
       <SportStatsFilterBar filter={filter} setFilter={setFilter} />
       <DataTable

@@ -8,11 +8,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, SquarePen, Trash } from "lucide-react";
+import { Trash, MoreHorizontal, SquarePen } from "lucide-react";
 
-const SportPositionActions = ({ modals, position, setSelectedPosition }) => {
+const SportFormulaActions = ({ modals, formula, setSelectedFormula }) => {
   const handleOpen = (modalType) => {
-    setSelectedPosition(position);
+    setSelectedFormula(formula);
     modals[modalType]?.openModal();
   };
   return (
@@ -26,21 +26,21 @@ const SportPositionActions = ({ modals, position, setSelectedPosition }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleOpen("position")}>
+        <DropdownMenuItem onClick={() => handleOpen("formula")}>
           <SquarePen className="mr-2 h-4 w-4" />
-          Update Position
+          Update Formula
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => handleOpen("delete")}
           className="text-destructive"
+          onClick={() => handleOpen("delete")}
         >
           <Trash className="mr-2 h-4 w-4" />
-          Delete Position
+          Delete Formula
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export default SportPositionActions;
+export default SportFormulaActions;

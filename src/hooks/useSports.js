@@ -11,6 +11,9 @@ import {
   updateSportStats,
   createSportStats,
   deleteSportStat,
+  createPosition,
+  updatePosition,
+  deletePosition,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -73,55 +76,47 @@ export const usePositions = (enabled = true) => {
   });
 };
 
+export const useCreateposition = () => {
+  return useMutation({
+    mutationFn: (data) => createPosition(data),
+    onSuccess: () => {
+      toast.success("Position Created", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["positions"]);
+    },
+  });
+};
+
+export const useUpdateposition = () => {
+  return useMutation({
+    mutationFn: ({ id, data }) => updatePosition(id, data),
+    onSuccess: () => {
+      toast.success("Position Updated", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["positions"]);
+    },
+  });
+};
+
+export const useDeletePosition = () => {
+  return useMutation({
+    mutationFn: (id) => deletePosition(id),
+    onSuccess: () => {
+      toast.info("Position Deleted", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["positions"]);
+    },
+  });
+};
+
 // Fetch stats to record in game
 export const useRecordableStats = (gameId, enabled = true) => {
   return useQuery({
     queryKey: ["recordable-stats", gameId],
     queryFn: () => fetchRecordableStats(gameId),
     enabled,
-  });
-};
-
-export const useSportStats = (sport, filter) => {
-  return useQuery({
-    queryKey: ["sport-stats", sport, filter],
-    queryFn: () => fetchSportStats(sport, filter),
-    enabled: !!sport,
-  });
-};
-
-export const useCreateSportStats = () => {
-  return useMutation({
-    mutationFn: (data) => createSportStats(data),
-    onSuccess: () => {
-      toast.success("Stat Created", {
-        richColors: true,
-      });
-      queryClient.invalidateQueries(["sport-stats"]);
-    },
-  });
-};
-
-export const useDeleteSportStat = () => {
-  return useMutation({
-    mutationFn: ({ id }) => deleteSportStat(id),
-    onSuccess: () => {
-      toast.info("Stat Deleted", {
-        richColors: true,
-      });
-      queryClient.invalidateQueries(["sport-stats"]);
-    },
-  });
-};
-
-export const useUpdateSportStats = () => {
-  return useMutation({
-    mutationFn: ({ id, data }) => updateSportStats(id, data),
-    onSuccess: () => {
-      toast.success("Stat Updated", {
-        richColors: true,
-      });
-      queryClient.invalidateQueries(["sport-stats"]);
-    },
   });
 };

@@ -6,32 +6,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import SportStatsForm from "../forms/SportStatsForm";
-import { useFormula } from "@/hooks/useFormula";
+import { ScrollArea } from "../ui/scroll-area";
+import FormulaForm from "../forms/FormulaForm";
 import { useParams } from "react-router";
 import ContentLoading from "../common/ContentLoading";
-import { ScrollArea } from "../ui/scroll-area";
+import { useSportStats } from "@/hooks/useStats";
 
-const SportStatsModal = ({ isOpen, onClose, stat }) => {
+const FormulaModal = ({ isOpen, onClose, formula = null }) => {
   const { sport } = useParams();
-  const { data, isLoading } = useFormula(sport);
+  const { data: stats, isLoading } = useSportStats(sport);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create New Stat</DialogTitle>
+          <DialogTitle>{formula ? "Update Formula" : "Create New Formula"}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[75vh]">
           {isLoading ? (
             <ContentLoading />
           ) : (
-            <SportStatsForm
+            <FormulaForm
               onClose={onClose}
-              stat={stat}
-              formulas={data}
+              stats={stats}
               sport={sport}
+              formula={formula}
             />
           )}
         </ScrollArea>
@@ -40,4 +40,4 @@ const SportStatsModal = ({ isOpen, onClose, stat }) => {
   );
 };
 
-export default SportStatsModal;
+export default FormulaModal;

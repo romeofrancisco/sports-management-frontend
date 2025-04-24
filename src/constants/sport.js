@@ -30,12 +30,6 @@ export const STAT_TYPE = [
   { value: false, label: "Metrics Stats" },
 ];
 
-export const CALCULATION_TYPE = [
-  { value: "none", label: "None" },
-  { value: "sum", label: "Sum" },
-  { value: "percentage", label: "Percentage" },
-];
-
 export const CALCULATION_TYPE_VALUES = {
   NONE: "none",
   SUM: "sum",
