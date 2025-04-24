@@ -10,11 +10,11 @@ import {
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useSeasons = (leagueId, enabled = true) => {
+export const useSeasons = (leagueId) => {
   return useQuery({
     queryKey: ["seasons", leagueId],
     queryFn: () => fetchSeasons(leagueId),
-    enabled,
+    enabled: !!leagueId,
   });
 };
 

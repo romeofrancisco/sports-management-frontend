@@ -1,8 +1,8 @@
 import api from ".";
 
-export const fetchGames = async () => {
+export const fetchGames = async (filter) => {
   try {
-    const { data } = await api.get("/games/");
+    const { data } = await api.get("/games/", { params: filter });
     return data;
   } catch (error) {
     throw error;
@@ -53,12 +53,11 @@ export const fetchGamePlayers = async (gameId) => {
   }
 };
 
-export const createStartingLineup = async (lineup, gameId) => {
+export const updateStartingLineup = async (lineup, gameId) => {
   try {
     const { data } = await api.post(`games/${gameId}/starting_lineup/`, lineup);
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -79,7 +78,19 @@ export const fetchCurrentPlayers = async (gameId) => {
   } catch (error) {
     throw error;
   }
-}
+};
+
+export const createSubstitution = async (substituteData) => {
+  try {
+    const { data } = await api.post(
+      "substitutions/bulk_create/",
+      substituteData
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const manageGame = async (gameId, action) => {
   try {
@@ -91,5 +102,3 @@ export const manageGame = async (gameId, action) => {
     throw error;
   }
 };
-
-

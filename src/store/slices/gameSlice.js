@@ -28,9 +28,11 @@ const gameSlice = createSlice({
         home_team_score,
         away_team_score,
         current_period,
-        max_period
+        max_period,
+        max_players_on_field_per_team,
+        scoring_type
       } = action.payload;
-      state.game_id = id
+      state.game_id = id;
       state.sport = sport;
       state.league = league;
       state.season = season;
@@ -39,7 +41,9 @@ const gameSlice = createSlice({
       state.home_team_score = home_team_score;
       state.away_team_score = away_team_score;
       state.current_period = current_period;
-      state.max_period = max_period
+      state.max_period = max_period;
+      state.max_players_on_field_per_team = max_players_on_field_per_team;
+      state.scoring_type = scoring_type
     },
     incrementHomeScore(state, action) {
       state.home_team_score += action.payload;

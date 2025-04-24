@@ -5,13 +5,14 @@ export const createPlayer = async (playerData) => {
     const { data } = await api.post("players/", playerData);
     return data;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 };
 
-export const updatePlayer = async (playerData, slug) => {
+export const updatePlayer = async (player, playerData) => {
   try {
-    const { data } = await api.patch(`players/${slug}/`, playerData);
+    const { data } = await api.patch(`players/${player}/`, playerData);
     return data;
   } catch (error) {
     throw error;
@@ -27,7 +28,6 @@ export const deletePlayer = async (slug) => {
 };
 
 export const fetchPlayers = async (filter) => {
-  console.log(filter)
   try {
     const { data } = await api.get("players", { params: filter });
     return data;

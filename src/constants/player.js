@@ -18,6 +18,11 @@ export const YEAR_LEVEL_CHOICES = [
   { value: "2nd_year_college", label: "2nd Year College" },
 ];
 
+export const SEX = [
+    {value: "male", label: "Male"},
+    {value: "female", label: "Female"}
+]
+
 export const getCourseLabel = (value) => {
   const match = COURSE_CHOICES.find((option) => option.value === value);
   return match ? match.label : value;

@@ -1,19 +1,19 @@
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import SportsList from "@/pages/admin/SportsList";
-import SportDetails from "@/pages/admin/SportDetails";
-import TeamsList from "@/pages/admin/TeamsList";
-import TeamDetails from "@/pages/admin/TeamDetails";
-import GameSchedule from "@/pages/admin/GameSchedule";
-import PlayersList from "@/pages/admin/PlayersList";
-import PlayerDetails from "@/pages/admin/PlayerDetails";
-import GameScoring from "@/pages/common/GameScoring";
-import LeaguesList from "@/pages/admin/LeaguesList";
-import CoachList from "@/pages/admin/CoachList";
-import CoachDetails from "@/pages/admin/CoachDetails";
-import LeagueDetails from "@/pages/admin/LeagueDetails";
-import SeasonBracket from "@/pages/admin/SeasonBracket";
-import TournamentsList from "@/pages/admin/TournamentsList";
-import SeasonDetails from "@/pages/admin/SeasonDetails";
+import AdminDashboard from "@/pages/admin/dashboard/AdminDashboard";
+import SportsList from "@/pages/admin/sport/SportsList";
+import SportDetails from "@/pages/admin/sport/SportDetails";
+import TeamsList from "@/pages/admin/team/TeamsList";
+import TeamDetails from "@/pages/admin/team/TeamDetails";
+import GameSchedule from "@/pages/admin/game/GameSchedule";
+import PlayersList from "@/pages/admin/player/PlayersList";
+import PlayerDetails from "@/pages/admin/player/PlayerDetails";
+import GameScoring from "@/pages/admin/game/GameScoring";
+import LeaguesList from "@/pages/admin/league/LeaguesList";
+import CoachList from "@/pages/admin/coach/CoachList";
+import CoachDetails from "@/pages/admin/coach/CoachDetails";
+import LeagueDetails from "@/pages/admin/league/LeagueDetails";
+import SeasonBracket from "@/pages/admin/league/SeasonBracket";
+import TournamentsList from "@/pages/admin/tournament/TournamentsList";
+import SeasonDetails from "@/pages/admin/league/SeasonDetails";
 
 export const adminRoutes = [
   {

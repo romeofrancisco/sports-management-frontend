@@ -2,7 +2,7 @@ export const SPORT_STANDING_CONFIG = {
   points: {
     columns: [
       { header: "PTS", accessorKey: "standings.points" },
-      { header: "PCT", accessorKey: "standings.win_percentage"},
+      { header: "PCT", accessorKey: "standings.win_percentage" },
     ],
     sortKey: "points",
   },
@@ -25,3 +25,19 @@ export const SPORT_STANDING_CONFIG = {
   },
 };
 
+export const STAT_TYPE = [
+  { value: true, label: "Recording Stats" },
+  { value: false, label: "Metrics Stats" },
+];
+
+export const CALCULATION_TYPE_VALUES = {
+  NONE: "none",
+  SUM: "sum",
+  PERCENTAGE: "percentage",
+};
+
+export const getPeriodLabel = (sport) => {
+  if (sport == "points") return "Quarter"
+  if (sport == "sets") return "Set"
+  return "Period"
+}

@@ -9,11 +9,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
-import Loading from "../common/Loading";
-import PlayerStatsSummaryTable from "@/pages/common/components/PlayerStatsSummaryTable";
+import Loading from "../common/FullLoading";
+import PlayerStatsSummaryTable from "@/pages/admin/game/components/scoring/PlayerStatsSummaryTable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";
-import TeamStatsSummaryTable from "@/pages/common/components/TeamStatsSummaryTable";
+import TeamStatsSummaryTable from "@/pages/admin/game/components/scoring/TeamStatsSummaryTable";
 import { useTeamStatsSummary } from "@/hooks/useStats";
 import { Separator } from "../ui/separator";
 
@@ -84,9 +84,9 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
                   <PlayerStatsSummaryTable players={playerStats} />
                 </TabsContent>
                 <TabsContent value="team_stats">
-                  <TeamStatsSummaryTable team={teamStats.home_team} />
+                  <TeamStatsSummaryTable team={teamStats?.home_team || []} />
                   <Separator className="my-5"/>
-                  <TeamStatsSummaryTable team={teamStats.away_team} />
+                  <TeamStatsSummaryTable team={teamStats?.away_team || []} />
                 </TabsContent>
               </>
             )}

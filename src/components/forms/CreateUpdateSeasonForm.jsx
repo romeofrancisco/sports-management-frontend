@@ -60,14 +60,15 @@ const CreateUpdateSeasonForm = ({ league, teams, onClose, season }) => {
   const onToggleTeam = (checked, id) => {
     setValue(
       "teams",
-      checked ? [...selectedTeams, id] : selectedTeams.filter((teamId) => teamId !== id)
+      checked
+        ? [...selectedTeams, id]
+        : selectedTeams.filter((teamId) => teamId !== id)
     );
   };
 
   const onSubmit = (data) => {
     const formData = convertToFormData(data);
     const mutation = season ? updateSeason : createSeason;
-
     const options = {
       onSuccess: onClose,
       onError: (err) => {
@@ -89,19 +90,62 @@ const CreateUpdateSeasonForm = ({ league, teams, onClose, season }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       {/* Season Name */}
       <FormField label="Season Name" error={errors.name}>
-        <Controller name="name" control={control} render={({ field }) => <Input {...field} />} />
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => <Input {...field} />}
+        />
       </FormField>
 
       {/* Year */}
       <FormField label="Year" error={errors.year}>
-        <Controller name="year" control={control} render={({ field }) => <Input {...field} />} />
+        <Controller
+          name="year"
+          control={control}
+          render={({ field }) => <Input {...field} />}
+        />
       </FormField>
 
       {/* Date Range */}
-      <div className="grid gap-1">
-        <Label>Date</Label>
-        <DateRangePicker date={dateRange} onSelect={onDateSelect} />
-      </div>
+      <FormField
+        label="Date Range"
+        error={[errors.start_date, errors.end_date].filter(Boolean)}
+      >
+        <Controller
+          control={control}
+          name="start_date"
+          render={({ field: { onChange, value } }) => (
+            <Controller
+              control={control}
+              name="end_date"
+              render={({
+                field: { onChange: onChangeEnd, value: valueEnd },
+              }) => {
+                const dateRange = {
+                  from: value ? new Date(value) : null,
+                  to: valueEnd ? new Date(valueEnd) : null,
+                };
+
+                const handleRangeSelect = (range) => {
+                  onChange(
+                    range?.from ? format(range.from, "yyyy-MM-dd") : null
+                  );
+                  onChangeEnd(
+                    range?.to ? format(range.to, "yyyy-MM-dd") : null
+                  );
+                };
+
+                return (
+                  <DateRangePicker
+                    date={dateRange}
+                    onSelect={handleRangeSelect}
+                  />
+                );
+              }}
+            />
+          )}
+        />
+      </FormField>
 
       {/* Is Stats Recorded */}
       <div className="flex items-center gap-2 mt-2">
@@ -119,13 +163,14 @@ const CreateUpdateSeasonForm = ({ league, teams, onClose, season }) => {
       </div>
 
       {/* Team Selection */}
-      <TeamSelection
-        sportTeams={teams}
-        selectedTeams={selectedTeams}
-        handleToggleAllTeams={onToggleAllTeams}
-        handleToggleTeam={onToggleTeam}
-        error={errors.teams}
-      />
+      <FormField label="Teams" error={errors.teams}>
+        <TeamSelection
+          sportTeams={teams}
+          selectedTeams={selectedTeams}
+          handleToggleAllTeams={onToggleAllTeams}
+          handleToggleTeam={onToggleTeam}
+        />
+      </FormField>
 
       {/* Submit Button */}
       <Button type="submit" className="mt-4" disabled={isPending}>
@@ -149,9 +194,15 @@ const FormField = ({ label, error, children }) => (
   <div className="grid gap-1">
     <Label className="text-sm text-left">{label}</Label>
     {children}
-    {error && (
-      <p className="text-xs text-left text-destructive">{error.message}</p>
-    )}
+    {Array.isArray(error)
+      ? error.map((err, index) => (
+          <p key={index} className="text-xs text-left text-destructive">
+            {err?.message}
+          </p>
+        ))
+      : error && (
+          <p className="text-xs text-left text-destructive">{error.message}</p>
+        )}
   </div>
 );
 
@@ -173,7 +224,8 @@ const DateRangePicker = ({ date, onSelect }) => {
           {date?.from ? (
             date.to ? (
               <>
-                {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                {format(date.from, "LLL dd, y")} -{" "}
+                {format(date.to, "LLL dd, y")}
               </>
             ) : (
               format(date.from, "LLL dd, y")
@@ -207,7 +259,9 @@ const TeamSelection = ({
   <div className="border-y py-2 mt-2">
     <div className="flex items-center gap-2 mb-2 border-b py-1">
       <Checkbox
-        checked={sportTeams.length > 0 && selectedTeams.length === sportTeams.length}
+        checked={
+          sportTeams.length > 0 && selectedTeams.length === sportTeams.length
+        }
         onCheckedChange={handleToggleAllTeams}
       />
       <Label className="text-sm">Teams</Label>

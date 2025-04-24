@@ -9,7 +9,7 @@ import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
 import { useFetchUser } from "@/hooks/useAuth";
-import Loading from "@/components/common/Loading";
+import Loading from "@/components/common/FullLoading";
 import BreadCrumb from "./bread-crumb";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +38,7 @@ export default function Layout() {
     <SidebarProvider className="relative">
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-auto shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex h-auto shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />

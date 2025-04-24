@@ -8,9 +8,16 @@ import {
 } from "@/components/ui/dialog";
 import CreateUpdateSeasonForm from "../forms/CreateUpdateSeasonForm";
 import { useSportTeams } from "@/hooks/useTeams";
-import Loading from "../common/Loading";
+import Loading from "../common/FullLoading";
+import { ScrollArea } from "../ui/scroll-area";
 
-const CreateUpdateSeasonModal = ({ isOpen, onClose, league, sport, season = null }) => {
+const CreateUpdateSeasonModal = ({
+  isOpen,
+  onClose,
+  league,
+  sport,
+  season = null,
+}) => {
   const { data, isLoading } = useSportTeams(sport?.slug);
 
   if (isLoading) return <Loading />;
@@ -23,13 +30,15 @@ const CreateUpdateSeasonModal = ({ isOpen, onClose, league, sport, season = null
           <DialogDescription>
             <span className="sr-only">Season Description</span>
           </DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="max-h-[75vh]">
           <CreateUpdateSeasonForm
             league={league}
             teams={data}
             onClose={onClose}
             season={season}
           />
-        </DialogHeader>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

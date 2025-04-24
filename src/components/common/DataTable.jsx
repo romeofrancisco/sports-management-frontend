@@ -15,12 +15,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import TableLoading from "./ContentLoading";
 
 const DataTable = ({
   columns,
   data,
   showPagination = true,
   className = "",
+  loading = false,
 }) => {
   const [sorting, setSorting] = useState([]);
 
@@ -36,7 +38,7 @@ const DataTable = ({
 
   return (
     <div>
-      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.6rem)]">
+      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.1rem)] lg:max-w-[calc(100vw-9.7rem)]">
         <Table className={`${className}`}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -61,7 +63,16 @@ const DataTable = ({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <TableLoading/>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (

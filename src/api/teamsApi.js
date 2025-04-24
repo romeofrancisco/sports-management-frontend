@@ -1,8 +1,8 @@
 import api from ".";
 
-export const fetchTeams = async () => {
+export const fetchTeams = async (filter) => {
   try {
-    const { data } = await api.get("teams/");
+    const { data } = await api.get("teams/", { params: filter });
     return data;
   } catch (error) {
     throw error;
@@ -50,7 +50,6 @@ export const updateTeam = async (teamData, team) => {
     const { data } = await api.patch(`teams/${team}/`, teamData);
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

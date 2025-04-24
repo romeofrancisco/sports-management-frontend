@@ -18,6 +18,52 @@ export const fetchSportDetails = async (sport) => {
   }
 };
 
+export const createSport = async (sportData) => {
+  try {
+    const { data } = await api.post("sports/", sportData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateSport = async (sportId, sportData) => {
+  try {
+    const { data } = await api.patch(`sports/${sportId}/`, sportData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createPosition = async (positionData) => {
+  try {
+    const { data } = await api.post("positions/", positionData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updatePosition = async (positionId, positionData) => {
+  try {
+    const { data } = await api.patch(`positions/${positionId}/`, positionData);
+    return data;
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+};
+
+export const deletePosition = async (positionId) => {
+  try {
+    const { data } = await api.delete(`positions/${positionId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchPositions = async () => {
   try {
     const { data } = await api.get("positions/");
@@ -41,6 +87,45 @@ export const fetchRecordableStats = async (gameId) => {
     const { data } = await api.get(
       `player-stats/recordable_stats/?game_id=${gameId}`
     );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchSportStats = async (sport, filter) => {
+  try {
+    const { data } = await api.get(`sport-stats/?sport=${sport}`, {
+      params: filter,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteSportStat = async (statId) => {
+  try {
+    const { data } = await api.delete(`sport-stats/${statId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createSportStats = async (statData) => {
+  try {
+    const { data } = await api.post("sport-stats/", statData);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateSportStats = async (statId, statData) => {
+  try {
+    const { data } = await api.patch(`sport-stats/${statId}/`, statData);
     return data;
   } catch (error) {
     throw error;
