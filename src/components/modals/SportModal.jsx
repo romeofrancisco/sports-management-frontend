@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import SportForm from "../forms/SportForm";
+import { ScrollArea } from "../ui/scroll-area";
 
 const SportModal = ({ isOpen, onClose, sport }) => {
   return (
@@ -15,8 +16,10 @@ const SportModal = ({ isOpen, onClose, sport }) => {
         <DialogHeader>
           <DialogTitle>Register New Sport</DialogTitle>
           <DialogDescription></DialogDescription>
-          <SportForm onClose={onClose} sport={sport} />
         </DialogHeader>
+        <ScrollArea className="max-h-[75vh]">
+          <SportForm onClose={onClose} sport={sport} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

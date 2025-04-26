@@ -25,6 +25,16 @@ export const SPORT_STANDING_CONFIG = {
   },
 };
 
+export const SCORING_TYPE_CHOICES = [
+  { value: "points", label: "Points" },
+  { value: "sets", label: "Sets" },
+];
+
+export const SCORING_TYPE_VALUES = {
+  POINTS: "points",
+  SETS: "sets",
+};
+
 export const STAT_TYPE = [
   { value: true, label: "Recording Stats" },
   { value: false, label: "Metrics Stats" },
@@ -37,7 +47,7 @@ export const CALCULATION_TYPE_VALUES = {
 };
 
 export const getPeriodLabel = (sport) => {
-  if (sport == "points") return "Quarter"
-  if (sport == "sets") return "Set"
-  return "Period"
-}
+  if (sport == "points") return "Quarter";
+  if (sport == "sets") return "Set";
+  return "Period";
+};
