@@ -13,7 +13,7 @@ const TeamSide = ({ players }) => {
     // Reset if click the player again
     if (player.id == playerId) return dispatch(reset());
 
-    return dispatch(setPlayer({ id: player.id, team: player.team_side }));
+    return dispatch(setPlayer({ id: player.id, team: player.team }));
   };
 
   return (

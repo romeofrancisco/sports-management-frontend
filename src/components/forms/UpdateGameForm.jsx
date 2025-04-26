@@ -21,7 +21,7 @@ import { convertToFormData } from "@/utils/convertToFormData";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
 
 const UpdateGameForm = ({ sports, teams, onClose, game }) => {
-  const { id, sport, home_team, away_team, date, location } = game;
+  const { id, sport, home_team, away_team, date, location, status } = game;
   const { mutate: updateGame, isPending } = useUpdateGame(id);
   const { control, handleSubmit, formState: { errors }, watch, setError } = useForm({
     defaultValues: {
@@ -103,6 +103,7 @@ const UpdateGameForm = ({ sports, teams, onClose, game }) => {
         teams={filteredTeams}
         excludeTeamId={selectedAwayTeam}
         errorMessage={errors.home_team_id?.message}
+        
       />
 
       {/* Away Team Selector */}

@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useCreateSport, useUpdateSport } from "@/hooks/useSports";
 import ControlledCheckbox from "../common/ControlledCheckbox";
+import ControlledSelect from "../common/ControlledSelect";
 
 const SportForm = ({ onClose, sport = null }) => {
   const isEdit = !!sport;
@@ -86,6 +87,10 @@ const SportForm = ({ onClose, sport = null }) => {
         type="number"
         control={control}
         errors={errors}
+      />
+
+      <ControlledSelect
+      
       />
 
       {/* Win Threshold */}

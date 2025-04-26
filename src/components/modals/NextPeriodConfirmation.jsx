@@ -12,10 +12,11 @@ import {
 import { useManageGame } from "@/hooks/useGames";
 import { useSelector } from "react-redux";
 import { GAME_ACTIONS } from "@/constants/game";
+import { useParams } from "react-router";
 
 const NextPeriodConfirmation = ({ isOpen, onClose }) => {
-  const { game_id } = useSelector((state) => state.game);
-  const { mutate: nextPeriod } = useManageGame(game_id);
+  const { gameId } = useParams();
+  const { mutate: nextPeriod } = useManageGame(gameId);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>

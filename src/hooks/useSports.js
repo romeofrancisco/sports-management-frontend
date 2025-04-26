@@ -18,11 +18,10 @@ import {
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useSports = (enabled = true) => {
+export const useSports = () => {
   return useQuery({
     queryKey: ["sports"],
     queryFn: fetchSports,
-    enabled,
   });
 };
 

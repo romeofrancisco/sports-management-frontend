@@ -9,7 +9,7 @@ export const queryClient = new QueryClient({
       refetchOnReconnect: true, // Automatically refetch on network reconnect
       refetchOnMount: false, // Avoid refetching when mounting a cached query
       retry: 3, // Retry failed queries up to 3 times before giving up
-      retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30000), // Exponential backoff
+      retryDelay: (attempt) => Math.min(1000 * 3 ** attempt, 30000), // Exponential backoff
       keepPreviousData: true, // Keep old data while fetching new
       suspense: false, // Enable suspense for React Suspense support
     },

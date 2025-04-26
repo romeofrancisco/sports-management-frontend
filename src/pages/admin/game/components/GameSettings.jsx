@@ -16,11 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CompleteGameConfirmation from "@/components/modals/CompleteGameConfirmation";
 import SubstitutionModal from "@/components/modals/SubstitutionModal";
 import { reset } from "@/store/slices/playerStatSlice";
+import { getPeriodLabel } from "@/constants/sport";
 
 const GameSettings = () => {
-  const { max_period } = useSelector((state) => state.sport);
-  const { current_period } = useSelector((state) => state.game);
   const dispatch = useDispatch();
+  const { scoring_type } = useSelector((state) => state.sport);
+  const period = getPeriodLabel(scoring_type);
 
   const modals = {
     stats: useModal(),
@@ -61,12 +62,9 @@ const GameSettings = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => modals.nextPeriod.openModal()}>
             <Clock />
-            Next Period
+            Next {period}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => modals.completeGame.openModal()}
-            disabled={current_period < max_period}
-          >
+          <DropdownMenuItem onClick={() => modals.completeGame.openModal()}>
             <Flag />
             Complete Game
           </DropdownMenuItem>

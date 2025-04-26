@@ -6,11 +6,11 @@ import { useUpdateStartingLineup } from "@/hooks/useStartingLineup";
 import { Loader2 } from "lucide-react";
 import SelectPlayer from "../common/SelectPlayer";
 
-const StartingLineupForm = ({ teams, game, lineup, onClose }) => {
+const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
   const { mutate: updateLineup, isPending } = useUpdateStartingLineup(game.id);
   const { home_team, away_team } = teams;
 
-  const max = game?.max_players_on_field_per_team || 5;
+  const max = sport.max_players_on_field || 5;
 
   const formatLineup = (list, teamId) => {
     const filled =
@@ -70,7 +70,7 @@ const StartingLineupForm = ({ teams, game, lineup, onClose }) => {
             />
             <h1 className="text-3xl font-semibold">{game.home_team.name}</h1>
           </div>
-          {Array.from({ length: game.max_players_on_field_per_team }).map(
+          {Array.from({ length: max }).map(
             (_, idx) => (
               <SelectPlayer
                 key={idx}
@@ -104,7 +104,7 @@ const StartingLineupForm = ({ teams, game, lineup, onClose }) => {
             />
             <h1 className="text-3xl font-semibold">{game.away_team.name}</h1>
           </div>
-          {Array.from({ length: game.max_players_on_field_per_team }).map(
+          {Array.from({ length: max }).map(
             (_, idx) => (
               <SelectPlayer
                 key={idx}

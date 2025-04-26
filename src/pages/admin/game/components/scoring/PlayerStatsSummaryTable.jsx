@@ -179,7 +179,7 @@ const PlayerStatsSummaryTable = ({ players }) => {
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Player Stats</h3>
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">Period:</span>
+          <span className="text-sm text-muted-foreground">{getPeriodLabel(scoring_type)}:</span>
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
             <SelectTrigger className="w-[100px] text-xs" size="sm">
               <SelectValue placeholder="Period" />

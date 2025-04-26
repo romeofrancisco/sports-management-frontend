@@ -12,20 +12,20 @@ import {
 import { useManageGame } from "@/hooks/useGames";
 import { useSelector } from "react-redux";
 import { GAME_ACTIONS } from "@/constants/game";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const CompleteGameConfirmation = ({ isOpen, onClose }) => {
-  const { game_id } = useSelector((state) => state.game);
-  const { mutate: completeGame } = useManageGame(game_id);
-  const navigate = useNavigate()
+  const { gameId } = useParams();
+  const { mutate: completeGame } = useManageGame(gameId);
+  const navigate = useNavigate();
 
   const handleCompleteGame = () => {
     completeGame(GAME_ACTIONS.COMPLETE, {
-        onSuccess: () => {
-            navigate("/games")
-        }
-    })
-  }
+      onSuccess: () => {
+        navigate(`/games/${gameId}/game-summary`);
+      },
+    });
+  };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -38,9 +38,7 @@ const CompleteGameConfirmation = ({ isOpen, onClose }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleCompleteGame}
-          >
+          <AlertDialogAction onClick={handleCompleteGame}>
             Confirm
           </AlertDialogAction>
         </AlertDialogFooter>

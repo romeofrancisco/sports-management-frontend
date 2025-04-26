@@ -12,6 +12,9 @@ import {
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
+import { GAME_ACTIONS } from "@/constants/game";
+import { useSelector } from "react-redux";
+import { getPeriodLabel } from "@/constants/sport";
 
 export const useGames = (filter, enabled = true) => {
   const apiFilter = {
@@ -30,6 +33,7 @@ export const useGameDetails = (gameId) => {
   return useQuery({
     queryKey: ["game", gameId],
     queryFn: () => fetchGameDetails(gameId),
+    enabled: !!gameId,
   });
 };
 
@@ -89,13 +93,36 @@ export const useCurrentGamePlayers = (gameId, enabled = true) => {
 };
 
 export const useManageGame = (gameId) => {
+  const { scoring_type } = useSelector((state) => state.sport);
+  const period = getPeriodLabel(scoring_type);
+
   return useMutation({
     mutationFn: (action) => manageGame(gameId, action),
-    onSuccess: () => {
+    onSuccess: (_, action) => {
       queryClient.invalidateQueries(["game", gameId]);
+
+      switch (action) {
+        case GAME_ACTIONS.COMPLETE:
+          toast.success("Game Completed!", { richColors: true });
+          break;
+        case GAME_ACTIONS.START:
+          toast.success("Game Started!", { richColors: true });
+          break;
+        case GAME_ACTIONS.NEXT_PERIOD:
+          toast.success(`Advanced to the next ${period}`, { richColors: true });
+          break;
+        default:
+          break;
+      }
     },
-    onError: ({ response }) => {
-      toast.info(response.data.error, {
+    onError: (error, action) => {
+      const errorTitle =
+        action === GAME_ACTIONS.COMPLETE
+          ? "Cannot Complete Game"
+          : `Cannot Advance to Next ${period}`;
+
+      toast.info(errorTitle, {
+        description: error?.response?.data?.error || "Something went wrong.",
         richColors: true,
       });
     },

@@ -16,16 +16,57 @@ import {
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useCreatePlayerStat = () => {
+export const useCreatePlayerStat = (gameId) => {
   const dispatch = useDispatch();
 
   return useMutation({
-    mutationFn: (stats) => createPlayerStat(stats),
-    onSettled: () => {
+    mutationFn: (stat) => createPlayerStat(stat),
+    
+    onMutate: async (newStat) => {
+      const { point_value, team } = newStat;
+
       dispatch(reset());
+
+      await queryClient.cancelQueries(["game-details", gameId]);
+
+      const previousGame = queryClient.getQueryData(["game-details", gameId]);
+
+      queryClient.setQueryData(["game-details", gameId], (old) => {
+        if (!old) return old;
+
+        const newHomeScore =
+          old.home_team_score + (team === old.home_team.id ? point_value : 0);
+        const newAwayScore =
+          old.away_team_score + (team === old.away_team.id ? point_value : 0);
+
+        return {
+          ...old,
+          home_team_score: newHomeScore,
+          away_team_score: newAwayScore,
+        };
+      });
+
+      return { previousGame }; // for rollback if needed
+    },
+
+    onError: ({response}, newStat, context) => {
+      if (context?.previousGame) {
+        queryClient.setQueryData(["game-details", gameId], context.previousGame);
+      }
+      if (response.data.error) {
+        toast.info("Cannot Record Stat", {
+          description: response.data.error,
+          richColors: true
+        })
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries(["game-details", gameId]);
     },
   });
 };
+
 
 export const usePlayerStatsSummary = (gameId, team, enabled = true) => {
   return useQuery({

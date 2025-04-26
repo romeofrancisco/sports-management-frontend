@@ -9,9 +9,6 @@ import { MultiBackend } from "react-dnd-multi-backend";
 import DragLayer from "./DragLayer";
 import DraggableButton from "./DraggableButton";
 import GridCells from "./GridCells";
-import { incrementHomeScore } from "@/store/slices/gameSlice";
-import { incrementAwayScore } from "@/store/slices/gameSlice";
-import { TEAM_SIDES } from "@/constants/game";
 
 // Mobile detection
 const isMobile = () => {
@@ -46,32 +43,17 @@ const backendConfig = mobile
 const StatButtons = ({ statTypes }) => {
   const { playerId, team } = useSelector((state) => state.playerStat);
   const { game_id, current_period } = useSelector((state) => state.game);
-  const { mutate: createPlayerStat, isPending: isCreatingStat } = useCreatePlayerStat();
-  const dispatch = useDispatch();
-
-  const debouncedStat = useDebouncedCallback(
-    (stat) => createPlayerStat(stat),
-    300,
-    { leading: true, trailing: false }
-  );
+  const { mutate: createPlayerStat, isPending: isCreatingStat } =
+    useCreatePlayerStat(game_id);
 
   const handleStatRecord = (statId, point_value) => {
-    if (point_value > 0) {
-      if (team === TEAM_SIDES.HOME_TEAM) {
-        console.log(point_value);
-        dispatch(incrementHomeScore(point_value));
-      }
-
-      if (team === TEAM_SIDES.AWAY_TEAM) {
-        dispatch(incrementAwayScore(point_value));
-      }
-    }
-
-    debouncedStat({
+    createPlayerStat({
       player: playerId,
       game: game_id,
       period: current_period,
       stat_type: statId,
+      point_value,
+      team,
     });
   };
 
