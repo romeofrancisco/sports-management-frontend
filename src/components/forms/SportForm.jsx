@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import ControlledInput from "../common/ControlledInput";
 import { Loader2 } from "lucide-react";
+import ControlledInput from "../common/ControlledInput";
+import ControlledSelect from "../common/ControlledSelect";
+import ControlledCheckbox from "../common/ControlledCheckbox";
 import { Button } from "../ui/button";
 import { useCreateSport, useUpdateSport } from "@/hooks/useSports";
-import ControlledCheckbox from "../common/ControlledCheckbox";
-import ControlledSelect from "../common/ControlledSelect";
 import { SCORING_TYPE_CHOICES, SCORING_TYPE_VALUES } from "@/constants/sport";
+import { sanitizeSportData } from "@/utils/sanitizeSportData";
 
 const SportForm = ({ onClose, sport = null }) => {
-  const isEdit = !!sport;
+  const isEdit = Boolean(sport);
 
   const { mutate: createSport, isPending: isCreating } = useCreateSport();
   const { mutate: updateSport, isPending: isUpdating } = useUpdateSport();
@@ -19,6 +20,7 @@ const SportForm = ({ onClose, sport = null }) => {
     handleSubmit,
     formState: { errors },
     setError,
+    setValue,
     watch,
   } = useForm({
     defaultValues: {
@@ -37,23 +39,42 @@ const SportForm = ({ onClose, sport = null }) => {
   });
 
   const scoringType = watch("scoring_type");
+  const hasTie = watch("has_tie");
+  const hasOvertime = watch("has_overtime");
+  const hasPeriod = watch("has_period");
 
-  const onSubmit = (data) => {
+  // Handle field dependencies
+  useEffect(() => {
+    if (scoringType === SCORING_TYPE_VALUES.SETS) {
+      setValue("has_period", true);
+    }
+  }, [scoringType, setValue]);
+
+  useEffect(() => {
+    if (hasTie && hasOvertime) {
+      setValue("has_overtime", false);
+    }
+  }, [hasTie, hasOvertime, setValue]);
+
+  useEffect(() => {
+    if (hasOvertime && hasTie) {
+      setValue("has_tie", false);
+    }
+  }, [hasOvertime, hasTie, setValue]);
+
+  const onSubmit = (rawData) => {
+    const data = sanitizeSportData(rawData);
+
     const mutationFn = isEdit ? updateSport : createSport;
-    const payload = isEdit ? { id: sport.id, data: data } : data;
+    const payload = isEdit ? { id: sport.slug, data } : data;
 
     mutationFn(payload, {
-      onSuccess: () => {
-        onClose();
-      },
+      onSuccess: onClose,
       onError: (e) => {
         const error = e.response?.data;
         if (error) {
-          Object.keys(error).forEach((fieldName) => {
-            setError(fieldName, {
-              type: "server",
-              message: error[fieldName],
-            });
+          Object.entries(error).forEach(([field, message]) => {
+            setError(field, { type: "server", message });
           });
         }
       },
@@ -65,7 +86,6 @@ const SportForm = ({ onClose, sport = null }) => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-4 px-1"
     >
-      {/* Sports Name */}
       <ControlledInput
         name="name"
         label="Name"
@@ -74,66 +94,61 @@ const SportForm = ({ onClose, sport = null }) => {
         errors={errors}
       />
 
-      {/* Max Team Players */}
       <ControlledInput
         name="max_players_per_team"
-        help_text="Maximum players allowed per team roster"
         label="Max Team Players"
-        placeholder="Max team players ( default: 12 )"
+        placeholder="Default: 12"
+        help_text="Maximum players allowed per team roster"
         type="number"
         control={control}
         errors={errors}
       />
 
-      {/* Max Field Players */}
       <ControlledInput
         name="max_players_on_field"
-        help_text="Maximum players allowed on the field/court during play"
         label="Max Field Players"
-        placeholder="Max field players ( default: 5 )"
+        placeholder="Default: 5"
+        help_text="Maximum players allowed on the field/court during play"
         type="number"
         control={control}
         errors={errors}
       />
 
-      {/* Scoring Type */}
       <ControlledSelect
         name="scoring_type"
-        control={control}
         label="Scoring Format"
-        placeholder="Select Scoring Format..."
-        options={SCORING_TYPE_CHOICES}
+        placeholder="Select scoring format..."
         help_text="Select how the sport determines a winner (e.g., by points or by sets)."
+        options={SCORING_TYPE_CHOICES}
+        control={control}
+        errors={errors}
       />
 
       {scoringType === SCORING_TYPE_VALUES.SETS && (
         <>
-          {/* Win Threshold */}
           <ControlledInput
             name="win_threshold"
-            help_text="Enter the number of sets a team must win to secure the match (e.g., 3 sets). Leave empty if no specific threshold."
             label="Sets Needed to Win the Match"
-            placeholder="Leave empty if no threshold is required"
+            placeholder="Leave empty if not required"
+            help_text="Number of sets a team must win (e.g., 3 sets)."
             type="number"
             control={control}
             errors={errors}
           />
-          {/* Win Points Threshold */}
           <ControlledInput
             name="win_points_threshold"
-            help_text="Enter the number of points a team must reach to win a set (e.g., 25 points). Leave empty if no specific threshold."
             label="Points Needed to Win a Set"
-            placeholder="Leave empty if no threshold is required"
+            placeholder="Leave empty if not required"
+            help_text="Number of points to win a set (e.g., 25 points)."
             type="number"
             control={control}
             errors={errors}
           />
-          {/* Win Margin */}
           <ControlledInput
             name="win_margin"
-            help_text="Minimum lead required to win (e.g., 2 points)."
             label="Win Margin"
-            placeholder="Leave empty if no win margin is required"
+            placeholder="Leave empty if no margin"
+            help_text="Minimum point lead required to win (e.g., 2 points)."
             type="number"
             control={control}
             errors={errors}
@@ -141,28 +156,39 @@ const SportForm = ({ onClose, sport = null }) => {
         </>
       )}
 
-      {/* Has Period */}
       <ControlledCheckbox
         name="has_period"
         label="Has Sets/Quarters"
-        help_text="Check this if the sport uses structured periods (e.g., sets in volleyball or quarters in basketball)."
+        help_text="Enable if the sport has structured periods (e.g., sets, quarters)."
+        control={control}
+        errors={errors}
+        disabled={scoringType === SCORING_TYPE_VALUES.SETS}
+      />
+
+      {hasPeriod && (
+        <ControlledInput
+          name="max_period"
+          label="Maximum Sets/Quarters"
+          placeholder="Max number of periods"
+          help_text="Total number of sets, quarters, or periods (e.g., 4 quarters)."
+          type="number"
+          control={control}
+          errors={errors}
+        />
+      )}
+
+      <ControlledCheckbox
+        name="has_tie"
+        label="Allow Tie"
+        help_text="Check if the match can result in a tie (draw)."
         control={control}
         errors={errors}
       />
 
-      {/* Has Tie */}
-      <ControlledCheckbox
-        name="has_tie"
-        label="Allow Overtime"
-        help_text="Check this if the match can result in a tie (Draw)."
-        control={control}
-        errors={errors}
-      />
-      {/* Has Overtime */}
       <ControlledCheckbox
         name="has_overtime"
-        label="Has Draws"
-        help_text="Enable if matches can continue into overtime when tied at the end of regulation."
+        label="Allow Overtime"
+        help_text="Enable if the match should continue into overtime when tied."
         control={control}
         errors={errors}
       />

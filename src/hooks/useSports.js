@@ -7,13 +7,10 @@ import {
   fetchRecordableStats,
   createSport,
   updateSport,
-  fetchSportStats,
-  updateSportStats,
-  createSportStats,
-  deleteSportStat,
   createPosition,
   updatePosition,
   deletePosition,
+  deleteSport,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -27,7 +24,7 @@ export const useSports = () => {
 
 export const useCreateSport = () => {
   return useMutation({
-    queryFn: (sportData) => createSport(sportData),
+    mutationFn: (sportData) => createSport(sportData),
     onSuccess: () => {
       toast.success("New Sport Created", {
         richColors: true,
@@ -39,9 +36,21 @@ export const useCreateSport = () => {
 
 export const useUpdateSport = () => {
   return useMutation({
-    queryFn: ({ id, data }) => updateSport(id, data),
+    mutationFn: ({ id, data }) => updateSport(id, data),
     onSuccess: () => {
       toast.success("Sport Updated", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["sports"]);
+    },
+  });
+};
+
+export const useDeleteSport = () => {
+  return useMutation({
+    mutationFn: (sport) => deleteSport(sport),
+    onSuccess: () => {
+      toast.info("Sport Deleted", {
         richColors: true,
       });
       queryClient.invalidateQueries(["sports"]);

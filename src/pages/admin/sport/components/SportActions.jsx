@@ -8,15 +8,24 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Trash, MoreHorizontal, ClipboardPenLine, SquarePen } from "lucide-react";
+import {
+  Trash,
+  MoreHorizontal,
+  ClipboardPenLine,
+  SquarePen,
+} from "lucide-react";
 import { useNavigate } from "react-router";
 
 const SportActions = ({ onEdit, onDelete, sport }) => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 p-0 absolute right-2 top-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 p-0 absolute right-2 top-2"
+        >
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
@@ -24,17 +33,17 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate(`/sports/${sport}`)}>
+        <DropdownMenuItem onClick={() => navigate(`/sports/${sport.slug}`)}>
           <ClipboardPenLine className="mr-2 h-4 w-4" />
           Manage Sport
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onEdit}>
+        <DropdownMenuItem onClick={() => onEdit(sport)}>
           <SquarePen className="mr-2 h-4 w-4" />
           Update Sport
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
-          onClick={onDelete}
+          onClick={() => onDelete(sport)}
           className="text-destructive"
         >
           <Trash className="mr-2 h-4 w-4" />
