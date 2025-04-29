@@ -30,7 +30,7 @@ const gameSlice = createSlice({
         current_period,
         max_period,
         max_players_on_field_per_team,
-        scoring_type
+        scoring_type,
       } = action.payload;
       state.game_id = id;
       state.sport = sport;
@@ -43,28 +43,10 @@ const gameSlice = createSlice({
       state.current_period = current_period;
       state.max_period = max_period;
       state.max_players_on_field_per_team = max_players_on_field_per_team;
-      state.scoring_type = scoring_type
-    },
-    incrementHomeScore(state, action) {
-      state.home_team_score += action.payload;
-    },
-    decrementHomeScore(state, action) {
-      state.home_team_score -= action.payload;
-    },
-    incrementAwayScore(state, action) {
-      state.away_team_score += action.payload;
-    },
-    decrementAwayScore(state, action) {
-      state.away_team_score -= action.payload;
+      state.scoring_type = scoring_type;
     },
   },
 });
 
-export const {
-  setGameDetails,
-  incrementHomeScore,
-  decrementHomeScore,
-  incrementAwayScore,
-  decrementAwayScore,
-} = gameSlice.actions;
+export const { setGameDetails } = gameSlice.actions;
 export default gameSlice.reducer;

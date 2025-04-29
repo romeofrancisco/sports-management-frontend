@@ -1,23 +1,31 @@
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import MultiSelect from "../common/ControlledMultiSelect";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { convertToFormData } from "@/utils/convertToFormData";
 import { useCreateTeam, useUpdateTeam } from "@/hooks/useTeams";
 import { DIVISIONS } from "@/constants/team";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
+import { convertToFormData } from "@/utils/convertToFormData";
 
 const TeamForm = ({ coaches, sports, onClose, team = null }) => {
-  const isEdit = !!team;
-
+  const isEdit = Boolean(team);
+  const [logoPreview, setLogoPreview] = useState(team?.logo || null);
   const { mutate: createTeam, isPending: isCreating } = useCreateTeam();
   const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();
 
-  const { control, handleSubmit, formState: { errors }, setError } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    watch,
+  } = useForm({
     defaultValues: {
       name: team?.name || "",
+      abbreviation: team?.abbreviation || "",
+      color: team?.color || "#000000",
       sport: team?.sport || "",
       division: team?.division || "",
       coach: team?.coach.map((coach) => coach) || [],
@@ -25,11 +33,25 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
     },
   });
 
+  const logoFile = watch("logo");
+  const teamColor = watch("color");
+
+  useEffect(() => {
+    if (logoFile && logoFile.length > 0) {
+      const file = logoFile[0];
+      const url = URL.createObjectURL(file);
+      setLogoPreview(url);
+
+      // Clean up the URL object when component unmounts or file changes
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [logoFile]);
+
   const onSubmit = (teamData) => {
-    const formData = convertToFormData(teamData);
+    const data = convertToFormData(teamData);
 
     const mutationFn = isEdit ? updateTeam : createTeam;
-    const payload = isEdit ? { team: team.slug, data: formData } : formData;
+    const payload = isEdit ? { team: team.slug, data: data } : data;
 
     mutationFn(payload, {
       onSuccess: () => {
@@ -50,13 +72,56 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 py-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4 px-1">
+      <div
+        className="size-[7rem] place-self-center text-center content-center border-2 p-3"
+        style={{ backgroundColor: teamColor }}
+      >
+        {logoPreview ? (
+          <img
+            className="size-full object-cover"
+            src={logoPreview}
+            alt="Team Logo"
+          />
+        ) : (
+          "Team Logo"
+        )}
+      </div>
+
       {/* Team Name */}
       <ControlledInput
         name="name"
         control={control}
         label="Team Name"
         placeholder="Enter Team Name"
+        errors={errors}
+      />
+
+      {/* Team Name */}
+      <ControlledInput
+        name="abbreviation"
+        control={control}
+        label="Abbreviation"
+        help_text="Team's short name"
+        placeholder="Enter Team Abbreviation"
+        errors={errors}
+      />
+
+      {/* Team Logo */}
+      <ControlledInput
+        name="logo"
+        control={control}
+        label="Team Logo"
+        type="file"
+        accept="image/*"
+        errors={errors}
+      />
+
+      <ControlledInput
+        name="color"
+        control={control}
+        label="Team Color"
+        type="color"
         errors={errors}
       />
 
@@ -70,6 +135,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         valueKey="id"
         labelKey="name"
         errors={errors}
+        disabled={isEdit}
       />
 
       {/* Division */}
@@ -92,16 +158,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         errors={errors}
         labelKey="full_name"
         max={3}
-      />
-
-      {/* Team Logo */}
-      <ControlledInput
-        name="logo"
-        control={control}
-        label="Team Logo"
-        type="file"
-        accept="image/*"
-        errors={errors}
       />
 
       <Button

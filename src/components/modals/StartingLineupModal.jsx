@@ -12,12 +12,14 @@ import Loading from "../common/FullLoading";
 import StartingLineupForm from "../forms/StartingLineupForm";
 import { useGamePlayers } from "@/hooks/useGames";
 import { useStartingLineup } from "@/hooks/useStartingLineup";
+import { useSportDetails } from "@/hooks/useSports";
 
 const StartingLineupModal = ({ isOpen, onClose, game }) => {
   const { data: gamePlayers, isLoading: isGamePlayersLoading } = useGamePlayers(game?.id, isOpen);
-  const {data: lineup, isLoading: isLineupLoading } = useStartingLineup(game?.id, isOpen)
+  const { data: lineup, isLoading: isLineupLoading } = useStartingLineup(game?.id, isOpen)
+  const { data: sport, isLoading: isSportLoading } = useSportDetails(game?.sport_slug)
 
-  const isLoading = isGamePlayersLoading || isLineupLoading
+  const isLoading = isGamePlayersLoading || isLineupLoading || isSportLoading
 
   if (isLoading) return <Loading />;
 
@@ -38,6 +40,7 @@ const StartingLineupModal = ({ isOpen, onClose, game }) => {
             teams={gamePlayers} 
             lineup={lineup}
             game={game} 
+            sport={sport}
           />
         </ScrollArea>
       </DialogContent>

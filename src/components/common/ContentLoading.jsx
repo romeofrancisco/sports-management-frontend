@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners";
 
 const ContentLoading = () => {
   return (
-    <div className="w-full h-full content-center text-center ">
+    <div className="w-full h-full self-center content-center text-center ">
       <ClipLoader size={25} color="var(--primary)" />
     </div>
   );

@@ -11,13 +11,14 @@ import { useSelector } from "react-redux";
 import SubstitutionForm from "../forms/SubstitutionForm";
 import ContentLoading from "../common/ContentLoading";
 import { ScrollArea } from "../ui/scroll-area";
+import { useParams } from "react-router";
 
 const SubstitutionModal = ({ isOpen, onClose }) => {
-  const { game_id } = useSelector((state) => state.game);
+  const { gameId } = useParams();
   const { data: currentPlayers, isLoading: isCurrentPlayersLoading } =
-    useCurrentGamePlayers(game_id, isOpen);
+    useCurrentGamePlayers(gameId, isOpen);
   const { data: gamePlayers, isLoading: isGamePlayersLoading } = useGamePlayers(
-    game_id,
+    gameId,
     isOpen
   );
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { replace, useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
 import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
@@ -7,21 +7,23 @@ import ScoreBoard from "./components/scoring/ScoreBoard";
 import TeamSide from "./components/scoring/TeamSide";
 import StatButtons from "./components/scoring/StatButtons/StatButtons";
 import { useRecordableStats, useSportDetails } from "@/hooks/useSports";
-import { useGamePlayers, useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
+import { useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
 import { setGameDetails } from "@/store/slices/gameSlice";
 import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
 import RequireLandscape from "./components/scoring/RequireLandscape";
+import { GAME_STATUS_VALUES } from "@/constants/game";
 
 const GameScoring = () => {
-  const { id } = useParams();
+  const { gameId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isPortrait, setIsPortrait] = useState(false);
 
   // Data fetching
-  const { data: game, isLoading: isGameLoading, isError: isGameError } = useGameDetails(id);
-  const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(id);
-  const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(id);
+  const { data: game, isLoading: isGameLoading, isError: isGameError } = useGameDetails(gameId);
+  const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(gameId);
+  const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(gameId);
   const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
 
   // Unified loading/error states
@@ -30,6 +32,9 @@ const GameScoring = () => {
 
   // Store game in Redux on load
   useEffect(() => {
+    if (game && game.status === GAME_STATUS_VALUES.COMPLETED) {
+      return navigate(`/games/${gameId}/boxscore`, { replace: true })
+    }
     if (game) {
       dispatch(setGameDetails(game));
     }

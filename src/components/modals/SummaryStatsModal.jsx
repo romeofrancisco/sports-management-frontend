@@ -73,7 +73,7 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
               <TabsTrigger value="team_stats">Team Stats</TabsTrigger>
             </TabsList>
 
-            {isPlayerStatsLoading ? (
+            {isPlayerStatsLoading || isTeamStatsLoading ? (
               <Loading />
             ) : (
               <>

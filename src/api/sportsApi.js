@@ -36,6 +36,15 @@ export const updateSport = async (sportId, sportData) => {
   }
 };
 
+export const deleteSport = async (sportId) => {
+  try {
+    const { data } = await api.delete(`sports/${sportId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createPosition = async (positionData) => {
   try {
     const { data } = await api.post("positions/", positionData);
@@ -50,7 +59,7 @@ export const updatePosition = async (positionId, positionData) => {
     const { data } = await api.patch(`positions/${positionId}/`, positionData);
     return data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw error;
   }
 };
