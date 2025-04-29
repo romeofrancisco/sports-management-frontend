@@ -68,9 +68,9 @@ export const useDeleteTeam = () => {
   });
 };
 
-export const useUpdateTeam = (team) => {
+export const useUpdateTeam = () => {
   return useMutation({
-    mutationFn: (teamData) => updateTeam(teamData, team),
+    mutationFn: ({team, data}) => updateTeam(data, team),
     onSuccess: () => {
       toast.success("Team updated", {
         richColors: true,

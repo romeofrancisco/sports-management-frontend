@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { replace, useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
 import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
@@ -33,7 +33,7 @@ const GameScoring = () => {
   // Store game in Redux on load
   useEffect(() => {
     if (game && game.status === GAME_STATUS_VALUES.COMPLETED) {
-      return navigate(`/games/${gameId}/game-summary`)
+      return navigate(`/games/${gameId}/boxscore`, { replace: true })
     }
     if (game) {
       dispatch(setGameDetails(game));

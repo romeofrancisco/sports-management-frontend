@@ -13,7 +13,7 @@ import {
   CalendarSync,
   ChartColumn,
   StepForward,
-  Play
+  Play,
 } from "lucide-react";
 import { GAME_STATUS_VALUES } from "@/constants/game";
 
@@ -23,9 +23,14 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
     modals[modalType]?.openModal();
   };
 
-  const goToGamePage = () => {
+  const goToGameScoring = () => {
     setSelectedGame(game);
     navigate(`/games/${game.id}`);
+  };
+
+  const goToBoxscore = () => {
+    setSelectedGame(game);
+    navigate(`/games/${game.id}/boxscore`);
   };
 
   const { status, lineup_status } = game;
@@ -48,7 +53,7 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
           <>
             {lineup_status.home_ready && lineup_status.away_ready && (
               <DropdownMenuItem onClick={() => handleOpen("startGame")}>
-                <Play/>
+                <Play />
                 Start Game
               </DropdownMenuItem>
             )}
@@ -68,15 +73,15 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
 
         {/* In Progress Game Options */}
         {isInProgress && (
-          <DropdownMenuItem onClick={goToGamePage}>
-            <StepForward/>
+          <DropdownMenuItem onClick={goToGameScoring}>
+            <StepForward />
             Continue Game
           </DropdownMenuItem>
         )}
 
         {/* Completed Game Options */}
         {isCompleted && (
-          <DropdownMenuItem onClick={goToGamePage}>
+          <DropdownMenuItem onClick={goToBoxscore}>
             <ChartColumn />
             Stats Summary
           </DropdownMenuItem>

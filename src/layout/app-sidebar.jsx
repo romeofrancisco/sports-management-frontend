@@ -19,12 +19,10 @@ export function AppSidebar({ ...props }) {
   const management = adminManagement();
   const main = adminMain();
 
-  // Check if the path matches "/games/{anyNumber}"
-  const path = window.location.pathname;
-  const isScoring = /\/games\/(\d+)/.exec(path); // Matches "/games/{id}"
+
 
   return (
-    <Sidebar collapsible={isScoring ? "offcanvas" : "icon"} {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

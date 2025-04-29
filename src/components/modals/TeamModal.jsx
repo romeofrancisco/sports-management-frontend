@@ -10,6 +10,7 @@ import { useCoaches } from "@/hooks/useCoaches";
 import { useSports } from "@/hooks/useSports";
 import UpdateTeamForm from "../forms/TeamForm";
 import Loading from "../common/FullLoading";
+import { ScrollArea } from "../ui/scroll-area";
 
 const TeamModal = ({ isOpen, onClose, team }) => {
   const { data: coaches, isLoading: isCoachesLoading } = useCoaches("", isOpen);
@@ -26,12 +27,14 @@ const TeamModal = ({ isOpen, onClose, team }) => {
             Add team for a specific sport and assign a coach.
           </DialogDescription>
         </DialogHeader>
-        <UpdateTeamForm
-          coaches={coaches}
-          sports={sports}
-          team={team}
-          onClose={onClose}
-        />
+        <ScrollArea className="max-h-[75vh]">
+          <UpdateTeamForm
+            coaches={coaches}
+            sports={sports}
+            team={team}
+            onClose={onClose}
+          />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

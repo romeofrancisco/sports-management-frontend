@@ -24,6 +24,7 @@ const ControlledSelect = ({
   secondaryLabel = "",
   labelKey = "label",
   size = "",
+  disabled = false
 }) => {
   return (
     <div className={`grid gap-0.5 ${className}`}>
@@ -40,7 +41,7 @@ const ControlledSelect = ({
         control={control}
         render={({ field }) => (
           <Select value={String(field.value)} onValueChange={field.onChange}>
-            <SelectTrigger className="w-full" size={size}>
+            <SelectTrigger className="w-full" size={size} disabled={disabled}>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>

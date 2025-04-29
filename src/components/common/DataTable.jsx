@@ -38,7 +38,7 @@ const DataTable = ({
 
   return (
     <div>
-      <div className="rounded-md border mt-2 md:max-w-[calc(100vw-8.1rem)] lg:max-w-[calc(100vw-9.7rem)]">
+      <div className="rounded-md border mt-2">
         <Table className={`${className}`}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
