@@ -21,7 +21,7 @@ export const useCreatePlayerStat = (gameId) => {
 
   return useMutation({
     mutationFn: (stat) => createPlayerStat(stat),
-    
+
     onMutate: async (newStat) => {
       const { point_value, team } = newStat;
 
@@ -49,15 +49,18 @@ export const useCreatePlayerStat = (gameId) => {
       return { previousGame }; // for rollback if needed
     },
 
-    onError: ({response}, newStat, context) => {
+    onError: ({ response }, newStat, context) => {
       if (context?.previousGame) {
-        queryClient.setQueryData(["game-details", gameId], context.previousGame);
+        queryClient.setQueryData(
+          ["game-details", gameId],
+          context.previousGame
+        );
       }
       if (response.data.error) {
         toast.info("Cannot Record Stat", {
           description: response.data.error,
-          richColors: true
-        })
+          richColors: true,
+        });
       }
     },
 
@@ -67,12 +70,11 @@ export const useCreatePlayerStat = (gameId) => {
   });
 };
 
-
-export const usePlayerStatsSummary = (gameId, team, enabled = true) => {
+export const usePlayerStatsSummary = (gameId, team) => {
   return useQuery({
     queryKey: ["player-summary-stats", team, gameId],
     queryFn: () => fetchPlayerStatsSummary(gameId, team),
-    enabled,
+    enabled: Boolean(gameId) && Boolean(gameId),
   });
 };
 
