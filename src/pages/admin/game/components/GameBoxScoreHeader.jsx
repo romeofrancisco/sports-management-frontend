@@ -67,12 +67,12 @@ const GameBoxScoreHeader = ({ game }) => {
         {/* Game info */}
         <div className="text-center font-medium mx-5">
           <div>Final</div>
-          <table className="hidden md:block text-[0.65rem] mt-5">
+          <table className="hidden md:block text-[0.65rem] mt-3">
             <thead className="border-b">
               <tr>
                 <th className="px-5"></th>
-                {periods.map((p) => (
-                  <th className="text-muted-foreground px-3">{p.label}</th>
+                {periods.map((p, index) => (
+                  <th key={index} className="text-muted-foreground px-3">{p.label}</th>
                 ))}
                 <th className="px-3">T</th>
               </tr>
@@ -80,15 +80,15 @@ const GameBoxScoreHeader = ({ game }) => {
             <tbody>
               <tr>
                 <td className="text-start py-1">{home_team.abbreviation}</td>
-                {periods.map((p) => (
-                  <td className="text-muted-foreground">{p.home}</td>
+                {periods.map((p, index) => (
+                  <td key={index} className="text-muted-foreground">{p.home}</td>
                 ))}
                 <td className="font-bold">{total.home}</td>
               </tr>
               <tr>
                 <td className="text-start">{away_team.abbreviation}</td>
-                {periods.map((p) => (
-                  <td className="text-muted-foreground">{p.away}</td>
+                {periods.map((p, index) => (
+                  <td key={index} className="text-muted-foreground">{p.away}</td>
                 ))}
                 <td className="font-bold">{total.away}</td>
               </tr>

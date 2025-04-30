@@ -12,7 +12,7 @@ import {
 import { useSelector } from "react-redux";
 import { getPeriodLabel } from "@/constants/sport";
 
-const PlayerStatsSummaryTable = ({ players }) => {
+const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
   const { current_period } = useSelector((state) => state.game);
   const { scoring_type } = useSelector((state) => state.sport);
   const [selectedPeriod, setSelectedPeriod] = useState(String(current_period));
@@ -176,24 +176,30 @@ const PlayerStatsSummaryTable = ({ players }) => {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Player Stats</h3>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">{getPeriodLabel(scoring_type)}:</span>
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[100px] text-xs" size="sm">
-              <SelectValue placeholder="Period" />
-            </SelectTrigger>
-            <SelectContent>
-              {availablePeriods.map((period) => (
-                <SelectItem className="text-xs" key={period} value={period}>
-                  {period === "total" ? "Total" : `${getPeriodLabel(scoring_type)} ${period}`}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {has_period && (
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Player Stats</h3>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-muted-foreground">
+              {getPeriodLabel(scoring_type)}:
+            </span>
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-[100px] text-xs" size="sm">
+                <SelectValue placeholder="Period" />
+              </SelectTrigger>
+              <SelectContent>
+                {availablePeriods.map((period) => (
+                  <SelectItem className="text-xs" key={period} value={period}>
+                    {period === "total"
+                      ? "Total"
+                      : `${getPeriodLabel(scoring_type)} ${period}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
+      )}
 
       <DataTable
         columns={columns}
