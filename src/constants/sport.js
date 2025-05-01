@@ -37,7 +37,7 @@ export const SCORING_TYPE_VALUES = {
 
 export const STAT_TYPE = [
   { value: true, label: "Recording Stats" },
-  { value: false, label: "Metrics Stats" },
+  { value: false, label: "Calculated Stats" },
 ];
 
 export const CALCULATION_TYPE_VALUES = {

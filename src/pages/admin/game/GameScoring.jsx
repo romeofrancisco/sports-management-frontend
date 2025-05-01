@@ -13,6 +13,7 @@ import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
 import RequireLandscape from "./components/scoring/RequireLandscape";
 import { GAME_STATUS_VALUES } from "@/constants/game";
+import { useModal } from "@/hooks/useModal";
 
 const GameScoring = () => {
   const { gameId } = useParams();
@@ -25,6 +26,7 @@ const GameScoring = () => {
   const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(gameId);
   const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(gameId);
   const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
+  const {isOpen, openModal, closeModal} = useModal();
 
   // Unified loading/error states
   const isLoading = isGameLoading ||isStatTypesLoading || isCurrentPlayersLoading || isSportLoading
@@ -64,6 +66,8 @@ const GameScoring = () => {
   if (isPortrait) return <RequireLandscape />;
 
   const { home_players, away_players } = currentPlayers;
+
+
 
   return (
     <div className="relative h-full content-center">

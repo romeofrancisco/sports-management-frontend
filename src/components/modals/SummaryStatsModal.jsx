@@ -47,8 +47,6 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
     }
   }, [activeTab]);
 
-  if (!isOpen) return null;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[80rem]">
@@ -57,7 +55,7 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
           <DialogDescription />
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] w-full overflow-x-auto lg:overflow-x-hidden min-h-[15rem]">
+        <ScrollArea className="max-h-[70vh] w-full min-h-[15rem]">
           <Tabs
             value={activeTab}
             className="min-w-[10rem]"
@@ -91,7 +89,6 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
               </>
             )}
           </Tabs>
-          <ScrollBar orientation="horizontal" className="w-full" />
         </ScrollArea>
       </DialogContent>
     </Dialog>

@@ -38,18 +38,25 @@ const DataTable = ({
 
   return (
     <div>
-      <div className="rounded-md border mt-2">
-        <Table className={`${className}`}>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+      <div className="rounded-md border mt-2 relative">
+        <div className="overflow-x-auto">
+          <Table className={`${className} relative`}>
+            <TableHeader className="sticky top-0 z-30 w-full bg-background">
+              <TableRow>
+                {table.getHeaderGroups()[0].headers.map((header, index) => (
                   <TableHead
                     key={header.id}
                     style={{
                       minWidth: header.column.columnDef.size,
                       maxWidth: header.column.columnDef.size,
+                      ...(index === 0 && {
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 40,
+                        backgroundColor: "var(--background)",
+                      })
                     }}
+                    className={index === 0 ? "first-col" : "bg-background"}
                   >
                     {header.isPlaceholder
                       ? null
@@ -60,49 +67,56 @@ const DataTable = ({
                   </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <TableLoading/>
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        minWidth: cell.column.columnDef.size,
-                        maxWidth: cell.column.columnDef.size,
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    <TableLoading/>
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell, index) => (
+                      <TableCell
+                        key={cell.id}
+                        style={{
+                          minWidth: cell.column.columnDef.size,
+                          maxWidth: cell.column.columnDef.size,
+                          ...(index === 0 && {
+                            position: 'sticky',
+                            left: 0,
+                            zIndex: 20,
+                            backgroundColor: "var(--background)",
+                          })
+                        }}
+                        className={index === 0 ? "first-col" : ""}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       {showPagination && (
         <div className="flex items-center justify-end space-x-2 pt-4">

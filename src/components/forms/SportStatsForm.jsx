@@ -25,7 +25,9 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
-      is_metrics: stat?.is_metrics || false,
+      is_player_stat: stat?.is_player_stat || false,
+      is_team_stat: stat?.is_team_stat || false,
+      is_box_score: stat?.is_box_score || false,
       is_record: stat?.is_record || false,
 
       // Recording Stats
@@ -80,6 +82,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-4 px-1"
     >
+      {/* Name */}
       <ControlledInput
         name="name"
         label="Stat Name"
@@ -87,6 +90,8 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         placeholder="Enter Stat Name"
         errors={errors}
       />
+
+      {/* Display Name */}
       <ControlledInput
         name="display_name"
         label="Display Name"
@@ -95,6 +100,8 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         placeholder="Enter Display Name"
         errors={errors}
       />
+
+      {/* Code */}
       <ControlledInput
         name="code"
         label="Stat Code"
@@ -103,18 +110,40 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         placeholder="Enter Stat Code"
         errors={errors}
       />
+
+      {/* Player Stat */}
       <ControlledCheckbox
-        name="is_metrics"
-        label="Show in Metrics / Summary Stats"
+        name="is_player_stat"
+        label="Player Stat"
         control={control}
-        help_text="Check this if you want to show the stat in metrics or summary stats"
+        help_text="Check this if the stat is for players"
         errors={errors}
       />
+
+      {/* Team Stat */}
+      <ControlledCheckbox
+        name="is_team_stat"
+        label="Team Stat"
+        control={control}
+        help_text="Check this if the stat is for teams"
+        errors={errors}
+      />
+
+      {/* Boxscore */}
+      <ControlledCheckbox
+        name="is_box_score"
+        label="Boxscore"
+        control={control}
+        help_text="Check this if the stat is shown in boxscore"
+        errors={errors}
+      />
+
+      {/* Recording Stat */}
       <ControlledCheckbox
         name="is_record"
         label="Recording Stat"
         control={control}
-        help_text='Check if the stat is use for recording (e.g, "Assist", "Block", "Steal", etc.) else for metrics (e.g, "FG (Field Goal)", "FG% (Field Goal Percentage), etc.")'
+        help_text='Check if the stat is use for recording (e.g, "Assist", "Block", "Steal", etc.) else for calculations (e.g, "FG (Field Goal)", "FG% (Field Goal Percentage), etc.")'
         errors={errors}
       />
 

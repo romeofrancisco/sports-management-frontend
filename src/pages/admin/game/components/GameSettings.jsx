@@ -30,20 +30,21 @@ const GameSettings = () => {
     completeGame: useModal(),
   };
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleStatAction = (modalType) => {
+    dispatch(reset());  // Reset stats before opening any stat-related modal
+    modals[modalType].openModal();
+    setOpen(false); // Close the dropdown menu when opening a modal
+  };
+
   return (
     <>
-      <DropdownMenu
-        onOpenChange={(open) => {
-          if (open) {
-            dispatch(reset());
-          }
-        }}
-      >
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             className="size-10 p-0 absolute top-0 right-0"
-            onClick={() => dispatch(reset())}
           >
             <Settings className="size-5" />
           </Button>
@@ -51,20 +52,20 @@ const GameSettings = () => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Settings</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => modals.stats.openModal()}>
+          <DropdownMenuItem onClick={() => handleStatAction("stats")}>
             <ChartColumn />
             Summary Stats
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => modals.substitute.openModal()}>
+          <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
             <Replace />
             Substitution
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => modals.nextPeriod.openModal()}>
+          <DropdownMenuItem onClick={() => handleStatAction("nextPeriod")}>
             <Clock />
             Next {period}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => modals.completeGame.openModal()}>
+          <DropdownMenuItem onClick={() => handleStatAction("completeGame")}>
             <Flag />
             Complete Game
           </DropdownMenuItem>
