@@ -45,8 +45,11 @@ const gameSlice = createSlice({
       state.max_players_on_field_per_team = max_players_on_field_per_team;
       state.scoring_type = scoring_type;
     },
+    reset(state) {
+      state = initialState;
+    },
   },
 });
 
-export const { setGameDetails } = gameSlice.actions;
+export const { setGameDetails, reset } = gameSlice.actions;
 export default gameSlice.reducer;

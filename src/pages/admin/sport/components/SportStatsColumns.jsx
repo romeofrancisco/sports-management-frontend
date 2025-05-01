@@ -1,5 +1,6 @@
 import React from "react";
 import SportStatsActions from "./SportStatsActions";
+import { CircleCheck, CircleX } from "lucide-react";
 
 const baseColumns = [
   {
@@ -11,6 +12,63 @@ const baseColumns = [
     accessorKey: "code",
     header: "Code",
     cell: ({ getValue }) => getValue(),
+    size: 100,
+  },
+  {
+    accessorKey: "is_player_stat",
+    header: () => <div className="text-center">Player</div>,
+    cell: ({ getValue }) => (
+      <div className="flex justify-center">
+        {getValue() ? (
+          <CircleCheck size={20} className="text-green-700" />
+        ) : (
+          <CircleX size={20} className="text-red-700" />
+        )}
+      </div>
+    ),
+    size: 80,
+  },
+  {
+    accessorKey: "is_team_stat",
+    header: () => <div className="text-center">Team</div>,
+    cell: ({ getValue }) => (
+      <div className="flex justify-center">
+        {getValue() ? (
+          <CircleCheck size={20} className="text-green-700" />
+        ) : (
+          <CircleX size={20} className="text-red-700" />
+        )}
+      </div>
+    ),
+    size: 80,
+  },
+  {
+    accessorKey: "is_box_score",
+    header: () => <div className="text-center">Boxscore</div>,
+    cell: ({ getValue }) => (
+      <div className="flex justify-center">
+        {getValue() ? (
+          <CircleCheck size={20} className="text-green-700" />
+        ) : (
+          <CircleX size={20} className="text-red-700" />
+        )}
+      </div>
+    ),
+    size: 80,
+  },
+  {
+    accessorKey: "is_record",
+    header: () => <div className="text-center">Recording</div>,
+    cell: ({ getValue }) => (
+      <div className="flex justify-center">
+        {getValue() ? (
+          <CircleCheck size={20} className="text-green-700 self-center" />
+        ) : (
+          <CircleX size={20} className="text-red-700" />
+        )}
+      </div>
+    ),
+    size: 80,
   },
 ];
 
@@ -27,7 +85,7 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
           modals={modals}
         />
       ),
-      size: 50
+      size: 50,
     },
   ];
 
@@ -37,13 +95,13 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         accessorKey: "display_name",
         header: "Display Name",
         cell: ({ getValue }) => getValue(),
-        size: 100
+        size: 100,
       },
       {
         accessorKey: "point_value",
         header: "Points",
         cell: ({ getValue }) => getValue(),
-        size: 50
+        size: 50,
       },
     ]);
   } else {
@@ -52,9 +110,11 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         accessorKey: "expression",
         header: "Formula",
         cell: ({ getValue }) => (
-          <div className="whitespace-normal break-words text-xs text-muted-foreground">{getValue()}</div>
+          <div className="whitespace-normal break-words text-xs text-muted-foreground">
+            {getValue()}
+          </div>
         ),
-      }
+      },
     ]);
   }
 };

@@ -35,7 +35,7 @@ export default function Layout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
-    <SidebarProvider className="relative">
+    <SidebarProvider className="relative overflow-x-hidden">
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-auto shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear">
@@ -48,7 +48,7 @@ export default function Layout() {
             <ThemeToggle/>
           </div>
         </header>
-        <div className="flex md:max-w-[50vw-3rem] flex-1 flex-col gap-4 md:px-5 pt-0">
+        <div className="flex w-full max-w-full flex-1 flex-col gap-4 px-0 md:px-5 pt-0 overflow-x-hidden">
           <Outlet />
         </div>
       </SidebarInset>

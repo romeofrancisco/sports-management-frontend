@@ -23,6 +23,7 @@ const CompleteGameConfirmation = ({ isOpen, onClose }) => {
     completeGame(GAME_ACTIONS.COMPLETE, {
       onSuccess: () => {
         navigate(`/games/${gameId}/game-summary`);
+        onClose();
       },
     });
   };

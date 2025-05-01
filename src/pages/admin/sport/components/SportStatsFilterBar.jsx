@@ -6,7 +6,7 @@ import {
 
 const SportStatsFilterBar = ({ filter, setFilter }) => {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between gap-4">
       <SearchFilter
         value={filter.search}
         onChange={(search) => setFilter((prev) => ({ ...prev, search }))}
@@ -15,7 +15,7 @@ const SportStatsFilterBar = ({ filter, setFilter }) => {
       <FilterStatType
         value={filter.is_record}
         onChange={(is_record) => setFilter((prev) => ({ ...prev, is_record }))}
-        className="min-w-[8rem]"
+        className="min-w-[9rem]"
       />
     </div>
   );

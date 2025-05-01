@@ -7,10 +7,10 @@ function Table({
   ...props
 }) {
   return (
-    (<div data-slot="table-container" className="relative w-full overflow-x-auto">
+    (<div data-slot="table-container" className="relative w-full">
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn("w-full caption-bottom text-sm table-auto border-collapse", className)}
         {...props} />
     </div>)
   );
@@ -23,7 +23,7 @@ function TableHeader({
   return (
     (<thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={cn("[&_tr]:border-b bg-background shadow-sm", className)}
       {...props} />)
   );
 }
@@ -90,7 +90,7 @@ function TableCell({
     (<td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props} />)

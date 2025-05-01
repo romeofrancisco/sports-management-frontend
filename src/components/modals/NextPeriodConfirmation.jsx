@@ -18,6 +18,14 @@ const NextPeriodConfirmation = ({ isOpen, onClose }) => {
   const { gameId } = useParams();
   const { mutate: nextPeriod } = useManageGame(gameId);
 
+  const handleNextPeriod = () => {
+    nextPeriod(GAME_ACTIONS.NEXT_PERIOD, {
+      onSuccess: () => {
+        onClose();
+      }
+    });
+  };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
@@ -29,9 +37,7 @@ const NextPeriodConfirmation = ({ isOpen, onClose }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => nextPeriod(GAME_ACTIONS.NEXT_PERIOD)}
-          >
+          <AlertDialogAction onClick={handleNextPeriod}>
             Confirm
           </AlertDialogAction>
         </AlertDialogFooter>

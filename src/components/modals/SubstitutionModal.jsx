@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useCurrentGamePlayers, useGamePlayers } from "@/hooks/useGames";
-import { useSelector } from "react-redux";
 import SubstitutionForm from "../forms/SubstitutionForm";
 import ContentLoading from "../common/ContentLoading";
 import { ScrollArea } from "../ui/scroll-area";
@@ -44,7 +43,7 @@ const SubstitutionModal = ({ isOpen, onClose }) => {
         </ScrollArea>
       </DialogContent>
     </Dialog>
-  );
+  ); 
 };
 
 export default SubstitutionModal;

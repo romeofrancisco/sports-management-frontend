@@ -6,6 +6,7 @@ import ControlledSelect from "../common/ControlledSelect";
 import { Button } from "../ui/button";
 import { Plus, Trash, Loader2 } from "lucide-react";
 import { useCreateFormula, useUpdateFormula } from "@/hooks/useFormula";
+import ControlledCheckbox from "../common/ControlledCheckbox";
 
 const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
   const isEdit = !!formula;
@@ -14,14 +15,16 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
 
   const {
     control,
-    formState: { errors },
+    formState: { errors },  
     setError,
     handleSubmit,
+    watch,
   } = useForm({
     defaultValues: {
       name: formula?.name || "",
       sport_slug: sport,
       expression: formula?.expression || "",
+      is_ratio: formula?.is_ratio || false,
       components: formula?.components?.map((component) => ({
         id: component.id,
         stat_type: component.stat_type_id,
@@ -37,6 +40,11 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
   const onSubmit = (data) => {
     const mutationFn = isEdit ? updateFormula : createFormula;
     const payload = isEdit ? { id: formula.id, data: data } : data;
+
+    // For ratio formulas, clear the expression since it's not needed
+    if (data.is_ratio) {
+      data.expression = "";
+    }
 
     mutationFn(payload, {
       onSuccess: () => {
@@ -68,13 +76,25 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         label="Name"
         errors={errors}
       />
-      <ControlledTextarea
-        name="expression"
+
+      <ControlledCheckbox
+        name="is_ratio"
+        label="Ratio Formula"
+        help_text="Enable if this formula represents a ratio between two stats (e.g., FT%, FG%)"
         control={control}
-        label="Formula"
-        placeholder="Enter formula for expression..."
         errors={errors}
       />
+
+      {!watch("is_ratio") && (
+        <ControlledTextarea
+          name="expression"
+          control={control}
+          label="Formula"
+          placeholder="Enter formula for expression..."
+          errors={errors}
+        />
+      )}
+
       <div className="space-y-4">
         <label className="block font-medium">Components</label>
 

@@ -133,6 +133,52 @@
   
     input[type='number'] {
       -moz-appearance: textfield;
+      appearance: textfield;
     }
+}
+
+.first-col {
+  position: relative;
+}
+
+.first-col::before,
+.first-col::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border);
+  z-index: 25;
+  pointer-events: none;
+}
+
+.first-col::before {
+  left: 0;
+}
+
+.first-col::after {
+  right: 0;
+}
+
+/* Style for first column in first row */
+thead tr:first-child .first-col {
+  border-top-left-radius: 0.5rem;
+}
+
+/* Style for first column in last row */
+tbody tr:last-child .first-col {
+  border-bottom-left-radius: 0.5rem;
+}
+
+/* Hide top part of left border in first row */
+thead tr:first-child .first-col::before {
+  border-top-left-radius: 0.5rem;
+  top: 0;
+}
+
+/* Hide bottom part of left border in last row */
+tbody tr:last-child .first-col::before {
+  border-bottom-left-radius: 0.5rem;
 }
 
