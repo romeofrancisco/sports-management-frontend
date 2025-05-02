@@ -38,7 +38,9 @@ const SportFormulaTable = () => {
       accessorKey: "expression",
       header: "Expression",
       cell: ({ getValue }) => (
-        <span className="whitespace-normal break-words text-xs text-muted-foreground">{getValue()}</span>
+        <span className="whitespace-normal break-words text-xs text-muted-foreground">
+          {getValue() ? getValue() : "N/A"}
+        </span>
       ),
     },
     {
@@ -50,7 +52,7 @@ const SportFormulaTable = () => {
           setSelectedFormula={setSelectedFormula}
         />
       ),
-      size: 50
+      size: 50,
     },
   ];
 

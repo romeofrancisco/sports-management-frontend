@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useDebouncedCallback } from "use-debounce";
+import { useSelector } from "react-redux";
 import { useCreatePlayerStat } from "@/hooks/useStats";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -59,7 +58,8 @@ const StatButtons = ({ statTypes }) => {
 
   const [buttons, setButtons] = useState([]);
   const columns = 4;
-  const rows = 4;
+  const minimumRows = 4;
+  const rows = Math.max(minimumRows, Math.ceil((statTypes?.length || 0) / columns));
 
   useEffect(() => {
     if (statTypes) {
@@ -76,6 +76,9 @@ const StatButtons = ({ statTypes }) => {
   }, [statTypes, columns]);
 
   const moveButton = (id, newPosition) => {
+    // Prevent moving beyond the calculated rows
+    if (newPosition.y >= rows) return;
+    
     setButtons((prevButtons) =>
       prevButtons.map((btn) => {
         if (btn.id === id) return { ...btn, position: newPosition };
@@ -131,8 +134,11 @@ const StatButtons = ({ statTypes }) => {
     <DndProvider backend={MultiBackend} options={backendConfig}>
       <div className="flex justify-center">
         <div
-          className={`grid grid-cols-4 grid-rows-4 gap-2 max-h-[35rem] bg-background rounded-lg`}
-          style={{ height: `calc(var(--vh, 1vh) * ${mobile ? 75 : 80})` }}
+          className="grid grid-cols-4 gap-2 bg-background rounded-lg"
+          style={{
+            height: `calc(var(--vh, 1vh) * ${mobile ? 75 : 80})`,
+            gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+          }}
         >
           {renderGrid()}
         </div>
