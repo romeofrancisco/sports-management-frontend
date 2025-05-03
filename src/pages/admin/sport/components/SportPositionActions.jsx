@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,12 +11,16 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, SquarePen, Trash } from "lucide-react";
 
 const SportPositionActions = ({ modals, position, setSelectedPosition }) => {
+  const [open, setOpen] = useState(false);
+  
   const handleOpen = (modalType) => {
     setSelectedPosition(position);
     modals[modalType]?.openModal();
+    setOpen(false); // Close dropdown when opening modal
   };
+  
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
@@ -26,14 +30,14 @@ const SportPositionActions = ({ modals, position, setSelectedPosition }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleOpen("position")}>
+        <DropdownMenuItem onClick={() => handleOpen("update")}>
           <SquarePen className="mr-2 h-4 w-4" />
           Update Position
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => handleOpen("delete")}
           className="text-destructive"
+          onClick={() => handleOpen("delete")}
         >
           <Trash className="mr-2 h-4 w-4" />
           Delete Position

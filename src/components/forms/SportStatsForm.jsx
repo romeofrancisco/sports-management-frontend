@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useCreateSportStats, useUpdateSportStats } from "@/hooks/useStats";
 import ControlledSelect from "../common/ControlledSelect";
+import { is } from "date-fns/locale";
 
 const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   const isEdit = !!stat;
@@ -25,9 +26,15 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
+
+      is_player_summary: stat?.is_player_summary || false,
+      is_team_summary: stat?.is_team_summary || false,
+      is_team_comparison: stat?.is_team_comparison || false,
+
       is_player_stat: stat?.is_player_stat || false,
       is_team_stat: stat?.is_team_stat || false,
-      is_box_score: stat?.is_box_score || false,
+
+      is_boxscore: stat?.is_boxscore || false,
       is_record: stat?.is_record || false,
 
       // Recording Stats
@@ -108,6 +115,32 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         help_text="Code for formula"
         control={control}
         placeholder="Enter Stat Code"
+        errors={errors}
+      />
+
+      {/* Player Summary */}
+      <ControlledCheckbox
+        name="is_player_summary"
+        label="Player Summary"
+        control={control}
+        help_text="Check this if the stat is shown in player summary"
+        errors={errors}
+      />
+
+      {/* Team Summary */}
+      <ControlledCheckbox
+        name="is_team_summary"
+        label="Team Summary"
+        control={control}
+        help_text="Check this if the stat is shown in team summary"
+        errors={errors}
+      />
+
+      <ControlledCheckbox
+        name="is_team_comparison"
+        label="Team Comparison"
+        control={control}
+        help_text="Check this if the stat is shown in team comparison"
         errors={errors}
       />
 

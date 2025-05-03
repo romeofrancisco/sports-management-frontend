@@ -10,7 +10,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useManageGame } from "@/hooks/useGames";
-import { useSelector } from "react-redux";
 import { GAME_ACTIONS } from "@/constants/game";
 import { useNavigate, useParams } from "react-router";
 
@@ -22,7 +21,7 @@ const CompleteGameConfirmation = ({ isOpen, onClose }) => {
   const handleCompleteGame = () => {
     completeGame(GAME_ACTIONS.COMPLETE, {
       onSuccess: () => {
-        navigate(`/games/${gameId}/game-summary`);
+        navigate(`/games/${gameId}/game-result`, { replace: true });
         onClose();
       },
     });

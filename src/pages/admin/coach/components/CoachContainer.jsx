@@ -5,7 +5,7 @@ import { useCoaches } from "@/hooks/useCoaches";
 import PageError from "@/pages/PageError";
 import ContentLoading from "@/components/common/ContentLoading";
 import DeleteCoachModal from "@/components/modals/DeleteCoachModal";
-import CoachModal from "@/components/modals/CreateCoachModal";
+import CoachModal from "@/components/modals/CoachModal";
 import CoachCard from "./CoachCard";
 import { useModal } from "@/hooks/useModal";
 

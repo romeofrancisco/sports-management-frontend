@@ -20,11 +20,21 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
   // Get available periods from the first player's stats
   const availablePeriods = useMemo(() => {
     const periods = new Set(["total"]);
-    if (players.length > 0 && players[0].stats.length > 0) {
+
+    // Safely check if players array exists, has elements, and if stats property is an array with elements
+    if (
+      players &&
+      Array.isArray(players) &&
+      players.length > 0 &&
+      players[0]?.stats &&
+      Array.isArray(players[0].stats) &&
+      players[0].stats.length > 0
+    ) {
       Object.keys(players[0].stats[0].period_values || {}).forEach((period) => {
         periods.add(period);
       });
     }
+
     return Array.from(periods).sort((a, b) => {
       if (a === "total") return 1;
       if (b === "total") return -1;
@@ -34,6 +44,8 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
 
   // Process data for the table based on selected period
   const tableData = useMemo(() => {
+    if (!players || !Array.isArray(players)) return [];
+
     return players.map((player) => {
       const rowData = {
         id: player.id,
@@ -49,33 +61,43 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
           rowData.points = player.period_points?.[selectedPeriod] || 0;
         } else {
           // Calculate total points from all periods
-          rowData.total_points = Object.values(player.period_points || {}).reduce((sum, points) => sum + points, 0);
+          rowData.total_points = Object.values(
+            player.period_points || {}
+          ).reduce((sum, points) => sum + points, 0);
         }
       }
 
       // Add stats to row data
-      player.stats.forEach((stat) => {
-        if (scoring_type === SCORING_TYPE_VALUES.SETS) {
-          if (selectedPeriod === "total") {
-            // For ratio stats that have period-specific values
-            if (typeof stat.value === "object") {
-              rowData[stat.display_name] = Object.values(stat.value).join(", ");
+      if (player.stats && Array.isArray(player.stats)) {
+        player.stats.forEach((stat) => {
+          if (scoring_type === SCORING_TYPE_VALUES.SETS) {
+            if (selectedPeriod === "total") {
+              // For ratio stats that have period-specific values
+              if (typeof stat.value === "object") {
+                rowData[stat.display_name] = Object.values(stat.value).join(
+                  ", "
+                );
+              } else {
+                rowData[stat.display_name] = stat.value;
+              }
             } else {
-              rowData[stat.display_name] = stat.value;
+              // For period-specific values
+              if (
+                typeof stat.value === "object" &&
+                stat.value[selectedPeriod]
+              ) {
+                rowData[stat.display_name] = stat.value[selectedPeriod];
+              } else {
+                rowData[stat.display_name] =
+                  stat.period_values?.[selectedPeriod] || 0;
+              }
             }
           } else {
-            // For period-specific values
-            if (typeof stat.value === "object" && stat.value[selectedPeriod]) {
-              rowData[stat.display_name] = stat.value[selectedPeriod];
-            } else {
-              rowData[stat.display_name] = stat.period_values?.[selectedPeriod] || 0;
-            }
+            // For points scoring type, always use the total value
+            rowData[stat.display_name] = stat.value;
           }
-        } else {
-          // For points scoring type, always use the total value
-          rowData[stat.display_name] = stat.value;
-        }
-      });
+        });
+      }
 
       return rowData;
     });
@@ -83,7 +105,16 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
 
   // Get all stat display names for columns
   const allStatDisplayNames = useMemo(() => {
-    if (players.length === 0 || players[0].stats.length === 0) return [];
+    if (
+      !players ||
+      !Array.isArray(players) ||
+      players.length === 0 ||
+      !players[0]?.stats ||
+      !Array.isArray(players[0].stats) ||
+      players[0].stats.length === 0
+    ) {
+      return [];
+    }
     return players[0].stats.map((stat) => stat.display_name);
   }, [players]);
 
@@ -113,7 +144,9 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
               variant="ghost"
               className="text-xs"
               size="xs"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
             >
               PTS <ArrowUpDown className="size-3" />
             </Button>
@@ -123,9 +156,9 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
           <div className="text-center">
             <span className="font-medium">
               {scoring_type === SCORING_TYPE_VALUES.SETS
-                ? (selectedPeriod === "total"
+                ? selectedPeriod === "total"
                   ? row.original.total_points
-                  : row.original.points)
+                  : row.original.points
                 : row.original.total_points}
             </span>
           </div>
@@ -153,30 +186,32 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
   }, [allStatDisplayNames, selectedPeriod, scoring_type]);
 
   return (
-    <>
+    <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem] mt-4 mb-6">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Player Stats</h3>
-        {scoring_type === SCORING_TYPE_VALUES.SETS && has_period && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">
-              {getPeriodLabel(scoring_type)}:
-            </span>
-            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-              <SelectTrigger className="w-[100px] text-xs" size="sm">
-                <SelectValue placeholder="Period" />
-              </SelectTrigger>
-              <SelectContent>
-                {availablePeriods.map((period) => (
-                  <SelectItem className="text-xs" key={period} value={period}>
-                    {period === "total"
-                      ? "Total"
-                      : `${getPeriodLabel(scoring_type)} ${period}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
+        {scoring_type === SCORING_TYPE_VALUES.SETS &&
+          has_period &&
+          availablePeriods.length > 1 && (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-muted-foreground">
+                {getPeriodLabel(scoring_type)}:
+              </span>
+              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                <SelectTrigger className="w-[100px] text-xs" size="sm">
+                  <SelectValue placeholder="Period" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availablePeriods.map((period) => (
+                    <SelectItem className="text-xs" key={period} value={period}>
+                      {period === "total"
+                        ? "Total"
+                        : `${getPeriodLabel(scoring_type)} ${period}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
       </div>
 
       <DataTable
@@ -185,7 +220,7 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
         showPagination={false}
         className="text-xs"
       />
-    </>
+    </div>
   );
 };
 

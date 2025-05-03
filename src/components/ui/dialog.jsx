@@ -6,29 +6,33 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-function Dialog({
+const Dialog = React.forwardRef(({
   ...props
-}) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
-}
+}, ref) => {
+  return <DialogPrimitive.Root ref={ref} data-slot="dialog" {...props} />;
+});
+Dialog.displayName = "Dialog";
 
-function DialogTrigger({
+const DialogTrigger = React.forwardRef(({
   ...props
-}) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
-}
+}, ref) => {
+  return <DialogPrimitive.Trigger ref={ref} data-slot="dialog-trigger" {...props} />;
+});
+DialogTrigger.displayName = "DialogTrigger";
 
-function DialogPortal({
+const DialogPortal = React.forwardRef(({
   ...props
-}) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
-}
+}, ref) => {
+  return <DialogPrimitive.Portal ref={ref} data-slot="dialog-portal" {...props} />;
+});
+DialogPortal.displayName = "DialogPortal";
 
-function DialogClose({
+const DialogClose = React.forwardRef(({
   ...props
-}) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
-}
+}, ref) => {
+  return <DialogPrimitive.Close ref={ref} data-slot="dialog-close" {...props} />;
+});
+DialogClose.displayName = "DialogClose";
 
 const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => {
   return (
@@ -45,15 +49,16 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => {
 });
 DialogOverlay.displayName = "DialogOverlay";
 
-function DialogContent({
+const DialogContent = React.forwardRef(({
   className,
   children,
   ...props
-}) {
+}, ref) => {
   return (
-    (<DialogPortal data-slot="dialog-portal">
+    (<DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
+        ref={ref}
         data-slot="dialog-content"
         className={cn(
           "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
@@ -69,55 +74,64 @@ function DialogContent({
       </DialogPrimitive.Content>
     </DialogPortal>)
   );
-}
+});
+DialogContent.displayName = "DialogContent";
 
-function DialogHeader({
+const DialogHeader = React.forwardRef(({
   className,
   ...props
-}) {
+}, ref) => {
   return (
     (<div
+      ref={ref}
       data-slot="dialog-header"
       className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
       {...props} />)
   );
-}
+});
+DialogHeader.displayName = "DialogHeader";
 
-function DialogFooter({
+const DialogFooter = React.forwardRef(({
   className,
   ...props
-}) {
+}, ref) => {
   return (
     (<div
+      ref={ref}
       data-slot="dialog-footer"
       className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
       {...props} />)
   );
-}
+});
+DialogFooter.displayName = "DialogFooter";
 
-function DialogTitle({
+const DialogTitle = React.forwardRef(({
   className,
   ...props
-}) {
+}, ref) => {
   return (
     (<DialogPrimitive.Title
+      ref={ref}
       data-slot="dialog-title"
       className={cn("text-lg leading-none font-semibold", className)}
       {...props} />)
   );
-}
+});
+DialogTitle.displayName = "DialogTitle";
 
-function DialogDescription({
+const DialogDescription = React.forwardRef(({
   className,
   ...props
-}) {
+}, ref) => {
   return (
     (<DialogPrimitive.Description
+      ref={ref}
       data-slot="dialog-description"
       className={cn("text-muted-foreground text-sm", className)}
       {...props} />)
   );
-}
+});
+DialogDescription.displayName = "DialogDescription";
 
 export {
   Dialog,

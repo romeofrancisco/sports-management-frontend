@@ -5,7 +5,7 @@ import DataTable from "@/components/common/DataTable";
 import PageError from "@/pages/PageError";
 import { useGames } from "@/hooks/useGames";
 import { GAME_STATUS_VALUES, GAME_TYPE_VALUES } from "@/constants/game";
-import UpdateGameModal from "@/components/modals/UpdateGameModal";
+import GameModal from "@/components/modals/GameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
@@ -49,7 +49,7 @@ const GameTable = () => {
     <div className="px-5 md:border md:bg-muted/30 md:p-5 lg:p-8 my-5 rounded-lg">
       <GameFilterBar filter={filter} setFilter={setFilter} />
       <DataTable columns={columns} data={games || []} loading={isLoading} className="text-xs md:text-sm" />
-      <UpdateGameModal isOpen={modals.update.isOpen} onClose={modals.update.closeModal} game={selectedGame} />
+      <GameModal isOpen={modals.update.isOpen} onClose={modals.update.closeModal} game={selectedGame} />
       <DeleteGameModal isOpen={modals.delete.isOpen} onClose={modals.delete.closeModal} game={selectedGame} />
       <StartingLineupModal isOpen={modals.startingLineup.isOpen} onClose={modals.startingLineup.closeModal} game={selectedGame} />
       <StartGameConfirmation isOpen={modals.startGame.isOpen} onClose={modals.startGame.closeModal} game={selectedGame} />

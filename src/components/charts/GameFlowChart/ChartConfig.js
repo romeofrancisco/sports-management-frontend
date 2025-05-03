@@ -1,4 +1,10 @@
-export const createChartData = (periodEvents, homeScores, awayScores, homeTeam, awayTeam) => ({
+export const createChartData = (
+  periodEvents,
+  homeScores,
+  awayScores,
+  homeTeam,
+  awayTeam
+) => ({
   labels: periodEvents.map((_, i) => i),
   datasets: [
     {
@@ -6,7 +12,6 @@ export const createChartData = (periodEvents, homeScores, awayScores, homeTeam, 
       data: homeScores,
       borderColor: homeTeam?.color || "#1d4ed8",
       backgroundColor: homeTeam?.color || "#1d4ed8",
-      tension: 0.3,
       pointRadius: 0,
       pointHoverRadius: 4,
     },
@@ -15,7 +20,6 @@ export const createChartData = (periodEvents, homeScores, awayScores, homeTeam, 
       data: awayScores,
       borderColor: awayTeam?.color || "#dc2626",
       backgroundColor: awayTeam?.color || "#dc2626",
-      tension: 0.3,
       pointRadius: 0,
       pointHoverRadius: 4,
     },
@@ -26,7 +30,17 @@ export const createChartOptions = (gridColor, tickColor, labels) => ({
   responsive: true,
   maintainAspectRatio: false,
   interaction: { mode: "index", intersect: false },
-  animation: false,
+  options: {
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'linear',
+        from: 1,
+        to: 0,
+        loop: true
+      }
+    },
+  },
   plugins: {
     tooltip: { enabled: false },
     legend: { position: "top" },
@@ -45,11 +59,15 @@ export const createChartOptions = (gridColor, tickColor, labels) => ({
         autoSkip: false,
         maxRotation: 0,
         minRotation: 0,
+        min: 0,
+        max: 100  
       },
+
       grid: {
+        color: gridColor,
         drawTicks: true,
         drawOnChartArea: true,
-        color: (ctx) => labels[ctx.tick.value] ? gridColor : "transparent",
+        color: (ctx) => (labels[ctx.tick.value] ? gridColor : "transparent"),
       },
     },
   },

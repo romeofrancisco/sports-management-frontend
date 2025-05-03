@@ -53,10 +53,9 @@ const DataTable = ({
                         position: 'sticky',
                         left: 0,
                         zIndex: 40,
-                        backgroundColor: "var(--background)",
                       })
                     }}
-                    className={index === 0 ? "first-col" : "bg-background"}
+                    className={index === 0 ? "first-col bg-background" : "bg-background"}
                   >
                     {header.isPlaceholder
                       ? null
@@ -91,10 +90,10 @@ const DataTable = ({
                             position: 'sticky',
                             left: 0,
                             zIndex: 20,
-                            backgroundColor: "var(--background)",
+                            backgroundOpacity: 0.5,
                           })
                         }}
-                        className={index === 0 ? "first-col" : ""}
+                        className={index === 0 ? "first-col bg-background" : ""}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

@@ -11,11 +11,10 @@ import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
 import Loading from "../common/FullLoading";
 import PlayerStatsSummaryTable from "@/pages/admin/game/components/scoring/PlayerStatsSummaryTable";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";
-import TeamStatsSummaryTable from "@/pages/admin/game/components/scoring/TeamStatsSummaryTable";
+import TeamStatsSummary from "@/pages/admin/game/components/scoring/TeamStatsSummary";
 import { useTeamStatsSummary } from "@/hooks/useStats";
-import { Separator } from "../ui/separator";
 
 
 const SummaryStatsModal = ({ isOpen, onClose }) => {
@@ -54,14 +53,13 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
           <DialogTitle>Summary Stats</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-
-        <ScrollArea className="max-h-[70vh] w-full min-h-[15rem]">
+        <ScrollArea className="max-h-[80vh] w-full min-h-[15rem]">
           <Tabs
             value={activeTab}
             className="min-w-[10rem]"
             onValueChange={setActiveTab}
           >
-            <TabsList className="w-full justify-center">
+            <TabsList className="w-full justify-center sticky top-0 z-10 bg-muted border shadow-sm">
               <TabsTrigger value={TEAM_SIDES.HOME_TEAM}>
                 {home_team.name}
               </TabsTrigger>
@@ -82,9 +80,9 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
                   <PlayerStatsSummaryTable players={playerStats} />
                 </TabsContent>
                 <TabsContent value="team_stats">
-                  <TeamStatsSummaryTable team={teamStats?.home_team || []} />
-                  <Separator className="my-5"/>
-                  <TeamStatsSummaryTable team={teamStats?.away_team || []} />
+                  <TeamStatsSummary
+                    teamStats={teamStats}
+                  />
                 </TabsContent>
               </>
             )}

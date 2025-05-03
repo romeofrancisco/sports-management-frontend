@@ -1,5 +1,5 @@
 import React from "react";
-import CreateGameModal from "@/components/modals/CreateGameModal";
+import GameModal from "@/components/modals/GameModal";
 import { Link } from "react-router";
 import { ChevronLeft, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ const GameScheduleHeader = () => {
         <CalendarPlus />
         Create Game
       </Button>
-      <CreateGameModal isOpen={isOpen} onClose={closeModal} />
+      <GameModal isOpen={isOpen} onClose={closeModal} />
     </header>
   );
 };

@@ -1,5 +1,5 @@
 import { Label } from "@radix-ui/react-dropdown-menu";
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import {
@@ -11,29 +11,38 @@ import {
   SelectGroup,
   SelectItem,
 } from "../ui/select";
-import { useCreateLeague } from "@/hooks/useLeagues";
+import { useCreateLeague, useUpdateLeague } from "@/hooks/useLeagues";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import { convertToFormData } from "@/utils/convertToFormData";
 
+const LeagueForm = ({ sports, onClose, league = null }) => {
+  const isEdit = !!league;
+  const { mutate: createLeague, isPending: isCreating } = useCreateLeague();
+  const { mutate: updateLeague, isPending: isUpdating } = useUpdateLeague();
+  const isPending = isCreating || isUpdating;
 
-const CreateLeagueForm = ({ sports, onClose }) => {
-  const { mutate: createLeague, isPending } = useCreateLeague();
   const {
     control,
     handleSubmit,
+    watch,
     setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      sport: "",
+      name: league?.name || "",
+      sport: isEdit ? String(league.sport.id) : "",
       logo: null,
     },
   });
 
-
   const onSubmit = (data) => {
-    createLeague(data, {
+    const formData = convertToFormData(data);
+    
+    const mutationFn = isEdit ? updateLeague : createLeague;
+    const payload = isEdit ? [formData, league.id] : formData;
+
+    mutationFn(payload, {
       onSuccess: () => {
         onClose();
       },
@@ -47,10 +56,9 @@ const CreateLeagueForm = ({ sports, onClose }) => {
             });
           });
         }
-      }
+      },
     });
   };
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 py-3 px-1">
@@ -76,7 +84,7 @@ const CreateLeagueForm = ({ sports, onClose }) => {
           name="sport"
           control={control}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value} disabled={isEdit}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select sport" />
               </SelectTrigger>
@@ -121,14 +129,14 @@ const CreateLeagueForm = ({ sports, onClose }) => {
         )}
       </div>
 
-
-
       <Button type="submit" className="mt-4" disabled={isPending}>
         {isPending ? (
           <>
             <Loader2 className="animate-spin mr-2" />
             Please wait
           </>
+        ) : isEdit ? (
+          "Update League"
         ) : (
           "Create League"
         )}
@@ -137,4 +145,4 @@ const CreateLeagueForm = ({ sports, onClose }) => {
   );
 };
 
-export default CreateLeagueForm;
+export default LeagueForm;

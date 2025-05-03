@@ -23,7 +23,7 @@ const SportStatsModal = ({ isOpen, onClose, stat }) => {
           <DialogTitle>Create New Stat</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[75vh]">
+        <ScrollArea className="max-h-[75vh] px-5">
           {isLoading ? (
             <ContentLoading />
           ) : (

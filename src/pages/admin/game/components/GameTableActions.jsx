@@ -28,9 +28,9 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
     navigate(`/games/${game.id}`);
   };
 
-  const goToBoxscore = () => {
+  const gotoGameResult = () => {
     setSelectedGame(game);
-    navigate(`/games/${game.id}/boxscore`);
+    navigate(`/games/${game.id}/game-result`);
   };
 
   const { status, lineup_status } = game;
@@ -81,7 +81,7 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
 
         {/* Completed Game Options */}
         {isCompleted && (
-          <DropdownMenuItem onClick={goToBoxscore}>
+          <DropdownMenuItem onClick={gotoGameResult}>
             <ChartColumn />
             Stats Summary
           </DropdownMenuItem>

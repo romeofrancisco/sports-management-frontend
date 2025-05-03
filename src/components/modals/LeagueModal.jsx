@@ -8,25 +8,27 @@ import {
 } from "@/components/ui/dialog";
 import { useSports } from "@/hooks/useSports";
 import Loading from "../common/FullLoading";
-import CreateLeagueForm from "../forms/CreateLeagueForm";
+import LeagueForm from "../forms/LeagueForm";
 import PageError from "@/pages/PageError";
 import { ScrollArea } from "../ui/scroll-area";
 
-const CreateLeagueModal = ({ isOpen, onClose }) => {
-  const { data: sports, isLoading: isSportsLoading, isError: isSportsError } = useSports(isOpen)
-
+const LeagueModal = ({ isOpen, onClose, league = null }) => {
+  const isEdit = !!league;
+  const { data: sports, isLoading: isSportsLoading, isError: isSportsError } = useSports(isOpen);
 
   if (isSportsLoading) return <Loading />;
-  if (isSportsError) return <PageError />
+  if (isSportsError) return <PageError />;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
-          <DialogTitle>Create League</DialogTitle>
-          <DialogDescription>Create League.</DialogDescription>
+          <DialogTitle>{isEdit ? "Update League" : "Create League"}</DialogTitle>
+          <DialogDescription>
+            {isEdit ? "Update league details." : "Create a new league."}
+          </DialogDescription>
           <ScrollArea className="max-h-[75vh]">
-            <CreateLeagueForm sports={sports} onClose={onClose} />
+            <LeagueForm sports={sports} onClose={onClose} league={league} />
           </ScrollArea>
         </DialogHeader>
       </DialogContent>
@@ -34,4 +36,4 @@ const CreateLeagueModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreateLeagueModal;
+export default LeagueModal;

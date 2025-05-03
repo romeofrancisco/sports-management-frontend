@@ -5,6 +5,7 @@ export const fetchGameFlow = async (gameId) => {
     const { data } = await api.get(`games/${gameId}/game_flow/`);
     return data;
   } catch (error) {
+    console.log("Error fetching game flow data:", error);
     throw error;
   }
 };
