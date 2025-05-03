@@ -16,7 +16,7 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
     const filled =
       list?.map((item) => ({
         player: item.player,
-        team: item.team,
+        team: teamId,
       })) ?? [];
 
     const padding = Array.from({ length: max - filled.length }, () => ({
@@ -32,17 +32,23 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
       lineup && game
         ? {
             home_team: formatLineup(
-              lineup.home_starting_lineup,
+              lineup.home_team,
               game.home_team.id
             ),
             away_team: formatLineup(
-              lineup.away_starting_lineup,
+              lineup.away_team,
               game.away_team.id
             ),
           }
         : {
-            home_team: [],
-            away_team: [],
+            home_team: Array.from({ length: max }, () => ({
+              player: null,
+              team: game.home_team.id
+            })),
+            away_team: Array.from({ length: max }, () => ({
+              player: null,
+              team: game.away_team.id
+            })),
           },
     mode: "onChange",
   });

@@ -29,11 +29,12 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
       is_player_summary: stat?.is_player_summary || false,
       is_team_summary: stat?.is_team_summary || false,
+      is_team_comparison: stat?.is_team_comparison || false,
 
       is_player_stat: stat?.is_player_stat || false,
       is_team_stat: stat?.is_team_stat || false,
 
-      is_box_score: stat?.is_box_score || false,
+      is_boxscore: stat?.is_boxscore || false,
       is_record: stat?.is_record || false,
 
       // Recording Stats
@@ -132,6 +133,14 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         label="Team Summary"
         control={control}
         help_text="Check this if the stat is shown in team summary"
+        errors={errors}
+      />
+
+      <ControlledCheckbox
+        name="is_team_comparison"
+        label="Team Comparison"
+        control={control}
+        help_text="Check this if the stat is shown in team comparison"
         errors={errors}
       />
 

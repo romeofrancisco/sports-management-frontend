@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { ChevronLeft, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/useModal";
-import CreateCoachModal from "@/components/modals/CreateCoachModal";
+import CreateCoachModal from "@/components/modals/CoachModal";
 
 const CoachListHeader = () => {
   const { openModal, closeModal, isOpen } = useModal();

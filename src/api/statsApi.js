@@ -31,6 +31,17 @@ export const fetchTeamStatsSummary = async (gameId) => {
   }
 };
 
+export const fetchTeamStatsComparison = async (gameId) => {
+  try {
+    const { data } = await api.get(
+      `player-stats/team_stats_comparison/?game_id=${gameId}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchStatTypeChoices = async (sport) => {
   try {
     const { data } = await api.get(`stat-type-choices/?sport=${sport}`);
@@ -72,6 +83,17 @@ export const updateFormula = async (formulaId, formulaData) => {
 export const deleteFormula = async (formulaId) => {
   try {
     const { data } = await api.delete(`formulas/${formulaId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchBoxscore = async (gameId) => {
+  try {
+    const { data } = await api.get(
+      `player-stats/boxscore/?game_id=${gameId}`
+    );
     return data;
   } catch (error) {
     throw error;

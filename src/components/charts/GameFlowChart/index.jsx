@@ -31,7 +31,7 @@ ChartJS.register(
   Legend
 );
 
-const GameFlowChart = () => {
+const GameFlowChart = ({ game }) => {
   const { theme } = useTheme();
   const { gameId } = useParams();
   const { data: flow, isLoading } = useGameFlow(gameId);
@@ -67,8 +67,8 @@ const GameFlowChart = () => {
   }, []);
 
   // Data processing (safe to do with null flow)
-  const { game = {}, scoring = { periods: [] }, events = {} } = flow || {};
-  const { home: homeTeam = {}, away: awayTeam = {} } = game.teams || {};
+  const { game: gameData = {}, scoring = { periods: [] }, events = {} } = flow || {};
+  const { home: homeTeam = {}, away: awayTeam = {} } = gameData.teams || {};
   const isSetBased = scoring?.type === "sets";
 
   // Process chart data (safe with empty data)
@@ -115,25 +115,27 @@ const GameFlowChart = () => {
   );
 
   return (
-    <Card className="gap-1 bg-muted/50">
+    <Card className="gap-1 bg-muted/50 max-w-screen lg:max-w-none">
       <CardHeader>
-        <CardTitle className="text-xl flex justify-center font-bold items-center gap-2">
+        <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
           Game Flow
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4">
-        <div className="flex flex-col md:flex-row gap-2">
-          <div ref={containerRef} className="flex-1 w-full min-w-0 h-[40vh] md:h-[50vh] md:max-h-[18rem]">
+        <div className="flex flex-col gap-2">
+          <div ref={containerRef} className="flex-1 w-full h-[30rem] min-w-0">
             <Line
               ref={chartRef}
               data={chartData}
               options={chartOptions}
               plugins={[verticalLinePlugin]}
+              height={300}
             />
           </div>
-          <div className="w-full md:w-54 border p-3 rounded-lg shadow-lg bg-muted/50 text-sm md:my-7 min-h-[200px]">
+          <div className="w-full border p-3 rounded-lg shadow-lg bg-muted/50 text-sm min-h-[160px]">
             <EventInfo
               event={hoverInfo?.event || endEvent}
+              game={game}
               homeTeam={homeTeam}
               awayTeam={awayTeam}
               isSetBased={isSetBased}

@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import DeleteLeagueModal from "@/components/modals/DeleteLeagueModal";
-import UpdateLeagueModal from "@/components/modals/UpdateLeagueModal";
+import LeagueModal from "@/components/modals/LeagueModal";
 import { useNavigate } from "react-router";
 
 const LeagueActions = ({ league }) => {
-  const [selectedLeague, setSelectedLeague] = useState(null)
+  const [selectedLeague, setSelectedLeague] = useState(null);
+  const [open, setOpen] = useState(false);
   const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
   const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
@@ -28,16 +29,23 @@ const LeagueActions = ({ league }) => {
   const handleDeleteLeague = () => {
     setSelectedLeague(league);
     openDeleteModal();
+    setOpen(false); // Close the dropdown when opening the modal
   };
 
   const handleUpdateLeague = () => {
     setSelectedLeague(league);
     openUpdateModal();
+    setOpen(false); // Close the dropdown when opening the modal
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    setOpen(false); // Close the dropdown when navigating
   };
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
@@ -50,7 +58,7 @@ const LeagueActions = ({ league }) => {
         <DropdownMenuContent align="start">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/leagues/${league.id}`)}>
+          <DropdownMenuItem onClick={() => handleNavigate(`/leagues/${league.id}`)}>
             <Settings />
             Manage League
           </DropdownMenuItem>
@@ -72,7 +80,7 @@ const LeagueActions = ({ league }) => {
         isOpen={isDeleteOpen}
         league={selectedLeague}
       />
-      <UpdateLeagueModal
+      <LeagueModal
         onClose={closeUpdateModal}
         isOpen={isUpdateOpen}
         league={selectedLeague}

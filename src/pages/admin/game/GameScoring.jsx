@@ -33,7 +33,7 @@ const GameScoring = () => {
   // Store game in Redux on load
   useEffect(() => {
     if (game && game.status === GAME_STATUS_VALUES.COMPLETED) {
-      return navigate(`/games/${gameId}/boxscore`, { replace: true })
+      return navigate(`/games/${gameId}/game-result`, { replace: true })
     }
     if (game) {
       dispatch(setGameDetails(game));

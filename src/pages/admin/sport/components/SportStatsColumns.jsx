@@ -43,6 +43,20 @@ const baseColumns = [
     size: 80,
   },
   {
+    accessorKey: "is_team_comparison",
+    header: () => <div className="text-center">Team Comparison</div>,
+    cell: ({ getValue }) => (
+      <div className="flex justify-center">
+        {getValue() ? (
+          <CircleCheck size={20} className="text-green-700" />
+        ) : (
+          <CircleX size={20} className="text-red-700" />
+        )}
+      </div>
+    ),
+    size: 80,
+  },
+  {
     accessorKey: "is_player_summary",
     header: () => <div className="text-center">Player Summary</div>,
     cell: ({ getValue }) => (
@@ -71,7 +85,7 @@ const baseColumns = [
     size: 80,
   },
   {
-    accessorKey: "is_box_score",
+    accessorKey: "is_boxscore",
     header: () => <div className="text-center">Boxscore</div>,
     cell: ({ getValue }) => (
       <div className="flex justify-center">

@@ -4,6 +4,8 @@ import {
   fetchPlayerStatsSummary,
   fetchStatTypeChoices,
   fetchTeamStatsSummary,
+  fetchTeamStatsComparison,
+  fetchBoxscore,
 } from "@/api/statsApi";
 import { reset } from "@/store/slices/playerStatSlice";
 import { useDispatch } from "react-redux";
@@ -85,6 +87,22 @@ export const useTeamStatsSummary = (gameId, enabled = true) => {
     enabled,
   });
 };
+
+export const useTeamStatsComparison = (gameId, enabled = true) => {
+  return useQuery({
+    queryKey: ["team-comparison-stats", gameId],
+    queryFn: () => fetchTeamStatsComparison(gameId),
+    enabled: Boolean(gameId) && enabled,
+  });
+};
+
+export const useBoxscore = (gameId) => {
+  return useQuery({
+    queryKey: ["box-score", gameId],
+    queryFn: () => fetchBoxscore(gameId),
+    enabled: Boolean(gameId),
+  });
+}
 
 export const useSportStats = (sport, filter) => {
   return useQuery({

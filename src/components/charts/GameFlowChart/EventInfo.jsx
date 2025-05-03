@@ -1,7 +1,16 @@
 import { Separator } from "@/components/ui/separator";
 import PeriodSelector from "./PeriodSelector";
 
-const EventInfo = ({ event, homeTeam, awayTeam, isSetBased, scoring, selectedPeriodIndex, onPeriodChange }) => {
+const EventInfo = ({
+  event,
+  homeTeam,
+  awayTeam,
+  game,
+  isSetBased,
+  scoring,
+  selectedPeriodIndex,
+  onPeriodChange,
+}) => {
   if (!event) {
     return <p className="text-muted-foreground">No game events available</p>;
   }
@@ -9,15 +18,29 @@ const EventInfo = ({ event, homeTeam, awayTeam, isSetBased, scoring, selectedPer
   return (
     <>
       <div className="flex items-center justify-between">
-        <p>
-          <span className={event.team_side === "home" ? "font-bold" : ""}>
-            {homeTeam.abbreviation} {event.current_score.home}
-          </span>{" "}
-          -{" "}
-          <span className={event.team_side === "away" ? "font-bold" : ""}>
-            {awayTeam.abbreviation} {event.current_score.away}
-          </span>
-        </p>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <img
+              className="w-7"
+              src={game.home_team.logo}
+              alt={game.home_team.name}
+            />
+            <span className={event.team_side === "home" ? "font-bold" : ""}>
+              {homeTeam.abbreviation} {event.current_score.home}
+            </span>
+          </div>
+          <span>-</span>
+          <div className="flex items-center gap-1">
+            <img
+              className="w-7"
+              src={game.away_team.logo}
+              alt={game.away_team.name}
+            />
+            <span className={event.team_side === "away" ? "font-bold" : ""}>
+              {awayTeam.abbreviation} {event.current_score.away}
+            </span>
+          </div>
+        </div>
         {isSetBased && (
           <PeriodSelector
             periods={scoring.periods}

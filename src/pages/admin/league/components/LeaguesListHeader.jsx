@@ -1,27 +1,20 @@
 import React from "react";
-import CreateLeagueModal from "@/components/modals/CreateLeagueModal";
-import { Link } from "react-router";
-import { ChevronLeft, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
+import LeagueModal from "@/components/modals/LeagueModal";
 
 const LeaguesListHeader = () => {
-  const { openModal, closeModal, isOpen } = useModal();
+  const { isOpen, closeModal, openModal } = useModal();
 
   return (
-    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
-      <Link to="/" className="flex text-muted-foreground text-xs max-w-[8.5rem]">
-        <ChevronLeft size={18} />
-        Back to Dashboard
-      </Link>
-      <span className="font-medium text-sm row-start-2 md:text-lg">
-        League Management
-      </span>
-      <Button onClick={openModal} className="ml-auto row-span-2 col-start-2 md:py-5" size="sm">
-        <CalendarPlus />
+    <header className="flex items-center justify-between py-4 border-b">
+      <h1 className="text-2xl font-medium">Leagues</h1>
+      <Button onClick={openModal}>
+        <Plus className="mr-2 h-4 w-4" />
         Create League
       </Button>
-      <CreateLeagueModal isOpen={isOpen} onClose={closeModal} />
+      <LeagueModal isOpen={isOpen} onClose={closeModal} />
     </header>
   );
 };

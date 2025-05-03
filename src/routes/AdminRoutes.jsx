@@ -14,7 +14,7 @@ import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonBracket from "@/pages/admin/league/SeasonBracket";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import SeasonDetails from "@/pages/admin/league/SeasonDetails";
-import GameBoxScore from "@/pages/admin/game/GameBoxScore";
+import GameResult from "@/pages/admin/game/GameResult";
 
 export const adminRoutes = [
   {
@@ -82,7 +82,7 @@ export const adminRoutes = [
     element: <GameScoring />,
   },
   {
-    path: "/games/:gameId/boxscore",
-    element: <GameBoxScore />,
+    path: "/games/:gameId/game-result",
+    element: <GameResult />,
   },
 ];

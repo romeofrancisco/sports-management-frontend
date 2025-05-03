@@ -19,6 +19,7 @@ import { useUpdateGame } from "@/hooks/useGames";
 import { Loader2 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
+import { ControlledDateTimePicker } from "../common/ControlledDateTimePicker";
 
 const UpdateGameForm = ({ sports, teams, onClose, game }) => {
   const { id, sport, home_team, away_team, date, location, status } = game;
@@ -118,26 +119,14 @@ const UpdateGameForm = ({ sports, teams, onClose, game }) => {
       />
 
       {/* Date */}
-      <div className="grid gap-1">
-        <Label className="text-sm text-left">Date</Label>
-        <Controller
+        <ControlledDateTimePicker
           name="date"
           control={control}
-          render={({ field }) => (
-            <DateTimePicker
-              {...field}
-              granularity="minute"
-              hourCycle={12}
-              onChange={(value) => field.onChange(value)}
-            />
-          )}
+          label="Date"
+          placeholder="Select date and time..."
+          errors={errors}
+          className="w-full"
         />
-        {errors.date && (
-          <p className="text-xs text-left text-destructive">
-            {errors.date.message}
-          </p>
-        )}
-      </div>
 
       {/* Location */}
       <div className="grid gap-1">

@@ -12,11 +12,6 @@ const SportStatsFilterBar = ({ filter, setFilter }) => {
         onChange={(search) => setFilter((prev) => ({ ...prev, search }))}
         className="max-w-[20rem]"
       />
-      <FilterStatType
-        value={filter.is_record}
-        onChange={(is_record) => setFilter((prev) => ({ ...prev, is_record }))}
-        className="min-w-[9rem]"
-      />
     </div>
   );
 };

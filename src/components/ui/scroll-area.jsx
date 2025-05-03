@@ -3,13 +3,13 @@ import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
 import { cn } from "@/lib/utils"
 
-function ScrollArea({
+const ScrollArea = React.forwardRef(({
   className,
   children,
   ...props
-}) {
+}, ref) => {
   return (
-    (<ScrollAreaPrimitive.Root data-slot="scroll-area" className={cn("relative", className)} {...props}>
+    (<ScrollAreaPrimitive.Root ref={ref} data-slot="scroll-area" className={cn("relative", className)} {...props}>
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
         className="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1">
@@ -19,31 +19,30 @@ function ScrollArea({
       <ScrollAreaPrimitive.Corner />
     </ScrollAreaPrimitive.Root>)
   );
-}
+});
+ScrollArea.displayName = "ScrollArea";
 
-function ScrollBar({
+const ScrollBar = React.forwardRef(({
   className,
   orientation = "vertical",
   ...props
-}) {
+}, ref) => {
   return (
     (<ScrollAreaPrimitive.ScrollAreaScrollbar
-      data-slot="scroll-area-scrollbar"
+      ref={ref}
+      data-slot="scroll-bar"
       orientation={orientation}
       className={cn(
-        "flex touch-none p-px transition-colors select-none",
-        orientation === "vertical" &&
-          "h-full w-2.5 border-l border-l-transparent -mr-4",
-        orientation === "horizontal" &&
-          "h-2.5 flex-col border-t border-t-transparent",
+        "bg-border flex touch-none select-none rounded-full p-0.5 transition-all duration-150 ease-out data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2 data-[orientation=horizontal]:flex-col",
         className
       )}
       {...props}>
       <ScrollAreaPrimitive.ScrollAreaThumb
-        data-slot="scroll-area-thumb"
-        className="bg-border relative flex-1 rounded-full" />
+        data-slot="scroll-thumb"
+        className="bg-accent relative flex-1 rounded-full" />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>)
   );
-}
+});
+ScrollBar.displayName = "ScrollBar";
 
 export { ScrollArea, ScrollBar }

@@ -3,27 +3,30 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "@/lib/utils"
 
-function Popover({
+const Popover = React.forwardRef(({
   ...props
-}) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />;
-}
+}, ref) => {
+  return <PopoverPrimitive.Root ref={ref} data-slot="popover" {...props} />;
+});
+Popover.displayName = "Popover";
 
-function PopoverTrigger({
+const PopoverTrigger = React.forwardRef(({
   ...props
-}) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
-}
+}, ref) => {
+  return <PopoverPrimitive.Trigger ref={ref} data-slot="popover-trigger" {...props} />;
+});
+PopoverTrigger.displayName = "PopoverTrigger";
 
-function PopoverContent({
+const PopoverContent = React.forwardRef(({
   className,
   align = "center",
   sideOffset = 4,
   ...props
-}) {
+}, ref) => {
   return (
     (<PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
+        ref={ref}
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
@@ -34,12 +37,14 @@ function PopoverContent({
         {...props} />
     </PopoverPrimitive.Portal>)
   );
-}
+});
+PopoverContent.displayName = "PopoverContent";
 
-function PopoverAnchor({
+const PopoverAnchor = React.forwardRef(({
   ...props
-}) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
-}
+}, ref) => {
+  return <PopoverPrimitive.Anchor ref={ref} data-slot="popover-anchor" {...props} />;
+});
+PopoverAnchor.displayName = "PopoverAnchor";
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
