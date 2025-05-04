@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -130,7 +129,7 @@
       -webkit-appearance: none;
       margin: 0;
     }
-  
+
     input[type='number'] {
       -moz-appearance: textfield;
       appearance: textfield;
@@ -180,5 +179,14 @@ thead tr:first-child .first-col::before {
 /* Hide bottom part of left border in last row */
 tbody tr:last-child .first-col::before {
   border-bottom-left-radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 

@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
@@ -40,8 +39,6 @@ export default function Layout() {
       <SidebarInset>
         <header className="flex h-auto shrink-0 items-center justify-between pe-4 gap-2 transition-[width,height] ease-linear">
           <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
             <BreadCrumb />
           </div>
           <div>

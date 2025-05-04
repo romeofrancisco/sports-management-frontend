@@ -44,30 +44,32 @@ const GameSettings = () => {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="size-10 p-0 absolute top-0 right-0"
+            size="icon"
+            className="h-9 w-9"
+            title="Game Settings"
           >
-            <Settings className="size-5" />
+            <Settings className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Settings</DropdownMenuLabel>
+          <DropdownMenuLabel>Game Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleStatAction("stats")}>
-            <ChartColumn />
-            Summary Stats
+            <ChartColumn className="mr-2 h-4 w-4" />
+            <span>Summary Stats</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
-            <Replace />
-            Substitution
+            <Replace className="mr-2 h-4 w-4" />
+            <span>Substitution</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleStatAction("nextPeriod")}>
-            <Clock />
-            Next {period}
+            <Clock className="mr-2 h-4 w-4" />
+            <span>Next {period}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleStatAction("completeGame")}>
-            <Flag />
-            Complete Game
+            <Flag className="mr-2 h-4 w-4" />
+            <span>Complete Game</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

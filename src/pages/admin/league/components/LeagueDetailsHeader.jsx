@@ -1,34 +1,43 @@
 import React from "react";
 import { Link, useParams } from "react-router";
-import { ChevronLeft, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, Plus, Trophy, CalendarIcon, Users } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { useModal } from "@/hooks/useModal";
-import SeasonModal from "@/components/modals/SeasonModal";
 
 const LeagueDetailsHeader = ({ name, sport }) => {
-  const { isOpen, openModal, closeModal } = useModal();
-  const { league } = useParams();
+
   return (
-    <header className="border-b p-4 mb-4 grid grid-cols-2 grid-rows-2 items-center">
-      <Link
-        to="/leagues"
-        className="flex text-muted-foreground text-xs max-w-[8.5rem]"
-      >
-        <ChevronLeft size={18} />
-        Back to Leagues
-      </Link>
-      <span className="font-medium text-sm row-start-2 md:text-lg">{name}</span>
-      <Button onClick={openModal} className="ml-auto row-span-2 col-start-2 md:py-5">
-        <Plus />
-        New Season
-      </Button>
-      <SeasonModal
-        isOpen={isOpen}
-        onClose={closeModal}
-        league={league}
-        sport={sport}
-      />
-    </header>
+    <Card className="relative bg-muted/50 overflow-hidden rounded-lg p-6 my -4">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+
+      <div className="flex flex-col gap-2 relative">
+        <Link
+          to="/leagues"
+          className="flex items-center text-muted-foreground text-sm w-fit hover:text-primary transition-colors"
+        >
+          <ChevronLeft size={18} />
+          Back to Leagues
+        </Link>
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">{name}</h1>
+            <div className="flex items-center gap-4 text-muted-foreground mt-1">
+              {sport && (
+                <div className="flex items-center gap-1">
+                  <Trophy size={16} />
+                  <span>{sport.name}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <CalendarIcon size={16} />
+                <span>Current Season: May 5, 2025</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 };
 

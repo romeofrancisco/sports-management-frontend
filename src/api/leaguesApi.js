@@ -1,10 +1,11 @@
 import api from ".";
 
-export const createLeague = async (leagueData) => {
+export const createLeague = async (newLeague) => {
   try {
-    const { data } = await api.post("leagues/", leagueData);
+    const { data } = await api.post("leagues/", newLeague);
     return data;
   } catch (error) {
+    console.log("Error creating league:", error);
     throw error;
   }
 };
@@ -14,41 +15,91 @@ export const fetchLeagues = async () => {
     const { data } = await api.get("leagues/");
     return data;
   } catch (error) {
+    console.log("Error fetching leagues:", error);
     throw error;
   }
 };
 
-export const fetchLeagueDetails = async (leagueId) => {
+export const fetchLeagueDetails = async (id) => {
   try {
-    const { data } = await api.get(`leagues/${leagueId}`);
+    const { data } = await api.get(`leagues/${id}/`);
     return data;
   } catch (error) {
+    console.log("Error fetching league details:", error);
     throw error;
   }
 };
 
-export const updateLeague = async (leagueId, leagueData) => {
+export const updateLeague = async (id, updatedLeague) => {
   try {
-    const { data } = await api.patch(`leagues/${leagueId}/`, leagueData);
+    const { data } = await api.patch(`leagues/${id}/`, updatedLeague);
     return data;
   } catch (error) {
+    console.log("Error updating league:", error);
     throw error;
   }
 };
 
-export const deleteLeague = async (leagueId) => {
+export const deleteLeague = async (id) => {
   try {
-    return await api.delete(`leagues/${leagueId}/`);
+    await api.delete(`leagues/${id}/`);
+    return true;
   } catch (error) {
+    console.log("Error deleting league:", error);
     throw error;
   }
 };
 
-export const fetchLeagueRankings = async (leagueId) => {
+export const fetchLeagueRankings = async (id) => {
   try {
-    const { data } = await api.get(`leagues/${leagueId}/standings`);
+    const { data } = await api.get(`leagues/${id}/standings/`);
     return data;
   } catch (error) {
+    console.log("Error fetching league rankings:", error);
+    throw error;
+  }
+};
+
+export const fetchLeagueStatistics = async (id) => {
+  try {
+    const { data } = await api.get(`leagues/${id}/statistics/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching league statistics:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamForm = async (id, limit = 5) => {
+  try {
+    const { data } = await api.get(`leagues/${id}/team_form/?limit=${limit}`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team form data:", error);
+    throw error;
+  }
+};
+
+export const addTeamToLeague = async (league_id, team_id) => {
+  try {
+    const { data } = await api.post(`leagues/${league_id}/add_team/`, {
+      team_id,
+    });
+    return data;
+  } catch (error) {
+    console.log("Error adding team to league:", error);
+    throw error;
+  }
+};
+
+export const removeTeamFromLeague = async (league_id, team_id) => {
+  try {
+    const { data } = await api.post(`leagues/${league_id}/remove_team/`, {
+      team_id,
+    });
+    return data;
+  } catch (error) {
+    console.log("Error removing team from league:", error);
     throw error;
   }
 };

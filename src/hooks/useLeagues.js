@@ -1,70 +1,115 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchLeagues,
+  fetchLeagueDetails,
   createLeague,
   updateLeague,
   deleteLeague,
-  fetchLeagueDetails,
   fetchLeagueRankings,
+  fetchLeagueStatistics,
+  fetchTeamForm,
+  addTeamToLeague,
+  removeTeamFromLeague
 } from "@/api/leaguesApi";
-import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const useLeagues = (enabled = true) => {
+export const useLeagues = () => {
   return useQuery({
     queryKey: ["leagues"],
     queryFn: fetchLeagues,
-    enabled,
   });
 };
 
-export const useLeagueDetails = (leagueId, enabled = true) => {
+export const useLeagueDetails = (id) => {
   return useQuery({
-    queryKey: ["league", leagueId],
-    queryFn: () => fetchLeagueDetails(leagueId),
-    enabled,
+    queryKey: ["league-details", id],
+    queryFn: () => fetchLeagueDetails(id),
+    enabled: !!id,
+  });
+};
+
+export const useLeagueRankings = (id) => {
+  return useQuery({
+    queryKey: ["league-rankings", id],
+    queryFn: () => fetchLeagueRankings(id),
+    enabled: !!id,
+  });
+};
+
+export const useLeagueStatistics = (id) => {
+  return useQuery({
+    queryKey: ["league-statistics", id],
+    queryFn: () => fetchLeagueStatistics(id),
+    enabled: !!id,
+  });
+};
+
+export const useTeamForm = (id, limit = 5) => {
+  return useQuery({
+    queryKey: ["team-form", id, limit],
+    queryFn: () => fetchTeamForm(id, limit),
+    enabled: !!id,
   });
 };
 
 export const useCreateLeague = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (leagueData) => createLeague(leagueData),
+    mutationFn: (newLeague) => createLeague(newLeague),
     onSuccess: () => {
-      toast.success("League Created", {
-        richColors: true,
-      });
       queryClient.invalidateQueries(["leagues"]);
+      toast.success("League created successfully");
     },
   });
 };
 
-export const useUpdateLeague = (leagueId) => {
+export const useUpdateLeague = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (leagueData) => updateLeague(leagueId, leagueData),
-    onSuccess: () => {
-      toast.success("League Updated", {
-        richColors: true,
-      });
+    mutationFn: ({ id, newLeague }) => updateLeague(id, newLeague),
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["leagues"]);
+      queryClient.invalidateQueries(["league-details", variables.id]);
+      toast.success("League updated successfully");
     },
   });
 };
 
 export const useDeleteLeague = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({ id }) => deleteLeague(id),
+    mutationFn: (id) => deleteLeague(id),
     onSuccess: () => {
-      toast.success("League Deleted", {
-        richColors: true,
-      });
       queryClient.invalidateQueries(["leagues"]);
+      toast.success("League deleted successfully");
     },
   });
 };
 
-export const useLeagueRankings = (leagueId) => {
-  return useQuery({
-    queryKey: ["league_rankings", leagueId],
-    queryFn: () => fetchLeagueRankings(leagueId)
-  })
-}
+export const useAddTeamToLeague = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ league_id, team_id }) => addTeamToLeague(league_id, team_id),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["league-details", variables.league_id]);
+      toast.success("Team added to league");
+    },
+  });
+};
+
+export const useRemoveTeamFromLeague = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ league_id, team_id }) =>
+      removeTeamFromLeague(league_id, team_id),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["league-details", variables.league_id]);
+      toast.success("Team removed from league");
+    },
+  });
+};

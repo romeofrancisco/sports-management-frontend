@@ -6,9 +6,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { TrophyIcon } from "lucide-react";
+import { useTeamForm } from "@/hooks/useLeagues";
+import TeamStreakIndicator from "@/components/common/TeamStreakIndicator";
 
-const LeagueStandings = ({ rankings }) => {
+const LeagueStandings = ({ rankings, league }) => {
+  const { data: teamFormData, isLoading: isFormLoading } = useTeamForm(league);
+  
   const headerWithTooltip = (label, tooltipText) => (
     <TooltipProvider delayDuration={100}>
       <Tooltip>
@@ -25,24 +31,60 @@ const LeagueStandings = ({ rankings }) => {
   const columns = [
     {
       id: "rank",
-      cell: ({ row }) => <div className="text-center">{row.original.rank}</div>,
-      size: 20,
+      cell: ({ row }) => {
+        const rank = row.original.rank;
+        const getRankBadge = (rank) => {
+          if (rank === 1) return "bg-amber-500 text-white font-bold";
+          if (rank === 2) return "bg-gray-400 text-white font-bold";
+          if (rank === 3) return "bg-amber-700 text-white font-bold";
+          return "bg-muted text-muted-foreground";
+        };
+        
+        return (
+          <div className="text-center">
+            <Badge variant="outline" className={`px-2 rounded-md ${getRankBadge(rank)}`}>
+              {rank}
+            </Badge>
+          </div>
+        );
+      },
+      size: 30,
     },
     {
       id: "team",
       header: "Team",
       cell: ({ row }) => {
-        const { team_logo, team_name } = row.original;
+        const { team_logo, team_name, team_id } = row.original;
         return (
           <div className="flex items-center gap-2">
-            <Avatar>
+            <Avatar className="border size-8">
               <AvatarImage src={team_logo} alt={team_name} />
+              <AvatarFallback className="text-xs bg-muted">{team_name.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
-            <span>{team_name}</span>
+            <span className="font-medium">{team_name}</span>
           </div>
         );
       },
-      size:110
+      size: 160
+    },
+    {
+      id: "form",
+      header: () => (
+        <div className="text-center">
+          {headerWithTooltip("STRK", "Recent performance in last 5 games")}
+        </div>
+      ),
+      cell: ({ row }) => {
+        const teamId = row.original.team_id;
+        const form = teamFormData?.form?.[teamId] || [];
+        
+        return (
+          <div className="flex justify-center">
+            <TeamStreakIndicator results={form} />
+          </div>
+        );
+      },
+      size: 80
     },
     {
       accessorKey: "matches_played",
@@ -51,24 +93,24 @@ const LeagueStandings = ({ rankings }) => {
           {headerWithTooltip("MP", "Matches Played")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => <div className="text-center font-medium">{getValue()}</div>,
+      size: 40,
     },
     {
       accessorKey: "wins",
       header: () => (
         <div className="text-center">{headerWithTooltip("W", "Wins")}</div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => <div className="text-center text-emerald-600 font-medium">{getValue()}</div>,
+      size: 40,
     },
     {
       accessorKey: "losses",
       header: () => (
         <div className="text-center">{headerWithTooltip("L", "Losses")}</div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => <div className="text-center text-rose-600 font-medium">{getValue()}</div>,
+      size: 40,
     },
     {
       accessorKey: "win_ratio",
@@ -77,8 +119,15 @@ const LeagueStandings = ({ rankings }) => {
           {headerWithTooltip("W%", "Win Percentage")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return (
+          <div className="text-center font-medium">
+            {(value * 100).toFixed(1)}%
+          </div>
+        );
+      },
+      size: 40,
     },
     {
       accessorKey: "seasons_participated",
@@ -87,8 +136,8 @@ const LeagueStandings = ({ rankings }) => {
           {headerWithTooltip("SP", "Seasons Participated")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => <div className="text-center font-medium">{getValue()}</div>,
+      size: 40,
     },
     {
       accessorKey: "championships",
@@ -97,19 +146,36 @@ const LeagueStandings = ({ rankings }) => {
           {headerWithTooltip("CH", "Championships Won")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
-      size: 30,
+      cell: ({ getValue }) => {
+        const championships = getValue();
+        return (
+          <div className="flex justify-center items-center">
+            {championships > 0 ? (
+              <Badge variant="outline" className="bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-700 dark:text-amber-300 flex gap-1 items-center">
+                <TrophyIcon size={12} className="text-amber-500" />
+                <span>{championships}</span>
+              </Badge>
+            ) : (
+              <span className="text-muted-foreground">0</span>
+            )}
+          </div>
+        );
+      },
+      size: 50,
     },
   ];
 
   return (
-    <div className="dark:bg-muted/30 bg-muted/50 p-5 lg:p-8 rounded-lg">
-      <h1 className="text-2xl flex gap-2 font-semibold">League Leaderboards</h1>
+    <div>
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2 border-b pb-3">
+        League Leaderboard
+      </h2>
       <DataTable
         columns={columns}
-        data={rankings}
+        data={rankings || []}
         showPagination={false}
-        className="text-xs md:text-sm"
+        className="text-sm"
+        alternateRowColors={true}
       />
     </div>
   );
