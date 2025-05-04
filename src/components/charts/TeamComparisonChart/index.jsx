@@ -55,7 +55,7 @@ export default function TeamStatsComparison({ game }) {
   const { home_team, away_team, comparison_stats } = statComparison;
 
   return (
-    <Card className="bg-muted/50">
+    <Card>
       <CardContent>
         <CardHeader className="p-0">
           <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2 mb-2">
@@ -72,7 +72,7 @@ export default function TeamStatsComparison({ game }) {
             {home_team.abbreviation}
           </div>
           <span></span>
-          <div className="flex items-center justify-start">
+          <div className="flex items-center gap-2 justify-start">
             <img
               className="w-9"
               src={game.away_team.logo}

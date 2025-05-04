@@ -19,6 +19,7 @@ import { useModal } from "@/hooks/useModal";
 import { usePlayers } from "@/hooks/usePlayers";
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 import PlayersFilterBar from "./PlayersFilterBar";
+import { Card } from "@/components/ui/card";
 
 const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
   {
@@ -146,11 +147,11 @@ export const PlayersTable = () => {
   const columns = getColumns(navigate, handleUpdatePlayer, handleDeletePlayer);
 
   return (
-    <div className="border md:bg-muted/30 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
+    <Card className="border gap-0 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
       <PlayersFilterBar filter={filter} setFilter={setFilter} />
       <DataTable columns={columns} data={players || []} loading={isLoading} className="text-xs md:text-sm"/>
       <DeletePlayerModal isOpen={isDeleteOpen} onClose={closeDeleteModal} player={selectedPlayer}/>
       <PlayerModal isOpen={isUpdateOpen} onClose={closeUpdateModal} player={selectedPlayer}/>
-    </div>
+    </Card>
   );
 };

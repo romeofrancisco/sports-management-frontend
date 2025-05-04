@@ -96,18 +96,46 @@ const Boxscore = ({ game }) => {
 
       // Add stats to row data
       allStatNames.forEach((statName) => {
+        const isTeamTotal = player.id === "home_team_total" || player.id === "away_team_total";
+        const isPercentage = statName.includes('%');
+        
+        // Get the stat value directly from the player data
+        let statValue;
         if (scoring_type === SCORING_TYPE_VALUES.SETS) {
           if (selectedPeriod === "total") {
-            rowData[statName] = player.total_stats?.[statName];
+            statValue = player.total_stats?.[statName];
           } else {
             const periodData = player.periods?.find(
               (p) => p.period === parseInt(selectedPeriod)
             );
-            rowData[statName] = periodData?.stats?.[statName];
+            statValue = periodData?.stats?.[statName];
           }
         } else {
           // For points scoring type, always use the total value
-          rowData[statName] = player.total_stats?.[statName];
+          statValue = player.total_stats?.[statName];
+        }
+        
+        // Special handling for team totals with percentage stats when the backend doesn't provide them
+        if (isTeamTotal && isPercentage && (statValue === undefined || statValue === null)) {
+          // Calculate percentage from ratio (e.g., "14/15" → 93.33%)
+          const baseStatName = statName.replace('%', '');
+          const ratioValue = player.total_stats?.[baseStatName];
+          
+          if (ratioValue && typeof ratioValue === 'string' && ratioValue.includes('/')) {
+            const [makes, attempts] = ratioValue.split('/').map(Number);
+            if (attempts > 0) {
+              const percentage = (makes / attempts) * 100;
+              // Round to 2 decimal places
+              rowData[statName] = Number(percentage.toFixed(2));
+            } else {
+              rowData[statName] = 0;
+            }
+          } else {
+            rowData[statName] = 0;
+          }
+        } else {
+          // Use the value directly from the backend
+          rowData[statName] = statValue;
         }
       });
 
@@ -132,13 +160,19 @@ const Boxscore = ({ game }) => {
         accessorKey: "player",
         header: () => <span className="ps-4">Player</span>,
         cell: ({ row }) => {
-          const { jersey_number, name } = row.original;
+          const { jersey_number, name, id } = row.original;
+          const isTeamTotal = id === "home_team_total" || id === "away_team_total";
+          
           return (
-            <div className="grid grid-cols-[1rem_auto] gap-2 ps-1">
-              <span className="text-muted-foreground text-end">
-                {jersey_number}
+            <div className={`grid ${isTeamTotal ? "grid-cols-1" : "grid-cols-[1rem_auto]"} gap-2 ps-1`}>
+              {!isTeamTotal && (
+                <span className="text-muted-foreground text-end">
+                  {jersey_number}
+                </span>
+              )}
+              <span className={isTeamTotal ? "font-bold" : ""}>
+                {name}
               </span>
-              <span>{name}</span>
             </div>
           );
         },
@@ -159,17 +193,20 @@ const Boxscore = ({ game }) => {
             </Button>
           </div>
         ),
-        cell: ({ row }) => (
-          <div className="text-center">
-            <span className="font-medium">
-              {scoring_type === SCORING_TYPE_VALUES.SETS
-                ? selectedPeriod === "total"
-                  ? row.original.total_points
-                  : row.original.points
-                : row.original.total_points}
-            </span>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const isTeamTotal = row.original.id === "home_team_total" || row.original.id === "away_team_total";
+          return (
+            <div className="text-center">
+              <span className={`${isTeamTotal ? "font-bold" : "font-medium"}`}>
+                {scoring_type === SCORING_TYPE_VALUES.SETS
+                  ? selectedPeriod === "total"
+                    ? row.original.total_points
+                    : row.original.points
+                  : row.original.total_points}
+              </span>
+            </div>
+          );
+        },
         size: 50,
       },
     ];
@@ -179,10 +216,11 @@ const Boxscore = ({ game }) => {
       id: statName,
       accessorKey: statName,
       header: () => <div className="text-center text-xs">{statName}</div>,
-      cell: ({ getValue }) => {
+      cell: ({ getValue, row }) => {
         const value = getValue();
+        const isTeamTotal = row.original.id === "home_team_total" || row.original.id === "away_team_total";
         return (
-          <div className="text-center text-muted-foreground">
+          <div className={`text-center ${isTeamTotal ? "font-semibold" : "text-muted-foreground"}`}>
             {value !== undefined ? value : "-"}
           </div>
         );
@@ -197,10 +235,10 @@ const Boxscore = ({ game }) => {
   if (!boxscoreData) return <div>No boxscore data available</div>;
 
   return (
-    <Card className="bg-muted/50 max-w-screen md:max-w-[calc(100vw-2.5rem)]">
+    <Card className="max-w-screen lg:max-w-[calc(100vw-24rem)]">
       <CardContent className="p-0 md:px-6">
         <CardHeader className="p-0">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
             Boxscore
           </CardTitle>
         </CardHeader>
@@ -250,6 +288,7 @@ const Boxscore = ({ game }) => {
               data={homeTeamData}
               showPagination={false}
               className="text-xs"
+              alternateRowColors={true}
             />
           </div>
 
@@ -270,6 +309,7 @@ const Boxscore = ({ game }) => {
               data={awayTeamData}
               showPagination={false}
               className="text-xs"
+              alternateRowColors={true}
             />
           </div>
         </div>

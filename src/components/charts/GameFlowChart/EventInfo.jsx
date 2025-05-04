@@ -17,7 +17,7 @@ const EventInfo = ({
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-dashed pb-3 mb-3">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <img
@@ -49,7 +49,7 @@ const EventInfo = ({
           />
         )}
       </div>
-      <Separator className="min-h-px my-4" />
+      
       <div>
         <p className="text-xs font-medium mb-2">{event.period_label}</p>
         {event.id ? (

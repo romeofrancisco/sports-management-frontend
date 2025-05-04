@@ -16,7 +16,7 @@ const GameResult = () => {
   return (
     <div className="grid gap-5 mb-5">
       <GameResultHeader game={game} />
-      <div className="grid lg:grid-cols-[25%_1fr] gap-5">
+      <div className="grid lg:grid-cols-[20rem_1fr] gap-5">
         <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-5">
           <div>
             <GameFlowChart game={game} />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -18,8 +18,15 @@ import { useNavigate } from "react-router";
 
 const SportActions = ({ onEdit, onDelete, sport }) => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  
+  const handleAction = (action) => {
+    action();
+    setOpen(false);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -33,17 +40,17 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate(`/sports/${sport.slug}`)}>
+        <DropdownMenuItem onClick={() => handleAction(() => navigate(`/sports/${sport.slug}`))}>
           <ClipboardPenLine className="mr-2 h-4 w-4" />
           Manage Sport
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onEdit(sport)}>
+        <DropdownMenuItem onClick={() => handleAction(() => onEdit(sport))}>
           <SquarePen className="mr-2 h-4 w-4" />
           Update Sport
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => onDelete(sport)}
+          onClick={() => handleAction(() => onDelete(sport))}
           className="text-destructive"
         >
           <Trash className="mr-2 h-4 w-4" />

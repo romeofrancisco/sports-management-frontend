@@ -8,20 +8,16 @@ import SportStatsModal from "@/components/modals/SportStatsModal";
 import { useModal } from "@/hooks/useModal";
 import DeleteStatModal from "@/components/modals/DeleteStatModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGrid, Table as TableIcon } from "lucide-react";
 
 // Import column definitions
 import getEssentialColumns from "./columns/EssentialColumns";
-import getCategoryColumns from "./columns/CategoryColumns";
 import getDisplayColumns from "./columns/DisplayColumns";
 import getRecordingColumns from "./columns/RecordingColumns";
-import SportStatsCardView from "./SportStatsCardView";
 
 const SportStatsTable = () => {
   const { sport } = useParams();
   const [selectedStat, setSelectedStat] = useState(null);
   const [filter, setFilter] = useState({ search: "" });
-  const [viewMode, setViewMode] = useState("table"); // 'table' or 'cards'
   const [activeTab, setActiveTab] = useState("essential");
 
   const { data: stats, isLoading: isStatsLoading } = useSportStats(
@@ -55,7 +51,6 @@ const SportStatsTable = () => {
     modals,
     filter,
   });
-  const categoryColumns = getCategoryColumns({ setSelectedStat, modals });
   const displayColumns = getDisplayColumns({ setSelectedStat, modals });
   const recordingColumns = getRecordingColumns({
     setSelectedStat,
@@ -70,95 +65,58 @@ const SportStatsTable = () => {
         <Button onClick={handleCreateStat}>Create New Stat</Button>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
+      <div className="mb-4">
         <SportStatsFilterBar filter={filter} setFilter={setFilter} />
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant={viewMode === "table" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setViewMode("table")}
-            className="flex items-center gap-1"
-          >
-            <TableIcon className="h-4 w-4" /> Table
-          </Button>
-          <Button
-            variant={viewMode === "cards" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setViewMode("cards")}
-            className="flex items-center gap-1"
-          >
-            <LayoutGrid className="h-4 w-4" /> Cards
-          </Button>
-        </div>
       </div>
 
-      {viewMode === "table" ? (
-        <Tabs
-          defaultValue="essential"
-          className="w-full"
-          value={activeTab}
-          onValueChange={setActiveTab}
-        >
-          <TabsList>
-            <TabsTrigger className="text-xs " value="essential">
-              Essential Info
-            </TabsTrigger>
-            <TabsTrigger className="text-xs " value="category">
-              Categories
-            </TabsTrigger>
-            <TabsTrigger className="text-xs " value="display">
-              Display Settings
-            </TabsTrigger>
-            <TabsTrigger className="text-xs " value="recording">
-              Recording
-            </TabsTrigger>
-          </TabsList>
+      <Tabs
+        defaultValue="essential"
+        className="w-full"
+        value={activeTab}
+        onValueChange={setActiveTab}
+      >
+        <TabsList>
+          <TabsTrigger className="text-xs " value="essential">
+            Essential Info
+          </TabsTrigger>
+          <TabsTrigger className="text-xs " value="display">
+            Display Settings
+          </TabsTrigger>
+          <TabsTrigger className="text-xs " value="recording">
+            Recording
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="essential" className="mt-0">
-            <DataTable
-              columns={essentialColumns}
-              data={stats || []}
-              loading={isStatsLoading}
-              className="text-xs"
-            />
-          </TabsContent>
+        <TabsContent value="essential" className="mt-0">
+          <DataTable
+            columns={essentialColumns}
+            data={stats || []}
+            loading={isStatsLoading}
+            className="text-xs"
+            unlimited={true}
+          />
+        </TabsContent>
 
-          <TabsContent value="category" className="mt-0">
-            <DataTable
-              columns={categoryColumns}
-              data={stats || []}
-              loading={isStatsLoading}
-              className="text-xs"
-            />
-          </TabsContent>
+        <TabsContent value="display" className="mt-0">
+          <DataTable
+            columns={displayColumns}
+            data={stats || []}
+            loading={isStatsLoading}
+            className="text-xs"
+            unlimited={true}
+          />
+        </TabsContent>
 
-          <TabsContent value="display" className="mt-0">
-            <DataTable
-              columns={displayColumns}
-              data={stats || []}
-              loading={isStatsLoading}
-              className="text-xs"
-            />
-          </TabsContent>
-
-          <TabsContent value="recording" className="mt-0">
-            <DataTable
-              columns={recordingColumns}
-              data={stats || []}
-              loading={isStatsLoading}
-              className="text-xs"
-            />
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <SportStatsCardView
-          stats={stats}
-          filter={filter}
-          handleEditStat={handleEditStat}
-          handleDeleteStat={handleDeleteStat}
-        />
-      )}
+        <TabsContent value="recording" className="mt-0">
+          <DataTable
+            columns={recordingColumns}
+            data={stats || []}
+            loading={isStatsLoading}
+            className="text-xs"
+            unlimited={true}
+          />
+        </TabsContent>
+      </Tabs>
 
       <SportStatsModal
         isOpen={modals.stat.isOpen}

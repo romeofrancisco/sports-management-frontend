@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router";
 import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/useModal";
-import CreateUpdateSeasonModal from "@/components/modals/CreateUpdateSeasonModal";
+import SeasonModal from "@/components/modals/SeasonModal";
 
 const LeagueDetailsHeader = ({ name, sport }) => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -22,7 +22,7 @@ const LeagueDetailsHeader = ({ name, sport }) => {
         <Plus />
         New Season
       </Button>
-      <CreateUpdateSeasonModal
+      <SeasonModal
         isOpen={isOpen}
         onClose={closeModal}
         league={league}

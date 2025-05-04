@@ -11,6 +11,7 @@ import TeamFiltersBar from "./TeamFiltersBar";
 import TeamCard from "./TeamCard.jsx";
 import { Separator } from "@/components/ui/separator";
 import ContentLoading from "@/components/common/ContentLoading";
+import { Card } from "@/components/ui/card";
 
 const TeamsContainer = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -30,9 +31,9 @@ const TeamsContainer = () => {
   if (isError) return <PageError />;
 
   return (
-    <div className="border md:bg-muted/30 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
+    <Card className="border gap-0 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
       <TeamFiltersBar filter={filter} setFilter={setFilter} />
-      <Separator className="max-h-[0.5px] mt-5 mb-8" />
+      <Separator className="max-h-[0.5px] mb-4" />
       {isLoading ? (
         <ContentLoading />
       ) : (
@@ -65,7 +66,7 @@ const TeamsContainer = () => {
         onClose={updateModal.closeModal}
         team={selectedTeam}
       />
-    </div>
+    </Card>
   );
 };
 
