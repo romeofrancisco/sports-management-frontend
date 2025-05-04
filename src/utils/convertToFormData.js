@@ -7,7 +7,7 @@ export const convertToFormData = (data) => {
         formData.append(key, value.toISOString());
       } else if (Array.isArray(value)) {
         value.forEach((item) => {
-          formData.append(`${key}[]`, item); // 👈 add []
+          formData.append(`${key}[]`, item);
         });
       } else if (value instanceof FileList) {
         if (value.length > 0) {

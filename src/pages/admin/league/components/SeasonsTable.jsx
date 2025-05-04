@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatShortDate } from "@/utils/formatDate";
 import DeleteSeasonModal from "@/components/modals/DeleteSeasonModal";
-import CreateUpdateSeasonModal from "@/components/modals/CreateUpdateSeasonModal";
+import SeasonModal from "@/components/modals/SeasonModal";
 
 const SeasonsTable = ({ seasons, sport, league }) => {
   const navigate = useNavigate();
@@ -124,7 +124,7 @@ const SeasonsTable = ({ seasons, sport, league }) => {
         onClose={closeDeleteModal}
         season={selectedSeason}
       />
-      <CreateUpdateSeasonModal
+      <SeasonModal
         isOpen={isUpdateOpen}
         onClose={closeUpdateModal}
         league={league}

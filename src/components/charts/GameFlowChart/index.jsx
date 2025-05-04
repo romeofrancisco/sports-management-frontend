@@ -115,7 +115,7 @@ const GameFlowChart = ({ game }) => {
   );
 
   return (
-    <Card className="gap-1 bg-muted/50 max-w-screen lg:max-w-none">
+    <Card className="gap-1 max-w-screen lg:max-w-none">
       <CardHeader>
         <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
           Game Flow
@@ -132,7 +132,7 @@ const GameFlowChart = ({ game }) => {
               height={300}
             />
           </div>
-          <div className="w-full border p-3 rounded-lg shadow-lg bg-muted/50 text-sm min-h-[160px]">
+          <div className="w-full border p-3 rounded-lg shadow-lg text-sm min-h-[160px]">
             <EventInfo
               event={hoverInfo?.event || endEvent}
               game={game}

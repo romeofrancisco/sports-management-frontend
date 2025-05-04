@@ -6,12 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CreateUpdateSeasonForm from "../forms/CreateUpdateSeasonForm";
+import SeasonForm from "../forms/SeasonForm";
 import { useSportTeams } from "@/hooks/useTeams";
 import Loading from "../common/FullLoading";
 import { ScrollArea } from "../ui/scroll-area";
 
-const CreateUpdateSeasonModal = ({
+const SeasonModal = ({
   isOpen,
   onClose,
   league,
@@ -32,7 +32,7 @@ const CreateUpdateSeasonModal = ({
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[75vh]">
-          <CreateUpdateSeasonForm
+          <SeasonForm
             league={league}
             teams={data}
             onClose={onClose}
@@ -44,4 +44,4 @@ const CreateUpdateSeasonModal = ({
   );
 };
 
-export default CreateUpdateSeasonModal;
+export default SeasonModal;
