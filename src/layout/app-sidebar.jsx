@@ -22,7 +22,7 @@ export function AppSidebar({ ...props }) {
 
 
   return (
-    <Sidebar {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

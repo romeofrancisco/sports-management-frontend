@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 import { Controller } from "react-hook-form";
 
 import { cn } from "@/lib/utils";

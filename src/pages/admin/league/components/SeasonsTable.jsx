@@ -8,6 +8,8 @@ import {
   ClipboardPenLine,
   SquarePen,
   Settings,
+  Calendar,
+  Plus,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,8 +23,9 @@ import { Button } from "@/components/ui/button";
 import { formatShortDate } from "@/utils/formatDate";
 import DeleteSeasonModal from "@/components/modals/DeleteSeasonModal";
 import SeasonModal from "@/components/modals/SeasonModal";
+import { Badge } from "@/components/ui/badge";
 
-const SeasonsTable = ({ seasons, sport, league }) => {
+const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
   const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState(null);
   const {
@@ -35,6 +38,11 @@ const SeasonsTable = ({ seasons, sport, league }) => {
     openModal: openUpdateModal,
     closeModal: closeUpdateModal,
   } = useModal();
+  const {
+    isOpen: isNewSeasonOpen,
+    openModal: openNewSeasonModal,
+    closeModal: closeNewSeasonModal,
+  } = useModal();
 
   const handleDeleteSeason = (season) => {
     openDeleteModal();
@@ -46,29 +54,55 @@ const SeasonsTable = ({ seasons, sport, league }) => {
     setSelectedSeason(season);
   };
 
+  const getStatusBadge = (status) => {
+    const statusStyle = {
+      upcoming: "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800",
+      ongoing: "bg-green-100 text-green-700 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-800",
+      completed: "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700",
+      canceled: "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800",
+      paused: "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+    };
+
+    return statusStyle[status] || "bg-muted text-muted-foreground";
+  };
+
   const columns = [
     {
       id: "name",
       header: "Name",
-      cell: ({ row }) => row.original.name,
-      size: 80,
+      cell: ({ row }) => (
+        <div className="font-medium">
+          {row.original.name || `Season ${row.original.year}`}
+        </div>
+      ),
+      size: 150,
     },
     {
       id: "status",
       header: "Status",
-      cell: ({ row }) =>
-        row.original.status.charAt(0).toUpperCase() +
-        row.original.status.slice(1),
-      size: 50,
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <Badge className={`${getStatusBadge(status)} capitalize`} variant="outline">
+            {status}
+          </Badge>
+        );
+      },
+      size: 120,
     },
     {
       id: "date",
       header: "Date",
       cell: ({ row }) => {
         const { start_date, end_date } = row.original;
-        return `${formatShortDate(start_date)}`;
+        return (
+          <div className="flex items-center gap-1">
+            <Calendar size={14} className="text-muted-foreground" />
+            <span>{formatShortDate(start_date)}</span>
+          </div>
+        );
       },
-      size: 100,
+      size: 120,
     },
     {
       id: "actions",
@@ -83,41 +117,58 @@ const SeasonsTable = ({ seasons, sport, league }) => {
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigate(`/leagues/${league}/season/${season.id}`)}
+                className="flex items-center gap-2"
               >
-                <Settings />
+                <Settings size={14} />
                 Manage Season
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleUpdateSeason(season)}>
-                <SquarePen />
-                Update Season
+              <DropdownMenuItem 
+                onClick={() => handleUpdateSeason(season)}
+                className="flex items-center gap-2"
+              >
+                <SquarePen size={14} />
+                Edit Season
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => handleDeleteSeason(season)}
+                className="text-red-600 dark:text-red-400 flex items-center gap-2"
               >
-                <Trash />
+                <Trash size={14} />
                 Delete Season
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
-      size: 30,
+      size: 40,
     },
   ];
 
   return (
-    <div className="dark:bg-muted/30 bg-muted/50 p-5 lg:p-8 rounded-lg">
-      <h1 className="text-2xl font-semibold">Seasons</h1>
+    <div className="p-5 lg:p-6">
+      <div className="flex justify-between items-center mb-4 border-b pb-3">
+        <h2 className="text-xl font-bold flex items-center gap-2">
+          Seasons
+        </h2>
+        {!compact && (
+          <Button onClick={openNewSeasonModal} variant="default" size="sm" className="gap-1">
+            <Plus size={16} />
+            New Season
+          </Button>
+        )}
+      </div>
       <DataTable
         columns={columns}
         data={seasons}
-        className="text-xs md:text-sm"
+        className="text-sm"
+        alternateRowColors={true}
       />
       <DeleteSeasonModal
         isOpen={isDeleteOpen}
@@ -129,6 +180,12 @@ const SeasonsTable = ({ seasons, sport, league }) => {
         onClose={closeUpdateModal}
         league={league}
         season={selectedSeason}
+        sport={sport}
+      />
+      <SeasonModal
+        isOpen={isNewSeasonOpen}
+        onClose={closeNewSeasonModal}
+        league={league}
         sport={sport}
       />
     </div>
