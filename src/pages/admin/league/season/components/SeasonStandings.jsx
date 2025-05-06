@@ -92,7 +92,7 @@ const SeasonStandings = ({ standings, sport }) => {
   const columns = [...baseColumns, ...formattedStatColumns];
 
   return (
-    <div className="bg-card rounded-lg shadow-md overflow-hidden p-5">
+    <div className="bg-card rounded-lg border shadow-md overflow-hidden p-5">
       <h2 className="text-xl font-bold mb-4 border-b pb-2">Season Standings</h2>
       <DataTable 
         columns={columns} 

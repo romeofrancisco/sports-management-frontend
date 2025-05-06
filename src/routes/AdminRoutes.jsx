@@ -11,9 +11,9 @@ import LeaguesList from "@/pages/admin/league/LeaguesList";
 import CoachList from "@/pages/admin/coach/CoachList";
 import CoachDetails from "@/pages/admin/coach/CoachDetails";
 import LeagueDetails from "@/pages/admin/league/LeagueDetails";
-import SeasonBracket from "@/pages/admin/league/SeasonBracket";
+import SeasonBracket from "@/pages/admin/league/season/SeasonBracket";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
-import SeasonDetails from "@/pages/admin/league/SeasonDetails";
+import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import GameResult from "@/pages/admin/game/GameResult";
 
 export const adminRoutes = [

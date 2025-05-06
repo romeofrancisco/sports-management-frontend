@@ -53,3 +53,13 @@ export const updateTeam = async (teamData, team) => {
     throw error;
   }
 };
+
+export const fetchTeamsInSeason = async (leagueId, seasonId) => {
+  try {
+    const { data } = await api.get(`leagues/${leagueId}/seasons/${seasonId}/teams/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching teams in season:", error);
+    throw error;
+  }
+};

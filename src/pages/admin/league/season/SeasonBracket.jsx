@@ -3,8 +3,8 @@ import { useParams } from "react-router";
 import { useBracket } from "@/hooks/useBrackets";
 import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
-import SingleElimination from "../../../components/common/bracket/SingleElimination";
-import RoundRobin from "../../../components/common/bracket/RoundRobin";
+import SingleElimination from "@/components/common/bracket/SingleElimination";
+import RoundRobin from "@/components/common/bracket/RoundRobin";
 import { BRACKET_TYPES } from "@/constants/bracket";
 import SeasonBracketHeader from "./components/SeasonBracketHeader";
 
