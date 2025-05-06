@@ -51,6 +51,7 @@ export const updateSeason = async (league_id, season_id, season) => {
 };
 
 export const deleteSeason = async (league_id, season_id) => {
+  console.log("Deleting season:", league_id, season_id)
   try {
     const { data } = await api.delete(`leagues/${league_id}/seasons/${season_id}/`);
     return data;
@@ -135,6 +136,29 @@ export const removeTeamFromSeason = async (league_id, season_id, team_id) => {
     return data;
   } catch (error) {
     console.log("Error removing team from season:", error);
+    throw error;
+  }
+};
+
+export const fetchSeasonGames = async (league_id, season_id, filters = {}) => {
+  try {
+    let url = `leagues/${league_id}/seasons/${season_id}/games/`;
+    
+    // Add query params for filtering
+    const queryParams = new URLSearchParams();
+    if (filters.status) queryParams.append('status', filters.status);
+    if (filters.team) queryParams.append('team', filters.team);
+    if (filters.date) queryParams.append('date', filters.date);
+    
+    const queryString = queryParams.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+    
+    const { data } = await api.get(url);
+    return data;
+  } catch (error) {
+    console.log("Error fetching season games:", error);
     throw error;
   }
 };

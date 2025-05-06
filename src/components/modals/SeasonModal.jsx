@@ -11,13 +11,7 @@ import { useSportTeams } from "@/hooks/useTeams";
 import Loading from "../common/FullLoading";
 import { ScrollArea } from "../ui/scroll-area";
 
-const SeasonModal = ({
-  isOpen,
-  onClose,
-  league,
-  sport,
-  season = null,
-}) => {
+const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
   const { data, isLoading } = useSportTeams(sport?.slug);
 
   if (isLoading) return <Loading />;
@@ -32,12 +26,7 @@ const SeasonModal = ({
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[75vh]">
-          <SeasonForm
-            league={league}
-            teams={data}
-            onClose={onClose}
-            season={season}
-          />
+          <SeasonForm teams={data} onClose={onClose} season={season} />
         </ScrollArea>
       </DialogContent>
     </Dialog>

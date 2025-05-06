@@ -1,8 +1,14 @@
 import api from ".";
 
-export const fetchGames = async (filter) => {
+export const fetchGames = async (filter, page = 1, pageSize = 10) => {
   try {
-    const { data } = await api.get("/games/", { params: filter });
+    const { data } = await api.get("/games/", { 
+      params: { 
+        ...filter,
+        page,
+        page_size: pageSize
+      } 
+    });
     return data;
   } catch (error) {
     throw error;

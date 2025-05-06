@@ -4,7 +4,7 @@ import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
 import PageError from "@/pages/PageError";
 import Loading from "@/components/common/FullLoading";
 import { useParams } from "react-router";
-import SeasonsTable from "./components/SeasonsTable";
+import SeasonsTable from "./season/components/SeasonsTable";
 import LeagueStandings from "./components/LeagueStandings";
 import { useSeasons } from "@/hooks/useSeasons";
 import LeagueOverview from "./components/LeagueOverview";
@@ -30,7 +30,7 @@ const LeagueDetails = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <LeagueDetailsHeader name={name} sport={sport} league={league} />
+      <LeagueDetailsHeader name={name} sport={sport} />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="mb-4">
@@ -41,7 +41,7 @@ const LeagueDetails = () => {
         </TabsList>
         
         <TabsContent value="overview">
-          <LeagueOverview league={league} />
+          <LeagueOverview />
           
           <div className="grid lg:grid-cols-2 gap-6 mt-6">
             <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
@@ -49,7 +49,7 @@ const LeagueDetails = () => {
                 <CardTitle className="text-lg">League Standings</CardTitle>
               </CardHeader>
               <CardContent>
-                <LeagueStandings rankings={leagueRankings} league={league} />
+                <LeagueStandings rankings={leagueRankings} />
               </CardContent>
             </Card>
             
@@ -61,7 +61,6 @@ const LeagueDetails = () => {
                 <SeasonsTable 
                   seasons={seasons?.slice(0, 5)} 
                   sport={sport} 
-                  league={league} 
                   compact={true}
                 />
               </CardContent>
@@ -72,7 +71,7 @@ const LeagueDetails = () => {
         <TabsContent value="standings">
           <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
             <CardContent className="pt-6">
-              <LeagueStandings rankings={leagueRankings} league={league} />
+              <LeagueStandings rankings={leagueRankings} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -83,7 +82,7 @@ const LeagueDetails = () => {
               <CardTitle>League Teams</CardTitle>
             </CardHeader>
             <CardContent>
-              <LeagueTeamsGrid teams={leagueRankings} league={league} />
+              <LeagueTeamsGrid teams={leagueRankings} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -91,7 +90,7 @@ const LeagueDetails = () => {
         <TabsContent value="seasons">
           <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
             <CardContent className="pt-6">
-              <SeasonsTable seasons={seasons} sport={sport} league={league} />
+              <SeasonsTable seasons={seasons} sport={sport} />
             </CardContent>
           </Card>
         </TabsContent>

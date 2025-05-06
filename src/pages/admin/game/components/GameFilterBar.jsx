@@ -24,7 +24,7 @@ const GameFilterBar = ({ filter, setFilter }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+    <div className="px-5 grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
       <SearchFilter
         className="order-3 col-span-2 md:order-1"
         onChange={(team_name) => setFilter((prev) => ({ ...prev, team_name }))}

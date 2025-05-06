@@ -14,8 +14,10 @@ import { ControlledDateRangePicker } from "@/components/common/ControlledDateRan
 
 import { useCreateSeason, useUpdateSeason } from "@/hooks/useSeasons";
 import { useIsMobile } from "@/lib/hooks/use-mobile";
+import { useParams } from "react-router";
 
-const SeasonForm = ({ league, teams, onClose, season }) => {
+const SeasonForm = ({ teams, onClose, season = null }) => {
+  const { league } = useParams();
   const { mutate: createSeason, isPending: creating } = useCreateSeason(league);
   const { mutate: updateSeason, isPending: updating } = useUpdateSeason(league);
 
@@ -73,22 +75,35 @@ const SeasonForm = ({ league, teams, onClose, season }) => {
     // Remove dateRange as it's not needed in the API
     delete jsonData.dateRange;
 
-    const mutation = season ? updateSeason : createSeason;
-    const options = {
-      onSuccess: onClose,
-      onError: (err) => {
-        const errorData = err.response?.data;
-        if (errorData) {
-          Object.entries(errorData).forEach(([field, message]) => {
-            setError(field, { type: "server", message });
-          });
+    if (season) {
+      updateSeason({ id: season.id, data: jsonData }, {
+        onSuccess: () => {
+          onClose();
+        },
+        onError: (err) => {
+          const errorData = err.response?.data;
+          if (errorData) {
+            Object.entries(errorData).forEach(([field, message]) => {
+              setError(field, { type: "server", message });
+            });
+          }
         }
-      },
-    };
-
-    season
-      ? mutation({ id: season.id, data: jsonData }, options)
-      : mutation(jsonData, options);
+      });
+    } else {
+      createSeason(jsonData, {
+        onSuccess: () => {
+          onClose();
+        },
+        onError: (err) => {
+          const errorData = err.response?.data;
+          if (errorData) {
+            Object.entries(errorData).forEach(([field, message]) => {
+              setError(field, { type: "server", message });
+            });
+          }
+        }
+      });
+    }
   };
 
   return (

@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { TrophyIcon } from "lucide-react";
 import { useTeamForm } from "@/hooks/useLeagues";
 import TeamStreakIndicator from "@/components/common/TeamStreakIndicator";
+import { useParams } from "react-router";
 
-const LeagueStandings = ({ rankings, league }) => {
+const LeagueStandings = ({ rankings }) => {
+  const { league } = useParams();
   const { data: teamFormData, isLoading: isFormLoading } = useTeamForm(league);
   
   const headerWithTooltip = (label, tooltipText) => (
@@ -30,9 +32,11 @@ const LeagueStandings = ({ rankings, league }) => {
 
   const columns = [
     {
-      id: "rank",
+      id: "team_with_rank",
+      header: "Team",
       cell: ({ row }) => {
-        const rank = row.original.rank;
+        const { team_logo, team_name, team_id, rank } = row.original;
+        
         const getRankBadge = (rank) => {
           if (rank === 1) return "bg-amber-500 text-white font-bold";
           if (rank === 2) return "bg-gray-400 text-white font-bold";
@@ -41,31 +45,21 @@ const LeagueStandings = ({ rankings, league }) => {
         };
         
         return (
-          <div className="text-center">
+          <div className="flex items-center gap-3">
             <Badge variant="outline" className={`px-2 rounded-md ${getRankBadge(rank)}`}>
               {rank}
             </Badge>
+            <div className="flex items-center gap-2">
+              <Avatar className="border size-8">
+                <AvatarImage src={team_logo} alt={team_name} />
+                <AvatarFallback className="text-xs bg-muted">{team_name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <span className="font-medium">{team_name}</span>
+            </div>
           </div>
         );
       },
-      size: 30,
-    },
-    {
-      id: "team",
-      header: "Team",
-      cell: ({ row }) => {
-        const { team_logo, team_name, team_id } = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <Avatar className="border size-8">
-              <AvatarImage src={team_logo} alt={team_name} />
-              <AvatarFallback className="text-xs bg-muted">{team_name.substring(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <span className="font-medium">{team_name}</span>
-          </div>
-        );
-      },
-      size: 160
+      size: 200
     },
     {
       id: "form",

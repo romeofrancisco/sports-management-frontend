@@ -128,3 +128,25 @@ export const useRecordableStats = (gameId, enabled = true) => {
     enabled,
   });
 };
+
+// New hook to determine scoring type for a sport
+export const useSportScoringType = (sportId) => {
+  // Extract the ID/slug if an object was passed
+  const sportIdentifier = typeof sportId === 'object' && sportId !== null 
+    ? (sportId.slug || sportId.id || sportId.sport_id || sportId._id) 
+    : sportId;
+  
+  const { data: sportDetails, isLoading } = useSportDetails(sportIdentifier);
+  
+  const scoringType = sportDetails?.scoring_type || 'points';
+  const isPointsScoring = scoringType === 'points';
+  const isSetsScoring = scoringType === 'sets';
+  
+  return {
+    scoringType,
+    isPointsScoring,
+    isSetsScoring,
+    isLoading,
+    sportDetails
+  };
+};

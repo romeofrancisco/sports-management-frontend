@@ -2,9 +2,13 @@ import React from "react";
 import { Link, useParams } from "react-router";
 import { ChevronLeft, Plus, Trophy, CalendarIcon, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useModal } from "@/hooks/useModal";
 
 const LeagueDetailsHeader = ({ name, sport }) => {
+  const formattedDate = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
 
   return (
     <Card className="relative bg-muted/50 overflow-hidden rounded-lg p-6 my -4">
@@ -31,7 +35,7 @@ const LeagueDetailsHeader = ({ name, sport }) => {
               )}
               <div className="flex items-center gap-1">
                 <CalendarIcon size={16} />
-                <span>Current Season: May 5, 2025</span>
+                <span>Current Season: {formattedDate}</span>
               </div>
             </div>
           </div>

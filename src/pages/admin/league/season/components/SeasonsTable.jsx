@@ -24,43 +24,45 @@ import { formatShortDate } from "@/utils/formatDate";
 import DeleteSeasonModal from "@/components/modals/DeleteSeasonModal";
 import SeasonModal from "@/components/modals/SeasonModal";
 import { Badge } from "@/components/ui/badge";
+import { useParams } from "react-router";
 
-const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
+const SeasonsTable = ({ seasons, sport, compact = false }) => {
+  const {league} = useParams();
   const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState(null);
-  const {
-    isOpen: isDeleteOpen,
-    openModal: openDeleteModal,
-    closeModal: closeDeleteModal,
-  } = useModal();
-  const {
-    isOpen: isUpdateOpen,
-    openModal: openUpdateModal,
-    closeModal: closeUpdateModal,
-  } = useModal();
-  const {
-    isOpen: isNewSeasonOpen,
-    openModal: openNewSeasonModal,
-    closeModal: closeNewSeasonModal,
-  } = useModal();
 
-  const handleDeleteSeason = (season) => {
-    openDeleteModal();
-    setSelectedSeason(season);
+  const modals = {
+    delete: useModal(),
+    update: useModal(),
+    create: useModal(),
   };
 
-  const handleUpdateSeason = (season) => {
-    openUpdateModal();
+  const handleDeleteSeason = (season) => {
     setSelectedSeason(season);
+    modals.delete.openModal();
+  };
+
+  const handleSeason = (season = null) => {
+    setSelectedSeason(season);
+    if (season) {
+      modals.update.openModal();
+    } else {
+      modals.create.openModal();
+    }
   };
 
   const getStatusBadge = (status) => {
     const statusStyle = {
-      upcoming: "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800",
-      ongoing: "bg-green-100 text-green-700 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-800",
-      completed: "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700",
-      canceled: "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800",
-      paused: "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+      upcoming:
+        "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800",
+      ongoing:
+        "bg-green-100 text-green-700 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-800",
+      completed:
+        "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700",
+      canceled:
+        "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800",
+      paused:
+        "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
     };
 
     return statusStyle[status] || "bg-muted text-muted-foreground";
@@ -83,7 +85,10 @@ const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <Badge className={`${getStatusBadge(status)} capitalize`} variant="outline">
+          <Badge
+            className={`${getStatusBadge(status)} capitalize`}
+            variant="outline"
+          >
             {status}
           </Badge>
         );
@@ -121,14 +126,16 @@ const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => navigate(`/leagues/${league}/season/${season.id}`)}
+                onClick={() =>
+                  navigate(`/leagues/${league}/season/${season.id}`)
+                }
                 className="flex items-center gap-2"
               >
                 <Settings size={14} />
                 Manage Season
               </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => handleUpdateSeason(season)}
+              <DropdownMenuItem
+                onClick={() => handleSeason(season)}
                 className="flex items-center gap-2"
               >
                 <SquarePen size={14} />
@@ -154,11 +161,14 @@ const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
   return (
     <div className="p-5 lg:p-6">
       <div className="flex justify-between items-center mb-4 border-b pb-3">
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          Seasons
-        </h2>
+        <h2 className="text-xl font-bold flex items-center gap-2">Seasons</h2>
         {!compact && (
-          <Button onClick={openNewSeasonModal} variant="default" size="sm" className="gap-1">
+          <Button
+            onClick={() => handleSeason()}
+            variant="default"
+            size="sm"
+            className="gap-1"
+          >
             <Plus size={16} />
             New Season
           </Button>
@@ -171,21 +181,18 @@ const SeasonsTable = ({ seasons, sport, league, compact = false }) => {
         alternateRowColors={true}
       />
       <DeleteSeasonModal
-        isOpen={isDeleteOpen}
-        onClose={closeDeleteModal}
+        isOpen={modals.delete.isOpen}
+        onClose={modals.delete.closeModal}
         season={selectedSeason}
       />
       <SeasonModal
-        isOpen={isUpdateOpen}
-        onClose={closeUpdateModal}
-        league={league}
+        isOpen={modals.update.isOpen || modals.create.isOpen}
+        onClose={
+          modals.update.isOpen
+            ? modals.update.closeModal
+            : modals.create.closeModal
+        }
         season={selectedSeason}
-        sport={sport}
-      />
-      <SeasonModal
-        isOpen={isNewSeasonOpen}
-        onClose={closeNewSeasonModal}
-        league={league}
         sport={sport}
       />
     </div>
