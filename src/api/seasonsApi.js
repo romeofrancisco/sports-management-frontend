@@ -148,6 +148,7 @@ export const fetchSeasonGames = async (league_id, season_id, filters = {}) => {
     const queryParams = new URLSearchParams();
     if (filters.status) queryParams.append('status', filters.status);
     if (filters.team) queryParams.append('team', filters.team);
+    if (filters.date) queryParams.append('date', filters.date);
     
     const queryString = queryParams.toString();
     if (queryString) {

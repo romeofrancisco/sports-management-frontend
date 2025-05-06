@@ -7,24 +7,24 @@ import { formatDuration } from "@/utils/formatDuration";
 const baseColumns = [
   {
     id: "teams",
-    header: () => <h1 className="ms-10">Teams</h1>,
+    header: () => <h1 className="text-center">Teams</h1>,
     cell: ({ row }) => {
       const { home_team, away_team } = row.original;
       return (
-        <div className="grid grid-cols-5 items-center gap-4 font-medium text-center max-w-[25rem]">
-          <Avatar className="place-self-end">
+        <div className="grid grid-cols-[3] grid-rows-2 items-center font-medium text-center">
+          <Avatar className="place-self-center">
             <AvatarImage src={home_team.logo} />
           </Avatar>
-          <span className="text-primary">{home_team.name}</span>
-          <span className="text-muted-foreground font-bold">VS</span>
-          <span className="text-secondary">{away_team.name}</span>
-          <Avatar>
+          <span className="text-primary row-start-2">{home_team.abbreviation || "HOME"}</span>
+          <span className="text-muted-foreground font-bold col-start-2 row-start-1 row-span-2">VS</span>
+          <span className="text-secondary row-start-2">{away_team.abbreviation || "AWAY"}</span>
+          <Avatar className="place-self-center">
             <AvatarImage src={away_team.logo} />
           </Avatar>
         </div>
       );
     },
-    size: 300,
+    size: 200,
   },
   {
     id: "date_time",

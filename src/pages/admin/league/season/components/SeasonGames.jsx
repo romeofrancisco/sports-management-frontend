@@ -2,52 +2,48 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useSeasonGames } from "@/hooks/useSeasons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/common/FullLoading";
+import ContentLoading from "@/components/common/ContentLoading";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, ArrowRightIcon, TrophyIcon } from "lucide-react";
 
 export const SeasonGames = ({ seasonId, leagueId }) => {
-  const { data: games, isLoading } = useSeasonGames(leagueId, seasonId);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [filteredGames, setFilteredGames] = useState([]);
+  
+  // Format the selected date as YYYY-MM-DD for API filtering
+  const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+  
+  // Fetch only games for the selected date from the backend
+  const { data: filteredGames = [], isLoading } = useSeasonGames(leagueId, seasonId, {
+    date: formattedDate
+  });
+  
+  // Also fetch all games to support the date navigation bar
+  const { data: allGames = [] } = useSeasonGames(leagueId, seasonId);
 
-  // Initialize dates and filter games when data loads
+  // Initialize to today or first available game date when data loads
   useEffect(() => {
-    if (games && games.length > 0) {
-      // Start with today or the first game date if no games today
+    if (allGames && allGames.length > 0) {
+      // Start with today
       let initialDate = new Date();
-      const todayGames = games.filter((game) =>
+      const todayGames = allGames.filter((game) =>
         isSameDay(parseISO(game.date), initialDate)
       );
 
       if (todayGames.length === 0) {
         // If no games today, find the closest game date
-        initialDate = parseISO(games[0].date);
+        initialDate = parseISO(allGames[0].date);
       }
 
       setSelectedDate(initialDate);
     }
-  }, [games]);
-
-  // Filter games by selected date
-  useEffect(() => {
-    if (games && selectedDate) {
-      const filtered = games.filter((game) => {
-        const gameDate = parseISO(game.date);
-        return isSameDay(gameDate, selectedDate);
-      });
-      setFilteredGames(filtered);
-    }
-  }, [games, selectedDate]);
-
-  if (isLoading) return <Loading />;
+  }, [allGames]);
 
   // Get games count for a specific date (used by the DateNavigationBar)
   const getGamesCountForDate = (date) => {
-    if (!games) return 0;
-    return games.filter((game) => {
+    if (!allGames || allGames.length === 0) return 0;
+    return allGames.filter((game) => {
       const gameDate = parseISO(game.date);
       return isSameDay(gameDate, date);
     }).length;
@@ -68,7 +64,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
         <DateNavigationBar
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
-          data={games}
+          data={allGames}
           dateProperty="date"
           getDataCountForDate={getGamesCountForDate}
           countLabel="Game"
@@ -76,9 +72,11 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
         />
       </div>
 
-      {/* Games List */}
+      {/* Games List with ContentLoading */}
       <div className="grid gap-4">
-        {filteredGames.length > 0 ? (
+        {isLoading ? (
+          <ContentLoading count={3} />
+        ) : filteredGames.length > 0 ? (
           filteredGames.map((game, i) => (
             <GameRow key={game.id || i} game={game} />
           ))

@@ -16,15 +16,15 @@ import { GAME_ACTIONS } from "@/constants/game";
 import { useSelector } from "react-redux";
 import { getPeriodLabel } from "@/constants/sport";
 
-export const useGames = (filter, enabled = true) => {
+export const useGames = (filter, page = 1, pageSize = 10, enabled = true) => {
   const apiFilter = {
     ...filter,
     sport: filter.sport === "all" ? "" : filter.sport,
   };
 
   return useQuery({
-    queryKey: ["games", apiFilter],
-    queryFn: () => fetchGames(apiFilter),
+    queryKey: ["games", apiFilter, page, pageSize],
+    queryFn: () => fetchGames(apiFilter, page, pageSize),
     enabled,
   });
 };
