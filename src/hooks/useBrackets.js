@@ -3,10 +3,11 @@ import { toast } from "sonner";
 import { createBracket, fetchBracket } from "@/api/seasonsApi";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useCreateBracket = () => {
+export const useCreateBracket = (leagueId, seasonId) => {
   return useMutation({
     mutationFn: (data) => createBracket(data),
     onSuccess: () => {
+      queryClient.invalidateQueries(["season-details", leagueId, seasonId]);
       toast.success("Bracket Generated", {
         richColors: true,
       });

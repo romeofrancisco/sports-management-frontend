@@ -2,14 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Calendar, Users, Goal, TrendingUp, TrendingDown, Timer, Clock, Award, Activity, Flame, Medal } from "lucide-react";
-import { useSeasonTeamPerformance } from "@/hooks/useSeasons";
+import { useSeasonTeamPerformance, useSeasons, useSeasonComparison } from "@/hooks/useSeasons";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 const SeasonOverview = ({ seasonDetails }) => {
   const { league, season } = useParams();
   const { data: teamPerformance, isLoading } = useSeasonTeamPerformance(league, season);
+  // Get all seasons to find previous seasons for comparison
+  const { data: seasonsData } = useSeasons(league);
   const [teams, setTeams] = useState([]);
+  const [previousSeasonId, setPreviousSeasonId] = useState(null);
+  
+  // Get season comparison data if we have a previous season
+  const { data: comparisonData, isLoading: isComparisonLoading } = useSeasonComparison(
+    league, 
+    previousSeasonId ? [season, previousSeasonId] : []
+  );
+
+  // Find the previous season when seasons data is loaded
+  useEffect(() => {
+    if (seasonsData?.results && seasonDetails?.year) {
+      // Sort seasons by year descending
+      const sortedSeasons = [...seasonsData.results].sort((a, b) => b.year - a.year);
+      
+      // Find current season's index
+      const currentIndex = sortedSeasons.findIndex(s => s.id.toString() === season);
+      
+      // If we found the current season and there's a previous one
+      if (currentIndex >= 0 && currentIndex < sortedSeasons.length - 1) {
+        setPreviousSeasonId(sortedSeasons[currentIndex + 1].id);
+      }
+    }
+  }, [seasonsData, season, seasonDetails]);
 
   useEffect(() => {
     if (teamPerformance?.length > 0) {
@@ -128,12 +153,89 @@ const SeasonOverview = ({ seasonDetails }) => {
 
   // Get team with most improved stats
   const getMostImprovedTeam = () => {
-    if (!teams || teams.length === 0) return { team_name: "N/A", improvement: 0 };
+    if (!teams || teams.length === 0) {
+      return { team_name: "N/A", improvement: "0%" };
+    }
     
-    // This is a placeholder - in a real app you'd compare current season stats to previous
+    // If we have comparison data, use it to determine most improved team
+    if (comparisonData && comparisonData.length >= 2) {
+      // Get current and previous season data
+      const currentSeasonData = comparisonData.find(s => s.id.toString() === season);
+      const previousSeasonData = comparisonData.find(s => s.id.toString() !== season);
+      
+      if (!currentSeasonData || !previousSeasonData) {
+        return { team_name: teams[0]?.team_name || "N/A", improvement: "N/A" };
+      }
+      
+      // First check if we have team performance data
+      if (teams.length > 0) {
+        // Calculate improvement based on point differential compared to previous season
+        let mostImproved = { team_name: "N/A", improvement: 0 };
+        
+        teams.forEach(team => {
+          // Get previous season data for this team if exists
+          const previousTeamData = previousSeasonData.team_stats?.find(
+            t => t.team_name === team.team_name
+          );
+          
+          if (previousTeamData) {
+            // Calculate improvement metrics
+            // We'll use point differential as the main metric
+            const currentDiff = team.point_differential || 0;
+            const previousDiff = previousTeamData.point_differential || 0;
+            
+            const improvementValue = currentDiff - previousDiff;
+            
+            // Track the team with the biggest positive change
+            if (improvementValue > mostImproved.improvement) {
+              mostImproved = {
+                team_name: team.team_name,
+                improvement: improvementValue,
+                previous: previousDiff,
+                current: currentDiff
+              };
+            }
+          }
+        });
+        
+        // Format the improvement as a percentage or point change
+        if (mostImproved.team_name !== "N/A") {
+          // For significant improvements, show percentage, otherwise show point differential
+          const percentageChange = Math.abs(mostImproved.previous) > 0 ? 
+            Math.round((mostImproved.improvement / Math.abs(mostImproved.previous)) * 100) : 0;
+          
+          if (percentageChange > 0) {
+            return {
+              team_name: mostImproved.team_name,
+              improvement: `+${percentageChange}%`
+            };
+          } else {
+            return {
+              team_name: mostImproved.team_name,
+              improvement: `+${mostImproved.improvement.toFixed(1)} pts`
+            };
+          }
+        }
+      }
+    }
+    
+    // Fallback if no comparison data
+    // Find the team with the best trending current performance
+    const teamsWithTrend = teams
+      .filter(team => team.current_streak > 0)
+      .sort((a, b) => b.current_streak - a.current_streak);
+    
+    if (teamsWithTrend.length > 0) {
+      const team = teamsWithTrend[0];
+      return {
+        team_name: team.team_name,
+        improvement: `${team.current_streak} win streak`
+      };
+    }
+    
     return { 
       team_name: teams[0]?.team_name || "N/A", 
-      improvement: "15%" 
+      improvement: "trending up" 
     };
   };
 

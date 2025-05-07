@@ -23,8 +23,12 @@ import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
-  const { mutate: createBracket, isPending } = useCreateBracket();
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { mutate: createBracket, isPending } = useCreateBracket(league, season);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       season: season,
       elimination_type: "",
@@ -32,16 +36,14 @@ const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
     mode: "onBlur",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
     createBracket(data, {
       onSuccess: () => {
-        navigate(`/leagues/${league}/bracket/${season}`)
+        navigate(`/leagues/${league}/bracket/${season}`);
       },
-      onError: () => {
-        
-      }
+      onError: () => {},
     });
   };
 

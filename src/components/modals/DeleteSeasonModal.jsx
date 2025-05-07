@@ -19,7 +19,7 @@ const DeleteSeasonModal = ({ isOpen, onClose, season }) => {
     deleteSeason(
       { seasonId: season.id, leagueId: season.league.id },
       {
-        onSuccess: () => {
+        onSettled: () => {
           onClose();
         },
       }
