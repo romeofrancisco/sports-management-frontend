@@ -16,8 +16,11 @@ const LeagueDetails = () => {
   const { league } = useParams();
   const { data: leagueDetails, isLoading: isLeagueLoading, isError: isLeagueError } = useLeagueDetails(league);
   const { data: leagueRankings, isLoading: isLeagueRankingsLoading, isError: isLeagueRankingsError } = useLeagueRankings(league);
-  const { data: seasons, isLoading: isSeasonsLoading, isError: isSeasonsError } = useSeasons(league);
+  const { data: seasonsData, isLoading: isSeasonsLoading, isError: isSeasonsError } = useSeasons(league);
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Extract seasons results from the paginated data
+  const seasons = seasonsData?.results || [];
 
   const isLoading =
     isLeagueLoading || isSeasonsLoading || isLeagueRankingsLoading;

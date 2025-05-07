@@ -2,6 +2,7 @@ import { useModal } from "@/hooks/useModal";
 import React, { useState } from "react";
 import DataTable from "@/components/common/DataTable";
 import { useNavigate } from "react-router";
+import { useSeasons } from "@/hooks/useSeasons";
 import {
   Trash,
   MoreHorizontal,
@@ -10,6 +11,10 @@ import {
   Settings,
   Calendar,
   Plus,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,16 +25,54 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatShortDate } from "@/utils/formatDate";
 import DeleteSeasonModal from "@/components/modals/DeleteSeasonModal";
 import SeasonModal from "@/components/modals/SeasonModal";
 import { Badge } from "@/components/ui/badge";
 import { useParams } from "react-router";
+import TablePagination from "@/components/ui/table-pagination";
 
-const SeasonsTable = ({ seasons, sport, compact = false }) => {
-  const {league} = useParams();
+const SeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
+  const { league } = useParams();
   const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // Determine if we should use passed seasons or fetch them ourselves
+  const shouldFetchSeasons = passedSeasons === undefined;
+  
+  // Use the hook only if seasons weren't passed directly
+  const { data, isLoading: isLoadingSeasons, isError } = useSeasons(
+    shouldFetchSeasons ? league : null, 
+    currentPage, 
+    pageSize
+  );
+  
+  // Choose data source based on whether seasons were passed or fetched
+  const seasons = shouldFetchSeasons ? data?.results || [] : passedSeasons || [];
+  const totalSeasons = shouldFetchSeasons ? data?.count || 0 : seasons.length;
+  const isLoading = shouldFetchSeasons ? isLoadingSeasons : false;
+
+  // Only show pagination if we're fetching seasons (not using passed data)
+  const showPagination = shouldFetchSeasons && totalSeasons > 0;
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0);
+  };
+  
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   const modals = {
     delete: useModal(),
@@ -179,7 +222,23 @@ const SeasonsTable = ({ seasons, sport, compact = false }) => {
         data={seasons}
         className="text-sm"
         alternateRowColors={true}
+        loading={isLoading}
+        showPagination={false} // Disable built-in pagination
+        pageSize={pageSize} // Still pass pageSize for row rendering
       />
+      
+      {showPagination && (
+        <TablePagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={totalSeasons}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          isLoading={isLoading}
+          itemName="seasons"
+        />
+      )}
+
       <DeleteSeasonModal
         isOpen={modals.delete.isOpen}
         onClose={modals.delete.closeModal}

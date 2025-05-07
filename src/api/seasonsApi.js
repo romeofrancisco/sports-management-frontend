@@ -10,9 +10,9 @@ export const createSeason = async (league_id, season) => {
   }
 };
 
-export const fetchSeasons = async (league_id) => {
+export const fetchSeasons = async (league_id, page = 1, pageSize = 10) => {
   try {
-    const { data } = await api.get(`leagues/${league_id}/seasons/`);
+    const { data } = await api.get(`leagues/${league_id}/seasons/?page=${page}&page_size=${pageSize}`);
     return data;
   } catch (error) {
     console.log("Error fetching seasons:", error);

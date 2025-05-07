@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
  * DateNavigationBar - A reusable component for date selection with a horizontal interface
- * 
+ *
  * @param {Object} props
  * @param {Date} props.selectedDate - The currently selected date
  * @param {Function} props.onDateChange - Callback when a date is selected
@@ -21,24 +21,24 @@ const DateNavigationBar = ({
   onDateChange,
   data = [],
   getDataCountForDate,
-  dateProperty = 'date',
-  countLabel = 'Game',
+  dateProperty = "date",
+  countLabel = "Game",
   className,
 }) => {
   const [visibleDates, setVisibleDates] = useState([]);
   const isMobile = useIsMobile();
-  
+
   // Set responsive number of dates to display
   const visibleDatesCount = isMobile ? 3 : 5;
-  
+
   // Generate array of dates to display in the date selector
   useEffect(() => {
     const dates = [];
-    
+
     // Calculate how many dates to show before and after
     const daysBeforeSelected = Math.floor(visibleDatesCount / 2);
     const daysAfterSelected = visibleDatesCount - daysBeforeSelected - 1;
-    
+
     // Generate dates
     for (let i = -daysBeforeSelected; i <= daysAfterSelected; i++) {
       dates.push(addDays(selectedDate, i));
@@ -49,10 +49,11 @@ const DateNavigationBar = ({
 
   // Navigate to previous/next date
   const navigateDate = (direction) => {
-    const newDate = direction === "next" 
-      ? addDays(selectedDate, 1) 
-      : subDays(selectedDate, 1);
-    
+    const newDate =
+      direction === "next"
+        ? addDays(selectedDate, 1)
+        : subDays(selectedDate, 1);
+
     if (onDateChange) {
       onDateChange(newDate);
     }
@@ -61,24 +62,29 @@ const DateNavigationBar = ({
   // Default implementation to count data items for a date if not provided
   const defaultGetDataCountForDate = (date) => {
     if (!data || data.length === 0) return 0;
-    
-    return data.filter(item => {
+
+    return data.filter((item) => {
       if (!item[dateProperty]) return false;
-      const itemDate = typeof item[dateProperty] === 'string' 
-        ? parseISO(item[dateProperty]) 
-        : item[dateProperty];
+      const itemDate =
+        typeof item[dateProperty] === "string"
+          ? parseISO(item[dateProperty])
+          : item[dateProperty];
       return isSameDay(itemDate, date);
     }).length;
   };
 
   // Use provided function or default implementation
   const getCount = getDataCountForDate || defaultGetDataCountForDate;
+  
+  // Determine grid column class based on visible dates count
+  const gridColsClass = {
+    3: "grid-cols-3",
+    5: "grid-cols-5",
+    7: "grid-cols-7",
+  }[visibleDatesCount] || "grid-cols-5";
 
   return (
-    <div className={cn(
-      "w-full border rounded-lg bg-muted/50",
-      className
-    )}>
+    <div className={cn("w-full border rounded-lg bg-muted/50", className)}>
       <div className="flex items-center">
         {/* Previous button */}
         <button
@@ -89,7 +95,7 @@ const DateNavigationBar = ({
         </button>
 
         {/* Dates container - using CSS Grid for equal width columns */}
-        <div className={`grid grid-cols-${visibleDatesCount} flex-1`}>
+        <div className={cn("grid", gridColsClass, "flex-1")}>
           {visibleDates.map((date, i) => {
             const isSelected = isSameDay(date, selectedDate);
             const itemsCount = getCount(date);
@@ -111,16 +117,18 @@ const DateNavigationBar = ({
                 <div className="text-xs sm:text-sm font-medium">
                   {dayOfWeek}
                 </div>
-                
+
                 {/* Month and day */}
                 <div className="text-xs sm:text-sm font-bold mt-0.5">
                   {monthName} {dayNum}
                 </div>
-                
+
                 {/* Game count */}
                 {itemsCount > 0 && (
                   <div className="text-[9px] sm:text-xs mt-0.5">
-                    {`${itemsCount} ${itemsCount === 1 ? countLabel : `${countLabel}s`}`}
+                    {`${itemsCount} ${
+                      itemsCount === 1 ? countLabel : `${countLabel}s`
+                    }`}
                   </div>
                 )}
               </div>
