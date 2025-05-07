@@ -238,7 +238,8 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
           return {
             ...team,
             differential,
-            label: `${team.team_name} (${setsWon} sets won, ${differential}%)`
+            label: team.team_name,
+            fullLabel: `${team.team_name} (${setsWon} sets won, ${differential}%)`
           };
         } else {
           // For point-based sports, use traditional point differential
@@ -252,23 +253,25 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
           };
         }
       })
-      // Sort by absolute differential value for better visualization
-      .sort((a, b) => Math.abs(b.differential) - Math.abs(a.differential))
+      // Sort by differential value from highest to lowest
+      .sort((a, b) => b.differential - a.differential)
       .slice(0, 8);
       
-    const COLORS = [
-      '#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A', '#607D8B'
-    ];
-      
     return {
-      // Use custom labels for set-based sports
-      labels: differentialTeams.map(team => isSetsScoring ? team.label : team.team_name),
+      // Use team names as labels
+      labels: differentialTeams.map(team => team.label),
       datasets: [
         {
           label: isSetsScoring ? 'Set Win Percentage' : 'Point Differential',
           data: differentialTeams.map(team => team.differential),
-          backgroundColor: differentialTeams.map((_, index) => COLORS[index % COLORS.length]),
-          hoverOffset: 4
+          backgroundColor: differentialTeams.map(team => {
+            // Use different colors for positive and negative differentials
+            return team.differential >= 0 ? 'rgba(54, 162, 235, 0.7)' : 'rgba(255, 99, 132, 0.7)';
+          }),
+          borderColor: differentialTeams.map(team => {
+            return team.differential >= 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)';
+          }),
+          borderWidth: 1
         }
       ]
     };
@@ -441,6 +444,42 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
         callbacks: {
           label: function(context) {
             return `${context.label}: ${context.raw}`;
+          }
+        }
+      }
+    },
+  };
+
+  // Add horizontal bar chart options
+  const horizontalBarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y', // This makes the bars horizontal instead of vertical
+    plugins: {
+      legend: {
+        display: false, // Hide legend since color indicates positive/negative
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const value = context.raw;
+            return `${value > 0 ? '+' : ''}${value}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+      y: {
+        ticks: {
+          autoSkip: false,
+          font: {
+            size: 11
           }
         }
       }
@@ -657,13 +696,13 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              {isSetsScoring ? 'Points per Set Differential' : 'Point Differential Distribution'}
+              {isSetsScoring ? 'Points per Set Differential' : 'Point Differential'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             {differentialData.labels.length > 0 ? (
               <div style={{ height: '300px' }}>
-                <Pie data={differentialData} options={pieOptions} />
+                <Bar data={differentialData} options={horizontalBarOptions} />
               </div>
             ) : (
               <div className="flex items-center justify-center h-[300px]">

@@ -135,10 +135,10 @@ const getGameTableColumns = ({
           id: "final",
           header: () => <h1 className="text-center">Final</h1>,
           cell: ({ row }) => {
-            const { home_team_score, away_team_score } = row.original;
+            const { home, away } = row.original.score_summary.total;
             return (
               <div className="text-center font-bold">
-                {home_team_score} - {away_team_score}
+                {home} - {away}
               </div>
             );
           },

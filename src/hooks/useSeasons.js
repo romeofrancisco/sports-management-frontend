@@ -1,23 +1,23 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { 
-  createSeason, 
-  fetchSeasons, 
-  updateSeason, 
-  deleteSeason, 
+import {
+  createSeason,
+  fetchSeasons,
+  updateSeason,
+  deleteSeason,
   fetchSeasonDetails,
   fetchSeasonStandings,
   manageSeason,
   fetchSeasonTeamPerformance,
   fetchSeasonComparison,
-  fetchSeasonGames
+  fetchSeasonGames,
 } from "@/api/seasonsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useSeasons = (league) => {
+export const useSeasons = (league, page = 1, pageSize = 10) => {
   return useQuery({
-    queryKey: ["seasons", league],
-    queryFn: () => fetchSeasons(league),
+    queryKey: ["seasons", league, page, pageSize],
+    queryFn: () => fetchSeasons(league, page, pageSize),
     enabled: !!league,
   });
 };
@@ -55,7 +55,6 @@ export const useSeasonComparison = (league, seasonIds = []) => {
 };
 
 export const useCreateSeason = (league) => {
-
   return useMutation({
     mutationFn: (data) => createSeason(league, data),
     onSuccess: (data, variables) => {
@@ -66,9 +65,8 @@ export const useCreateSeason = (league) => {
 };
 
 export const useUpdateSeason = (league) => {
-
   return useMutation({
-    mutationFn: ({id, data}) => updateSeason(league, id, data),
+    mutationFn: ({ id, data }) => updateSeason(league, id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["seasons"]);
       toast.success("Season updated successfully");
@@ -79,36 +77,40 @@ export const useUpdateSeason = (league) => {
 export const useDeleteSeason = () => {
   return useMutation({
     mutationFn: ({ leagueId, seasonId }) => deleteSeason(leagueId, seasonId),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(["seasons", variables.league]);
-      toast.success("Season deleted successfully");
+    onSuccess: () => {
+      queryClient.invalidateQueries(["seasons"]);
+      toast.success("Season deleted successfully", { richColors: true });
     },
   });
 };
 
 export const useManageSeason = () => {
-
   return useMutation({
-    mutationFn: ({ league, season_id, action }) => manageSeason(league, season_id, action),
+    mutationFn: ({ league, season_id, action }) =>
+      manageSeason(league, season_id, action),
     onSuccess: (data, variables) => {
       const actions = {
         start: "started",
         complete: "completed",
         pause: "paused",
-        cancel: "canceled"
+        cancel: "canceled",
       };
       const actionText = actions[variables.action] || "updated";
-      
+
       queryClient.invalidateQueries(["seasons", variables.league]);
-      queryClient.invalidateQueries(["season-details", variables.league, variables.season_id]);
-      
+      queryClient.invalidateQueries([
+        "season-details",
+        variables.league,
+        variables.season_id,
+      ]);
+
       toast.success(`Season ${actionText} successfully`);
     },
     onError: (error) => {
       // Get error message from the response if available
       const message = error.response?.data?.detail || "Failed to manage season";
       toast.error(message);
-    }
+    },
   });
 };
 

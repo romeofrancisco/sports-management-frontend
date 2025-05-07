@@ -38,6 +38,9 @@ const SeasonDetailsHeader = ({ season }) => {
   const [confirmAction, setConfirmAction] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   
+  // State for dropdown menu
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
   // Season management hooks
   const { mutate: manageSeason, isPending } = useManageSeason();
   
@@ -248,7 +251,7 @@ const SeasonDetailsHeader = ({ season }) => {
                 </Button>
               )}
               
-              <DropdownMenu>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
                     <Settings size={16} />
