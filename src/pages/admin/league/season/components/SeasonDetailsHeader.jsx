@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
 
-const SeasonDetailsHeader = ({ season }) => {
+
+const SeasonDetailsHeader = ({ season, activeTab, setActiveTab }) => {
   const { isOpen, closeModal, openModal } = useModal();
   const navigate = useNavigate();
   const { league } = useParams();
@@ -130,9 +131,16 @@ const SeasonDetailsHeader = ({ season }) => {
   const isCompleted = season.status === 'completed';
   const isCanceled = season.status === 'canceled';
 
+  // Handle view bracket tab click
+  const handleViewBracketClick = () => {
+    if (season.has_bracket) {
+      setActiveTab("bracket");
+    }
+  };
+
   return (
     <>
-      <div className="bg-muted/50 rounded-lg shadow-sm border mb-6">
+      <div className="bg-muted/50 rounded-lg shadow-sm border">
         <div className="p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -227,29 +235,6 @@ const SeasonDetailsHeader = ({ season }) => {
                   Resume Season
                 </Button>
               )}
-
-              
-              {season.has_bracket ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`/leagues/${league}/bracket/${season?.id}`)}
-                  className="gap-2"
-                >
-                  <Trophy size={15} />
-                  View Bracket
-                </Button>
-              ) : (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={openModal}
-                  className="gap-2"
-                >
-                  <Trophy size={15} />
-                  Generate Bracket
-                </Button>
-              )}
               
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
@@ -271,6 +256,17 @@ const SeasonDetailsHeader = ({ season }) => {
                     <Share2 size={14} />
                     <span>Export Schedule</span>
                   </DropdownMenuItem>
+
+                  {/* Generate Bracket moved to settings dropdown */}
+                  {!season.has_bracket && (
+                    <DropdownMenuItem 
+                      className="flex items-center gap-2" 
+                      onClick={openModal}
+                    >
+                      <Trophy size={14} />
+                      <span>Generate Bracket</span>
+                    </DropdownMenuItem>
+                  )}
                   
                   {/* Season status actions */}
                   {(isOngoing || isPaused) && (

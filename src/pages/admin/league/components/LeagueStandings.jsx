@@ -9,14 +9,15 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { TrophyIcon, Star, Medal, TrendingUp } from "lucide-react";
-import { useTeamForm, useLeagueDetails } from "@/hooks/useLeagues";
+import { useLeagueTeamForm, useLeagueDetails } from "@/hooks/useLeagues";
 import TeamStreakIndicator from "@/components/common/TeamStreakIndicator";
 import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
+import { te } from "date-fns/locale";
 
-const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
+const LeagueStandings = ({ rankings }) => {
   const { league } = useParams();
-  const { data: teamFormData, isLoading: isFormLoading } = useTeamForm(league);
+  const { data: teamFormData, isLoading: isFormLoading } = useLeagueTeamForm(league);
   const { data: leagueDetails } = useLeagueDetails(league);
   
   // Add a state to toggle between different sorting methods
@@ -33,8 +34,8 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
     if (sortByPerformance) {
       // Sort by current performance without championships factor
       return [...rankings].sort((a, b) => {
-        // Sort by points first if in season standings
-        if (isSeasonStandings && a.points !== b.points) {
+        // Sort by points first
+        if (a.points !== b.points) {
           return b.points - a.points;
         }
         
@@ -47,25 +48,14 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
           return b.sets_won - a.sets_won;
         }
         
-        // For points-based sports, sort by point differential
-        if (!isSetBased) {
-          if (a.goal_difference !== b.goal_difference) {
-            return b.goal_difference - a.goal_difference;
-          }
-          // Then by goals/points scored
-          if (a.goals_scored !== b.goals_scored) {
-            return b.goals_scored - a.goals_scored;
-          }
-        }
-        
-        // As a last resort, use win ratio
+        // For points-based sports, sort by win ratio
         return b.win_ratio - a.win_ratio;
       });
     }
     
-    // Keep original order from backend (sorted by championships first for league standings)
+    // Keep original order from backend (sorted by championships first)
     return rankings;
-  }, [rankings, sortByPerformance, isSetBased, isSeasonStandings]);
+  }, [rankings, sortByPerformance, isSetBased]);
   
   const headerWithTooltip = (label, tooltipText) => (
     <TooltipProvider delayDuration={100}>
@@ -80,7 +70,6 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
     </TooltipProvider>
   );
 
-  // Base columns that are common to both league and season standings
   const baseColumns = [
     {
       id: "team_with_rank",
@@ -124,11 +113,21 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
       ),
       cell: ({ row }) => {
         const teamId = row.original.team_id;
-        const form = teamFormData?.form?.[teamId] || [];
+        // Check if teamFormData exists and has the expected structure
+        let formData = [];
+        
+        if (teamFormData && teamFormData.form && teamId) {
+          // Convert to number if teamId is a string but form keys are numbers
+          const formKey = typeof teamId === 'string' ? parseInt(teamId, 10) : teamId;
+          
+          // Try both string and number keys to handle different API formats
+          formData = teamFormData.form[teamId] || teamFormData.form[formKey] || [];
+          
+        }
         
         return (
           <div className="flex justify-center">
-            <TeamStreakIndicator results={form} />
+            <TeamStreakIndicator results={formData} />
           </div>
         );
       },
@@ -208,82 +207,31 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
           );
         },
         size: 60,
-      }
-    );
-    
-    // Only add points column for season standings in set-based sports
-    if (isSeasonStandings) {
-      baseColumns.push(
-        {
-          accessorKey: "points",
-          header: () => (
-            <div className="text-center">
-              {headerWithTooltip((
-                <div className="flex items-center justify-center gap-1">
-                  <Star size={12} className="text-amber-500" />
-                  <span>Points</span>
-                </div>
-              ), "Match points earned (2 for win)")}
-            </div>
-          ),
-          cell: ({ getValue }) => <div className="text-center font-bold">{getValue() || 0}</div>,
-          size: 60,
-        }
-      );
-    }
-  } else {
-    // For point-based sports
-    baseColumns.push(
+      },
       {
-        accessorKey: "goal_difference",
+        accessorKey: "points",
         header: () => (
           <div className="text-center">
-            {headerWithTooltip("PD", "Point Differential")}
+            {headerWithTooltip((
+              <div className="flex items-center justify-center gap-1">
+                <Star size={12} className="text-amber-500" />
+                <span>Points</span>
+              </div>
+            ), "Match points earned (2 for win)")}
           </div>
         ),
-        cell: ({ getValue }) => {
-          const value = getValue() || 0;
-          const isPositive = value > 0;
-          return (
-            <div className={`text-center font-medium ${isPositive ? 'text-emerald-600' : value < 0 ? 'text-rose-600' : 'text-muted-foreground'}`}>
-              {value > 0 ? `+${value}` : value}
-            </div>
-          );
-        },
-        size: 50,
+        cell: ({ getValue }) => <div className="text-center font-bold">{getValue() || 0}</div>,
+        size: 60,
       }
     );
-    
-    // Only add points column for season standings in point-based sports
-    if (isSeasonStandings) {
-      baseColumns.push(
-        {
-          accessorKey: "points",
-          header: () => (
-            <div className="text-center">
-              {headerWithTooltip((
-                <div className="flex items-center justify-center gap-1">
-                  <Star size={12} className="text-amber-500" />
-                  <span>PTS</span>
-                </div>
-              ), "League points (3 for win, 1 for tie)")}
-            </div>
-          ),
-          cell: ({ getValue }) => <div className="text-center font-bold">{getValue() || 0}</div>,
-          size: 60,
-        }
-      );
-    }
-  }
-
-  // Add win percentage for point-based sports
-  if (!isSetBased) {
+  } else {
+    // For point-based sports
     baseColumns.push(
       {
         accessorKey: "win_ratio",
         header: () => (
           <div className="text-center">
-            {headerWithTooltip("WIN%", "Win Percentage")}
+            {headerWithTooltip("W%", "Win Percentage")}
           </div>
         ),
         cell: ({ getValue }) => {
@@ -299,103 +247,94 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
     );
   }
 
-  // Add league-specific columns only for league standings
-  if (!isSeasonStandings) {
-    baseColumns.push(
-      {
-        accessorKey: "seasons_participated",
-        header: () => (
-          <div className="text-center">
-            {headerWithTooltip("SP", "Seasons Participated")}
+  // Add common columns for all sport types
+  baseColumns.push(
+    {
+      accessorKey: "seasons_participated",
+      header: () => (
+        <div className="text-center">
+          {headerWithTooltip("SP", "Seasons Participated")}
+        </div>
+      ),
+      cell: ({ getValue }) => <div className="text-center font-medium">{getValue()}</div>,
+      size: 40,
+    },
+    {
+      accessorKey: "championships",
+      header: () => (
+        <div className="text-center">
+          {headerWithTooltip("CH", "Championships Won")}
+        </div>
+      ),
+      cell: ({ getValue }) => {
+        const championships = getValue();
+        return (
+          <div className="flex justify-center items-center">
+            {championships > 0 ? (
+              <Badge variant="outline" className="bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-700 dark:text-amber-300 flex gap-1 items-center">
+                <TrophyIcon size={12} className="text-amber-500" />
+                <span>{championships}</span>
+              </Badge>
+            ) : (
+              <span className="text-muted-foreground">0</span>
+            )}
           </div>
-        ),
-        cell: ({ getValue }) => <div className="text-center font-medium">{getValue()}</div>,
-        size: 40,
+        );
       },
-      {
-        accessorKey: "championships",
-        header: () => (
-          <div className="text-center">
-            {headerWithTooltip("CH", "Championships Won")}
-          </div>
-        ),
-        cell: ({ getValue }) => {
-          const championships = getValue();
-          return (
-            <div className="flex justify-center items-center">
-              {championships > 0 ? (
-                <Badge variant="outline" className="bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-700 dark:text-amber-300 flex gap-1 items-center">
-                  <TrophyIcon size={12} className="text-amber-500" />
-                  <span>{championships}</span>
-                </Badge>
-              ) : (
-                <span className="text-muted-foreground">0</span>
-              )}
-            </div>
-          );
-        },
-        size: 50,
-      }
-    );
-  }
+      size: 50,
+    }
+  );
 
   return (
-    <div className="bg-card rounded-lg border shadow-md overflow-hidden p-5">
+    <div>
       <div className="flex justify-between items-center mb-4 border-b pb-3">
         <h2 className="text-xl font-bold flex items-center gap-2">
           <TrendingUp size={20} className="text-blue-500" />
-          {isSeasonStandings ? "Season Standings" : "League All-Time Standings"}
+          League Leaderboard
           {isSetBased && (
             <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-700 border-blue-200">
               Set-based Scoring
             </Badge>
           )}
-          {!isSetBased && (
-            <Badge variant="outline" className="ml-2 bg-green-50 text-green-700 border-green-200">
-              Point-based Scoring
-            </Badge>
-          )}
         </h2>
         
-        {!isSeasonStandings && (
-          <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant={sortByPerformance ? "outline" : "default"}
-                    size="sm"
-                    className="h-8"
-                    onClick={() => setSortByPerformance(false)}
-                  >
-                    <TrophyIcon size={16} className="mr-1" /> All-time
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Sort by championships first, then performance</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant={!sortByPerformance ? "outline" : "default"}
-                    size="sm"
-                    className="h-8"
-                    onClick={() => setSortByPerformance(true)}
-                  >
-                    <Star size={16} className="mr-1" /> Current
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Sort by current performance only (without championships)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant={sortByPerformance ? "outline" : "default"}
+                  size="sm"
+                  className="h-8"
+                  onClick={() => setSortByPerformance(false)}
+                >
+                  <TrophyIcon size={16} className="mr-1" /> All-time
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Sort by championships first, then performance</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant={!sortByPerformance ? "outline" : "default"}
+                  size="sm"
+                  className="h-8"
+                  onClick={() => setSortByPerformance(true)}
+                >
+                  <Star size={16} className="mr-1" /> Current
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Sort by current performance only (without championships)</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       
       <DataTable
@@ -407,25 +346,17 @@ const LeagueStandings = ({ rankings, isSeasonStandings = false }) => {
       />
       
       <div className="mt-4 text-xs text-muted-foreground">
-        {isSeasonStandings ? (
+        {sortByPerformance ? (
           isSetBased ? (
             <span>Teams are ranked based on match points, followed by set ratio and sets won.</span>
           ) : (
-            <span>Teams are ranked based on points, followed by point differential and points scored.</span>
+            <span>Teams are ranked based on performance only (win percentage).</span>
           )
         ) : (
-          sortByPerformance ? (
-            isSetBased ? (
-              <span>Teams are ranked based on set ratio and sets won over all seasons.</span>
-            ) : (
-              <span>Teams are ranked based on win percentage and point differential over all seasons.</span>
-            )
+          isSetBased ? (
+            <span>Teams are ranked based on championships first, followed by match points, set ratio and sets won.</span>
           ) : (
-            isSetBased ? (
-              <span>Teams are ranked based on championships first, followed by set ratio and sets won.</span>
-            ) : (
-              <span>Teams are ranked based on championships first, followed by win percentage and point differential.</span>
-            )
+            <span>Teams are ranked based on championships first, followed by win percentage.</span>
           )
         )}
       </div>

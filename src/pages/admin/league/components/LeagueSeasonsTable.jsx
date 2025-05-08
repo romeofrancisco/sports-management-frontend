@@ -190,7 +190,7 @@ const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) 
   ];
 
   return (
-    <div className="p-5 lg:p-6">
+    <div >
       <div className="flex justify-between items-center mb-4 border-b pb-3">
         <h2 className="text-xl font-bold flex items-center gap-2">Seasons</h2>
         {!compact && (

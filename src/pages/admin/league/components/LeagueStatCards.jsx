@@ -2,7 +2,7 @@ import React from "react";
 import StatCard from "@/components/common/StatCard";
 import { Award, BarChart2, CheckSquare, Shield, Trophy, TrendingUp } from "lucide-react";
 
-const StatCards = ({ statsSummary, isSetsScoring }) => {
+const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
   if (isSetsScoring) {
     // Sets-based sports stats cards (volleyball, tennis, etc.)
     return (
@@ -71,4 +71,4 @@ const StatCards = ({ statsSummary, isSetsScoring }) => {
   );
 };
 
-export default StatCards;
+export default LeagueStatCards;

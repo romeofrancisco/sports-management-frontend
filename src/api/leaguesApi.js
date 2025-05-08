@@ -70,9 +70,9 @@ export const fetchLeagueStatistics = async (id) => {
   }
 };
 
-export const fetchTeamForm = async (id, limit = 5) => {
+export const fetchLeagueTeamForm = async (id) => {
   try {
-    const { data } = await api.get(`leagues/${id}/team_form/?limit=${limit}`);
+    const { data } = await api.get(`leagues/${id}/team_form/`);
     return data;
   } catch (error) {
     console.log("Error fetching team form data:", error);

@@ -12,7 +12,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import StatCards from "@/components/common/StatCards";
+import LeagueStatCards from "./LeagueStatCards";
 
 // Import chart components and utilities
 import { 
@@ -94,7 +94,7 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
       
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <StatCards 
+        <LeagueStatCards 
           statsSummary={statsSummary} 
           isSetsScoring={isSetsScoring} 
         />

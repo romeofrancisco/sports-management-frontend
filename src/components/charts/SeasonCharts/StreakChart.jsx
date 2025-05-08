@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ChartCard from "../ChartCard";
 
 const StreakChart = ({ data, isSetsScoring }) => {
   const barOptions = {
@@ -18,25 +18,18 @@ const StreakChart = ({ data, isSetsScoring }) => {
     },
   };
 
+  const title = isSetsScoring ? 'Longest Sets Win Streaks' : 'Longest Win Streaks';
+  const hasData = data.labels.length > 0;
+  const emptyMessage = "No streak data available";
+
   return (
-    <Card className="overflow-hidden">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold">
-          {isSetsScoring ? 'Longest Sets Win Streaks' : 'Longest Win Streaks'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {data.labels.length > 0 ? (
-          <div style={{ height: '300px' }}>
-            <Bar data={data} options={barOptions} />
-          </div>
-        ) : (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-muted-foreground">No streak data available</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <ChartCard 
+      title={title}
+      hasData={hasData}
+      emptyMessage={emptyMessage}
+    >
+      <Bar data={data} options={barOptions} />
+    </ChartCard>
   );
 };
 

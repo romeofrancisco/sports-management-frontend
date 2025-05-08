@@ -12,13 +12,6 @@ import LeagueTeamsGrid from "./components/LeagueTeamsGrid";
 import LeagueStatistics from "./components/LeagueStatistics";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// Import chart components
-import {
-  PointsChart,
-  WinsChart,
-  StreakChart,
-  DifferentialChart
-} from '@/components/charts/SeasonCharts';
 
 const LeagueDetails = () => {
   const { league } = useParams();
@@ -69,9 +62,6 @@ const LeagueDetails = () => {
 
           <div className="grid lg:grid-cols-2 gap-6 mt-6">
             <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">League Standings</CardTitle>
-              </CardHeader>
               <CardContent>
                 <LeagueStandings rankings={leagueRankings} />
               </CardContent>
@@ -121,9 +111,9 @@ const LeagueDetails = () => {
 
         <TabsContent value="statistics">
           {seasons.length > 0 ? (
-            <LeagueStatistics 
-              leagueId={league} 
-              latestSeasonId={seasons[0]?.id} 
+            <LeagueStatistics
+              leagueId={league}
+              latestSeasonId={seasons[0]?.id}
               sport={sport}
             />
           ) : (

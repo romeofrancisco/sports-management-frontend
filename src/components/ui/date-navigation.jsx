@@ -108,7 +108,7 @@ const DateNavigationBar = ({
                 key={date.toISOString()}
                 data-selected={isSelected}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 cursor-pointer transition-colors",
+                  "flex flex-col items-center justify-center py-2 min-h-[5rem] cursor-pointer transition-colors",
                   isSelected ? "bg-primary text-white" : "hover:bg-muted/50"
                 )}
                 onClick={() => onDateChange && onDateChange(date)}

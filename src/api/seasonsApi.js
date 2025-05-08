@@ -162,3 +162,13 @@ export const fetchSeasonGames = async (league_id, season_id, filters = {}) => {
     throw error;
   }
 };
+
+export const fetchSeasonTeamForm = async (league_id, season_id, limit = 5) => {
+  try {
+    const { data } = await api.get(`leagues/${league_id}/seasons/${season_id}/team_form/?limit=${limit}`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching season team form data:", error);
+    throw error;
+  }
+};

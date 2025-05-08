@@ -115,16 +115,7 @@ const SeasonOverview = ({ seasonDetails }) => {
     const start = new Date(seasonDetails.start_date).getTime();
     const end = new Date(seasonDetails.end_date).getTime();
     const current = new Date().getTime();
-    
-    // Log values for debugging
-    console.log('Season dates:', {
-      start_date: new Date(seasonDetails.start_date).toISOString(),
-      end_date: new Date(seasonDetails.end_date).toISOString(),
-      current_date: new Date().toISOString(),
-      start_ms: start,
-      end_ms: end,
-      current_ms: current,
-    });
+  
     
     // Don't show progress if season hasn't started
     if (current <= start) return 0;
@@ -136,12 +127,6 @@ const SeasonOverview = ({ seasonDetails }) => {
     const totalDuration = end - start;
     const elapsed = current - start;
     const progress = Math.min(100, Math.round((elapsed / totalDuration) * 100));
-    
-    console.log('Progress calculation:', {
-      totalDuration,
-      elapsed,
-      progress
-    });
     
     return progress;
   };

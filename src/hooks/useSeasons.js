@@ -10,6 +10,7 @@ import {
   fetchSeasonTeamPerformance,
   fetchSeasonComparison,
   fetchSeasonGames,
+  fetchSeasonTeamForm,
 } from "@/api/seasonsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -119,5 +120,13 @@ export const useSeasonGames = (league, season, filters = {}) => {
     queryKey: ["season-games", league, season, filters],
     queryFn: () => fetchSeasonGames(league, season, filters),
     enabled: !!league && !!season,
+  });
+};
+
+export const useSeasonTeamForm = (league_id, season_id, limit = 5) => {
+  return useQuery({
+    queryKey: ["season-team-form", league_id, season_id, limit],
+    queryFn: () => fetchSeasonTeamForm(league_id, season_id, limit),
+    enabled: !!league_id && !!season_id,
   });
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import TeamCard from "./TeamCard";
-import { useTeamForm } from "@/hooks/useLeagues";
+import { useLeagueTeamForm } from "@/hooks/useLeagues";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router";
@@ -9,7 +9,7 @@ import { useParams } from "react-router";
 const LeagueTeamsGrid = ({ teams }) => {
   const navigate = useNavigate();
   const { league } = useParams();
-  const { data: teamFormData, isLoading: isFormLoading } = useTeamForm(league);
+  const { data: teamFormData, isLoading: isFormLoading } = useLeagueTeamForm(league);
   
   if (isFormLoading) {
     return (

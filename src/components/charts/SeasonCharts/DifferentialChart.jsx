@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ChartCard from "../ChartCard";
 
 const DifferentialChart = ({ data, isSetsScoring }) => {
   const horizontalBarOptions = {
@@ -38,25 +38,18 @@ const DifferentialChart = ({ data, isSetsScoring }) => {
     },
   };
 
+  const title = isSetsScoring ? 'Points per Set Differential' : 'Point Differential';
+  const hasData = data.labels.length > 0;
+  const emptyMessage = "No differential data available";
+
   return (
-    <Card className="overflow-hidden">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold">
-          {isSetsScoring ? 'Points per Set Differential' : 'Point Differential'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {data.labels.length > 0 ? (
-          <div style={{ height: '300px' }}>
-            <Bar data={data} options={horizontalBarOptions} />
-          </div>
-        ) : (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-muted-foreground">No differential data available</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <ChartCard 
+      title={title}
+      hasData={hasData}
+      emptyMessage={emptyMessage}
+    >
+      <Bar data={data} options={horizontalBarOptions} />
+    </ChartCard>
   );
 };
 
