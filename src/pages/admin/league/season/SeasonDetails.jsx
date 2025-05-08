@@ -45,22 +45,18 @@ const SeasonDetails = () => {
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
-          <TabsTrigger value="overview">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="games">
-            Games
-          </TabsTrigger>
-          <TabsTrigger value="teams">
-            Teams
-          </TabsTrigger>
-          <TabsTrigger value="stats">
-            Stats
-          </TabsTrigger>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="standings">Standings</TabsTrigger>
+          <TabsTrigger value="games">Games</TabsTrigger>
+          <TabsTrigger value="teams">Teams</TabsTrigger>
+          <TabsTrigger value="stats">Stats</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
           <SeasonOverview seasonDetails={seasonDetails} />
+        </TabsContent>
+
+        <TabsContent value="standings">
           <SeasonStandings standings={seasonStandings} sport={sport} />
         </TabsContent>
 
