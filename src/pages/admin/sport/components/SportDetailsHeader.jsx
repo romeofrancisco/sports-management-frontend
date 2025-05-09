@@ -1,28 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router";
-import { ChevronLeft } from "lucide-react";
+import { Settings, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useSportDetails } from "@/hooks/useSports";
 
 const SportDetailsHeader = () => {
-  const { sport } = useParams();
-  
-  // Capitalize first letter of sport name
-  const capitalizedSport = sport ? sport[0].toUpperCase() + sport.slice(1) : '';
-  
+  const { sport: sportId } = useParams();
+  const [sportData, setSportData] = useState(null);
+  const { data: sportDetails } = useSportDetails(sportId);
+
+  useEffect(() => {
+    if (sportDetails) {
+      setSportData(sportDetails);
+    }
+  }, [sportDetails]);
+
+  // Capitalize first letter of sport name for display
+  const getSportName = () => {
+    if (sportData?.name) {
+      return sportData.name;
+    }
+    // Fallback to ID with capitalization if no name is available
+    return sportId ? sportId[0].toUpperCase() + sportId.slice(1) : "Sport";
+  };
+
   return (
-    <header className="bg-background border-b sticky top-0 z-10 w-full">
-      <div className="container mx-auto py-4 px-4 sm:px-6">
-        <div className="flex flex-col space-y-2">
-          <Link
-            to="/sports"
-            className="flex items-center text-muted-foreground hover:text-primary transition-colors text-sm w-fit"
-          >
-            <ChevronLeft size={16} className="mr-1" />
-            Back to Sports
-          </Link>
-          
-          <h1 className="font-semibold text-xl md:text-2xl">
-            Manage {capitalizedSport}
-          </h1>
+    <header className="bg-background border-b">
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary h-12 w-12 md:h-14 md:w-14 rounded-md flex items-center justify-center text-white">
+              <Activity />
+            </div>
+
+            <div>
+              <div className="text-sm text-muted-foreground">
+                Sport Configuration
+              </div>
+              <h1 className="font-bold text-2xl md:text-3xl">
+                {getSportName()}
+              </h1>
+            </div>
+          </div>
+
+          <div>
+            <Button variant="outline" className="gap-1.5">
+              <Settings className="h-4 w-4" />
+              <span className="hidden sm:block">Sport Settings</span>
+            </Button>
+          </div>
         </div>
       </div>
     </header>

@@ -10,7 +10,7 @@ import {
   SlidersHorizontal,
   CheckCircle,
   Calculator,
-  LineChart,
+  Users,
   X,
   Filter,
   ListFilter,
@@ -170,23 +170,23 @@ const Sport = () => {
                 <TabsList className="h-14 w-full max-w-lg">
                   <TabsTrigger
                     value="stats"
-                    className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="text-xs md:text-sm flex items-center gap-1.5"
                   >
                     <CheckCircle className="h-4 w-4" />
-                    Stats Types
+                    Stats
                   </TabsTrigger>
                   <TabsTrigger
                     value="formulas"
-                    className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="text-xs md:text-sm flex items-center gap-1.5"
                   >
                     <Calculator className="h-4 w-4" />
                     Formulas
                   </TabsTrigger>
                   <TabsTrigger
                     value="positions"
-                    className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="text-xs md:text-sm flex items-center gap-1.5"
                   >
-                    <LineChart className="h-4 w-4" />
+                    <Users className="h-4 w-4" />
                     Positions
                   </TabsTrigger>
                 </TabsList>
@@ -200,7 +200,7 @@ const Sport = () => {
               <div className="p-4 border-b bg-muted/20">
                 <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-semibold">Stat Types</h2>
+                    <h2 className="text-xl font-semibold">Stats</h2>
                     <Badge variant="outline" className="bg-primary/10">
                       {filteredStats.length} stats
                     </Badge>
