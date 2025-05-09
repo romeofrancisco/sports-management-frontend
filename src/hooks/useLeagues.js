@@ -8,6 +8,7 @@ import {
   fetchLeagueRankings,
   fetchLeagueStatistics,
   fetchLeagueTeamForm,
+  fetchLeagueComprehensiveStats,
   addTeamToLeague,
   removeTeamFromLeague
 } from "@/api/leaguesApi";
@@ -40,6 +41,14 @@ export const useLeagueStatistics = (id) => {
   return useQuery({
     queryKey: ["league-statistics", id],
     queryFn: () => fetchLeagueStatistics(id),
+    enabled: !!id,
+  });
+};
+
+export const useLeagueComprehensiveStats = (id) => {
+  return useQuery({
+    queryKey: ["league-comprehensive-stats", id],
+    queryFn: () => fetchLeagueComprehensiveStats(id),
     enabled: !!id,
   });
 };

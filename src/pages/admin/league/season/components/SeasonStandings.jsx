@@ -1,7 +1,7 @@
 import React from "react";
 import DataTable from "@/components/common/DataTable";
 import { TrendingUp } from "lucide-react";
-import { getSeasonStandingsColumns } from "@/components/table_columns/seasonStandingsColumns";
+import { getSeasonStandingsColumns } from "@/components/table_columns/SeasonStandingsColumns";
 import { useParams } from "react-router";
 import { useSeasonTeamForm } from "@/hooks/useSeasons";
 

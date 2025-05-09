@@ -6,14 +6,14 @@ import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 
-const LeagueTeamsGrid = ({ teams }) => {
+const LeagueTeamsGrid = ({ teams, className = "" }) => {
   const navigate = useNavigate();
   const { league } = useParams();
   const { data: teamFormData, isLoading: isFormLoading } = useLeagueTeamForm(league);
   
   if (isFormLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+      <div className={`grid grid-cols-1 gap-4 mb-6 ${className}`}>
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <Card key={i} className="overflow-hidden">
             <div className="p-4">
@@ -43,14 +43,14 @@ const LeagueTeamsGrid = ({ teams }) => {
 
   if (!teams || teams.length === 0) {
     return (
-      <div className="text-center p-8 border rounded-lg bg-muted/20">
+      <div className={`text-center p-8 border rounded-lg bg-muted/20 ${className}`}>
         <p className="text-muted-foreground">No teams in this league</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+    <div className={`grid grid-cols-1 gap-4 mb-6 ${className}`}>
       {teams.map((team) => (
         <TeamCard 
           key={team.team_id} 

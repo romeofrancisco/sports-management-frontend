@@ -9,7 +9,11 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
   const baseColumns = [
     {
       id: "team",
-      header: () => <div className="text-left md:ms-5">Team</div>,
+      header: () => (
+        <div className="text-left md:ms-5">
+          <HeaderWithTooltip label="Team" tooltipText="Team name and logo" />
+        </div>
+      ),
       cell: ({ row }) => {
         const { logo, name, standings } = row.original;
         const rank = standings.rank;
@@ -39,7 +43,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         return (
           <div className="text-left md:ms-5 flex items-center gap-2 md:gap-4">
             <div
-              className={`w-5 text-end font-medium flex items-center justify-end ${rankStyle.textColor}`}
+              className={`w-5 text-end  flex items-center justify-end ${rankStyle.textColor}`}
             >
               {rankStyle.icon || rank}
             </div>
@@ -50,7 +54,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
                 className="size-7 rounded-full border"
               />
             </div>
-            <span className="font-medium">{name}</span>
+            <span className="">{name}</span>
           </div>
         );
       },
@@ -66,7 +70,10 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       id: "form",
       header: () => (
         <div className="text-center">
-          <HeaderWithTooltip label="STRK" tooltipText="Recent performance in last 5 games" />
+          <HeaderWithTooltip
+            label="STRK"
+            tooltipText="Recent performance in last 5 games"
+          />
         </div>
       ),
       cell: ({ row }) => {
@@ -100,9 +107,13 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
     },
     {
       accessorKey: "standings.matches_played",
-      header: () => <div className="text-center w-auto">MP</div>,
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip label="MP" tooltipText="Matches Played" />
+        </div>
+      ),
       cell: ({ getValue }) => (
-        <div className="text-center w-auto font-medium">{getValue()}</div>
+        <div className="text-center w-auto ">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -114,27 +125,13 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
     },
     {
       accessorKey: "standings.wins",
-      header: () => <div className="text-center w-auto">W</div>,
-      cell: ({ getValue }) => (
-        <div className="text-center w-auto font-medium text-emerald-600">
-          {getValue()}
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip label="W" tooltipText="Wins" />
         </div>
       ),
-      size: 40, // Reduced from original
-      minWidth: 35, 
-      meta: {
-        priority: "high",
-        mobileSize: 35,
-        tabletSize: 40,
-      },
-    },
-    {
-      accessorKey: "standings.losses",
-      header: () => <div className="text-center w-auto">L</div>,
       cell: ({ getValue }) => (
-        <div className="text-center w-auto font-medium text-rose-600">
-          {getValue()}
-        </div>
+        <div className="text-center w-auto  text-emerald-600">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -145,41 +142,44 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       },
     },
     {
-      accessorKey: "standings.point_differential",
-      header: () => <div className="text-center w-auto">PD</div>,
-      cell: ({ getValue }) => {
-        const value = getValue() || 0;
-        return (
-          <div
-            className={`text-center w-auto font-medium ${
-              value > 0 ? "text-emerald-600" : value < 0 ? "text-rose-600" : ""
-            }`}
-          >
-            {value > 0 ? "+" : ""}
-            {value}
-          </div>
-        );
-      },
-      size: 45, // Reduced from original
-      minWidth: 40,
+      accessorKey: "standings.losses",
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip label="L" tooltipText="Losses" />
+        </div>
+      ),
+      cell: ({ getValue }) => (
+        <div className="text-center w-auto  text-rose-600">{getValue()}</div>
+      ),
+      size: 40, // Reduced from original
+      minWidth: 35,
       meta: {
         priority: "high",
-        mobileSize: 40,
-        tabletSize: 45, 
+        mobileSize: 35,
+        tabletSize: 40,
       },
     },
     {
-      accessorKey: "standings.points",
-      header: () => <div className="text-center w-auto">PTS</div>,
-      cell: ({ getValue }) => (
-        <div className="text-center w-auto font-bold">{getValue() || 0}</div>
+      accessorKey: "standings.win_percentage",
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip label="PCT" tooltipText="Winning Percentage" />
+        </div>
       ),
-      size: 45, // Reduced from original
-      minWidth: 40,
+      cell: ({ getValue }) => {
+        const value = getValue() || 0;
+        return (
+          <div className="text-center w-auto ">
+            {value.toFixed(3).toString().replace(/^0\./, ".")}
+          </div>
+        );
+      },
+      size: 50,
+      minWidth: 45,
       meta: {
         priority: "high",
-        mobileSize: 40,
-        tabletSize: 45,
+        mobileSize: 45,
+        tabletSize: 50,
       },
     },
   ];
@@ -188,11 +188,13 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
   if (has_tie) {
     baseColumns.splice(4, 0, {
       accessorKey: "standings.ties",
-      header: () => <div className="text-center w-auto">T</div>,
-      cell: ({ getValue }) => (
-        <div className="text-center w-auto font-medium text-amber-600">
-          {getValue()}
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip label="T" tooltipText="Ties" />
         </div>
+      ),
+      cell: ({ getValue }) => (
+        <div className="text-center w-auto  text-amber-600">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -209,66 +211,320 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
     // For set-based sports (volleyball, tennis, etc.)
     baseColumns.push(
       {
-        id: "sets",
-        header: () => <div className="text-center w-auto">SETS</div>,
+        id: "sets_w_l",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="SETS W-L"
+              tooltipText="Sets Won and Lost"
+            />
+          </div>
+        ),
         cell: ({ row }) => {
           const setsWon = row.original.standings.sets_won || 0;
           const setsLost = row.original.standings.sets_lost || 0;
           return (
-            <div className="text-center w-auto font-medium">
-              <span>{setsWon}</span> - <span>{setsLost}</span>
+            <div className="text-center w-auto ">
+              {setsWon} - {setsLost}
             </div>
           );
         },
-        size: 60, // Reduced from original
-        minWidth: 50,
+        size: 70,
+        minWidth: 60,
         meta: {
           priority: "medium",
-          mobileSize: 50,
-          tabletSize: 55,
+          mobileSize: 60,
+          tabletSize: 65,
         },
       },
       {
         accessorKey: "standings.set_ratio",
-        header: () => <div className="text-center w-auto">RATIO</div>,
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="SET RATIO"
+              tooltipText="Ratio of sets won to sets lost"
+            />
+          </div>
+        ),
         cell: ({ getValue }) => {
           const value = getValue() || 0;
           return (
-            <div className="text-center w-auto font-medium">
+            <div className="text-center w-auto ">
               {typeof value === "number" ? value.toFixed(3) : "0.000"}
             </div>
           );
         },
-        size: 70, // Reduced from original
-        minWidth: 60,
+        size: 60,
+        minWidth: 55,
         meta: {
           priority: "high",
-          mobileSize: 60,
-          tabletSize: 65,
+          mobileSize: 55,
+          tabletSize: 60,
+        },
+      },
+      {
+        accessorKey: "standings.sets_win_percentage",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="SETS WIN %"
+              tooltipText="Sets Win Percentage"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          return <div className="text-center w-auto ">{value.toFixed(1)}%</div>;
+        },
+        size: 60,
+        minWidth: 55,
+        meta: {
+          priority: "medium",
+          mobileSize: 55,
+          tabletSize: 60,
+        },
+      },
+      {
+        accessorKey: "standings.points_per_set",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="PTS/SET"
+              tooltipText="Average Points per Set"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          return <div className="text-center w-auto ">{value.toFixed(1)}</div>;
+        },
+        size: 60,
+        minWidth: 55,
+        meta: {
+          priority: "medium",
+          mobileSize: 55,
+          tabletSize: 60,
+        },
+      },
+      {
+        accessorKey: "standings.points_conceded_per_set",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="OPP/SET"
+              tooltipText="Opponent Points Per Set"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          return <div className="text-center w-auto ">{value.toFixed(1)}</div>;
+        },
+        size: 60,
+        minWidth: 55,
+        meta: {
+          priority: "medium",
+          mobileSize: 55,
+          tabletSize: 60,
+        },
+      },
+      {
+        accessorKey: "standings.point_differential_per_set",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="DIFF/SET"
+              tooltipText="Point Differential Per Set"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          const isPositive = value > 0;
+          return (
+            <div
+              className={`text-center w-auto  ${
+                isPositive
+                  ? "text-emerald-600"
+                  : value < 0
+                  ? "text-rose-600"
+                  : ""
+              }`}
+            >
+              {isPositive ? "+" : ""}
+              {value.toFixed(1)}
+            </div>
+          );
+        },
+        size: 60,
+        minWidth: 55,
+        meta: {
+          priority: "medium",
+          mobileSize: 55,
+          tabletSize: 60,
+        },
+      },
+      {
+        accessorKey: "standings.points",
+        header: () => (
+          <div className="text-center w-auto">
+            <HeaderWithTooltip
+              label="PTS"
+              tooltipText="Points that determine rankings"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => (
+          <div className="text-center w-auto">{getValue() || 0}</div>
+        ),
+        size: 45, // Reduced from original
+        minWidth: 40,
+        meta: {
+          priority: "high",
+          mobileSize: 40,
+          tabletSize: 45,
         },
       }
     );
   } else {
-    // For point-based sports (basketball, football, etc.)
-    baseColumns.push({
-      accessorKey: "standings.win_percentage",
-      header: () => <div className="text-center w-auto">Win%</div>,
-      cell: ({ getValue }) => {
-        const value = getValue() || 0;
-        return (
-          <div className="text-center w-auto font-medium">
-            {value.toFixed(3).replace(/^0/, "")}
+    // For point-based sports
+    baseColumns.push(
+      {
+        accessorKey: "standings.points_per_game",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip label="PPG" tooltipText="Points Per Game" />
           </div>
-        );
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          return <div className="text-center w-auto ">{value.toFixed(1)}</div>;
+        },
+        size: 50,
+        minWidth: 45,
+        meta: {
+          priority: "medium",
+          mobileSize: 45,
+          tabletSize: 50,
+        },
       },
-      size: 60, // Reduced from original
-      minWidth: 50,
-      meta: {
-        priority: "high",
-        mobileSize: 50,
-        tabletSize: 55,
+      {
+        accessorKey: "standings.points_conceded_per_game",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="OPPG"
+              tooltipText="Opponent Points Per Game"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          return <div className="text-center w-auto ">{value.toFixed(1)}</div>;
+        },
+        size: 50,
+        minWidth: 45,
+        meta: {
+          priority: "medium",
+          mobileSize: 45,
+          tabletSize: 50,
+        },
       },
-    });
+      {
+        accessorKey: "standings.point_differential_avg",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="AVG DIFF"
+              tooltipText="Average Point Differential Per Game"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          const isPositive = value > 0;
+          return (
+            <div
+              className={`text-center w-auto  ${
+                isPositive
+                  ? "text-emerald-600"
+                  : value < 0
+                  ? "text-rose-600"
+                  : ""
+              }`}
+            >
+              {isPositive ? "+" : ""}
+              {value.toFixed(1)}
+            </div>
+          );
+        },
+        size: 50,
+        minWidth: 45,
+        meta: {
+          priority: "medium",
+          mobileSize: 45,
+          tabletSize: 50,
+        },
+      },
+      {
+        accessorKey: "standings.point_differential",
+        header: () => (
+          <div className="text-center">
+            <HeaderWithTooltip
+              label="TOT DIFF"
+              tooltipText="Total Point Differential"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() || 0;
+          const isPositive = value > 0;
+          return (
+            <div
+              className={`text-center w-auto ${
+                isPositive
+                  ? "text-emerald-600"
+                  : value < 0
+                  ? "text-rose-600"
+                  : ""
+              }`}
+            >
+              {isPositive ? "+" : ""}
+              {value}
+            </div>
+          );
+        },
+        size: 50,
+        minWidth: 45,
+        meta: {
+          priority: "medium",
+          mobileSize: 45,
+          tabletSize: 50,
+        },
+      },
+      {
+        accessorKey: "standings.points",
+        header: () => (
+          <div className="text-center w-auto">
+            <HeaderWithTooltip
+              label="PTS"
+              tooltipText="Points that determine rankings"
+            />
+          </div>
+        ),
+        cell: ({ getValue }) => (
+          <div className="text-center w-auto">{getValue() || 0}</div>
+        ),
+        size: 50,
+        minWidth: 45,
+        meta: {
+          priority: "medium",
+          mobileSize: 45,
+          tabletSize: 50,
+        },
+      }
+    );
   }
 
   return baseColumns;

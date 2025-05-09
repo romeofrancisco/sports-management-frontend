@@ -11,7 +11,7 @@ import LeagueOverview from "./components/LeagueOverview";
 import LeagueTeamsGrid from "./components/LeagueTeamsGrid";
 import LeagueStatistics from "./components/LeagueStatistics";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 const LeagueDetails = () => {
   const { league } = useParams();
@@ -43,47 +43,38 @@ const LeagueDetails = () => {
   if (isError) return <PageError />;
 
   const { name, sport } = leagueDetails;
+  const activeSeasons = seasons.filter(s => s.status === 'ongoing' || s.status === 'upcoming').slice(0, 3);
+
+  // Handler for changing tabs
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+  };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 pb-8">
       <LeagueDetailsHeader name={name} sport={sport} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="mb-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="standings">Standings</TabsTrigger>
-          <TabsTrigger value="teams">Teams</TabsTrigger>
-          <TabsTrigger value="seasons">Seasons</TabsTrigger>
-          <TabsTrigger value="statistics">Statistics</TabsTrigger>
+          <TabsTrigger className="text-xs sm:text-sm" value="overview">Overview</TabsTrigger>
+          <TabsTrigger className="text-xs sm:text-sm" value="leaderboard">Leaderboard</TabsTrigger>
+          <TabsTrigger className="text-xs sm:text-sm" value="teams">Teams</TabsTrigger>
+          <TabsTrigger className="text-xs sm:text-sm" value="seasons">Seasons</TabsTrigger>
+          <TabsTrigger className="text-xs sm:text-sm" value="statistics">Statistics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
-          <LeagueOverview />
-
-          <div className="grid lg:grid-cols-2 gap-6 mt-6">
-            <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
-              <CardContent>
-                <LeagueStandings rankings={leagueRankings} />
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Recent Seasons</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <LeagueSeasonsTable
-                  seasons={seasons?.slice(0, 5)}
-                  sport={sport}
-                  compact={true}
-                />
-              </CardContent>
-            </Card>
+          <div className="space-y-8">
+            <LeagueOverview 
+              league={league} 
+              sport={sport} 
+              onTabChange={handleTabChange}
+            />
           </div>
         </TabsContent>
 
-        <TabsContent value="standings">
-          <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
+        <TabsContent value="leaderboard">
+          <Card className="shadow-sm">
             <CardContent className="pt-6">
               <LeagueStandings rankings={leagueRankings} />
             </CardContent>
@@ -91,18 +82,15 @@ const LeagueDetails = () => {
         </TabsContent>
 
         <TabsContent value="teams">
-          <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
-            <CardHeader className="pb-2">
-              <CardTitle>League Teams</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LeagueTeamsGrid teams={leagueRankings} />
+          <Card className="shadow-sm">
+            <CardContent className="pt-6">
+            <LeagueTeamsGrid teams={leagueRankings} className="md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" />
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="seasons">
-          <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
+          <Card className="shadow-sm">
             <CardContent className="pt-6">
               <LeagueSeasonsTable seasons={seasons} sport={sport} />
             </CardContent>
@@ -117,7 +105,7 @@ const LeagueDetails = () => {
               sport={sport}
             />
           ) : (
-            <Card className="bg-card rounded-lg shadow-md">
+            <Card className="shadow-sm">
               <CardContent className="py-8">
                 <div className="text-center text-muted-foreground">
                   No seasons available to show statistics
