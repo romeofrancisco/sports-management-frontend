@@ -13,6 +13,15 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   const { mutate: createStat, isPending: isCreating } = useCreateSportStats();
   const { mutate: updateStat, isPending: isUpdating } = useUpdateSportStats();
 
+  // Define category options
+  const categoryOptions = [
+    { id: 'scoring', name: 'Scoring' },
+    { id: 'performance', name: 'Performance' },
+    { id: 'offensive', name: 'Offensive' },
+    { id: 'defensive', name: 'Defensive' },
+    { id: 'other', name: 'Other' }
+  ];
+
   const {
     control,
     formState: { errors },
@@ -26,6 +35,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
+      category: stat?.category || "other",
 
       is_player_summary: stat?.is_player_summary || false,
       is_team_summary: stat?.is_team_summary || false,
@@ -49,6 +59,20 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
   const isRecord = watch("is_record");
   const isCounter = watch("is_counter");
+  const isNegative = watch("is_negative");
+
+  // Auto-set category based on stat attributes
+  useEffect(() => {
+    const pointValue = watch("point_value");
+    
+    if (isRecord && isCounter && pointValue > 0) {
+      // Suggest scoring category for points
+      setValue("category", "scoring");
+    } else if (isNegative) {
+      // Suggest defensive category for negative stats
+      setValue("category", "defensive");
+    }
+  }, [isRecord, isCounter, isNegative, setValue, watch]);
 
   const onSubmit = (data) => {
     const mutationFn = isEdit ? updateStat : createStat;
@@ -118,6 +142,19 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         errors={errors}
       />
 
+      {/* Category */}
+      <ControlledSelect
+        name="category"
+        control={control}
+        label="Category"
+        help_text="Select the category for organizing this stat in the UI"
+        placeholder="Select Category"
+        options={categoryOptions}
+        valueKey="id"
+        labelKey="name"
+        errors={errors}
+      />
+
       {/* Player Summary */}
       <ControlledCheckbox
         name="is_player_summary"
@@ -164,7 +201,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
       {/* Boxscore */}
       <ControlledCheckbox
-        name="is_box_score"
+        name="is_boxscore"
         label="Boxscore"
         control={control}
         help_text="Check this if the stat is shown in boxscore"

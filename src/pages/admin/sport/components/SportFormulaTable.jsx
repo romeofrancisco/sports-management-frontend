@@ -7,7 +7,10 @@ import { useModal } from "@/hooks/useModal";
 import { useFormula } from "@/hooks/useFormula";
 import { useParams } from "react-router";
 import SportFormulaActions from "./SportFormulaActions";
-import { SearchFilter } from "@/components/common/Filters";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Plus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const SportFormulaTable = () => {
   const { sport } = useParams();
@@ -38,9 +41,9 @@ const SportFormulaTable = () => {
       accessorKey: "expression",
       header: "Expression",
       cell: ({ getValue }) => (
-        <span className="whitespace-normal break-words text-xs text-muted-foreground">
+        <div className="max-w-[400px] break-words text-sm text-muted-foreground">
           {getValue() ? getValue() : "N/A"}
-        </span>
+        </div>
       ),
     },
     {
@@ -52,26 +55,47 @@ const SportFormulaTable = () => {
           setSelectedFormula={setSelectedFormula}
         />
       ),
-      size: 50,
+      size: 80,
     },
   ];
 
   return (
-    <div className="px-5 max-w-screen md:border md:bg-muted/30 md:p-5 lg:p-8 rounded-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl semibold">Formulas</h1>
-        <Button onClick={handleCreateFormula}>Create New Formula</Button>
+    <div className="p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 className="text-xl font-semibold">Formula Management</h2>
+        <Button onClick={handleCreateFormula}>
+          <Plus className="mr-2 h-4 w-4" />
+          Create New Formula
+        </Button>
       </div>
-      <SearchFilter
-        value={filter.search}
-        onChange={(search) => setFilter((prev) => ({ ...prev, search }))}
-      />
-      <DataTable
-        columns={columns}
-        data={formula || []}
-        loading={isFormulaLoading}
-        className="text-xs md:text-sm"
-      />
+
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <div className="grid gap-4 max-w-md">
+            <div>
+              <Label htmlFor="search-formula">Search Formula</Label>
+              <Input
+                id="search-formula"
+                placeholder="Search by formula name..."
+                value={filter.search}
+                onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <div className="border rounded-md overflow-hidden">
+        <DataTable
+          columns={columns}
+          data={formula || []}
+          loading={isFormulaLoading}
+          className="text-sm"
+          pagination={true}
+          pageSize={8}
+        />
+      </div>
+      
       <FormulaModal
         isOpen={modals.formula.isOpen}
         onClose={modals.formula.closeModal}

@@ -69,10 +69,14 @@ export const FilterStatType = ({ value, onChange, className = "" }) => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Types</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Stats
+            </SelectItem>
+            <SelectSeparator />
             {STAT_TYPE.map((stat) => (
               <SelectItem
                 className="text-xs"
-                key={stat.value}
+                key={stat.value.toString()}
                 value={stat.value}
               >
                 {stat.label}
