@@ -172,9 +172,8 @@ const SportStatsTable = ({ filter }) => {
               data={filteredStats || []}
               loading={isStatsLoading}
               className="text-sm"
-              unlimited={false}
-              pagination={true}
-              pageSize={10}
+              pagination={false}
+              unlimited={true}
               alternateRowColors={true}
             />
           </TabsContent>
@@ -185,9 +184,8 @@ const SportStatsTable = ({ filter }) => {
               data={filteredStats || []}
               loading={isStatsLoading}
               className="text-sm"
-              unlimited={false}
-              pagination={true}
-              pageSize={10}
+              pagination={false}
+              unlimited={true}
               alternateRowColors={true}
             />
           </TabsContent>
@@ -198,9 +196,8 @@ const SportStatsTable = ({ filter }) => {
               data={filteredStats || []}
               loading={isStatsLoading}
               className="text-sm"
-              unlimited={false}
-              pagination={true}
-              pageSize={10}
+              pagination={false}
+              unlimited={true}
               alternateRowColors={true}
             />
           </TabsContent>

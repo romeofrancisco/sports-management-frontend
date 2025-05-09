@@ -218,7 +218,7 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Teams Section */}
         {rankings && rankings.length > 0 && (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-6">
+          <div className=" rounded-lg border p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h3 className="text-lg font-semibold">Top Teams</h3>
