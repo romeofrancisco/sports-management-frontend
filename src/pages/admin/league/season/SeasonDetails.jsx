@@ -1,19 +1,29 @@
-import React from "react";
-import { useParams } from "react-router";
-import PageError from "@/pages/PageError";
-import SeasonDetailsHeader from "./components/SeasonDetailsHeader";
-import { useSeasonDetails, useSeasonStandings } from "@/hooks/useSeasons";
-import Loading from "@/components/common/FullLoading";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router";
+import { 
+  useSeasonDetails, 
+  useSeasonStandings, 
+  useSeasons
+} from "@/hooks/useSeasons";
 import { useLeagueDetails } from "@/hooks/useLeagues";
-import SeasonStandings from "./components/SeasonStandings";
+import SeasonDetailsHeader from "./components/SeasonDetailsHeader";
 import SeasonOverview from "./components/SeasonOverview";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SeasonStandings from "./components/SeasonStandings";
 import { SeasonGames } from "./components/SeasonGames";
 import { SeasonTeams } from "./components/SeasonTeams";
 import { SeasonStats } from "./components/SeasonStats";
+import BracketView from "./components/BracketView";
+import PageError from "@/pages/PageError";
+import Loading from "@/components/common/FullLoading";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { ChevronLeft } from "lucide-react";
 
 const SeasonDetails = () => {
   const { league, season } = useParams();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
+  
   const {
     data: leagueDetails,
     isLoading: isLeagueLoading,
@@ -38,29 +48,49 @@ const SeasonDetails = () => {
   if (isError) return <PageError />;
 
   const { sport } = leagueDetails;
+  const isSetBased = sport.scoring_type === "SETS";
 
   return (
     <div className="flex flex-col">
-      <SeasonDetailsHeader season={seasonDetails} />
+      <SeasonDetailsHeader
+        season={seasonDetails}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
-          <TabsTrigger value="overview">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="games">
-            Games
-          </TabsTrigger>
-          <TabsTrigger value="teams">
-            Teams
-          </TabsTrigger>
-          <TabsTrigger value="stats">
-            Stats
-          </TabsTrigger>
-        </TabsList>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        defaultValue="overview"
+        className="w-full"
+      >
+        <div className="flex items-center justify-center sm:justify-start">      
+          <TabsList className="self-center mt-5 mb-3">
+            <TabsTrigger className="text-xs md:text-sm" value="overview">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger className="text-xs md:text-sm" value="standings">
+              Standings
+            </TabsTrigger>
+            <TabsTrigger className="text-xs md:text-sm" value="games">
+              Games
+            </TabsTrigger>
+            <TabsTrigger className="text-xs md:text-sm" value="teams">
+              Teams
+            </TabsTrigger>
+            {seasonDetails.has_bracket && (
+              <TabsTrigger className="text-xs md:text-sm" value="bracket">
+                Bracket
+              </TabsTrigger>
+            )}
+          </TabsList>
+        </div>
 
         <TabsContent value="overview">
           <SeasonOverview seasonDetails={seasonDetails} />
+        </TabsContent>
+
+        <TabsContent value="standings">
           <SeasonStandings standings={seasonStandings} sport={sport} />
         </TabsContent>
 
@@ -72,9 +102,11 @@ const SeasonDetails = () => {
           <SeasonTeams seasonId={season} leagueId={league} />
         </TabsContent>
 
-        <TabsContent value="stats">
-          <SeasonStats seasonId={season} leagueId={league} sport={sport} />
-        </TabsContent>
+        {seasonDetails.has_bracket && (
+          <TabsContent value="bracket">
+            <BracketView season={seasonDetails} leagueId={league} />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

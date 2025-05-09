@@ -70,9 +70,19 @@ export const fetchLeagueStatistics = async (id) => {
   }
 };
 
-export const fetchTeamForm = async (id, limit = 5) => {
+export const fetchLeagueComprehensiveStats = async (id) => {
   try {
-    const { data } = await api.get(`leagues/${id}/team_form/?limit=${limit}`);
+    const { data } = await api.get(`leagues/${id}/comprehensive_stats/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching comprehensive league statistics:", error);
+    throw error;
+  }
+};
+
+export const fetchLeagueTeamForm = async (id) => {
+  try {
+    const { data } = await api.get(`leagues/${id}/team_form/`);
     return data;
   } catch (error) {
     console.log("Error fetching team form data:", error);

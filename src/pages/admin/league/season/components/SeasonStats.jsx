@@ -1,5 +1,4 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSeasonTeamPerformance } from "@/hooks/useSeasons";
 import { useSportScoringType } from "@/hooks/useSports";
 import Loading from "@/components/common/FullLoading";
@@ -14,7 +13,8 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+import StatCard from "@/components/common/StatCard";
+import { PointsChart, WinsChart, StreakChart, DifferentialChart } from "@/components/charts/SeasonCharts";
 
 // Register ChartJS components
 ChartJS.register(
@@ -71,8 +71,6 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
       // Sort teams by points per set for the chart
       const sortedTeams = [...formattedData]
         .sort((a, b) => b.pointsPerSet - a.pointsPerSet);
-      
-      console.log("Set based teams data:", sortedTeams);
       
       return {
         labels: sortedTeams.map(team => team.name),
@@ -410,81 +408,6 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
   const winsData = getWinsData();
   const streakData = getStreakData();
   const differentialData = getDifferentialData();
-  
-  // Make sure we have real values for display
-  const formatStatValue = (value) => {
-    if (value === undefined || value === null || isNaN(value)) return 0;
-    return typeof value === 'number' ? parseFloat(value.toFixed(1)) : 0;
-  };
-
-  // Chart options
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-  
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'right',
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            return `${context.label}: ${context.raw}`;
-          }
-        }
-      }
-    },
-  };
-
-  // Add horizontal bar chart options
-  const horizontalBarOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    indexAxis: 'y', // This makes the bars horizontal instead of vertical
-    plugins: {
-      legend: {
-        display: false, // Hide legend since color indicates positive/negative
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const value = context.raw;
-            return `${value > 0 ? '+' : ''}${value}`;
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)',
-        },
-      },
-      y: {
-        ticks: {
-          autoSkip: false,
-          font: {
-            size: 11
-          }
-        }
-      }
-    },
-  };
 
   return (
     <div className="mt-6">
@@ -494,223 +417,83 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
         {isSetsScoring ? (
           // Sets-based sports stats cards (volleyball, tennis, etc.)
           <>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Best Win Rate</div>
-                    <div className="text-2xl font-bold">{statsSummary.bestWinRateTeam.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.bestWinRateTeam.value}% wins
-                    </div>
-                  </div>
-                  <div className="bg-blue-100 p-3 rounded-full">
-                    <Trophy className="text-blue-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Best Win Rate" 
+              value={statsSummary.bestWinRateTeam.name}
+              description={`${statsSummary.bestWinRateTeam.value}% wins`}
+              icon={<Trophy className="text-blue-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Best Offensive Team</div>
-                    <div className="text-2xl font-bold">{statsSummary.bestOffensiveTeam.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.bestOffensiveTeam.value} pts/set avg
-                    </div>
-                  </div>
-                  <div className="bg-green-100 p-3 rounded-full">
-                    <TrendingUp className="text-green-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Best Offensive Team" 
+              value={statsSummary.bestOffensiveTeam.name}
+              description={`${statsSummary.bestOffensiveTeam.value} pts/set avg`}
+              icon={<TrendingUp className="text-green-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Best Defensive Team</div>
-                    <div className="text-2xl font-bold">{statsSummary.bestDefensiveTeam.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.bestDefensiveTeam.value} pts allowed/set avg
-                    </div>
-                  </div>
-                  <div className="bg-amber-100 p-3 rounded-full">
-                    <Shield className="text-amber-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Best Defensive Team" 
+              value={statsSummary.bestDefensiveTeam.name}
+              description={`${statsSummary.bestDefensiveTeam.value} pts allowed/set avg`}
+              icon={<Shield className="text-amber-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Longest Sets Win Streak</div>
-                    <div className="text-2xl font-bold">{statsSummary.longestStreak.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.longestStreak.value} consecutive sets
-                    </div>
-                  </div>
-                  <div className="bg-purple-100 p-3 rounded-full">
-                    <CheckSquare className="text-purple-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Longest Sets Win Streak" 
+              value={statsSummary.longestStreak.name}
+              description={`${statsSummary.longestStreak.value} consecutive sets`}
+              icon={<CheckSquare className="text-purple-500 h-5 w-5" />}
+              className="bg-white"
+            />
           </>
         ) : (
           // Points-based sports stats cards (basketball, etc.)
           <>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Avg Points Per Game</div>
-                    <div className="text-2xl font-bold">{statsSummary.avgPointsPerGame}</div>
-                  </div>
-                  <div className="bg-blue-100 p-3 rounded-full">
-                    <BarChart2 className="text-blue-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Avg Points Per Game" 
+              value={statsSummary.avgPointsPerGame}
+              icon={<BarChart2 className="text-blue-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Best Offensive Team</div>
-                    <div className="text-2xl font-bold">{statsSummary.bestOffensiveTeam.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.bestOffensiveTeam.value} pts/game
-                    </div>
-                  </div>
-                  <div className="bg-green-100 p-3 rounded-full">
-                    <TrendingUp className="text-green-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Best Offensive Team" 
+              value={statsSummary.bestOffensiveTeam.name}
+              description={`${statsSummary.bestOffensiveTeam.value} pts/game`}
+              icon={<TrendingUp className="text-green-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Best Defensive Team</div>
-                    <div className="text-2xl font-bold">{statsSummary.bestDefensiveTeam.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.bestDefensiveTeam.value} pts allowed
-                    </div>
-                  </div>
-                  <div className="bg-amber-100 p-3 rounded-full">
-                    <Shield className="text-amber-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Best Defensive Team" 
+              value={statsSummary.bestDefensiveTeam.name}
+              description={`${statsSummary.bestDefensiveTeam.value} pts allowed`}
+              icon={<Shield className="text-amber-500 h-5 w-5" />}
+              className="bg-white"
+            />
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Longest Win Streak</div>
-                    <div className="text-2xl font-bold">{statsSummary.longestStreak.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {statsSummary.longestStreak.value} consecutive wins
-                    </div>
-                  </div>
-                  <div className="bg-purple-100 p-3 rounded-full">
-                    <Award className="text-purple-500 h-5 w-5" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard 
+              title="Longest Win Streak" 
+              value={statsSummary.longestStreak.name}
+              description={`${statsSummary.longestStreak.value} consecutive wins`}
+              icon={<Award className="text-purple-500 h-5 w-5" />}
+              className="bg-white"
+            />
           </>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              {isSetsScoring ? 'Points per Set' : 'Points Scored vs Conceded'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {pointsData.labels.length > 0 ? (
-              <div style={{ height: '300px' }}>
-                <Bar data={pointsData} options={barOptions} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-[300px]">
-                <p className="text-muted-foreground">No scoring data available</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              {isSetsScoring ? 'First Half vs Second Half Sets Won' : 'First Half vs Second Half Wins'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {winsData.labels.length > 0 ? (
-              <div style={{ height: '300px' }}>
-                <Bar data={winsData} options={barOptions} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-[300px]">
-                <p className="text-muted-foreground">No win data available</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <PointsChart data={pointsData} isSetsScoring={isSetsScoring} />
+        <WinsChart data={winsData} isSetsScoring={isSetsScoring} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              {isSetsScoring ? 'Longest Sets Win Streaks' : 'Longest Win Streaks'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {streakData.labels.length > 0 ? (
-              <div style={{ height: '300px' }}>
-                <Bar data={streakData} options={barOptions} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-[300px]">
-                <p className="text-muted-foreground">No streak data available</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              {isSetsScoring ? 'Points per Set Differential' : 'Point Differential'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {differentialData.labels.length > 0 ? (
-              <div style={{ height: '300px' }}>
-                <Bar data={differentialData} options={horizontalBarOptions} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-[300px]">
-                <p className="text-muted-foreground">No differential data available</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <StreakChart data={streakData} isSetsScoring={isSetsScoring} />
+        <DifferentialChart data={differentialData} isSetsScoring={isSetsScoring} />
       </div>
     </div>
   );

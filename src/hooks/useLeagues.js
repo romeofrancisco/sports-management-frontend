@@ -7,7 +7,8 @@ import {
   deleteLeague,
   fetchLeagueRankings,
   fetchLeagueStatistics,
-  fetchTeamForm,
+  fetchLeagueTeamForm,
+  fetchLeagueComprehensiveStats,
   addTeamToLeague,
   removeTeamFromLeague
 } from "@/api/leaguesApi";
@@ -44,10 +45,18 @@ export const useLeagueStatistics = (id) => {
   });
 };
 
-export const useTeamForm = (id, limit = 5) => {
+export const useLeagueComprehensiveStats = (id) => {
   return useQuery({
-    queryKey: ["team-form", id, limit],
-    queryFn: () => fetchTeamForm(id, limit),
+    queryKey: ["league-comprehensive-stats", id],
+    queryFn: () => fetchLeagueComprehensiveStats(id),
+    enabled: !!id,
+  });
+};
+
+export const useLeagueTeamForm = (id) => {
+  return useQuery({
+    queryKey: ["league-team-form", id],
+    queryFn: () => fetchLeagueTeamForm(id),
     enabled: !!id,
   });
 };

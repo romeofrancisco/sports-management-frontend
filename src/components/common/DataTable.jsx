@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -28,13 +28,60 @@ const DataTable = ({
   unlimited = false, // New prop to show all rows without pagination
 }) => {
   const [sorting, setSorting] = useState([]);
-
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
   // Calculate the effective page size - if unlimited, use the total data length
   const effectivePageSize = unlimited ? data?.length || 100 : pageSize;
 
+  // Track window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // Process columns based on screen size
+  const responsiveColumns = React.useMemo(() => {
+    return columns.map(column => {
+      // Define responsive behavior for each column
+      let visibility = true;
+      let width = column.size;
+      
+      // Optional: Hide certain columns on smaller screens based on priority
+      if (column.meta?.priority === 'low' && windowWidth < 640) {
+        visibility = false;
+      } else if (column.meta?.priority === 'medium' && windowWidth < 480) {
+        visibility = false;
+      }
+      
+      // Apply responsive width logic - with smaller sizes for all screens
+      if (windowWidth < 640) {
+        // For small screens - ultra compact
+        width = column.meta?.mobileSize || column.size || 50;
+      } else if (windowWidth < 1024) {
+        // For medium screens - very compact
+        width = column.meta?.tabletSize || column.size || 60;
+      } else {
+        // For large screens - compact
+        width = column.size || 80;
+      }
+      
+      return {
+        ...column,
+        size: width,
+        show: visibility
+      };
+    }).filter(col => col.show !== false);
+  }, [columns, windowWidth]);
+
   const table = useReactTable({
     data: data || [],
-    columns,
+    columns: responsiveColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -46,7 +93,6 @@ const DataTable = ({
         pageSize: effectivePageSize,
       },
     },
-    // Don't set initialState since we want to control this directly through state
   });
 
   // Create custom styles for the first column that will be consistent
@@ -55,6 +101,7 @@ const DataTable = ({
       position: 'sticky',
       left: 0,
       zIndex: isHeader ? 40 : 20,
+      width: windowWidth < 640 ? 'auto' : undefined,
     };
   };
 
@@ -66,24 +113,24 @@ const DataTable = ({
       {loading ? (
         <TableContentLoading 
           rowCount={pageSize > 5 ? 5 : pageSize} 
-          columnCount={columns.length} 
+          columnCount={responsiveColumns.length} 
         />
       ) : (
-        <div className="rounded-md shadow border mt-2 relative">
+        <div className="rounded-md border mt-2 relative">
           <div className="overflow-x-auto">
-            <Table className={`${className} relative`}>
+            <Table className={`${className} text-xs md:text-sm relative`}>
               <TableHeader>
                 <TableRow className="border-b">
                   {table.getHeaderGroups()[0].headers.map((header, index) => (
                     <TableHead
                       key={header.id}
                       style={{
-                        minWidth: header.column.columnDef.size,
-                        maxWidth: header.column.columnDef.size,
                         ...(index === 0 ? getFirstColumnStyle(true) : {}),
-                        backgroundColor: index === 0 ? 'var(--background)' : undefined
+                        backgroundColor: index === 0 ? 'var(--background)' : undefined,
+                        width: header.column.columnDef.size,
+                        minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                       }}
-                      className={`${index === 0 ? 'first-col' : ''}`}
+                      className={`${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 px-3`}
                     >
                       {header.isPlaceholder
                         ? null
@@ -110,11 +157,11 @@ const DataTable = ({
                             <TableCell
                               key={cell.id}
                               style={{
-                                minWidth: cell.column.columnDef.size,
-                                maxWidth: cell.column.columnDef.size,
                                 ...(isFirstColumn ? getFirstColumnStyle() : {}),
+                                width: cell.column.columnDef.size,
+                                minWidth: cell.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                               }}
-                              className={isFirstColumn ? "first-col bg-background" : alternateRowColors && rowIndex % 2 === 1 ? "bg-muted/30" : "bg-background"}
+                              className={`${isFirstColumn ? "first-col bg-background" : alternateRowColors && rowIndex % 2 === 1 ? "bg-muted/30" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate py-3 px-3`}
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,
@@ -129,7 +176,7 @@ const DataTable = ({
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={columns.length}
+                      colSpan={responsiveColumns.length}
                       className="h-24 text-center"
                     >
                       No results.

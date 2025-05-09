@@ -123,7 +123,7 @@ const GameFlowChart = ({ game }) => {
       </CardHeader>
       <CardContent className="px-4">
         <div className="flex flex-col gap-2">
-          <div ref={containerRef} className="flex-1 w-full h-[30rem] min-w-0">
+          <div ref={containerRef} className="flex-1 w-full h-[20rem] min-w-0">
             <Line
               ref={chartRef}
               data={chartData}

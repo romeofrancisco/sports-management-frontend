@@ -6,15 +6,10 @@ import { useSeasons } from "@/hooks/useSeasons";
 import {
   Trash,
   MoreHorizontal,
-  ClipboardPenLine,
   SquarePen,
   Settings,
   Calendar,
   Plus,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,13 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { formatShortDate } from "@/utils/formatDate";
 import DeleteSeasonModal from "@/components/modals/DeleteSeasonModal";
 import SeasonModal from "@/components/modals/SeasonModal";
@@ -39,7 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { useParams } from "react-router";
 import TablePagination from "@/components/ui/table-pagination";
 
-const SeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
+const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
   const { league } = useParams();
   const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState(null);
@@ -202,7 +190,7 @@ const SeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
   ];
 
   return (
-    <div className="p-5 lg:p-6">
+    <div >
       <div className="flex justify-between items-center mb-4 border-b pb-3">
         <h2 className="text-xl font-bold flex items-center gap-2">Seasons</h2>
         {!compact && (
@@ -258,4 +246,4 @@ const SeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
   );
 };
 
-export default SeasonsTable;
+export default LeagueSeasonsTable;
