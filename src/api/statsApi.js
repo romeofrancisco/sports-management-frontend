@@ -9,10 +9,26 @@ export const createPlayerStat = async (stats) => {
   }
 };
 
-export const fetchPlayerStatsSummary = async (gameId, team) => {
+export const fetchPlayerStatsSummary = async (gameId, team, forCalculation = false) => {
   try {
+    // Add query parameters for optimization
+    const params = new URLSearchParams({
+      game_id: gameId,
+      team: team
+    });
+    
+    // Only add these flags if true to keep URLs cleaner
+    if (forCalculation) {
+      params.append('for_calculation', 'true');
+    }
+    
+    // Automatically use raw SQL for large datasets on calculation requests
+    if (forCalculation) {
+      params.append('use_raw_sql', 'true');
+    }
+    
     const { data } = await api.get(
-      `player-stats/player_stats_summary/?game_id=${gameId}&team=${team}`
+      `player-stats/player_stats_summary/?${params.toString()}`
     );
     return data;
   } catch (error) {

@@ -9,43 +9,48 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2 } from "lucide-react";
 import { useDeletePosition } from "@/hooks/useSports";
+import { Loader2 } from "lucide-react";
 
 const DeletePositionModal = ({ isOpen, onClose, position }) => {
-  const { mutate: deletePosition, isPending } = useDeletePosition();
+  const deletePosition = useDeletePosition();
 
-  const handleDeletePosition = () => {
-    deletePosition(position.id);
+  const handleDelete = () => {
+    if (!position) return;
+
+    deletePosition.mutate(position.id, {
+      onSuccess: () => {
+        onClose();
+      },
+    });
   };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Delete Position</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete position
-            and its data
+            Are you sure you want to delete the "{position?.name}" position?
+            This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          {isPending ? (
-            <>
-              <AlertDialogCancel disabled>Cancel</AlertDialogCancel>
-              <AlertDialogAction disabled>
-                <Loader2 className="animate-spin" />
-                Please Wait
-              </AlertDialogAction>
-            </>
-          ) : (
-            <>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeletePosition}>
-                Confirm
-              </AlertDialogAction>
-            </>
-          )}
+          <AlertDialogCancel disabled={deletePosition.isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={deletePosition.isPending}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {deletePosition.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

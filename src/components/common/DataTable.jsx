@@ -24,7 +24,6 @@ const DataTable = ({
   pageSize = 10,
   className = "",
   loading = false,
-  alternateRowColors = false,
   unlimited = false, // New prop to show all rows without pagination
 }) => {
   const [sorting, setSorting] = useState([]);
@@ -148,7 +147,7 @@ const DataTable = ({
                     return (
                       <TableRow 
                         key={row.id}
-                        className={`border-b ${alternateRowColors && rowIndex % 2 === 1 ? 'bg-muted/30' : ''}`}
+                        className="border-b"
                       >
                         {row.getVisibleCells().map((cell, cellIndex) => {
                           const isFirstColumn = cellIndex === 0;
@@ -161,7 +160,7 @@ const DataTable = ({
                                 width: cell.column.columnDef.size,
                                 minWidth: cell.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                               }}
-                              className={`${isFirstColumn ? "first-col bg-background" : alternateRowColors && rowIndex % 2 === 1 ? "bg-muted/30" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate py-3 px-3`}
+                              className={`${isFirstColumn ? "first-col bg-background" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate py-3 px-3`}
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,

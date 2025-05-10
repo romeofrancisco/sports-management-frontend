@@ -25,6 +25,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
       sport_slug: sport,
       expression: formula?.expression || "",
       is_ratio: formula?.is_ratio || false,
+      uses_point_value: formula?.uses_point_value || false,
       components: formula?.components?.map((component) => ({
         id: component.id,
         stat_type: component.stat_type_id,
@@ -81,6 +82,14 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         name="is_ratio"
         label="Ratio Formula"
         help_text="Enable if this formula represents a ratio between two stats (e.g., FT%, FG%)"
+        control={control}
+        errors={errors}
+      />
+
+      <ControlledCheckbox
+        name="uses_point_value"
+        label="Uses Point Value"
+        help_text="Enable if this formula should use the point values of stats"
         control={control}
         errors={errors}
       />

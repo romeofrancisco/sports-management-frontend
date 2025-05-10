@@ -177,38 +177,6 @@ const Boxscore = ({ game }) => {
           );
         },
       },
-      {
-        accessorKey: "points",
-        header: ({ column }) => (
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              className="text-xs"
-              size="xs"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              PTS <ArrowUpDown className="size-3" />
-            </Button>
-          </div>
-        ),
-        cell: ({ row }) => {
-          const isTeamTotal = row.original.id === "home_team_total" || row.original.id === "away_team_total";
-          return (
-            <div className="text-center">
-              <span className={`${isTeamTotal ? "font-bold" : "font-medium"}`}>
-                {scoring_type === SCORING_TYPE_VALUES.SETS
-                  ? selectedPeriod === "total"
-                    ? row.original.total_points
-                    : row.original.points
-                  : row.original.total_points}
-              </span>
-            </div>
-          );
-        },
-        size: 50,
-      },
     ];
 
     // Add a column for each stat

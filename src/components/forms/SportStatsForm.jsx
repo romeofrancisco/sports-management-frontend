@@ -13,6 +13,15 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   const { mutate: createStat, isPending: isCreating } = useCreateSportStats();
   const { mutate: updateStat, isPending: isUpdating } = useUpdateSportStats();
 
+  // Define category options
+  const categoryOptions = [
+    { id: 'scoring', name: 'Scoring' },
+    { id: 'performance', name: 'Performance' },
+    { id: 'offensive', name: 'Offensive' },
+    { id: 'defensive', name: 'Defensive' },
+    { id: 'other', name: 'Other' }
+  ];
+
   const {
     control,
     formState: { errors },
@@ -26,6 +35,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
+      category: stat?.category || "other",
 
       is_player_summary: stat?.is_player_summary || false,
       is_team_summary: stat?.is_team_summary || false,
@@ -38,9 +48,10 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       is_record: stat?.is_record || false,
 
       // Recording Stats
-      is_counter: stat?.is_counter || false,
+      is_points: stat?.is_points || false,
       is_negative: stat?.is_negative || false,
       point_value: stat?.point_value || 0,
+      uses_point_value: stat?.uses_point_value || false,
 
       // Metric Stats
       formula: stat?.formula || "",
@@ -48,7 +59,21 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   });
 
   const isRecord = watch("is_record");
-  const isCounter = watch("is_counter");
+  const isPoints = watch("is_points");
+  const isNegative = watch("is_negative");
+
+  // Auto-set category based on stat attributes
+  useEffect(() => {
+    const pointValue = watch("point_value");
+    
+    if (isRecord && isPoints && pointValue > 0) {
+      // Suggest scoring category for points
+      setValue("category", "scoring");
+    } else if (isNegative) {
+      // Suggest defensive category for negative stats
+      setValue("category", "defensive");
+    }
+  }, [isRecord, isPoints, isNegative, setValue, watch]);
 
   const onSubmit = (data) => {
     const mutationFn = isEdit ? updateStat : createStat;
@@ -78,7 +103,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       setValue("formula", "");
     } else {
       // Reset recording stat fields when switching to metric stat
-      setValue("is_counter", false);
+      setValue("is_points", false);
       setValue("point_value", 0);
       setValue("is_negative", false);
     }
@@ -115,6 +140,19 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         help_text="Code for formula"
         control={control}
         placeholder="Enter Stat Code"
+        errors={errors}
+      />
+
+      {/* Category */}
+      <ControlledSelect
+        name="category"
+        control={control}
+        label="Category"
+        help_text="Select the category for organizing this stat in the UI"
+        placeholder="Select Category"
+        options={categoryOptions}
+        valueKey="id"
+        labelKey="name"
         errors={errors}
       />
 
@@ -164,7 +202,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
       {/* Boxscore */}
       <ControlledCheckbox
-        name="is_box_score"
+        name="is_boxscore"
         label="Boxscore"
         control={control}
         help_text="Check this if the stat is shown in boxscore"
@@ -190,22 +228,31 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
             errors={errors}
           />
           <ControlledCheckbox
-            name="is_counter"
+            name="is_points"
             label="Point Stat"
             control={control}
             help_text="Check if the stat has a point value (e.g, 3PT, 2PT , etc. (Basketball))"
             errors={errors}
           />
-          {isCounter && (
-            <ControlledInput
-              name="point_value"
-              label="Point Value"
-              control={control}
-              help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations."
-              placeholder="Enter Point Value"
-              type="number"
-              errors={errors}
-            />
+          {isPoints && (
+            <>
+              <ControlledCheckbox
+                name="uses_point_value"
+                label="Uses Point Value"
+                control={control}
+                help_text="Check if this stat uses its point value for calculations (e.g., FT in Basketball are worth 1 point each)"
+                errors={errors}
+              />
+              <ControlledInput
+                name="point_value"
+                label="Point Value"
+                control={control}
+                help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations."
+                placeholder="Enter Point Value"
+                type="number"
+                errors={errors}
+              />
+            </>
           )}
         </>
       ) : (

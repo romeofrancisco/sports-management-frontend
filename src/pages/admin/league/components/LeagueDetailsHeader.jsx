@@ -15,14 +15,6 @@ const LeagueDetailsHeader = ({ name, sport }) => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
       <div className="flex flex-col gap-2 relative">
-        <Link
-          to="/leagues"
-          className="flex items-center text-muted-foreground text-sm w-fit hover:text-primary transition-colors"
-        >
-          <ChevronLeft size={18} />
-          Back to Leagues
-        </Link>
-
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">{name}</h1>

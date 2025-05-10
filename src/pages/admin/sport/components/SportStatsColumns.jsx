@@ -159,6 +159,20 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         cell: ({ getValue }) => getValue(),
         size: 50,
       },
+      {
+        accessorKey: "uses_point_value",
+        header: () => <div className="text-center">Uses Point Value</div>,
+        cell: ({ getValue }) => (
+          <div className="flex justify-center">
+            {getValue() ? (
+              <CircleCheck size={20} className="text-green-700 self-center" />
+            ) : (
+              <CircleX size={20} className="text-red-700" />
+            )}
+          </div>
+        ),
+        size: 80,
+      },
     ]);
   } else {
     return withActionCol([
