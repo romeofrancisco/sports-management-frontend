@@ -3,6 +3,7 @@ import SportDetailsHeader from "./components/SportDetailsHeader";
 import SportStatsTable from "./components/SportStatsTable";
 import SportFormulaTable from "./components/SportFormulaTable";
 import SportPositionsTable from "./components/SportPositionsTable";
+import LeaderCategoriesTable from "./components/LeaderCategoriesTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import {
@@ -17,6 +18,7 @@ import {
   LayoutGrid,
   Table2,
   ChevronDown,
+  Trophy
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -77,7 +79,7 @@ const Sport = () => {
         (statFilter.category === "performance" &&
           (stat.name.includes("%") || stat.code.includes("PCT"))) ||
         (statFilter.category === "counting" &&
-          stat.is_counter &&
+          stat.is_points &&
           !stat.name.includes("%")) ||
         (statFilter.category === "negative" && stat.is_negative);
 
@@ -181,6 +183,13 @@ const Sport = () => {
                   >
                     <Calculator className="h-4 w-4" />
                     Formulas
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="leaders"
+                    className="text-xs md:text-sm flex items-center gap-1.5"
+                  >
+                    <Trophy className="h-4 w-4" />
+                    Leaders
                   </TabsTrigger>
                   <TabsTrigger
                     value="positions"
@@ -464,6 +473,13 @@ const Sport = () => {
               className="p-0 focus-visible:outline-none focus-visible:ring-0"
             >
               <SportFormulaTable />
+            </TabsContent>
+
+            <TabsContent
+              value="leaders"
+              className="p-0 focus-visible:outline-none focus-visible:ring-0"
+            >
+              <LeaderCategoriesTable />
             </TabsContent>
 
             <TabsContent

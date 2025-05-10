@@ -48,7 +48,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       is_record: stat?.is_record || false,
 
       // Recording Stats
-      is_counter: stat?.is_counter || false,
+      is_points: stat?.is_points || false,
       is_negative: stat?.is_negative || false,
       point_value: stat?.point_value || 0,
 
@@ -58,21 +58,21 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   });
 
   const isRecord = watch("is_record");
-  const isCounter = watch("is_counter");
+  const isPoints = watch("is_points");
   const isNegative = watch("is_negative");
 
   // Auto-set category based on stat attributes
   useEffect(() => {
     const pointValue = watch("point_value");
     
-    if (isRecord && isCounter && pointValue > 0) {
+    if (isRecord && isPoints && pointValue > 0) {
       // Suggest scoring category for points
       setValue("category", "scoring");
     } else if (isNegative) {
       // Suggest defensive category for negative stats
       setValue("category", "defensive");
     }
-  }, [isRecord, isCounter, isNegative, setValue, watch]);
+  }, [isRecord, isPoints, isNegative, setValue, watch]);
 
   const onSubmit = (data) => {
     const mutationFn = isEdit ? updateStat : createStat;
@@ -102,7 +102,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       setValue("formula", "");
     } else {
       // Reset recording stat fields when switching to metric stat
-      setValue("is_counter", false);
+      setValue("is_points", false);
       setValue("point_value", 0);
       setValue("is_negative", false);
     }
@@ -227,13 +227,13 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
             errors={errors}
           />
           <ControlledCheckbox
-            name="is_counter"
+            name="is_points"
             label="Point Stat"
             control={control}
             help_text="Check if the stat has a point value (e.g, 3PT, 2PT , etc. (Basketball))"
             errors={errors}
           />
-          {isCounter && (
+          {isPoints && (
             <ControlledInput
               name="point_value"
               label="Point Value"
