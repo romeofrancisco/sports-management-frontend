@@ -108,3 +108,29 @@ export const manageGame = async (gameId, action) => {
     throw error;
   }
 };
+
+// New function to fetch game leaders
+export const fetchGameLeaders = async (gameId, limit = 2) => {
+  try {
+    const { data } = await api.get(`games/${gameId}/game_leaders/`, {
+      params: { limit }
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching game leaders:", error);
+    throw error;
+  }
+};
+
+// New function to fetch team leaders
+export const fetchTeamLeaders = async (gameId, limit = 2) => {
+  try {
+    const { data } = await api.get(`games/${gameId}/team_leaders/`, {
+      params: { limit }
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching team leaders:", error);
+    throw error;
+  }
+};

@@ -26,7 +26,9 @@ const ControlledSelect = ({
   size = "",
   disabled = false
 }) => {
+  console.log(options)
   return (
+
     <div className={`grid gap-0.5 ${className}`}>
       {label && (
         <Label htmlFor={name} className="text-sm text-left">
@@ -48,6 +50,7 @@ const ControlledSelect = ({
               <SelectGroup>
                 {groupLabel && <SelectLabel>{groupLabel}</SelectLabel>}
                 {options.map((opt) => (
+                  
                   <SelectItem
                     key={String(opt[valueKey])}
                     value={String(opt[valueKey])}
