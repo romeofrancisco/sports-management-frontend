@@ -59,6 +59,31 @@ const SportFormulaTable = () => {
       ),
     },
     {
+      accessorKey: "is_ratio",
+      header: "Type",
+      cell: ({ row }) => (
+        <div>
+          <Badge variant={row.original.is_ratio ? "outline" : "secondary"} className="font-normal">
+            {row.original.is_ratio ? "Ratio" : "Standard"}
+          </Badge>
+        </div>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: "uses_point_value",
+      header: "Uses Point Value",
+      cell: ({ row }) => (
+        <div>
+          {row.original.uses_point_value ? 
+            <Badge variant="default" className="bg-primary/20 text-primary border-primary/30">Yes</Badge> : 
+            <Badge variant="outline" className="text-muted-foreground">No</Badge>
+          }
+        </div>
+      ),
+      size: 150,
+    },
+    {
       id: "actions",
       cell: ({ row }) => (
         <SportFormulaActions
@@ -150,9 +175,8 @@ const SportFormulaTable = () => {
           data={formula || []}
           loading={isFormulaLoading}
           className="text-sm"
-          pagination={true}
-          pageSize={8}
-          alternateRowColors={true}
+          pagination={false}
+          unlimited={true}
           emptyMessage={
             <div className="flex flex-col items-center justify-center p-8 text-center">
               <Calculator className="h-8 w-8 text-muted-foreground mb-2" />

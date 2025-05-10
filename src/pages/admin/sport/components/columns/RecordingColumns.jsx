@@ -38,6 +38,20 @@ const getRecordingColumns = ({ setSelectedStat, modals, filter }) => {
       size: 80,
     },
     {
+      accessorKey: "uses_point_value",
+      header: () => <div className="text-center">Uses Points</div>,
+      cell: ({ getValue, row }) => (
+        <div className="flex justify-center">
+          {getValue() ? (
+            <CircleCheck size={20} className="text-green-700 self-center" />
+          ) : (
+            <CircleX size={20} className="text-red-700" />
+          )}
+        </div>
+      ),
+      size: 80,
+    },
+    {
       accessorKey: "is_negative",
       header: () => <div className="text-center">Negative</div>,
       cell: ({ getValue }) => (

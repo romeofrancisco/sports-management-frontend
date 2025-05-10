@@ -50,19 +50,6 @@ const LeaderCategoriesTable = () => {
     setFilter({ search: "" });
   };
 
-  const getLeaderTypeLabel = (type) => {
-    switch (type) {
-      case "game":
-        return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">Game</Badge>;
-      case "season":
-        return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Season</Badge>;
-      case "both":
-        return <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">Both</Badge>;
-      default:
-        return null;
-    }
-  };
-
   const columns = [
     {
       accessorKey: "name",
@@ -70,12 +57,6 @@ const LeaderCategoriesTable = () => {
       cell: ({ getValue }) => (
         <div className="font-medium">{getValue()}</div>
       ),
-    },
-    {
-      accessorKey: "leader_type",
-      header: "Type",
-      cell: ({ getValue }) => getLeaderTypeLabel(getValue()),
-      size: 120,
     },
     {
       accessorKey: "stat_types_details",

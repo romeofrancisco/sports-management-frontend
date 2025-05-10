@@ -274,6 +274,16 @@ const SportStatsCardView = ({ stats, filter }) => {
                                       +{stat.point_value}
                                     </Badge>
                                   )}
+                                  {stat.is_points && (
+                                    <div className="mt-1 flex items-center">
+                                      <span className="font-medium mr-1">Uses Point Value:</span>
+                                      {stat.uses_point_value ? (
+                                        <Check size={14} className="text-green-500 dark:text-green-400" />
+                                      ) : (
+                                        <X size={14} className="text-red-500 dark:text-red-400" />
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </>

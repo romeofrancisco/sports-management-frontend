@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import ControlledInput from "../common/ControlledInput";
-import ControlledSelect from "../common/ControlledSelect";
 import { useLeaderCategories } from "@/hooks/useLeaderCategories";
 import { Label } from "../ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,7 +37,6 @@ const LeaderForm = ({ onClose, stats, sportSlug, leaderCategory = null }) => {
     defaultValues: {
       sport: sportId, // Use the actual sport ID instead of slug
       name: leaderCategory?.name || "",
-      leader_type: leaderCategory?.leader_type || "both",
       display_order: leaderCategory?.display_order || 0,
       stat_types: leaderCategory?.stat_types?.map(stat => stat.id) || [],
     },
@@ -83,12 +81,6 @@ const LeaderForm = ({ onClose, stats, sportSlug, leaderCategory = null }) => {
   const getStatById = (id) => {
     return stats?.find((stat) => stat.id === id);
   };
-
-  const leaderTypeOptions = [
-    { id: "game", name: "Game Leaders Only" },
-    { id: "season", name: "Season Leaders Only" },
-    { id: "both", name: "Both Game & Season" },
-  ];
 
   const onSubmit = async (data) => {
     try {
@@ -144,18 +136,6 @@ const LeaderForm = ({ onClose, stats, sportSlug, leaderCategory = null }) => {
         control={control}
         placeholder="e.g., Top Scorers, Rebounding Leaders"
         rules={{ required: "Category name is required" }}
-        errors={errors}
-      />
-
-      <ControlledSelect
-        name="leader_type"
-        control={control}
-        label="Leader Type"
-        help_text="Where this category will appear in the application"
-        placeholder="Select where leaders should appear"
-        options={leaderTypeOptions}
-        valueKey="id"
-        labelKey="name"
         errors={errors}
       />
 

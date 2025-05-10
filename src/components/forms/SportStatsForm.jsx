@@ -51,6 +51,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       is_points: stat?.is_points || false,
       is_negative: stat?.is_negative || false,
       point_value: stat?.point_value || 0,
+      uses_point_value: stat?.uses_point_value || false,
 
       // Metric Stats
       formula: stat?.formula || "",
@@ -234,15 +235,24 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
             errors={errors}
           />
           {isPoints && (
-            <ControlledInput
-              name="point_value"
-              label="Point Value"
-              control={control}
-              help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations."
-              placeholder="Enter Point Value"
-              type="number"
-              errors={errors}
-            />
+            <>
+              <ControlledCheckbox
+                name="uses_point_value"
+                label="Uses Point Value"
+                control={control}
+                help_text="Check if this stat uses its point value for calculations (e.g., FT in Basketball are worth 1 point each)"
+                errors={errors}
+              />
+              <ControlledInput
+                name="point_value"
+                label="Point Value"
+                control={control}
+                help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations."
+                placeholder="Enter Point Value"
+                type="number"
+                errors={errors}
+              />
+            </>
           )}
         </>
       ) : (
