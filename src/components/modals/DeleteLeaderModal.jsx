@@ -11,18 +11,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useLeaderCategories } from "@/hooks/useLeaderCategories";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const DeleteLeaderModal = ({ isOpen, onClose, leaderCategory }) => {
-  const { deleteLeaderCategory, isLoading } = useLeaderCategories();
+  const { deleteLeaderCategory } = useLeaderCategories();
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!leaderCategory) return;
 
-    deleteLeaderCategory(leaderCategory.id, {
-      onSuccess: () => {
-        onClose();
-      },
-    });
+    try {
+      // Use mutateAsync to properly handle async operation
+      await deleteLeaderCategory.mutateAsync(leaderCategory.id);
+      toast.success(`${leaderCategory.name} category deleted successfully`);
+      onClose();
+    } catch (error) {
+      console.error("Error deleting leader category:", error);
+      toast.error("Failed to delete leader category");
+    }
   };
 
   return (
@@ -36,13 +41,13 @@ const DeleteLeaderModal = ({ isOpen, onClose, leaderCategory }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={deleteLeaderCategory.isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={isLoading}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            disabled={deleteLeaderCategory.isPending}
+            variant="destructive"
           >
-            {isLoading ? (
+            {deleteLeaderCategory.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Deleting...

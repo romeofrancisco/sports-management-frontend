@@ -3,11 +3,14 @@ import { Link, useParams } from "react-router";
 import { Settings, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSportDetails } from "@/hooks/useSports";
+import { useModal } from "@/hooks/useModal";
+import SportModal from "@/components/modals/SportModal";
 
 const SportDetailsHeader = () => {
   const { sport: sportId } = useParams();
   const [sportData, setSportData] = useState(null);
   const { data: sportDetails } = useSportDetails(sportId);
+  const sportModal = useModal();
 
   useEffect(() => {
     if (sportDetails) {
@@ -22,6 +25,10 @@ const SportDetailsHeader = () => {
     }
     // Fallback to ID with capitalization if no name is available
     return sportId ? sportId[0].toUpperCase() + sportId.slice(1) : "Sport";
+  };
+
+  const handleOpenSettings = () => {
+    sportModal.openModal();
   };
 
   return (
@@ -44,13 +51,23 @@ const SportDetailsHeader = () => {
           </div>
 
           <div>
-            <Button variant="outline" className="gap-1.5">
+            <Button 
+              variant="outline" 
+              className="gap-1.5"
+              onClick={handleOpenSettings}
+            >
               <Settings className="h-4 w-4" />
               <span className="hidden sm:block">Sport Settings</span>
             </Button>
           </div>
         </div>
       </div>
+
+      <SportModal 
+        isOpen={sportModal.isOpen} 
+        onClose={sportModal.closeModal} 
+        sport={sportData} 
+      />
     </header>
   );
 };

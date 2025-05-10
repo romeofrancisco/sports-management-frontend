@@ -8,24 +8,22 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Search, 
   Plus, 
-  LineChart, 
   X,
   Users
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import PositionModal from "@/components/modals/PositionModal";
+import DeletePositionModal from "@/components/modals/DeletePositionModal";
+import { useSportPositions } from "@/hooks/useSports";
+import ContentLoading from "@/components/common/ContentLoading";
 
 const SportPositionsTable = () => {
   const { sport } = useParams();
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [filter, setFilter] = useState({ search: "" });
-  const [positions, setPositions] = useState([
-    { name: "Point Guard", abbreviation: "PG" },
-    { name: "Shooting Guard", abbreviation: "SG" },
-    { name: "Small Forward", abbreviation: "SF" },
-    { name: "Power Forward", abbreviation: "PF" },
-    { name: "Center", abbreviation: "C" }
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
+  
+  // Use actual API data instead of hardcoded positions
+  const { data: positions, isLoading } = useSportPositions(sport);
 
   const modals = {
     position: useModal(),
@@ -85,7 +83,7 @@ const SportPositionsTable = () => {
       header: "Abbreviation",
       cell: ({ getValue }) => (
         <Badge variant="outline" className="font-mono bg-muted/40">
-          {getValue()}
+          {getValue() || "-"}
         </Badge>
       ),
     },
@@ -98,10 +96,10 @@ const SportPositionsTable = () => {
     },
   ];
 
-  const filteredPositions = positions.filter(position =>
+  const filteredPositions = positions?.filter(position =>
     position.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-    position.abbreviation.toLowerCase().includes(filter.search.toLowerCase())
-  );
+    (position.abbreviation && position.abbreviation.toLowerCase().includes(filter.search.toLowerCase()))
+  ) || [];
 
   return (
     <div className="p-4">
@@ -176,39 +174,41 @@ const SportPositionsTable = () => {
         </CardContent>
       </Card>
       
-      <div className="border rounded-md overflow-hidden shadow-sm">
-        <DataTable
-          columns={columns}
-          data={filteredPositions || []}
-          loading={isLoading}
-          className="text-sm"
-          pagination={true}
-          pageSize={8}
-          alternateRowColors={true}
-          emptyMessage={
-            <div className="flex flex-col items-center justify-center p-8 text-center">
-              <LineChart className="h-8 w-8 text-muted-foreground mb-2" />
-              <h3 className="text-lg font-medium mb-1">No positions found</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                {filter.search
-                  ? "Try adjusting your search to find positions"
-                  : "Create your first position to assign to players"}
-              </p>
-              <Button
-                onClick={handleCreatePosition}
-                size="sm"
-                className="bg-primary"
-              >
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                New Position
-              </Button>
-            </div>
-          }
-        />
-      </div>
+      {isLoading ? (
+        <ContentLoading />
+      ) : (
+        <div className="border rounded-md overflow-hidden shadow-sm">
+          <DataTable
+            columns={columns}
+            data={filteredPositions || []}
+            className="text-sm"
+            pagination={true}
+            pageSize={8}
+            alternateRowColors={true}
+            emptyMessage={
+              <div className="flex flex-col items-center justify-center p-8 text-center">
+                <Users className="h-8 w-8 text-muted-foreground mb-2" />
+                <h3 className="text-lg font-medium mb-1">No positions found</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {filter.search
+                    ? "Try adjusting your search to find positions"
+                    : "Create your first position to assign to players"}
+                </p>
+                <Button
+                  onClick={handleCreatePosition}
+                  size="sm"
+                  className="bg-primary"
+                >
+                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  New Position
+                </Button>
+              </div>
+            }
+          />
+        </div>
+      )}
       
-      {/* Position Modal Placeholder - implement actual modal component later */}
-      {/* <PositionModal
+      <PositionModal
         isOpen={modals.position.isOpen}
         onClose={modals.position.closeModal}
         position={selectedPosition}
@@ -217,7 +217,7 @@ const SportPositionsTable = () => {
         isOpen={modals.delete.isOpen}
         onClose={modals.delete.closeModal}
         position={selectedPosition}
-      /> */}
+      />
     </div>
   );
 };
