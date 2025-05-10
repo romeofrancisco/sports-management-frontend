@@ -1,77 +1,61 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { leaderApi } from "@/api";
-import { useParams } from "react-router";
+import { toast } from "sonner";
 
-export const useLeaderCategories = () => {
+export function useLeaderCategories(sportSlug) {
   const queryClient = useQueryClient();
-  const { sport: sportSlug } = useParams();
 
-  // Get all leader categories
-  const getLeaderCategories = (params = {}) => {
-    return useQuery({
-      queryKey: ['leaderCategories', params],
-      queryFn: () => leaderApi.getAll(params),
-      enabled: !!params,
-    });
-  };
-
-  // Get leader categories by sport
-  const getLeaderCategoriesBySport = (sportSlug, leaderType = null) => {
-    return useQuery({
-      queryKey: ['leaderCategories', sportSlug, leaderType],
-      queryFn: () => leaderApi.getBySport(sportSlug, leaderType),
-      enabled: !!sportSlug,
-    });
-  };
-
-  // Get a single leader category
-  const getLeaderCategory = (id) => {
-    return useQuery({
-      queryKey: ['leaderCategory', id],
-      queryFn: () => leaderApi.get(id),
-      enabled: !!id,
-    });
-  };
+  // Get leader categories for a sport
+  const leaderCategoriesQuery = useQuery({
+    queryKey: ["leader-categories", sportSlug],
+    queryFn: () => leaderApi.getBySport(sportSlug),
+    enabled: Boolean(sportSlug),
+  });
 
   // Create a new leader category
   const createLeaderCategory = useMutation({
     mutationFn: (data) => leaderApi.create(data),
     onSuccess: () => {
-      // Invalidate relevant queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['leaderCategories', sportSlug] });
+      queryClient.invalidateQueries(["leader-categories", sportSlug]);
     },
+    onError: (error) => {
+      console.error("Error creating leader category:", error);
+      throw error;
+    }
   });
 
   // Update an existing leader category
   const updateLeaderCategory = useMutation({
     mutationFn: ({ id, data }) => leaderApi.update(id, data),
     onSuccess: () => {
-      // Invalidate relevant queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['leaderCategories', sportSlug] });
+      queryClient.invalidateQueries(["leader-categories", sportSlug]);
     },
+    onError: (error) => {
+      console.error("Error updating leader category:", error);
+      throw error;
+    }
   });
 
   // Delete a leader category
   const deleteLeaderCategory = useMutation({
     mutationFn: (id) => leaderApi.delete(id),
     onSuccess: () => {
-      // Invalidate relevant queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['leaderCategories', sportSlug] });
+      queryClient.invalidateQueries(["leader-categories", sportSlug]);
+      toast.success("Leader category deleted successfully");
     },
+    onError: (error) => {
+      console.error("Error deleting leader category:", error);
+      toast.error("Failed to delete leader category");
+    }
   });
 
   return {
-    getLeaderCategories,
-    getLeaderCategoriesBySport,
-    getLeaderCategory,
+    leaderCategories: leaderCategoriesQuery.data || [],
+    isLoading: leaderCategoriesQuery.isLoading,
+    isError: leaderCategoriesQuery.isError,
+    error: leaderCategoriesQuery.error,
     createLeaderCategory,
     updateLeaderCategory,
     deleteLeaderCategory,
-    isLoading: 
-      createLeaderCategory.isPending || 
-      updateLeaderCategory.isPending || 
-      deleteLeaderCategory.isPending,
   };
-};
-
-export default useLeaderCategories;
+}

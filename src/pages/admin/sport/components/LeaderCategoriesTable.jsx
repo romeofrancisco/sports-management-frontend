@@ -23,8 +23,7 @@ const LeaderCategoriesTable = () => {
   const [selectedLeaderCategory, setSelectedLeaderCategory] = useState(null);
   const [filter, setFilter] = useState({ search: "" });
   
-  const { getLeaderCategoriesBySport } = useLeaderCategories();
-  const { data: leaderCategories, isLoading } = getLeaderCategoriesBySport(sport);
+  const { leaderCategories, isLoading } = useLeaderCategories(sport);
 
   const modals = {
     leader: useModal(),
