@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useCreatePlayerStat } from "@/hooks/useStats";
+import { useRecordStat } from "@/hooks/useStats";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -8,6 +8,8 @@ import { MultiBackend } from "react-dnd-multi-backend";
 import DragLayer from "./DragLayer";
 import DraggableButton from "./DraggableButton";
 import GridCells from "./GridCells";
+import { reset } from "@/store/slices/playerStatSlice";
+import { useDispatch } from "react-redux";
 
 // Mobile detection
 const isMobile = () => {
@@ -42,11 +44,12 @@ const backendConfig = mobile
 const StatButtons = ({ statTypes }) => {
   const { playerId, team } = useSelector((state) => state.playerStat);
   const { game_id, current_period } = useSelector((state) => state.game);
-  const { mutate: createPlayerStat, isPending: isCreatingStat } =
-    useCreatePlayerStat(game_id);
+  const { mutate: recordStat, isPending: isCreatingStat } =
+    useRecordStat(game_id);
+  const dispatch = useDispatch();
 
   const handleStatRecord = (statId, point_value) => {
-    createPlayerStat({
+    recordStat({
       player: playerId,
       game: game_id,
       period: current_period,
@@ -54,6 +57,7 @@ const StatButtons = ({ statTypes }) => {
       point_value,
       team,
     });
+    dispatch(reset());
   };
 
   const [buttons, setButtons] = useState([]);

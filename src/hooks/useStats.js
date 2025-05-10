@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createPlayerStat,
   fetchPlayerStatsSummary,
@@ -7,8 +7,6 @@ import {
   fetchTeamStatsComparison,
   fetchBoxscore,
 } from "@/api/statsApi";
-import { reset } from "@/store/slices/playerStatSlice";
-import { useDispatch } from "react-redux";
 import {
   createSportStats,
   deleteSportStat,
@@ -18,21 +16,25 @@ import {
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useCreatePlayerStat = (gameId) => {
-  const dispatch = useDispatch();
+export const useRecordStat = (gameId) => {
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (stat) => createPlayerStat(stat),
+    mutationFn: createPlayerStat,
 
     onMutate: async (newStat) => {
-      const { point_value, team } = newStat;
+      const { game, player, team, stat_type, period, point_value } = newStat;
 
-      dispatch(reset());
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: ["game-details", gameId],
+        exact: true,
+      });
 
-      await queryClient.cancelQueries(["game-details", gameId]);
-
+      // Snapshot the previous value
       const previousGame = queryClient.getQueryData(["game-details", gameId]);
 
+      // Optimistically update to the new value
       queryClient.setQueryData(["game-details", gameId], (old) => {
         if (!old) return old;
 
@@ -72,11 +74,17 @@ export const useCreatePlayerStat = (gameId) => {
   });
 };
 
-export const usePlayerStatsSummary = (gameId, team) => {
+export const usePlayerStatsSummary = (gameId, team, options = {}) => {
+  const { forCalculation = false } = options;
+  
   return useQuery({
-    queryKey: ["player-summary-stats", team, gameId],
-    queryFn: () => fetchPlayerStatsSummary(gameId, team),
-    enabled: Boolean(gameId) && Boolean(gameId),
+    queryKey: ["player-summary-stats", team, gameId, { forCalculation }],
+    queryFn: () => fetchPlayerStatsSummary(gameId, team, forCalculation),
+    enabled: Boolean(gameId) && Boolean(team),
+    // Keep cached data fresh for 2 minutes when not visible to prevent excessive refetching
+    staleTime: forCalculation ? 5 * 60 * 1000 : 2 * 60 * 1000, // 5 mins for calculation, 2 mins for display
+    // Use less frequent retry for calculation data since it's for background processing
+    retry: forCalculation ? 1 : 3,
   });
 };
 
@@ -102,7 +110,7 @@ export const useBoxscore = (gameId) => {
     queryFn: () => fetchBoxscore(gameId),
     enabled: Boolean(gameId),
   });
-}
+};
 
 export const useSportStats = (sport, filter) => {
   return useQuery({

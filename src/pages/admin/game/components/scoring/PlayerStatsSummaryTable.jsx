@@ -136,35 +136,6 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
           );
         },
       },
-      {
-        accessorKey: "points",
-        header: ({ column }) => (
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              className="text-xs"
-              size="xs"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              PTS <ArrowUpDown className="size-3" />
-            </Button>
-          </div>
-        ),
-        cell: ({ row }) => (
-          <div className="text-center">
-            <span className="font-medium">
-              {scoring_type === SCORING_TYPE_VALUES.SETS
-                ? selectedPeriod === "total"
-                  ? row.original.total_points
-                  : row.original.points
-                : row.original.total_points}
-            </span>
-          </div>
-        ),
-        size: 50,
-      },
     ];
 
     const statColumns = allStatDisplayNames.map((stat) => ({
