@@ -41,7 +41,6 @@ import {
 
 import LeagueComprehensiveStats from "./LeagueComprehensiveStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { is } from "date-fns/locale";
 
 // Register ChartJS components
 ChartJS.register(
