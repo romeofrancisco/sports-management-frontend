@@ -255,6 +255,7 @@ const Boxscore = ({ game }) => {
               columns={columns}
               data={homeTeamData}
               showPagination={false}
+              unlimited={true}
               className="text-xs"
               alternateRowColors={true}
             />
@@ -276,6 +277,7 @@ const Boxscore = ({ game }) => {
               columns={columns}
               data={awayTeamData}
               showPagination={false}
+              unlimited={true}
               className="text-xs"
               alternateRowColors={true}
             />
