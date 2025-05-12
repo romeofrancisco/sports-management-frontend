@@ -1,5 +1,5 @@
 import React from "react";
-import StatCard from "@/components/common/StatCard";
+import InfoCard from "@/components/common/InfoCard";
 import { Award, BarChart2, CheckSquare, Shield, Trophy, TrendingUp } from "lucide-react";
 
 const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
@@ -7,28 +7,28 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
     // Sets-based sports stats cards (volleyball, tennis, etc.)
     return (
       <>
-        <StatCard 
+        <InfoCard 
           title="Best Win Rate"
           value={statsSummary.bestWinRateTeam.name}
           icon={<Trophy className="h-5 w-5" />}
           description={`${statsSummary.bestWinRateTeam.value}% wins`}
         />
         
-        <StatCard 
+        <InfoCard 
           title="Best Offensive Team"
           value={statsSummary.bestOffensiveTeam.name}
           icon={<TrendingUp className="h-5 w-5" />}
           description={`${statsSummary.bestOffensiveTeam.value} pts/set avg`}
         />
         
-        <StatCard 
+        <InfoCard 
           title="Best Defensive Team"
           value={statsSummary.bestDefensiveTeam.name}
           icon={<Shield className="h-5 w-5" />}
           description={`${statsSummary.bestDefensiveTeam.value} pts allowed/set avg`}
         />
         
-        <StatCard 
+        <InfoCard 
           title="Longest Sets Win Streak"
           value={statsSummary.longestStreak.name}
           icon={<CheckSquare className="h-5 w-5" />}
@@ -41,27 +41,27 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
   // Points-based sports stats cards (basketball, etc.)
   return (
     <>
-      <StatCard 
+      <InfoCard 
         title="Avg Points Per Game"
         value={statsSummary.avgPointsPerGame}
         icon={<BarChart2 className="h-5 w-5" />}
       />
       
-      <StatCard 
+      <InfoCard 
         title="Best Offensive Team"
         value={statsSummary.bestOffensiveTeam.name}
         icon={<TrendingUp className="h-5 w-5" />}
         description={`${statsSummary.bestOffensiveTeam.value} pts/game`}
       />
       
-      <StatCard 
+      <InfoCard 
         title="Best Defensive Team"
         value={statsSummary.bestDefensiveTeam.name}
         icon={<Shield className="h-5 w-5" />}
         description={`${statsSummary.bestDefensiveTeam.value} pts allowed`}
       />
       
-      <StatCard 
+      <InfoCard 
         title="Longest Win Streak"
         value={statsSummary.longestStreak.name}
         icon={<Award className="h-5 w-5" />}

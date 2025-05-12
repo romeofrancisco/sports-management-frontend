@@ -15,8 +15,8 @@ import {
   LineElement,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import StatCard from "@/components/common/StatCard";
-import { Award, BarChart2, CheckSquare, Shield, Trophy, TrendingUp, Users, Calendar, Activity, Goal } from "lucide-react";
+import InfoCard from "@/components/common/InfoCard";
+import { Trophy, Calendar, Activity, Goal } from "lucide-react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -48,22 +48,22 @@ const LeagueComprehensiveStats = ({ leagueId, sport }) => {
       <CardContent>
         {/* Display summary stats with appropriate metrics based on sport type */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard
+          <InfoCard
             title={isSetBased ? "Total Matches" : "Total Games"}
             value={isSetBased ? stats.total_matches : stats.total_games}
             icon={<Goal size={20} className="text-blue-500" />}
           />
-          <StatCard
+          <InfoCard
             title={isSetBased ? "Total Sets" : "Seasons"}
             value={isSetBased ? stats.total_sets : stats.seasons_count}
             icon={<Calendar size={20} className="text-green-500" />}
           />
-          <StatCard
+          <InfoCard
             title={isSetBased ? "Avg Sets/Match" : "Completed Seasons"}
             value={isSetBased ? stats.avg_sets_per_match : stats.completed_seasons}
             icon={<Trophy size={20} className="text-amber-500" />}
           />
-          <StatCard
+          <InfoCard
             title={isSetBased ? "Avg Points/Set" : "Avg Points/Game"}
             value={isSetBased ? stats.avg_points_per_set : stats.avg_points_per_game}
             icon={<Activity size={20} className="text-rose-500" />}

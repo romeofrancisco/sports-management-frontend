@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const StatCard = ({ title, value, icon, trend, className = "", description = null }) => {
+const InfoCard = ({ title, value, icon, trend, className = "", description = null }) => {
   return (
     <Card className={cn("overflow-hidden border transition-all duration-300", className)}>
       <CardContent className="p-4 sm:p-5">
@@ -37,4 +37,4 @@ const StatCard = ({ title, value, icon, trend, className = "", description = nul
   );
 };
 
-export default StatCard;
+export default InfoCard;

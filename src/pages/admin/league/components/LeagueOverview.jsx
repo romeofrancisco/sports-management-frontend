@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import StatCard from "@/components/common/StatCard";
+import InfoCard from "@/components/common/InfoCard";
 import {
   useLeagueStatistics,
   useLeagueComprehensiveStats,
@@ -112,13 +112,13 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
       <div>
         <h3 className="text-lg font-semibold mb-4">League Overview</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
+          <InfoCard
             title="Total Teams"
             value={teams_count}
             icon={<Users size={20} className="text-blue-500" />}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Total Seasons"
             value={seasons_count}
             icon={
@@ -127,13 +127,13 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             description={`${active_seasons} active`}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Total Games"
             value={games_count}
             icon={<Goal size={20} className="text-amber-500" />}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Current Season"
             value={
               current_season
