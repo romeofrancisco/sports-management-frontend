@@ -1,10 +1,23 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
-const InfoCard = ({ title, value, icon, trend, className = "", description = null }) => {
+const InfoCard = ({
+  title,
+  value,
+  icon,
+  trend,
+  className = "",
+  description = null,
+}) => {
   return (
-    <Card className={cn("overflow-hidden border transition-all duration-300", className)}>
+    <Card
+      className={cn(
+        "overflow-hidden border transition-all duration-300",
+        className
+      )}
+    >
       <CardContent className="p-4 sm:p-5">
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-1.5 min-w-0">
@@ -12,16 +25,20 @@ const InfoCard = ({ title, value, icon, trend, className = "", description = nul
             <div className="flex items-end gap-1.5 flex-wrap">
               <p className="text-2xl font-bold truncate max-w-full">{value}</p>
               {trend !== undefined && (
-                <span 
+                <span
                   className={cn(
                     "text-xs font-medium flex items-center",
-                    trend > 0 ? "text-green-600" : trend < 0 ? "text-red-600" : "text-muted-foreground"
+                    trend > 0
+                      ? "text-green-600"
+                      : trend < 0
+                      ? "text-red-600"
+                      : "text-muted-foreground"
                   )}
                 >
                   {trend > 0 ? `+${trend}%` : `${trend}%`}
                 </span>
               )}
-            </div>
+            </div>{" "}
             {description && (
               <div className="text-xs text-muted-foreground truncate max-w-full">
                 {description}

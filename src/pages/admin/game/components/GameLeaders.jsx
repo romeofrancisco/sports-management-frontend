@@ -4,6 +4,8 @@ import Loading from "@/components/common/FullLoading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import InfoCard from "@/components/common/InfoCard";
+import { Trophy, Medal, Target, Activity, Shield } from "lucide-react";
 
 const GameLeaders = ({ game }) => {
   const { id: gameId } = game;
@@ -40,19 +42,21 @@ const GameLeaders = ({ game }) => {
               key={leader.category_id}
               value={leader.category_id.toString()}
             >
-              <div>
+              <div className="grid">
                 {/* Home Team Leader */}
-                <LeaderCard
+                <PlayerLeaderInfoCard
                   player={leader.home_team}
                   team={data.home_team}
                   stats={leader.stats}
+                  isHomeTeam={true}
                 />
 
                 {/* Away Team Leader */}
-                <LeaderCard
+                <PlayerLeaderInfoCard
                   player={leader.away_team}
                   team={data.away_team}
                   stats={leader.stats}
+                  isHomeTeam={false}
                 />
               </div>
             </TabsContent>
@@ -63,19 +67,28 @@ const GameLeaders = ({ game }) => {
   );
 };
 
-const LeaderCard = ({ player, team, stats }) => {
+const PlayerLeaderInfoCard = ({ player, team, stats }) => {
   const mainStat = stats.find(
     (stat) => stat.code === Object.keys(player.stats)[0]
   );
-  const secondaryStat = stats.find(
-    (stat) => stat.code === Object.keys(player.stats)[1]
-  );
-  const tertiaryStat = stats.find(
-    (stat) => stat.code === Object.keys(player.stats)[2]
-  );
+  const mainStatCode = Object.keys(player.stats)[0];
+
+  if (player.stats[mainStatCode] < 1) return null;
+
+  // Generate additional stats from the rest of stats
+  const additionalStats = Object.entries(player.stats)
+    .filter(([code]) => code !== mainStatCode)
+    .map(([code, value]) => {
+      const statInfo = stats.find((s) => s.code === code);
+      return {
+        code,
+        value,
+        displayName: statInfo?.display_name || code
+      };
+    });
 
   return (
-    <div className="flex items-center gap-4 p-2 border-b">
+    <div className="flex items-center gap-4 p-3 border-b hover:bg-muted/10 transition-colors">
       <Avatar className="h-12 w-12 border-2">
         <AvatarImage src={player.profile} alt={player.short_name} />
         <AvatarFallback>
@@ -86,41 +99,32 @@ const LeaderCard = ({ player, team, stats }) => {
         </AvatarFallback>
       </Avatar>
 
-      <div className="flex flex-col w-full text-xs">
-        <div className="flex items-center gap-2">
-          <span>{player.short_name},</span>
-          <span className="text-muted-foreground">
+      <div className="flex flex-col w-full">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="font-medium">{player.short_name}</span>
+          <span className="text-muted-foreground text-xs">
             #{player.jersey_number} - {team.team_name}
           </span>
         </div>
 
-        <div className="flex justify-between items-center mt-1">
+        <div className="flex justify-around items-center mt-2">
+          {/* Main Stat (Emphasized) */}
           <div className="flex flex-col items-center">
-            <span>
-              {player.stats[mainStat?.code]}
-            </span>
-            <span className="text-muted-foreground">
-              {mainStat?.display_name}
+            <span className="font-bold text-base">{player.stats[mainStatCode]}</span>
+            <span className="text-muted-foreground text-[10px] uppercase font-medium">
+              {mainStat?.display_name || mainStatCode}
             </span>
           </div>
 
-          <div className="flex flex-col items-center">
-            <span>
-              {player.stats[secondaryStat?.code]}
-            </span>
-            <span className="text-muted-foreground">
-              {secondaryStat?.display_name}
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <span>
-              {player.stats[tertiaryStat?.code]}
-            </span>
-            <span className="text-muted-foreground">
-              {tertiaryStat?.display_name}
-            </span>
-          </div>
+          {/* Additional Stats */}
+          {additionalStats.map((stat) => (
+            <div key={stat.code} className="flex flex-col items-center w-14">
+              <span className="font-semibold text-sm">{stat.value}</span>
+              <span className="text-muted-foreground text-[9px] truncate w-full text-center">
+                {stat.displayName}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -144,21 +144,21 @@ const SportStatsTable = ({ filter }) => {
             <TabsList className="p-1 bg-transparent justify-start h-12">
               <TabsTrigger 
                 value="essential" 
-                className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-background"
+                className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <CheckCircle className="h-3.5 w-3.5" />
                 Essential Info
               </TabsTrigger>
               <TabsTrigger 
                 value="display" 
-                className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-background"
+                className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Display Settings
               </TabsTrigger>
               <TabsTrigger 
                 value="recording" 
-                className="text-xs md:text-sm flex items-center gap-1.5 data-[state=active]:bg-background"
+                className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <CheckCircle className="h-3.5 w-3.5" />
                 Recording Settings

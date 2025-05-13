@@ -40,7 +40,7 @@ const DeletePositionModal = ({ isOpen, onClose, position }) => {
           <AlertDialogAction
             onClick={handleDelete}
             disabled={deletePosition.isPending}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            variants="destructive"
           >
             {deletePosition.isPending ? (
               <>

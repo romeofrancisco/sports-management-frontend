@@ -220,8 +220,8 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           </div>
         ),
         cell: ({ row }) => {
-          const setsWon = row.original.standings.sets_won || 0;
-          const setsLost = row.original.standings.sets_lost || 0;
+          const setsWon = row.original.sets_won || 0;
+          const setsLost = row.original.sets_lost || 0;
           return (
             <div className="text-center w-auto ">
               {setsWon} - {setsLost}

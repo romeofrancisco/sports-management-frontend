@@ -83,10 +83,8 @@ const SeasonDetails = () => {
               </TabsTrigger>
             )}
           </TabsList>
-        </div>
-
-        <TabsContent value="overview">
-          <SeasonOverview seasonDetails={seasonDetails} />
+        </div>        <TabsContent value="overview">
+          <SeasonOverview seasonDetails={seasonDetails} sport={sport} />
         </TabsContent>
 
         <TabsContent value="standings">

@@ -25,48 +25,55 @@ const BracketView = ({ season, leagueId }) => {
   }
 
   // Calculate stats
-  const bracketTypeDisplay = bracket.elimination_type === BRACKET_TYPES.SINGLE 
-    ? "Single Elimination Tournament" 
-    : bracket.elimination_type === BRACKET_TYPES.ROUND_ROBIN
-    ? "Round Robin Tournament"
-    : "Tournament";
+  const bracketTypeDisplay =
+    bracket.elimination_type === BRACKET_TYPES.SINGLE
+      ? "Single Elimination Tournament"
+      : bracket.elimination_type === BRACKET_TYPES.ROUND_ROBIN
+      ? "Round Robin Tournament"
+      : "Tournament";
 
   const totalTeams = bracket.team_count;
-  const completedMatches = bracket.rounds?.reduce((count, round) => 
-    count + round.matches.filter(match => match.winner !== null).length, 0) || 0;
-  const totalMatches = bracket.rounds?.reduce((count, round) => 
-    count + round.matches.length, 0) || 0;
-  
-  const completionPercentage = totalMatches > 0 
-    ? Math.round((completedMatches / totalMatches) * 100) 
-    : 0;
+  const completedMatches =
+    bracket.rounds?.reduce(
+      (count, round) =>
+        count + round.matches.filter((match) => match.winner !== null).length,
+      0
+    ) || 0;
+  const totalMatches =
+    bracket.rounds?.reduce((count, round) => count + round.matches.length, 0) ||
+    0;
+
+  const completionPercentage =
+    totalMatches > 0 ? Math.round((completedMatches / totalMatches) * 100) : 0;
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-        <InfoCard 
+        <InfoCard
           title="Tournament Format"
           value={bracketTypeDisplay}
-          icon={<Trophy className="h-5 w-5" />}
+          icon={<Trophy className="h-5 w-5 text-amber-500" />}
+          className="hover:shadow-md transition-all duration-300"
         />
-        
-        <InfoCard 
+
+        <InfoCard
           title="Participating Teams"
           value={`${totalTeams} Teams`}
-          icon={<Users className="h-5 w-5" />}
+          icon={<Users className="h-5 w-5 text-indigo-500" />}
+          className="hover:shadow-md transition-all duration-300"
         />
-        
-        <InfoCard 
+
+        <InfoCard
           title="Match Progress"
           value={`${completedMatches}/${totalMatches}`}
-          icon={<BarChart className="h-5 w-5" />}
+          icon={<BarChart className="h-5 w-5 text-blue-500" />}
           description={`${completionPercentage}% complete`}
+          className="hover:shadow-md transition-all duration-300"
         />
       </div>
-
       <Card className="border shadow-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <div className="px-0 py-4">
+            <div className="min-w-[800px] p-6">
               <BracketDisplay bracket={bracket} />
             </div>
           </div>
