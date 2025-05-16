@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import StatCard from "@/components/common/StatCard";
+import InfoCard from "@/components/common/InfoCard";
 import {
   useLeagueStatistics,
   useLeagueComprehensiveStats,
@@ -14,6 +14,8 @@ import {
   Award,
   Flag,
   ChevronRight,
+  BarChart2,
+  TrendingUp
 } from "lucide-react";
 import {
   Card,
@@ -32,6 +34,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import LeagueTeamsGrid from "./LeagueTeamsGrid";
+import LeagueLeaders from "./LeagueLeaders";
 
 const LeagueOverview = ({ league, sport, onTabChange }) => {
   const { data: statistics, isLoading: statsLoading } =
@@ -112,13 +115,13 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
       <div>
         <h3 className="text-lg font-semibold mb-4">League Overview</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
+          <InfoCard
             title="Total Teams"
             value={teams_count}
             icon={<Users size={20} className="text-blue-500" />}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Total Seasons"
             value={seasons_count}
             icon={
@@ -127,13 +130,13 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             description={`${active_seasons} active`}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Total Games"
             value={games_count}
             icon={<Goal size={20} className="text-amber-500" />}
             className="hover:shadow-md transition-all duration-300"
           />
-          <StatCard
+          <InfoCard
             title="Current Season"
             value={
               current_season
@@ -161,6 +164,46 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
           />
         </div>
       </div>
+
+      {/* Team Performance Stats */}
+      {comprehensiveStats && topTeams.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Team Performance</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <InfoCard
+              title="Best Win Rate"
+              value={topTeams[0]?.team_name || "N/A"}
+              icon={<Trophy size={20} className="text-amber-500" />}
+              description={`${Math.round((topTeams[0]?.win_percentage || 0) * 100)}% wins`}
+              className="hover:shadow-md transition-all duration-300"
+            />
+            
+            <InfoCard
+              title="Best Offense"
+              value={topTeams[0]?.team_name || "N/A"}
+              icon={<TrendingUp size={20} className="text-emerald-500" />}
+              description={`${Math.round(topTeams[0]?.points_per_game || 0)} pts/game`}
+              className="hover:shadow-md transition-all duration-300"
+            />
+            
+            <InfoCard
+              title="Most Games"
+              value={topTeams.reduce((max, team) => Math.max(max, team.games_played || 0), 0)}
+              icon={<BarChart2 size={20} className="text-blue-500" />}
+              description="Games played"
+              className="hover:shadow-md transition-all duration-300"
+            />
+            
+            <InfoCard
+              title="League Status"
+              value={activeSeasonsList.length > 0 ? "Active" : "Inactive"}
+              icon={<Calendar size={20} className="text-violet-500" />}
+              description={`${activeSeasonsList.length} active season${activeSeasonsList.length !== 1 ? 's' : ''}`}
+              className="hover:shadow-md transition-all duration-300"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Game Highlights section - only show for point-based sports */}
       {comprehensiveStats && !isSetBased && (
@@ -214,11 +257,10 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             </Card>
           </div>
         </div>
-      )}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      )}      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Teams Section */}
         {rankings && rankings.length > 0 && (
-          <div className=" rounded-lg border p-6">
+          <div className="rounded-lg border p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h3 className="text-lg font-semibold">Top Teams</h3>
@@ -241,6 +283,9 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             />
           </div>
         )}
+
+        {/* League Leaders Section */}
+        <LeagueLeaders leagueId={league} />
       </div>
     </div>
   );

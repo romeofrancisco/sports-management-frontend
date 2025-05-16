@@ -15,8 +15,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         </div>
       ),
       cell: ({ row }) => {
-        const { logo, name, standings } = row.original;
-        const rank = standings.rank;
+        const { rank, team_logo, team_name } = row.original;
 
         // Styling for top 3 ranks
         const getRankStyle = (rank) => {
@@ -49,12 +48,12 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
             </div>
             <div className="relative size-7 flex items-center justify-center">
               <img
-                src={logo}
-                alt={name}
+                src={team_logo}
+                alt={team_name}
                 className="size-7 rounded-full border"
               />
             </div>
-            <span className="">{name}</span>
+            <span className="">{team_name}</span>
           </div>
         );
       },
@@ -77,7 +76,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         </div>
       ),
       cell: ({ row }) => {
-        const teamId = row.original.standings.team_id;
+        const teamId = row.original.team_id;
         // Check if teamFormData exists and has the expected structure
         let formData = [];
 
@@ -106,7 +105,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       },
     },
     {
-      accessorKey: "standings.matches_played",
+      accessorKey: "matches_played",
       header: () => (
         <div className="text-center w-auto">
           <HeaderWithTooltip label="MP" tooltipText="Matches Played" />
@@ -124,7 +123,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       },
     },
     {
-      accessorKey: "standings.wins",
+      accessorKey: "wins",
       header: () => (
         <div className="text-center w-auto">
           <HeaderWithTooltip label="W" tooltipText="Wins" />
@@ -142,7 +141,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       },
     },
     {
-      accessorKey: "standings.losses",
+      accessorKey: "losses",
       header: () => (
         <div className="text-center w-auto">
           <HeaderWithTooltip label="L" tooltipText="Losses" />
@@ -160,7 +159,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       },
     },
     {
-      accessorKey: "standings.win_percentage",
+      accessorKey: "win_percentage",
       header: () => (
         <div className="text-center w-auto">
           <HeaderWithTooltip label="PCT" tooltipText="Winning Percentage" />
@@ -187,7 +186,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
   // Add ties column if sport has ties
   if (has_tie) {
     baseColumns.splice(4, 0, {
-      accessorKey: "standings.ties",
+      accessorKey: "ties",
       header: () => (
         <div className="text-center w-auto">
           <HeaderWithTooltip label="T" tooltipText="Ties" />
@@ -221,8 +220,8 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           </div>
         ),
         cell: ({ row }) => {
-          const setsWon = row.original.standings.sets_won || 0;
-          const setsLost = row.original.standings.sets_lost || 0;
+          const setsWon = row.original.sets_won || 0;
+          const setsLost = row.original.sets_lost || 0;
           return (
             <div className="text-center w-auto ">
               {setsWon} - {setsLost}
@@ -238,7 +237,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.set_ratio",
+        accessorKey: "set_ratio",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -264,7 +263,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.sets_win_percentage",
+        accessorKey: "sets_win_percentage",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -286,7 +285,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.points_per_set",
+        accessorKey: "points_per_set",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -308,7 +307,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.points_conceded_per_set",
+        accessorKey: "points_conceded_per_set",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -330,7 +329,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.point_differential_per_set",
+        accessorKey: "point_differential_per_set",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -366,7 +365,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.points",
+        accessorKey: "points",
         header: () => (
           <div className="text-center w-auto">
             <HeaderWithTooltip
@@ -391,7 +390,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
     // For point-based sports
     baseColumns.push(
       {
-        accessorKey: "standings.points_per_game",
+        accessorKey: "points_per_game",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip label="PPG" tooltipText="Points Per Game" />
@@ -410,7 +409,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.points_conceded_per_game",
+        accessorKey: "points_conceded_per_game",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -432,7 +431,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.point_differential_avg",
+        accessorKey: "point_differential_avg",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -468,7 +467,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.point_differential",
+        accessorKey: "point_differential",
         header: () => (
           <div className="text-center">
             <HeaderWithTooltip
@@ -504,7 +503,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         },
       },
       {
-        accessorKey: "standings.points",
+        accessorKey: "points",
         header: () => (
           <div className="text-center w-auto">
             <HeaderWithTooltip

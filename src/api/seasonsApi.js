@@ -172,3 +172,23 @@ export const fetchSeasonTeamForm = async (league_id, season_id, limit = 5) => {
     throw error;
   }
 };
+
+export const fetchTeamForm = async (league_id, season_id) => {
+  try {
+    const { data } = await api.get(`leagues/${league_id}/seasons/${season_id}/team_form/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team form data:", error);
+    throw error;
+  }
+};
+
+export const fetchSeasonLeaders = async (league_id, season_id) => {
+  try {
+    const { data } = await api.get(`leagues/${league_id}/seasons/${season_id}/season_leaders/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching season leaders:", error);
+    throw error;
+  }
+};

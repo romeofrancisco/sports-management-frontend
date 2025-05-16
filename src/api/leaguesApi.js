@@ -90,6 +90,16 @@ export const fetchLeagueTeamForm = async (id) => {
   }
 };
 
+export const fetchLeagueLeaders = async (id) => {
+  try {
+    const { data } = await api.get(`leagues/${id}/league_leaders/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching league leaders:", error);
+    throw error;
+  }
+};
+
 export const addTeamToLeague = async (league_id, team_id) => {
   try {
     const { data } = await api.post(`leagues/${league_id}/add_team/`, {

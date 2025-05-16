@@ -15,8 +15,8 @@ import {
   LineElement,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import StatCard from "@/components/common/StatCard";
-import { Award, BarChart2, CheckSquare, Shield, Trophy, TrendingUp, Users, Calendar, Activity, Goal } from "lucide-react";
+import InfoCard from "@/components/common/InfoCard";
+import { Trophy, Calendar, Activity, Goal, Users, BarChart2 } from "lucide-react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -40,6 +40,16 @@ const LeagueComprehensiveStats = ({ leagueId, sport }) => {
   // Determine if we're dealing with a set-based sport (volleyball) or point-based sport (basketball)
   const isSetBased = stats.scoring_type === 'sets';
 
+  // Calculate completion percentage for seasons
+  const seasonCompletionPercentage = stats.completed_seasons && stats.seasons_count 
+    ? Math.round((stats.completed_seasons / stats.seasons_count) * 100) 
+    : 0;
+
+  // Calculate team participation percentage
+  const teamsParticipationPercentage = stats.teams && stats.teams.length > 0
+    ? Math.min(100, Math.round((stats.teams.length / (stats.max_teams || 20)) * 100))
+    : 0;
+
   return (
     <Card className="bg-card rounded-lg shadow-md transition-all duration-200 hover:shadow-lg">
       <CardHeader className="pb-2">
@@ -47,26 +57,33 @@ const LeagueComprehensiveStats = ({ leagueId, sport }) => {
       </CardHeader>
       <CardContent>
         {/* Display summary stats with appropriate metrics based on sport type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard
-            title={isSetBased ? "Total Matches" : "Total Games"}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">          <InfoCard
+            title={isSetBased ? "Matches" : "Games"}
             value={isSetBased ? stats.total_matches : stats.total_games}
-            icon={<Goal size={20} className="text-blue-500" />}
+            icon={<Goal className="h-5 w-5 text-blue-500" />}
+            description={isSetBased ? "Total matches played" : "Total games played"}
           />
-          <StatCard
-            title={isSetBased ? "Total Sets" : "Seasons"}
+          <InfoCard
+            title="Teams"
+            value={stats.teams ? stats.teams.length : 0}
+            icon={<Users className="h-5 w-5 text-purple-500" />}
+            description="Participating teams"
+            progress={teamsParticipationPercentage}
+            progressLabel="Team Participation"
+          />
+          <InfoCard
+            title={isSetBased ? "Sets" : "Seasons"}
             value={isSetBased ? stats.total_sets : stats.seasons_count}
-            icon={<Calendar size={20} className="text-green-500" />}
+            icon={<Calendar className="h-5 w-5 text-green-500" />}
+            description={isSetBased ? "Total sets played" : "Total seasons"}
+            progress={isSetBased ? null : seasonCompletionPercentage}
+            progressLabel="Seasons Completed"
           />
-          <StatCard
-            title={isSetBased ? "Avg Sets/Match" : "Completed Seasons"}
-            value={isSetBased ? stats.avg_sets_per_match : stats.completed_seasons}
-            icon={<Trophy size={20} className="text-amber-500" />}
-          />
-          <StatCard
+          <InfoCard
             title={isSetBased ? "Avg Points/Set" : "Avg Points/Game"}
             value={isSetBased ? stats.avg_points_per_set : stats.avg_points_per_game}
-            icon={<Activity size={20} className="text-rose-500" />}
+            icon={<Activity className="h-5 w-5 text-rose-500" />}
+            description={isSetBased ? "Points per set" : "Points per game"}
           />
         </div>
 

@@ -56,18 +56,23 @@ const LeaderCategoriesTable = () => {
       cell: ({ getValue }) => (
         <div className="font-medium">{getValue()}</div>
       ),
-    },
-    {
+    },    {
       accessorKey: "stat_types_details",
       header: "Stats",
-      cell: ({ getValue }) => {
+      cell: ({ row, getValue }) => {
         const stats = getValue() || [];
+        const primaryStatId = row.original.primary_stat_id;
+        
         return (
           <div className="flex flex-wrap gap-1">
             {stats.length > 0 ? (
-              stats.map((stat, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
-                  {stat.name}
+              stats.map((stat) => (
+                <Badge 
+                  key={stat.id}
+                  variant={stat.id === primaryStatId ? "default" : "secondary"} 
+                  className={`text-xs ${stat.id === primaryStatId ? "font-semibold" : ""}`}
+                >
+                  {stat.name} {stat.id === primaryStatId && "★"}
                 </Badge>
               ))
             ) : (
@@ -76,12 +81,6 @@ const LeaderCategoriesTable = () => {
           </div>
         );
       },
-    },
-    {
-      accessorKey: "display_order",
-      header: "Order",
-      cell: ({ getValue }) => getValue(),
-      size: 80,
     },
     {
       id: "actions",

@@ -30,6 +30,7 @@ import { useModal } from "@/hooks/useModal";
 import SportStatsModal from "@/components/modals/SportStatsModal";
 import DeleteStatModal from "@/components/modals/DeleteStatModal";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import InfoCard from "@/components/common/InfoCard";
 
 const SportStatsCardView = ({ stats, filter }) => {
   const [selectedStat, setSelectedStat] = React.useState(null);
@@ -67,6 +68,34 @@ const SportStatsCardView = ({ stats, filter }) => {
     if (filter.type && filter.type !== "all") count++;
     return count;
   };
+  
+  // Calculate stats counts by category
+  const getCategoriesCount = () => {
+    if (!stats) return {};
+    const categories = {};
+    
+    stats.forEach(stat => {
+      const category = stat.category || 'other';
+      categories[category] = (categories[category] || 0) + 1;
+    });
+    
+    return categories;
+  };
+  
+  // Calculate stats counts by type
+  const getStatsTypeCount = () => {
+    if (!stats) return { record: 0, formula: 0 };
+    
+    return stats.reduce((counts, stat) => {
+      if (stat.is_record) counts.record++;
+      else counts.formula++;
+      return counts;
+    }, { record: 0, formula: 0 });
+  };
+  
+  // Get stats metrics to display in InfoCards
+  const categoriesCount = getCategoriesCount();
+  const statsTypeCount = getStatsTypeCount();
 
   // Function to categorize stats using the model's category field
   const categorizeStats = (stats) => {
@@ -154,6 +183,46 @@ const SportStatsCardView = ({ stats, filter }) => {
 
   return (
     <div>
+      {/* Stats Overview Section */}
+      <div className="mb-6">
+        <h3 className="font-semibold text-lg mb-3">Stats Overview</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <InfoCard
+            title="Total Stats"
+            value={stats.length}
+            icon={<BarChart2 className="h-5 w-5 text-blue-500" />}
+            description={`${Object.keys(categorizedStats).length} categories`}
+            className="hover:shadow-md transition-all duration-300"
+          />
+          
+          <InfoCard
+            title="Recording Stats"
+            value={statsTypeCount.record}
+            icon={<CircleCheck className="h-5 w-5 text-emerald-500" />}
+            description={`${Math.round((statsTypeCount.record / stats.length) * 100)}% of total`}
+            progress={Math.round((statsTypeCount.record / stats.length) * 100)}
+            progressLabel="% of Total Stats"
+            className="hover:shadow-md transition-all duration-300"
+          />
+            <InfoCard
+            title="Formula Stats"
+            value={statsTypeCount.formula}
+            icon={<Calculator className="h-5 w-5 text-amber-500" />}
+            description={`${Math.round((statsTypeCount.formula / stats.length) * 100)}% of total`}
+            className="hover:shadow-md transition-all duration-300"
+          />
+          
+          <InfoCard
+            title="Most Common"
+            value={Object.entries(categoriesCount).reduce((max, [category, count]) => 
+              count > (categoriesCount[max] || 0) ? category : max, "")}
+            icon={<Tag className="h-5 w-5 text-violet-500" />}
+            description="Most used category"
+            className="hover:shadow-md transition-all duration-300 capitalize"
+          />
+        </div>
+      </div>
+      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg">Card View</h3>
@@ -180,8 +249,7 @@ const SportStatsCardView = ({ stats, filter }) => {
           New Stat
         </Button>
       </div>
-      
-      <div className="space-y-6">
+        <div className="space-y-6">
         {Object.entries(categorizedStats).map(([category, categoryStats]) => {
           const isExpanded = expandedCategories[category] !== false; // default to expanded
           

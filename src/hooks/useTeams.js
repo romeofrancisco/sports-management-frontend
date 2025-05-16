@@ -7,6 +7,8 @@ import {
   deleteTeam,
   updateTeam,
   fetchTeamsInSeason,
+  fetchTeamCoaches,
+  fetchTeamPlayers,
 } from "@/api/teamsApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -87,5 +89,23 @@ export const useTeamsInSeason = (leagueId, seasonId) => {
     queryKey: ["season-teams", leagueId, seasonId],
     queryFn: () => fetchTeamsInSeason(leagueId, seasonId),
     enabled: !!leagueId && !!seasonId,
+  });
+};
+
+export const useTeamCoaches = (teamSlug, options = {}) => {
+  return useQuery({
+    queryKey: ['teamCoaches', teamSlug],
+    queryFn: () => fetchTeamCoaches(teamSlug),
+    enabled: !!teamSlug && (options?.enabled !== false),
+    ...options,
+  });
+};
+
+export const useTeamPlayers = (teamSlug, options = {}) => {
+  return useQuery({
+    queryKey: ['teamPlayers', teamSlug],
+    queryFn: () => fetchTeamPlayers(teamSlug),
+    enabled: !!teamSlug && (options?.enabled !== false),
+    ...options,
   });
 };

@@ -52,8 +52,31 @@ export default function Layout() {
       // Handle special cases for recognized resource types
       const currentResource = pathParts[pathParts.length - 1];
       const isDetailPage = pathParts.length >= 2 && isNumeric(pathParts[pathParts.length - 1]);
+        // Handle special case for paths like /19/season/52 - go directly to seasons page
+      if (pathParts.length >= 3 && 
+          isNumeric(pathParts[0]) && 
+          pathParts[1] === 'season' && 
+          isNumeric(pathParts[2])) {
+        return {
+          text: 'Back to Seasons',
+          link: '/seasons'
+        };
+      }
       
       // Handle the case for paths like /leagues/14/season/47
+      if (pathParts.length >= 4 && 
+          pathParts[0] === 'leagues' &&
+          isNumeric(pathParts[1]) &&
+          pathParts[2] === 'season' &&
+          isNumeric(pathParts[3])) {
+        // Return to the league details page
+        return {
+          text: 'Back to League',
+          link: `/leagues/${pathParts[1]}`
+        };
+      }
+      
+      // Handle other nested resources
       if (pathParts.length >= 4 && 
           !isNumeric(pathParts[pathParts.length - 3]) && 
           isNumeric(pathParts[pathParts.length - 2])) {
