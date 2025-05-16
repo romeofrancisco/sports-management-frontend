@@ -63,3 +63,23 @@ export const fetchTeamsInSeason = async (leagueId, seasonId) => {
     throw error;
   }
 };
+
+export const fetchTeamCoaches = async (teamSlug) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/coaches/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team coaches:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamPlayers = async (teamSlug) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/players/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team players:", error);
+    throw error;
+  }
+};

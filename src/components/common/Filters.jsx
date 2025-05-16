@@ -67,9 +67,8 @@ export const FilterStatType = ({ value, onChange, className = "" }) => {
           <SelectValue placeholder="Select Stat Type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Types</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
+          <SelectGroup>            <SelectLabel>Types</SelectLabel>
+            <SelectItem className="text-xs" value="all_stats">
               All Stats
             </SelectItem>
             <SelectSeparator />

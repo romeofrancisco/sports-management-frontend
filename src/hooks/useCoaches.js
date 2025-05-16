@@ -3,7 +3,7 @@ import { fetchCoaches, createCoach, deleteCoach, updateCoach } from "@/api/coach
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const useCoaches = (filter, enabled = true) => {
+export const useCoaches = ({filter, enabled = true}) => {
   return useQuery({
     queryKey: ["coaches", filter],
     queryFn: () => fetchCoaches(filter),

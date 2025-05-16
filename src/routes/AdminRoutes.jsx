@@ -14,6 +14,7 @@ import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import GameResult from "@/pages/admin/game/GameResult";
+import TrainingsPage from "@/pages/admin/training/TrainingsPage";
 
 export const adminRoutes = [
   {
@@ -79,5 +80,9 @@ export const adminRoutes = [
   {
     path: "/games/:gameId/game-result",
     element: <GameResult />,
+  },
+  {
+    path: "/trainings",
+    element: <TrainingsPage />,
   },
 ];

@@ -7,6 +7,7 @@ import {
   Trophy,
   Gauge,
   Medal,
+  Dumbbell,
 } from "lucide-react";
 
 export const adminMain = () => {
@@ -55,6 +56,11 @@ export const adminManagement = () => {
       title: "Game Schedules",
       url: "/games",
       icon: CalendarCog,
+    },
+    {
+      title: "Trainings",
+      url: "/trainings",
+      icon: Dumbbell,
     },
   ];
 };

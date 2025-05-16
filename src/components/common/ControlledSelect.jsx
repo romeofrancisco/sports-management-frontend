@@ -26,7 +26,6 @@ const ControlledSelect = ({
   size = "",
   disabled = false
 }) => {
-  console.log(options)
   return (
 
     <div className={`grid gap-0.5 ${className}`}>
