@@ -6,17 +6,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   useCreateTrainingMetric,
   useUpdateTrainingMetric,
 } from "@/hooks/useTrainings";
-import ControlledInput from "../common/ControlledInput";
-import ControlledTextarea from "../common/ControlledTextarea";
-import ControlledCombobox from "../common/ControlledCombobox";
-import ControlledSwitch from "../common/ControlledSwitch";
+import ControlledInput from "@/components/common/ControlledInput";
+import ControlledTextarea from "@/components/common/ControlledTextarea";
+import ControlledCombobox from "@/components/common/ControlledCombobox";
+import ControlledSwitch from "@/components/common/ControlledSwitch";
 
 /**
  * Dialog component for creating or editing a training metric
@@ -32,15 +32,13 @@ const TrainingMetricFormDialog = ({
   const { mutateAsync: updateMetric, isPending: isUpdating } =
     useUpdateTrainingMetric();
 
-  console.log(categories);
-
   const form = useForm({
     defaultValues: {
       name: "",
       description: "",
       unit: "",
       category: categories.length > 0 ? categories[0].id : "",
-      is_lower_better: true,
+      is_lower_better: false,
     },
   });
 
@@ -52,7 +50,7 @@ const TrainingMetricFormDialog = ({
           description: metric.description || "",
           unit: metric.unit || "",
           category: metric.category || "",
-          is_lower_better: metric.is_lower_better ?? true,
+          is_lower_better: metric.is_lower_better ?? false,
         });
       } else {
         form.reset({
@@ -60,7 +58,7 @@ const TrainingMetricFormDialog = ({
           description: "",
           unit: "",
           category: categories.length > 0 ? categories[0].id : "",
-          is_lower_better: true,
+          is_lower_better: false,
         });
       }
     }

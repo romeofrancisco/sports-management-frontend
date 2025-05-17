@@ -125,7 +125,9 @@ export const PlayerFilter = ({
           aria-expanded={open}
           className="w-[200px] justify-between font-normal"
         >
-          {"Select player..."}
+          {selectedPlayer 
+            ? players?.find(p => p.id?.toString() === selectedPlayer)?.name || "Select player..." 
+            : "Select player..."}
           <ChevronsUpDown className="opacity-50 ml-2 h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -150,7 +152,7 @@ export const PlayerFilter = ({
                       setOpen(false);
                     }}
                   >
-                    {player.full_name}
+                    {player.name || player.full_name}
                     <Check
                       className={cn(
                         "ml-auto",

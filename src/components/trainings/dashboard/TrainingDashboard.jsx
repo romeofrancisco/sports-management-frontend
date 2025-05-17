@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSportTeams } from "@/hooks/useTeams";
-import { useSports } from "@/hooks/useSports";
 import TrainingCategoriesList from "../categories/TrainingCategoriesList";
 import TrainingMetricsList from "../metrics/TrainingMetricsList";
 import TrainingSessionsList from "../sessions/TrainingSessionsList";

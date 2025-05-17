@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import TrainingCategoryFormDialog from "@/components/modals/TrainingCategoryFormDialog";
+import TrainingCategoryFormDialog from "@/components/modals/trainings/TrainingCategoryFormDialog";
 import {
   AlertDialog,
   AlertDialogAction,

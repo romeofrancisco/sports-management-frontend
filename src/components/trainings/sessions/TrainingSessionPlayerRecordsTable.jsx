@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DataTable from "@/components/common/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import TrainingAttendanceModal from "@/components/modals/TrainingAttendanceModal";
+import TrainingAttendanceModal from "@/components/modals/trainings/TrainingAttendanceModal";
 
 const attendanceStatusColor = {
   present: "bg-green-100 text-green-800",

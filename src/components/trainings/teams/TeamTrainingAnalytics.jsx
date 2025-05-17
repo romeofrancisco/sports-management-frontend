@@ -51,7 +51,7 @@ ChartJS.register(
   ChartLegend
 );
 
-const TeamTrainingAnalytics = ({ teamId }) => {
+const TeamTrainingAnalytics = ({ teamSlug }) => {
   const [selectedMetric, setSelectedMetric] = useState(null);
   const [dateRange, setDateRange] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
@@ -72,7 +72,7 @@ const TeamTrainingAnalytics = ({ teamId }) => {
     [dateRange]
   );
   // Get available metrics
-  const { metrics = [] } = useTrainingMetrics();
+  const { data: metrics = [] } = useTrainingMetrics();
 
   // If no selected metric and metrics are available, select the first one
   React.useEffect(() => {
@@ -80,25 +80,23 @@ const TeamTrainingAnalytics = ({ teamId }) => {
       setSelectedMetric(metrics[0].id);
     }
   }, [selectedMetric, metrics]);
-
   // Build query params for analytics API
   const queryParams = useMemo(
     () => ({
-      id: teamId,
+      id: teamSlug,
       metric_id: selectedMetric,
       ...formattedDateRange,
     }),
-    [teamId, selectedMetric, formattedDateRange]
+    [teamSlug, selectedMetric, formattedDateRange]
   );
   // Get team analytics data
   const {
     data: analytics,
     isLoading,
-    error,
-  } = useTeamTrainingAnalytics(
-    teamId, 
+    error,  } = useTeamTrainingAnalytics(
+    teamSlug, 
     queryParams, 
-    !!teamId && !!selectedMetric
+    !!teamSlug && !!selectedMetric
   );
 
   // Prepare attendance data for pie chart

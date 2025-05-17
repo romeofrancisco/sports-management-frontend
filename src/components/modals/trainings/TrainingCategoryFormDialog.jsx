@@ -4,8 +4,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import TrainingCategoryForm from "../forms/TrainingCategoryForm";
+} from "@/components/ui/dialog";
+import TrainingCategoryForm from "@/components/forms/TrainingCategoryForm";
 
 /**
  * Dialog component for creating or editing a training category
