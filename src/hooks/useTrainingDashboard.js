@@ -23,13 +23,12 @@ export const useTrainingDashboard = () => {
   // Memoize filtered players for better performance
   const filteredPlayers = useMemo(() => {
     return players.filter(p => !selectedTeamId || p.team_id === selectedTeamId);
-  }, [players, selectedTeamId]);
-  // Handle team selection
-  const handleTeamChange = (teamId) => {
-    if (teamId === "all_teams") {
+  }, [players, selectedTeamId]);  // Handle team selection
+  const handleTeamChange = (teamSlug) => {
+    if (teamSlug === "all_teams") {
       setSelectedTeamId(undefined); // Use undefined instead of empty string to avoid filters
     } else {
-      setSelectedTeamId(teamId);
+      setSelectedTeamId(teamSlug);
     }
     setSelectedPlayerId("");
     setSelectedPlayerIds([]);

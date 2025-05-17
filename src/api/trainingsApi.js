@@ -296,7 +296,21 @@ export const recordPlayerMetrics = async ({ id, ...metricsData }) => {
       `trainings/player-trainings/${id}/record_metrics/`,
       metricsData
     );
-    return data;
+    return {
+      ...data,
+      playerTrainingId: id
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchPreviousRecords = async (id) => {
+  try {
+    const { data } = await api.get(
+      `trainings/player-trainings/${id}/previous_records/`
+    );
+    return data.previous_records || [];
   } catch (error) {
     throw error;
   }
@@ -325,6 +339,41 @@ export const fetchPlayerProgressById = async ({ id, ...params }) => {
   }
 };
 
+export const fetchMultiPlayerProgress = async ({ playerIds = [], teamSlug = null, ...params }) => {
+  try {
+    // Use either player IDs, team slug, or both
+    if (!teamSlug && (!playerIds || playerIds.length === 0)) {
+      throw new Error("Either team slug or player IDs must be provided");
+    }
+
+    if (!params.metric) {
+      throw new Error("Metric ID is required");
+    }
+    
+    // Prepare query parameters
+    const queryParams = {
+      team: teamSlug,
+      metric_id: params.metric,
+      date_from: params.date_from,
+      date_to: params.date_to
+    };
+    
+    // Only add player_ids if they're provided and not empty
+    if (playerIds && playerIds.length > 0) {
+      queryParams.player_ids = playerIds.join(',');
+    }
+    
+    // Use GET request with query parameters
+    const { data } = await api.get("trainings/player-progress/multi_player/", {
+      params: queryParams
+    });
+    
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Team Analytics
 export const fetchTeamTrainingAnalytics = async (params = {}) => {
   try {
@@ -341,6 +390,28 @@ export const fetchTeamTrainingAnalyticsById = async ({ id, ...params }) => {
   try {
     const { data } = await api.get(`trainings/team-analytics/${id}/`, {
       params: cleanParams(params),
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignMetricsToSession = async ({ sessionId, metricIds }) => {
+  try {
+    const { data } = await api.post(`trainings/trainings/sessions/${sessionId}/assign_metrics/`, {
+      metrics: metricIds
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignMetricsToPlayerTraining = async ({ playerTrainingId, metricIds }) => {
+  try {
+    const { data } = await api.post(`trainings/trainings/player-trainings/${playerTrainingId}/assign_metrics/`, {
+      metrics: metricIds
     });
     return data;
   } catch (error) {

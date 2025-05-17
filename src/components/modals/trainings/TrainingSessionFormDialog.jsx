@@ -4,15 +4,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "../ui/dialog";
-import TrainingSessionForm from "../forms/TrainingSessionForm";
+} from "@/components/ui/dialog";
+import TrainingSessionForm from "@/components/forms/TrainingSessionForm";
 import { useTrainingSession } from "@/hooks/useTrainings";
 import { useSelector } from "react-redux";
 import { useCoaches } from "@/hooks/useCoaches";
 import { useTeams } from "@/hooks/useTeams";
 import { useTrainingCategories } from "@/hooks/useTrainings";
-import ContentLoading from "../common/ContentLoading";
+import ContentLoading from "@/components/common/ContentLoading";
 
 const TrainingSessionFormDialog = ({
   open,

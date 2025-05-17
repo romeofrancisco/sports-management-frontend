@@ -3,7 +3,7 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTrainingCategories } from "@/hooks/useTrainings";
 import CategoryCard from "./CategoryCard";
-import TrainingCategoryFormDialog from "@/components/modals/TrainingCategoryFormDialog";
+import TrainingCategoryFormDialog from "@/components/modals/trainings/TrainingCategoryFormDialog";
 
 /**
  * Component for displaying and managing training categories

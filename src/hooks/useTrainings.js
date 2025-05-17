@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueries } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -12,8 +12,7 @@ import {
   fetchTrainingMetrics,
   fetchTrainingMetric,
   createTrainingMetric,
-  updateTrainingMetric,
-  deleteTrainingMetric,
+  updateTrainingMetric,  deleteTrainingMetric,
   fetchTrainingSessions,
   fetchTrainingSession,
   createTrainingSession,
@@ -29,10 +28,13 @@ import {
   recordPlayerMetrics,
   fetchPlayerProgress,
   fetchPlayerProgressById,
+  fetchMultiPlayerProgress,
   fetchTeamTrainingAnalytics,
   fetchTeamTrainingAnalyticsById,
   updatePlayerAttendance,
   bulkUpdateAttendance,
+  assignMetricsToSession,
+  assignMetricsToPlayerTraining
 } from "@/api/trainingsApi";
 
 // Training Categories
@@ -121,6 +123,20 @@ export const useTrainingMetrics = (categoryId = null, enabled = true) => {
     queryKey: ["training-metrics", params],
     queryFn: () => fetchTrainingMetrics(params),
     enabled,
+  });
+};
+
+// Hook to get metrics associated with a specific session
+export const useSessionMetrics = (sessionId, enabled = true) => {
+  const params = useMemo(
+    () => (sessionId ? { session: sessionId } : {}),
+    [sessionId]
+  );
+
+  return useQuery({
+    queryKey: ["session-metrics", params],
+    queryFn: () => fetchTrainingMetrics(params),
+    enabled: enabled && !!sessionId,
   });
 };
 
@@ -366,13 +382,49 @@ export const useRecordPlayerMetrics = () => {
   return useMutation({
     mutationFn: recordPlayerMetrics,
     onSuccess: (data, { id }) => {
-      toast.success("Player metrics recorded", {
-        description: `${data.records.length} metrics have been recorded.`,
+      toast.success("Player metrics recorded!", {
+        description: `Successfully recorded ${data.records?.length || 0} metrics for the player`,
         richColors: true,
       });
+      
+      // Store previous records in cache for this player training
+      if (data.previous_records && data.previous_records.length > 0) {
+        queryClient.setQueryData(["player-training-previous", id], data.previous_records);
+      }
+      
       queryClient.invalidateQueries(["player-training", id]);
       queryClient.invalidateQueries(["player-progress"]);
     },
+    onError: (error) => {
+      toast.error("Failed to record metrics", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    }
+  });
+};
+
+// New hook to get previous records for player metrics
+export const usePreviousPlayerMetrics = (playerTrainingId) => {
+  return useQuery({
+    queryKey: ["player-training-previous", playerTrainingId],
+    queryFn: async () => {
+      if (!playerTrainingId) return [];
+      
+      try {
+        // First check if we have this in cache from a previous recording
+        const cachedData = queryClient.getQueryData(["player-training-previous", playerTrainingId]);
+        if (cachedData) return cachedData;
+        
+        // Otherwise fetch from the server via player-training endpoint
+        const { data } = await api.get(`trainings/player-trainings/${playerTrainingId}/previous_records/`);
+        return data.previous_records || [];
+      } catch (error) {
+        console.error("Error fetching previous records:", error);
+        return [];
+      }
+    },
+    enabled: !!playerTrainingId,
   });
 };
 
@@ -437,6 +489,47 @@ export const usePlayerProgressById = (id, filters = {}, enabled = true) => {
   });
 };
 
+// New hook to fetch progress data for multiple players simultaneously
+export const usePlayersProgressById = (players = [], filters = {}, enabled = true) => {
+  const playerQueries = useQueries({
+    queries: players.map(player => {
+      const params = { id: player.user_id, ...filters };
+      
+      return {
+        queryKey: ["player-progress-by-id", params],
+        queryFn: () => fetchPlayerProgressById(params),
+        enabled: enabled && !!player.user_id,
+      };
+    }),
+  });
+
+  // Transform query results into a player-id mapped object
+  const playerData = useMemo(() => {
+    const data = {};
+    
+    players.forEach((player, index) => {
+      if (playerQueries[index].data) {
+        data[player.user_id] = playerQueries[index].data;
+      }
+    });
+    
+    return data;
+  }, [players, playerQueries]);
+
+  // Determine if any query is loading
+  const isLoading = playerQueries.some(query => query.isLoading);
+  const isFetching = playerQueries.some(query => query.isFetching);
+  return {
+    playerData,
+    queries: playerQueries,
+    isLoading,
+    isFetching
+  };
+};
+
+// Export the optimized multi-player progress hook from the dedicated file
+export { useMultiPlayerProgress } from './useMultiPlayerProgress';
+
 // Team Analytics
 export const useTeamTrainingAnalytics = (filters = {}) => {
   return useQuery({
@@ -498,6 +591,48 @@ export const useUpdatePlayerAttendance = () => {
         error.response?.data?.detail || "Failed to update attendance",
         { richColors: true }
       );
+    },
+  });
+};
+
+// Hook to assign metrics to a specific session
+export const useAssignSessionMetrics = () => {
+  return useMutation({
+    mutationFn: assignMetricsToSession,
+    onSuccess: (data) => {
+      toast.success("Session metrics configured successfully!", {
+        description: `${data.count || 0} metrics have been assigned to this session.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["training-sessions"]);
+      queryClient.invalidateQueries(["session-metrics"]);
+    },
+    onError: (error) => {
+      toast.error("Failed to configure session metrics", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
+// Hook to assign metrics to a specific player's training
+export const useAssignPlayerTrainingMetrics = () => {
+  return useMutation({
+    mutationFn: assignMetricsToPlayerTraining,
+    onSuccess: (data) => {
+      toast.success("Player metrics configured successfully!", {
+        description: `${data.count || 0} metrics have been assigned to this player.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["player-trainings"]);
+      queryClient.invalidateQueries(["player-training"]);
+    },
+    onError: (error) => {
+      toast.error("Failed to configure player metrics", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
     },
   });
 };

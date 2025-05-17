@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog";
 import {
   useTrainingSession,
   useUpdatePlayerAttendance,
 } from "@/hooks/useTrainings";
-import DataTable from "../common/DataTable";
+import DataTable from "../../common/DataTable";
 import { useForm, Controller } from "react-hook-form";
 
-import getAttendanceColumns from "../table_columns/AttendanceTableColumns";
-import { ScrollArea } from "../ui/scroll-area";
-import { Button } from "../ui/button";
+import getAttendanceColumns from "../../table_columns/AttendanceTableColumns";
+import { ScrollArea } from "../../ui/scroll-area";
+import { Button } from "../../ui/button";
 
 const TrainingAttendanceModal = ({ isOpen, onClose, session }) => {
   const { data: trainingSession, isLoading } = useTrainingSession(session?.id);

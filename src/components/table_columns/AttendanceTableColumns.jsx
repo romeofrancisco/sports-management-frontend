@@ -40,7 +40,7 @@ const getAttendanceColumns = (onStatusChange, onNotesChange) => [
         return (
           <div className="w-full max-w-[250px]">
             <Textarea
-              className="min-h-[32px] text-xs w-full resize-none"
+              className="min-h-[32px] text-xs w-full max-h-[3rem]"
               value={localValue}
               placeholder="Add notes..."
               onChange={handleChange}

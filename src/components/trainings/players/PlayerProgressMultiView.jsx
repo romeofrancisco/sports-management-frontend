@@ -1,3 +1,4 @@
+// Fixed PlayerProgressMultiView component with proper hook call
 import React, { useState, useMemo } from "react";
 import {
   Chart as ChartJS,
@@ -26,7 +27,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useTrainingMetrics } from "@/hooks/useTrainings";
-import { usePlayerProgressById } from "@/hooks/useTrainings";
+import { useMultiPlayerProgress } from "@/hooks/useMultiPlayerProgress";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 
 // Register Chart.js components
@@ -41,47 +42,105 @@ ChartJS.register(
   Filler
 );
 
-/**
- * Component for displaying multiple players' progress on a selected metric
- *
- * @param {Object} props
- * @param {Array} props.players - List of players to show progress for
- * @param {string} props.teamId - Optional team ID to filter by team
- */
-const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
+const PlayerProgressMultiView = ({
+  players = [],
+  teamSlug = null,
+  dateRange = null,
+}) => {
   const [selectedMetric, setSelectedMetric] = useState(null);
-  const [dateRange, setDateRange] = useState({
+  const [localDateRange, setLocalDateRange] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
     to: new Date(),
   });
 
   // Get all available metrics
-  const { metrics, isLoading: metricsLoading } = useTrainingMetrics();
+  const { data: metrics, isLoading: metricsLoading } = useTrainingMetrics();
 
-  // Filter params for player progress
-  const filters = useMemo(
-    () => ({
-      date_from: dateRange.from
-        ? dateRange.from.toISOString().split("T")[0]
-        : null,
-      date_to: dateRange.to ? dateRange.to.toISOString().split("T")[0] : null,
+  // Filter params for player progress - use passed dateRange if available
+  const filters = useMemo(() => {
+    const baseFilters = {
       metric: selectedMetric,
-      team: teamId,
-    }),
-    [dateRange, selectedMetric, teamId]
-  );
+    };
+
+    if (dateRange) {
+      return {
+        ...baseFilters,
+        ...dateRange,
+      };
+    }
+
+    return {
+      ...baseFilters,
+      date_from: localDateRange.from
+        ? localDateRange.from.toISOString().split("T")[0]
+        : null,
+      date_to: localDateRange.to
+        ? localDateRange.to.toISOString().split("T")[0]
+        : null,
+    };
+  }, [localDateRange, dateRange, selectedMetric]);
 
   // Selected metric details
   const selectedMetricDetails = useMemo(() => {
     if (!selectedMetric || !metrics) return null;
     return metrics.find((m) => m.id === parseInt(selectedMetric));
   }, [selectedMetric, metrics]);
+  // Use player IDs
+  const playerIds = useMemo(() => {
+    return players.map((player) => player.user_id || player.id).filter(Boolean);
+  }, [players]);
+  // Use our custom hook for a single API call to fetch data for all players
+  const {
+    data: multiPlayerData,
+    isLoading: dataLoading,
+    error,
+  } = useMultiPlayerProgress({
+    // Only pass playerIds if players are provided and teamSlug isn't
+    ...(players.length > 0 && !teamSlug ? { players } : {}),
+    teamSlug,
+    filters,
+    enabled: !!selectedMetric && (playerIds.length > 0 || !!teamSlug),
+  });
+  // Transform query results for chart display
+  const chartData = useMemo(() => {
+    if (!selectedMetric || !multiPlayerData) return [];
 
-  // Player data collection and loading state tracking
-  const [playerData, setPlayerData] = useState({});
-  const [loadingPlayers, setLoadingPlayers] = useState({});
+    // Get all unique dates across all players
+    const allDates = new Set();
+    Object.values(multiPlayerData).forEach((player) => {
+      if (player.metrics_data && player.metrics_data.length > 0) {
+        const metricData = player.metrics_data.find(
+          (m) => m.metric_id === parseInt(selectedMetric)
+        );
+        metricData?.data_points?.forEach((dataPoint) => {
+          allDates.add(dataPoint.date);
+        });
+      }
+    });
 
-  // Generate unique colors for each player
+    // Create empty data structure with all dates
+    const dateArray = [...allDates].sort((a, b) => new Date(a) - new Date(b));
+    const formattedData = dateArray.map((date) => {
+      const dataPoint = { date: new Date(date).toLocaleDateString() };
+
+      // For each player, find data for this date
+      Object.entries(multiPlayerData).forEach(([playerId, player]) => {
+        if (player.metrics_data && player.metrics_data.length > 0) {
+          const metricData = player.metrics_data.find(
+            (m) => m.metric_id === parseInt(selectedMetric)
+          );
+          const record = metricData?.data_points?.find((r) => r.date === date);
+          dataPoint[playerId] = record ? record.value : null;
+        } else {
+          dataPoint[playerId] = null;
+        }
+      });
+
+      return dataPoint;
+    });
+
+    return formattedData;
+  }, [multiPlayerData, selectedMetric]);  // Generate unique colors for each player
   const playerColors = useMemo(() => {
     const colors = {};
     const baseColors = [
@@ -97,82 +156,23 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
       "#d0ed57",
     ];
 
-    players.forEach((player, index) => {
-      colors[player.user_id] = baseColors[index % baseColors.length];
-    });
+    // If we have multiPlayerData, use it for player IDs, otherwise use the provided players prop
+    if (multiPlayerData) {
+      Object.keys(multiPlayerData).forEach((playerId, index) => {
+        colors[playerId] = baseColors[index % baseColors.length];
+      });
+    } else {
+      players.forEach((player, index) => {
+        const playerId = player.user_id || player.id;
+        colors[playerId] = baseColors[index % baseColors.length];
+      });
+    }
 
     return colors;
-  }, [players]);
-
-  // Format combined chart data
-  const chartData = useMemo(() => {
-    if (!selectedMetric || Object.keys(playerData).length === 0) return [];
-
-    // Get all unique dates
-    const allDates = new Set();
-    Object.values(playerData).forEach((player) => {
-      player.records?.forEach((record) => {
-        allDates.add(record.date);
-      });
-    });
-
-    // Create empty data structure with all dates
-    const dateArray = [...allDates].sort((a, b) => new Date(a) - new Date(b));
-    const formattedData = dateArray.map((date) => {
-      const dataPoint = { date: new Date(date).toLocaleDateString() };
-
-      // For each player, find data for this date
-      Object.entries(playerData).forEach(([playerId, player]) => {
-        const record = player.records?.find((r) => r.date === date);
-        dataPoint[playerId] = record ? record.value : null;
-      });
-
-      return dataPoint;
-    });
-
-    return formattedData;
-  }, [playerData, selectedMetric]);
-
-  // When the selected metric or date range changes, fetch data for each player
-  React.useEffect(() => {
-    if (!selectedMetric || !players.length) return;
-
-    // Reset data when metric changes
-    setPlayerData({});
-
-    // Track which players are being loaded
-    const newLoadingState = {};
-
-    players.forEach((player) => {
-      newLoadingState[player.user_id] = true;
-
-      // Fetch data for this player with current filters
-      usePlayerProgressById(player.user_id, filters, true)
-        .then(({ data: progress }) => {
-          setPlayerData((prev) => ({
-            ...prev,
-            [player.user_id]: progress,
-          }));
-
-          setLoadingPlayers((prev) => ({
-            ...prev,
-            [player.user_id]: false,
-          }));
-        })
-        .catch(() => {
-          setLoadingPlayers((prev) => ({
-            ...prev,
-            [player.user_id]: false,
-          }));
-        });
-    });
-
-    setLoadingPlayers(newLoadingState);
-  }, [selectedMetric, filters, players]);
+  }, [multiPlayerData, players]);
 
   // Loading state
-  const isLoading =
-    metricsLoading || Object.values(loadingPlayers).some((status) => status);
+  const isLoading = metricsLoading || dataLoading;
 
   // No data message
   if (!isLoading && !metricsLoading && (!metrics || metrics.length === 0)) {
@@ -185,9 +185,8 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
       </Card>
     );
   }
-
   // No players selected message
-  if (!players || players.length === 0) {
+  if (!isLoading && multiPlayerData && Object.keys(multiPlayerData).length === 0 && !teamSlug) {
     return (
       <Card className="w-full">
         <CardHeader>
@@ -205,7 +204,6 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
       <CardHeader>
         <CardTitle>Player Comparison</CardTitle>
         <CardDescription>Compare progress between players</CardDescription>
-
         <div className="flex flex-col md:flex-row gap-4 mt-4">
           <Select value={selectedMetric} onValueChange={setSelectedMetric}>
             <SelectTrigger className="w-full md:w-[200px]">
@@ -221,11 +219,13 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
             </SelectContent>
           </Select>
 
-          <DateRangePicker
-            date={dateRange}
-            onDateChange={setDateRange}
-            className="w-full md:w-auto"
-          />
+          {!dateRange && (
+            <DateRangePicker
+              date={localDateRange}
+              onDateChange={setLocalDateRange}
+              className="w-full md:w-auto"
+            />
+          )}
         </div>
       </CardHeader>
 
@@ -244,29 +244,29 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
           </div>
         ) : (
           <div>
-            {" "}
-            <div className="h-[400px] mt-4">
-              <Line
+            <div className="h-[400px] mt-4">              <Line
                 data={{
                   labels: chartData.map((point) => point.date),
-                  datasets: players.map((player) => ({
-                    label: player.name,
-                    data: chartData.map((point) => point[player.user_id]),
-                    borderColor: playerColors[player.user_id],
-                    backgroundColor: `${playerColors[player.user_id]}20`,
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 8,
-                    tension: 0.3,
-                    spanGaps: true,
-                  })),
+                  datasets: Object.entries(multiPlayerData || {}).map(([playerId, playerData]) => {
+                    return {
+                      label: playerData.player_name,
+                      data: chartData.map((point) => point[playerId]),
+                      borderColor: playerColors[playerId],
+                      backgroundColor: `${playerColors[playerId]}20`,
+                      borderWidth: 2,
+                      pointRadius: 4,
+                      pointHoverRadius: 8,
+                      tension: 0.3,
+                      spanGaps: true,
+                    };
+                  }),
                 }}
                 options={{
                   responsive: true,
                   maintainAspectRatio: false,
                   scales: {
                     y: {
-                      beginAtZero: selectedMetricDetails?.lower_is_better
+                      beginAtZero: selectedMetricDetails?.is_lower_better
                         ? false
                         : true,
                       title: {
@@ -305,18 +305,35 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
               />
             </div>
             <div className="mt-6">
-              <h3 className="font-medium mb-4">Player Improvements</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {players.map((player) => {
-                  const playerRecords =
-                    playerData[player.user_id]?.records || [];
+              <h3 className="font-medium mb-4">Player Improvements</h3>              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {multiPlayerData && Object.entries(multiPlayerData).map(([playerId, playerData]) => {
+                  const playerMetric = playerData?.metrics_data?.find(
+                    (m) => m.metric_id === parseInt(selectedMetric)
+                  );
+                  const playerRecords = playerMetric?.data_points || [];
+
+                  // Check if this player's data is still loading
+                  if (isLoading) {
+                    return (
+                      <Card key={playerId}>
+                        <CardContent className="pt-4">
+                          <h4 className="font-medium text-center mb-2">
+                            {playerData.player_name}
+                          </h4>
+                          <p className="text-sm text-center text-muted-foreground">
+                            Loading data...
+                          </p>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
 
                   if (playerRecords.length < 2) {
                     return (
-                      <Card key={player.user_id}>
+                      <Card key={playerId}>
                         <CardContent className="pt-4">
                           <h4 className="font-medium text-center mb-2">
-                            {player.name}
+                            {playerData.player_name}
                           </h4>
                           <p className="text-sm text-center text-muted-foreground">
                             Not enough data
@@ -324,10 +341,7 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
                         </CardContent>
                       </Card>
                     );
-                  }
-
-                  // Sort by date
-                  const sortedRecords = [...playerRecords].sort(
+                  }                  const sortedRecords = [...playerRecords].sort(
                     (a, b) => new Date(a.date) - new Date(b.date)
                   );
 
@@ -335,7 +349,7 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
                   const lastPoint = sortedRecords[sortedRecords.length - 1];
 
                   // For metrics where lower is better (like sprint time), invert the calculation
-                  const isLowerBetter = selectedMetricDetails?.lower_is_better;
+                  const isLowerBetter = selectedMetricDetails?.is_lower_better;
 
                   let improvement;
                   if (isLowerBetter) {
@@ -352,17 +366,16 @@ const PlayerProgressMultiView = ({ players = [], teamId = null }) => {
                   const isImproved = improvement > 0;
 
                   return (
-                    <Card key={player.user_id}>
+                    <Card key={playerId}>
                       <CardContent className="pt-4">
                         <h4 className="font-medium text-center mb-2">
-                          {player.name}
+                          {playerData.player_name}
                         </h4>
                         <div className="flex justify-center items-center gap-2">
                           <div
                             className="w-3 h-3 rounded-full"
                             style={{
-                              backgroundColor:
-                                playerColors[player.user_id] || "#8884d8",
+                              backgroundColor: playerColors[playerId] || "#8884d8",
                             }}
                           />
                           <span

@@ -78,7 +78,7 @@ const TrainingDashboard = () => {
           <div className="mt-6">
             {/* Sessions tab */}
             <TabsContent value="sessions" className="space-y-4">              <TrainingSessionsList 
-                teamId={selectedTeamId} 
+                teamSlug={selectedTeamId} 
                 key={`sessions-${selectedTeamId || 'all'}`} 
               />
             </TabsContent>
@@ -106,10 +106,9 @@ const TrainingDashboard = () => {
               </div>
               
               {/* Individual player chart or empty message */}
-              {selectedPlayerId && selectedPlayerId !== "no_player" ? (
-                <PlayerProgressChart
+              {selectedPlayerId && selectedPlayerId !== "no_player" ? (                <PlayerProgressChart
                   playerId={selectedPlayerId}
-                  teamId={selectedTeamId}
+                  teamSlug={selectedTeamId}
                   key={`progress-${selectedPlayerId}`}
                 />
               ) : (
@@ -158,12 +157,11 @@ const TrainingDashboard = () => {
                 />
 
                 {/* Multi-player progress chart or empty message */}
-                {selectedPlayerIds.length > 0 ? (
-                  <PlayerProgressMultiView
+                {selectedPlayerIds.length > 0 ? (                  <PlayerProgressMultiView
                     players={players.filter((p) =>
                       selectedPlayerIds.includes(p.id)
                     )}
-                    teamId={selectedTeamId}
+                    teamSlug={selectedTeamId}
                     key={`multi-${selectedPlayerIds.join('-')}`}
                   />
                 ) : (
@@ -178,9 +176,8 @@ const TrainingDashboard = () => {
 
             {/* Analytics tab */}
             <TabsContent value="analytics" className="space-y-4">
-              {selectedTeamId ? (
-                <TeamTrainingAnalytics 
-                  teamId={selectedTeamId} 
+              {selectedTeamId ? (                <TeamTrainingAnalytics 
+                  teamSlug={selectedTeamId} 
                   key={`analytics-${selectedTeamId}`} 
                 />
               ) : (

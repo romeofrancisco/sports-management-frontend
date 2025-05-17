@@ -22,7 +22,7 @@ const TeamFilter = ({
         <SelectContent>
           <SelectItem value="all_teams">All Teams</SelectItem>
           {teams.map((team) => (
-            <SelectItem key={team.id} value={team.id}>
+            <SelectItem key={team.id} value={team.slug}>
               {team.name}
             </SelectItem>
           ))}

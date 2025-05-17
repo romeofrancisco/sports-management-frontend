@@ -7,7 +7,7 @@ import {
   useTrainingCategories,
 } from "@/hooks/useTrainings";
 import MetricCard from "./MetricCard";
-import TrainingMetricFormDialog from "@/components/modals/TrainingMetricFormDialog";
+import TrainingMetricFormDialog from "@/components/modals/trainings/TrainingMetricFormDialog";
 
 /**
  * Component for displaying and managing training metrics
