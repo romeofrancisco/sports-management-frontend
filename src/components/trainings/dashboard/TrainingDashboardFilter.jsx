@@ -34,7 +34,7 @@ export const SportFilter = ({ sports, selectedSport, setSelectedSport }) => (
     <SelectContent>
       <SelectItem value={null}>All Sports</SelectItem>
       {sports?.map((sport) => (
-        <SelectItem key={sport.id} value={sport.slug.toString()}>
+        <SelectItem key={sport.id} value={sport.id.toString()}>
           {sport.name}
         </SelectItem>
       ))}
@@ -45,7 +45,6 @@ export const SportFilter = ({ sports, selectedSport, setSelectedSport }) => (
 // Team filter component
 export const TeamFilter = ({ teams, selectedTeam, setSelectedTeam }) => {
   const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,25 +55,23 @@ export const TeamFilter = ({ teams, selectedTeam, setSelectedTeam }) => {
           aria-expanded={open}
           className="w-[200px] justify-between font-normal"
         >
-          {"Select team..."}
+          {selectedTeam
+            ? teams?.find((t) => t.slug === selectedTeam)?.name ||
+              "Select team..."
+            : "Select team..."}
           <ChevronsUpDown className="opacity-50 ml-2 h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput
-            placeholder="Search teams..."
-            value={search}
-            onValueChange={setSearch}
-            autoFocus
-          />
+          <CommandInput placeholder="Search teams..." />
           <CommandList>
             <CommandEmpty>No team found.</CommandEmpty>
             <CommandGroup>
               {teams?.map((team) => (
                 <CommandItem
                   key={team.id}
-                  value={team.slug}
+                  value={team.name}
                   onSelect={() => {
                     setSelectedTeam(team.slug);
                     setOpen(false);
@@ -114,7 +111,6 @@ export const PlayerFilter = ({
   isLoading,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -125,20 +121,16 @@ export const PlayerFilter = ({
           aria-expanded={open}
           className="w-[200px] justify-between font-normal"
         >
-          {selectedPlayer 
-            ? players?.find(p => p.id?.toString() === selectedPlayer)?.name || "Select player..." 
+          {selectedPlayer
+            ? players?.find((p) => p.id?.toString() === selectedPlayer)
+                ?.full_name || "Select player..."
             : "Select player..."}
           <ChevronsUpDown className="opacity-50 ml-2 h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput
-            placeholder="Search players..."
-            value={search}
-            onValueChange={setSearch}
-            autoFocus
-          />
+          <CommandInput placeholder="Search players..." />
           <CommandList>
             <CommandEmpty>No player found.</CommandEmpty>
             <CommandGroup>
@@ -146,7 +138,7 @@ export const PlayerFilter = ({
                 players?.map((player) => (
                   <CommandItem
                     key={player.id}
-                    value={player.id?.toString() || ""}
+                    value={player.full_name || ""}
                     onSelect={() => {
                       setSelectedPlayer(player.id?.toString() || "");
                       setOpen(false);

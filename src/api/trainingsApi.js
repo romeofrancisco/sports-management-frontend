@@ -330,11 +330,14 @@ export const fetchPlayerProgress = async (params = {}) => {
 
 export const fetchPlayerProgressById = async ({ id, ...params }) => {
   try {
+    console.log("Fetching player progress with params:", { id, ...params });
     const { data } = await api.get(`trainings/player-progress/${id}/`, {
       params: cleanParams(params),
     });
+    console.log("Player progress API response:", data);
     return data;
   } catch (error) {
+    console.error("Error fetching player progress:", error);
     throw error;
   }
 };

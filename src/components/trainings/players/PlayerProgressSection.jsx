@@ -1,47 +1,47 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  SportFilter,
-  TeamFilter,
-  DateFilter,
-  PlayerFilter,
-} from "../dashboard/TrainingDashboardFilter";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  PlayerProgressChart,
-  PlayerProgressMultiView,
-} from "./player-progress-components";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PlayerMetricRecorderModal from "@/components/modals/PlayerMetricRecorderModal";
+import { Card } from "@/components/ui/card";
+import { LineChart, BarChart } from "lucide-react";
 import { useSports } from "@/hooks/useSports";
-import { useSportTeams } from "@/hooks/useTeams";
+import { useTeams } from "@/hooks/useTeams";
 import { useTeamPlayers } from "@/hooks/useTeams";
-import { useTrainingMetrics } from "@/hooks/useTrainings";
-import { Loader2, BarChart, LineChart, PlusCircle, Users } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
+import "./player-progress-styles.css";
+import ContentLoading from "@/components/common/ContentLoading";
+import PlayerMetricRecorderModal from "@/components/modals/PlayerMetricRecorderModal";
 
-const initialState = {
-  selectedSport: "",
-  selectedTeam: "",
-  selectedPlayer: "",
-  dateRange: {
-    from: null,
-    to: null,
-  },
-  viewType: "individual", // "individual" or "compare"
-};
+// Import the new components
+import PlayerProgressFilters from "./PlayerProgressFilters";
+import PlayerProgressQuickActions from "./PlayerProgressQuickActions";
+import PlayerProgressStats from "./PlayerProgressStats";
+import PlayerProgressIndividualView from "./PlayerProgressIndividualView";
+import PlayerProgressCompareView from "./PlayerProgressCompareView";
+import PlayerQuickSelect from "./PlayerQuickSelect";
+import EmptyStateView from "./EmptyStateView";
 
 const PlayerProgressSection = () => {
-  const [filter, setFilter] = useState(initialState);
-  const [activeTab, setActiveTab] = useState("chart");
+  const [filter, setFilter] = useState(
+    // Initial state for the player progress filters
+    {
+      selectedSport: "",
+      selectedTeam: "",
+      selectedPlayer: "",
+      dateRange: {
+        from: null,
+        to: null,
+      },
+      viewType: "individual",
+    }
+  );
+  const { open: openModal } = useModal();
 
   // Fetch sports
   const { data: sports = [], isLoading: isSportsLoading } = useSports();
 
   // Fetch teams based on selected sport
-  const { data: teams = [], isLoading: isTeamsLoading } = useSportTeams(
-    filter.selectedSport
-  );
+  const { data: teams = [], isLoading: isTeamsLoading } = useTeams({
+    sport: filter.selectedSport,
+  });
 
   // Fetch players based on selected team
   const { data: players = [], isLoading: isPlayersLoading } = useTeamPlayers(
@@ -69,6 +69,7 @@ const PlayerProgressSection = () => {
       selectedPlayer: null,
     }));
   };
+
   // Handle team selection
   const handleTeamChange = (teamSlug) => {
     setFilter((prev) => ({
@@ -105,17 +106,52 @@ const PlayerProgressSection = () => {
     }));
   };
 
+  // Reset filters
+  const resetFilters = () => {
+    setFilter(initialProgressFilter);
+  };
+
+  // Handle opening the player metric recorder modal
+  const handleOpenMetricRecorder = (playerId, teamSlug) => {
+    openModal(PlayerMetricRecorderModal, {
+      playerId,
+      teamSlug,
+    });
+  };
+
+  // Handle switching back from individual to compare view
+  const handleBackToCompare = () => {
+    setFilter((prev) => ({
+      ...prev,
+      selectedPlayer: null,
+      viewType: "compare",
+    }));
+  };
+
   // Loading state
   const isLoading = isSportsLoading || isTeamsLoading || isPlayersLoading;
 
+  // Find selected player name
+  const selectedPlayerName =
+    players.find((p) => p.id === filter.selectedPlayer)?.name || "Player";
+
   return (
     <div className="space-y-6">
+      {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h2 className="text-2xl font-bold">Player Progress Tracking</h2>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Player Progress Tracking
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            Track and analyze player performance metrics over time
+          </p>
+        </div>
         <div className="flex gap-2">
           <Button
             variant={filter.viewType === "individual" ? "default" : "outline"}
             size="sm"
+            className="shadow-sm"
             onClick={() => handleViewTypeChange("individual")}
           >
             <LineChart className="h-4 w-4 mr-2" />
@@ -124,6 +160,7 @@ const PlayerProgressSection = () => {
           <Button
             variant={filter.viewType === "compare" ? "default" : "outline"}
             size="sm"
+            className="shadow-sm"
             onClick={() => handleViewTypeChange("compare")}
           >
             <BarChart className="h-4 w-4 mr-2" />
@@ -132,110 +169,93 @@ const PlayerProgressSection = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-1 block">Sport</label>
-              <SportFilter
-                sports={sports}
-                selectedSport={filter.selectedSport}
-                setSelectedSport={handleSportChange}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-1 block">Team</label>
-              <TeamFilter
-                teams={teams}
-                selectedTeam={filter.selectedTeam}
-                setSelectedTeam={handleTeamChange}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-1 block">
-                {filter.viewType === "individual" ? "Player" : "Date Range"}
-              </label>
-              {filter.viewType === "individual" ? (
-                <PlayerFilter
-                  players={players}
-                  selectedPlayer={filter.selectedPlayer}
-                  setSelectedPlayer={handlePlayerChange}
-                />
-              ) : (
-                <DateFilter
-                  dateRange={filter.dateRange}
-                  setDateRange={handleDateRangeChange}
-                />
-              )}
-            </div>
-            <div>
-              {filter.viewType === "individual" && (
-                <>
-                  <label className="text-sm font-medium mb-1 block">
-                    Date Range
-                  </label>
-                  <DateFilter
-                    dateRange={filter.dateRange}
-                    setDateRange={handleDateRangeChange}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Filters Section */}
+      <PlayerProgressFilters
+        filter={filter}
+        sports={sports}
+        teams={teams}
+        players={players}
+        handleSportChange={handleSportChange}
+        handleTeamChange={handleTeamChange}
+        handlePlayerChange={handlePlayerChange}
+        handleDateRangeChange={handleDateRangeChange}
+        resetFilters={resetFilters}
+      />
 
       {/* Progress Visualization */}
       {isLoading ? (
-        <div className="flex items-center justify-center p-10">
-          <Loader2 className="h-10 w-10 animate-spin text-primary/70" />
-        </div>
+        <Card className="border shadow-sm overflow-hidden">
+          <div className="p-8 flex flex-col items-center justify-center gap-4">
+            <div className="flex items-center gap-4">
+              <ContentLoading />
+            </div>
+            <div className="w-full max-w-md space-y-3">
+              <div className="h-2 bg-muted rounded w-full"></div>
+              <div className="h-2 bg-muted rounded w-4/5"></div>
+              <div className="h-2 bg-muted rounded w-3/5"></div>
+            </div>
+          </div>
+        </Card>
       ) : !filter.selectedTeam ? (
-        <div className="text-center py-10 text-muted-foreground">
-          <Users className="h-12 w-12 mx-auto mb-3 opacity-30" />
-          <p>Select a team to view player progress</p>
-        </div>
+        <EmptyStateView
+          sports={sports}
+          handleSportChange={handleSportChange}
+          openModal={() => handleOpenMetricRecorder(null, filter.selectedTeam)}
+          teamSlug={filter.selectedTeam}
+        />
       ) : (
-        <div>
+        <div className="space-y-6">
+          {/* Quick Actions and Stats Overview */}
+          {filter.viewType === "individual" && filter.selectedPlayer && (
+            <>
+              <PlayerProgressQuickActions
+                openModal={() =>
+                  handleOpenMetricRecorder(
+                    filter.selectedPlayer,
+                    filter.selectedTeam
+                  )
+                }
+                playerId={filter.selectedPlayer}
+                teamSlug={filter.selectedTeam}
+              />
+              <PlayerProgressStats />
+            </>
+          )}
+
           {filter.viewType === "individual" && filter.selectedPlayer ? (
-            <Tabs
-              defaultValue="chart"
-              value={activeTab}
-              onValueChange={setActiveTab}
-            >
-              <TabsList className="mb-4">
-                <TabsTrigger value="chart">Progress Chart</TabsTrigger>
-                <TabsTrigger value="data">Raw Data</TabsTrigger>
-              </TabsList>
-              <TabsContent value="chart">
-                {" "}
-                <PlayerProgressChart
-                  playerId={filter.selectedPlayer}
-                  dateRange={dateRangeParams}
-                  teamSlug={filter.selectedTeam}
-                />
-              </TabsContent>
-              <TabsContent value="data">
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-muted-foreground">
-                      Detailed player metrics data table coming soon...
-                    </p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          ) : (
-            <PlayerProgressMultiView
-              players={players.map((p) => ({
-                id: p.id,
-                user_id: p.user_id,
-                name: p.name,
-              }))}
+            <PlayerProgressIndividualView
+              playerId={filter.selectedPlayer}
+              playerName={selectedPlayerName}
+              dateRangeParams={dateRangeParams}
+              handleBackToCompare={handleBackToCompare}
+              openModal={() =>
+                handleOpenMetricRecorder(
+                  filter.selectedPlayer,
+                  filter.selectedTeam
+                )
+              }
               teamSlug={filter.selectedTeam}
-              dateRange={dateRangeParams}
             />
+          ) : (
+            <div className="space-y-6">
+              <PlayerProgressCompareView
+                players={players}
+                teamSlug={filter.selectedTeam}
+                dateRangeParams={dateRangeParams}
+              />
+              <PlayerQuickSelect
+                players={players}
+                selectedPlayerId={filter.selectedPlayer}
+                handlePlayerSelect={(playerId) => {
+                  handlePlayerChange(playerId);
+                  handleViewTypeChange("individual");
+                }}
+                openModal={() =>
+                  handleOpenMetricRecorder(null, filter.selectedTeam)
+                }
+                teamSlug={filter.selectedTeam}
+              />
+            </div>
           )}
         </div>
       )}
