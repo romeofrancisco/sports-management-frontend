@@ -15,15 +15,14 @@ const PlayerProgressCompareView = ({ players, teamSlug, dateRangeParams }) => {
     <Card className="border shadow-sm overflow-hidden card-hover-effect">
       <CardHeader className="bg-muted/30 pb-3 border-b">
         <div className="flex items-baseline justify-between">
-          <div>
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary/70" />
-              Team Comparison
-            </CardTitle>
-            <CardDescription>
-              Compare performance metrics across multiple players
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary/70" />
+            Team Comparison
+          </CardTitle>
+          <CardDescription>
+            Compare performance metrics across multiple players
+          </CardDescription>
+
           {players.length > 0 && (
             <Badge variant="outline" className="ml-2 bg-primary/10">
               {players.length} Players

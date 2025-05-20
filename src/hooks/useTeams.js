@@ -14,15 +14,10 @@ import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
 export const useTeams = (filter, enabled = true) => {
-  const apiFilter = {
-    ...filter,
-    sport: filter.sport === "all" ? "" : filter.sport,
-    division: filter.division === "all" ? "" : filter.division,
-  };
 
   return useQuery({
-    queryKey: ["teams", apiFilter],
-    queryFn: () => fetchTeams(apiFilter),
+    queryKey: ["teams", filter],
+    queryFn: () => fetchTeams(filter),
     enabled,
     keepPreviousData: true,
   });
@@ -73,7 +68,7 @@ export const useDeleteTeam = () => {
 
 export const useUpdateTeam = () => {
   return useMutation({
-    mutationFn: ({team, data}) => updateTeam(data, team),
+    mutationFn: ({ team, data }) => updateTeam(data, team),
     onSuccess: () => {
       toast.success("Team updated", {
         richColors: true,
@@ -94,18 +89,18 @@ export const useTeamsInSeason = (leagueId, seasonId) => {
 
 export const useTeamCoaches = (teamSlug, options = {}) => {
   return useQuery({
-    queryKey: ['teamCoaches', teamSlug],
+    queryKey: ["teamCoaches", teamSlug],
     queryFn: () => fetchTeamCoaches(teamSlug),
-    enabled: !!teamSlug && (options?.enabled !== false),
+    enabled: !!teamSlug && options?.enabled !== false,
     ...options,
   });
 };
 
 export const useTeamPlayers = (teamSlug, options = {}) => {
   return useQuery({
-    queryKey: ['teamPlayers', teamSlug],
+    queryKey: ["teamPlayers", teamSlug],
     queryFn: () => fetchTeamPlayers(teamSlug),
-    enabled: !!teamSlug && (options?.enabled !== false),
+    enabled: !!teamSlug && options?.enabled !== false,
     ...options,
   });
 };

@@ -7,7 +7,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarMenuAction
+  SidebarMenuAction,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -17,10 +17,10 @@ import {
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router";
 
-export function AdminManagementNav({ items }) {
+export function SidebarNavs({ items }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Management</SidebarGroupLabel>
+      <SidebarGroupLabel>Navigation</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>

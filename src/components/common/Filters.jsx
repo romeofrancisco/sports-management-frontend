@@ -155,7 +155,7 @@ export const FilterSport = ({ value, onChange, className = "" }) => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sport</SelectLabel>
-            <SelectItem className="text-xs" value="all">
+            <SelectItem className="text-xs" value={null}>
               All Sports
             </SelectItem>
             <SelectSeparator />
@@ -183,7 +183,7 @@ export const FilterDivision = ({ value, onChange, className = "" }) => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Divisions</SelectLabel>
-            <SelectItem className="text-xs" value="all">
+            <SelectItem className="text-xs" value={null}>
               All Division
             </SelectItem>
             <SelectSeparator />

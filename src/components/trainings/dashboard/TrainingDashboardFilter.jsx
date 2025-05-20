@@ -97,8 +97,8 @@ export const TeamFilter = ({ teams, selectedTeam, setSelectedTeam }) => {
 // Date filter component
 export const DateFilter = ({ dateRange, setDateRange }) => (
   <DateRangePicker
-    date={dateRange}
-    onDateChange={setDateRange}
+    value={dateRange}
+    onChange={setDateRange}
     className="w-full sm:w-auto"
   />
 );

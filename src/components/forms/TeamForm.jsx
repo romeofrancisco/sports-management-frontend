@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import MultiSelect from "../common/ControlledMultiSelect";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useCreateTeam, useUpdateTeam } from "@/hooks/useTeams";
 import { DIVISIONS } from "@/constants/team";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
+import ControlledCombobox from "../common/ControlledCombobox";
 import { convertToFormData } from "@/utils/convertToFormData";
 
 const TeamForm = ({ coaches, sports, onClose, team = null }) => {
@@ -14,7 +14,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   const [logoPreview, setLogoPreview] = useState(team?.logo || null);
   const { mutate: createTeam, isPending: isCreating } = useCreateTeam();
   const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();
-
   const {
     control,
     handleSubmit,
@@ -28,7 +27,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       color: team?.color || "#000000",
       sport: team?.sport || "",
       division: team?.division || "",
-      coach: team?.coach.map((coach) => coach) || [],
+      coach: team?.coach || "",
       logo: null,
     },
   });
@@ -46,7 +45,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       return () => URL.revokeObjectURL(url);
     }
   }, [logoFile]);
-
   const onSubmit = (teamData) => {
     const data = convertToFormData(teamData);
 
@@ -149,15 +147,15 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       />
 
       {/* Coach */}
-      <MultiSelect
+      <ControlledCombobox
         name="coach"
         control={control}
         label="Coach"
         options={coaches}
-        placeholder="Select Team Coaches"
+        placeholder="Select Team Coach"
         errors={errors}
+        valueKey="id"
         labelKey="full_name"
-        max={3}
       />
 
       <Button

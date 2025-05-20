@@ -27,10 +27,13 @@ export const usePlayers = (filter, page = 1, pageSize = 10, enabled = true) => {
   });
 };
 
-export const usePlayerDetails = (player) => {
+export const useTeamPlayers = (filter) => {
   return useQuery({
-    queryKey: ["player", player],
-    queryFn: () => fetchPlayerDetails(player),
+    queryKey: ["team-players", filter],
+    queryFn: async () => {
+      const data = await fetchPlayers(filter);
+      return data.results || [];
+    },
   });
 };
 

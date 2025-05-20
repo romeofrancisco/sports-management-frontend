@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 export const useCoaches = ({filter, enabled = true}) => {
   return useQuery({
-    queryKey: ["coaches", filter],
+    queryKey: ["coaches"],
     queryFn: () => fetchCoaches(filter),
     enabled,
   });

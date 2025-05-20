@@ -17,8 +17,8 @@ const TeamsContainer = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [filter, setFilter] = useState({
     search: "",
-    sport: "all",
-    division: "all",
+    sport: null,
+    division: null,
   });
   const [debouncedSearch] = useDebounce(filter.search, 500);
   const debouncedFilter = { ...filter, search: debouncedSearch };

@@ -177,7 +177,7 @@ const PlayerProgressMultiView = ({
   // No data message
   if (!isLoading && !metricsLoading && (!metrics || metrics.length === 0)) {
     return (
-      <Card className="w-full">
+      <Card className="w-full border-0">
         <CardHeader>
           <CardTitle>Player Comparison</CardTitle>
           <CardDescription>No metrics have been defined yet</CardDescription>
@@ -188,7 +188,7 @@ const PlayerProgressMultiView = ({
   // No players selected message
   if (!isLoading && multiPlayerData && Object.keys(multiPlayerData).length === 0 && !teamSlug) {
     return (
-      <Card className="w-full">
+      <Card className="w-full border-0">
         <CardHeader>
           <CardTitle>Player Comparison</CardTitle>
           <CardDescription>
@@ -200,7 +200,7 @@ const PlayerProgressMultiView = ({
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-0">
       <CardHeader>
         <CardTitle>Player Comparison</CardTitle>
         <CardDescription>Compare progress between players</CardDescription>

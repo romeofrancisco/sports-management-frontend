@@ -72,7 +72,7 @@ const PlayerProgressFilters = ({
             ) : (
               <DateFilter
                 dateRange={filter.dateRange}
-                setDateRange={handleDateRangeChange}
+                onC={handleDateRangeChange}
                 className="w-full"
               />
             )}

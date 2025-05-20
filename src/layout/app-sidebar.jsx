@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AdminManagementNav } from "./admin-management-nav";
+import { SidebarNavs } from "./sidebar-navs";
 import {
   Sidebar,
   SidebarContent,
@@ -11,15 +11,18 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { adminManagement, adminMain } from "@/constants/navItems";
+import { adminNavigation, coachNavigation } from "@/constants/navItems";
 import logo from "@/assets/perpetual_logo.png";
-import AdminMainNav from "./admin-main-nav";
+import { useSelector } from "react-redux";
 
 export function AppSidebar({ ...props }) {
-  const management = adminManagement();
-  const main = adminMain();
+  const user = useSelector((state) => state.auth.user);
+  const isAdmin = user?.role?.includes("Admin");
+  const isCoach = user?.role?.includes("Coach");
+  const isPlayer = user?.role?.includes("Player");
 
-
+  // Get the appropriate navigation items based on user role
+  const navItems = isCoach ? coachNavigation() : adminNavigation();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -44,9 +47,8 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <AdminMainNav items={main} />
       <SidebarContent>
-        <AdminManagementNav items={management} />
+        <SidebarNavs items={navItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
