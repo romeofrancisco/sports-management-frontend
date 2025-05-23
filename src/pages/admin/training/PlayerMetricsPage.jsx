@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PlayerProgressChart from "@/components/trainings/players/PlayerProgressChart";
+import PlayerProgressChart from "@/components/charts/PlayerProgressChart/PlayerProgressChart";
 import TeamMetricsPage from "./TeamMetricsPage";
 
 const PlayerMetricsPage = () => {
@@ -127,7 +127,7 @@ const PlayerMetricsPage = () => {
                   <SelectItem value="all_metrics">All Metrics</SelectItem>
                   {metrics?.map(metric => (
                     <SelectItem key={metric.id} value={metric.id}>
-                      {metric.name} ({metric.unit})
+                      {metric.name} ({metric.metric_unit?.code || '-'})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -198,7 +198,7 @@ const PlayerMetricsPage = () => {
                               <div className="font-medium">{metric.metric_name}</div>
                               <div className="flex items-center">
                                 <span className="font-semibold">
-                                  {metric.latest_value} {metric.unit}
+                                  {metric.latest_value} {metric.metric_unit?.code || ''}
                                 </span>
                                 {metric.improvement !== 0 && (
                                   <span className={`ml-2 text-xs ${
@@ -224,9 +224,8 @@ const PlayerMetricsPage = () => {
                               />
                             </div>
                             
-                            <div className="flex justify-between text-xs text-muted-foreground">
-                              <span>Best: {metric.best_value} {metric.unit}</span>
-                              <span>Average: {metric.average_value} {metric.unit}</span>
+                            <div className="flex justify-between text-xs text-muted-foreground">                              <span>Best: {metric.best_value} {metric.metric_unit?.code || '-'}</span>
+                              <span>Average: {metric.average_value} {metric.metric_unit?.code || '-'}</span>
                             </div>
                           </div>
                         ))}

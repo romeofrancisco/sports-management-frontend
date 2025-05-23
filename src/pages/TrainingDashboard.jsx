@@ -13,10 +13,8 @@ import {
 import TrainingCategoriesList from "@/components/trainings/TrainingCategoriesList";
 import TrainingMetricsList from "../components/trainings/TrainingMetricsList";
 import TrainingSessionsList from "../components/trainings/sessions/TrainingSessionsList";
-import {
-  PlayerProgressChart,
-  PlayerProgressMultiView,
-} from "../components/trainings/PlayerProgressChart";
+import { PlayerProgressChart } from "@/components/charts/PlayerProgressChart";
+import { PlayerProgressMultiView } from "@/components/trainings/players";
 import TeamTrainingAnalytics from "../components/trainings/TeamTrainingAnalytics";
 import TeamFilter from "../components/trainings/TeamFilter";
 import PlayerFilter from "../components/trainings/PlayerFilter";

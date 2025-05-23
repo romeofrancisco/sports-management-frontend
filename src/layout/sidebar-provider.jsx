@@ -17,10 +17,12 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Layout() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { isLoading } = useFetchUser(); // Ensure user data is fetched before checking auth state
   const location = useLocation();
   const navigate = useNavigate();
+  const isAdmin = user?.role === "Admin";
+  const isCoach = user?.role === "Coach";
 
   useEffect(() => {
     setNavigate(navigate);

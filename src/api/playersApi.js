@@ -15,6 +15,7 @@ export const updatePlayer = async (player, playerData) => {
     const { data } = await api.patch(`players/${player}/`, playerData);
     return data;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 };

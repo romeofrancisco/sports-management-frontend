@@ -20,7 +20,6 @@ const CoachForm = ({ onClose, coach = null }) => {
       last_name: coach?.last_name || "",
       sex: coach?.sex || "",
       email: coach?.email || "",
-      password: "",
       profile: null,
     },
   });

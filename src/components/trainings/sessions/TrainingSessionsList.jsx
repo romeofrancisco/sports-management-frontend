@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "../../ui/button";
-import { 
-  useTrainingSessions, 
-  useTrainingMetrics, 
-  useSessionMetrics, 
+import {
+  useTrainingSessions,
+  useTrainingMetrics,
+  useSessionMetrics,
   useAssignSessionMetrics,
-  useAssignPlayerTrainingMetrics
 } from "@/hooks/useTrainings";
 import TrainingSessionFormDialog from "@/components/modals/trainings/TrainingSessionFormDialog";
 import DataTable from "@/components/common/DataTable";
@@ -20,7 +19,7 @@ import PlayerSelectModal from "@/components/modals/trainings/PlayerSelectModal";
 import SessionMetricsConfigModal from "@/components/trainings/metrics/SessionMetricsConfigModal";
 import { toast } from "sonner";
 
-const TrainingSessionsList = ({ coachId, teamId }) => {  
+const TrainingSessionsList = ({ coachId, teamId }) => {
   const [selectedSession, setSelectedSession] = useState(null);
   const [selectedPlayerTraining, setSelectedPlayerTraining] = useState(null);
   const [sessionMetrics, setSessionMetrics] = useState([]);
@@ -34,17 +33,16 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
     metrics: useModal(),
     playerSelect: useModal(),
     metricsConfig: useModal(),
-  };  const { data, isLoading, isError } = useTrainingSessions(
+  };
+  const { data, isLoading, isError } = useTrainingSessions(
     filter,
     currentPage,
     pageSize
   );
-  const { metrics = [], isLoading: metricsLoading } = useTrainingMetrics();
-  const { mutate: assignMetrics } = useAssignSessionMetrics();
-  const { mutate: assignPlayerMetrics } = useAssignPlayerTrainingMetrics();
+  const { data: metrics = [], isLoading: metricsLoading } =
+    useTrainingMetrics();
   const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
-
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo(0, 0);
@@ -72,96 +70,26 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
       setSelectedSession(session);
       modals.attendance.openModal();
     },
-    onConfigureMetrics: async (session) => {
+    onConfigureMetrics: (session) => {
       setSelectedSession(session);
-      // Fetch the metrics for this session
+      modals.metricsConfig.openModal();
+    },
+    onRecord: async (session) => {
       try {
-        const { fetchTrainingMetrics } = await import("@/api/trainingsApi");
-        const sessionMetricsData = await fetchTrainingMetrics({ session: session.id });
-        setSessionMetrics(sessionMetricsData || []);
-        modals.metricsConfig.openModal();
-      } catch (error) {
-        console.error("Error fetching session metrics:", error);
-        toast.error("Failed to load session metrics", {
-          description: error.message || "Please try again",
-          richColors: true
-        });
-      }
-    },onRecord: async (session) => {
-      try {
-        // Store the selected session for later use
         setSelectedSession(session);
-        
-        // Import the API directly to avoid bundling issues
-        const { fetchTrainingSession, fetchTrainingMetrics } = await import("@/api/trainingsApi");
-        
-        // Fetch detailed session data including player records
+        const { fetchTrainingSession } = await import("@/api/trainingsApi");
         const detailedSession = await fetchTrainingSession(session.id);
 
-        // Fetch the metrics for this specific session
-        try {
-          const sessionMetricsData = await fetchTrainingMetrics({ session: session.id });
-          setSessionMetrics(sessionMetricsData || []);
-          
-          // If no metrics for this session, show a warning
-          if (!sessionMetricsData || sessionMetricsData.length === 0) {
-            toast.warning("No metrics configured for this session", {
-              description: "This session doesn't have any metrics configured. All available metrics will be shown.",
-              richColors: true,
-            });
-          }
-        } catch (metricsError) {
-          console.error("Error fetching session metrics:", metricsError);
-          // Fall back to all metrics if session-specific ones fail
-          setSessionMetrics(metrics);
-        }
-        
-        // Check if session has player records
-        if (detailedSession?.player_records?.length > 0) {
-          // Filter for players who are present or late
-          const presentPlayers = detailedSession.player_records.filter(
-            record => record.attendance_status === 'present' || record.attendance_status === 'late'
-          );
-          
-          if (presentPlayers.length === 0) {
-            // No present players to record metrics for
-            toast.warning("No players marked as present or late for this session", {
-              description: "Please update attendance first before recording metrics.",
-              richColors: true,
-            });
-            return;
-          }
-          
-          if (presentPlayers.length === 1) {
-            // If only one player, select it automatically
-            setSelectedPlayerTraining(presentPlayers[0]);
-            modals.metrics.openModal();
-          } else {
-            // Set the player records for the select modal
-            setSelectedSession({
-              ...session,
-              player_records: presentPlayers
-            });
-            modals.playerSelect.openModal();
-          }        } else {
-          // If no player records at all, guide user to mark attendance first
-          toast.info("No attendance records found", {
-            description: "Would you like to mark attendance for this training session now?",
-            richColors: true,
-            action: {
-              label: "Mark Attendance",
-              onClick: () => modals.attendance.openModal()
-            }
-          });
-        }
+        // Update the session with player records
+        setSelectedSession(detailedSession);
+        modals.playerSelect.openModal();
       } catch (error) {
         console.error("Error fetching session details:", error);
         toast.error("Failed to load session details", {
           description: error.message || "Please try again",
-          richColors: true
         });
       }
-    }
+    },
   });
 
   // Event listeners for metrics configuration
@@ -180,12 +108,24 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
       }
     };
 
-    window.addEventListener('configureSessionMetrics', handleConfigureSessionMetrics);
-    window.addEventListener('configurePlayerMetrics', handleConfigurePlayerMetrics);
+    window.addEventListener(
+      "configureSessionMetrics",
+      handleConfigureSessionMetrics
+    );
+    window.addEventListener(
+      "configurePlayerMetrics",
+      handleConfigurePlayerMetrics
+    );
 
     return () => {
-      window.removeEventListener('configureSessionMetrics', handleConfigureSessionMetrics);
-      window.removeEventListener('configurePlayerMetrics', handleConfigurePlayerMetrics);
+      window.removeEventListener(
+        "configureSessionMetrics",
+        handleConfigureSessionMetrics
+      );
+      window.removeEventListener(
+        "configurePlayerMetrics",
+        handleConfigurePlayerMetrics
+      );
     };
   }, []);
 
@@ -203,7 +143,6 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
           New Session
         </Button>
       </div>
-
       <DataTable
         columns={columns}
         data={sessions}
@@ -246,12 +185,13 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
         onSuccess={() => {
           setCurrentPage(1);
         }}
-      />      <PlayerMetricRecordModal
+      />
+      <PlayerMetricRecordModal
         isOpen={modals.metrics.isOpen}
         onClose={modals.metrics.closeModal}
         playerTraining={selectedPlayerTraining}
-        metrics={sessionMetrics.length > 0 ? sessionMetrics : metrics}
-      />      <PlayerSelectModal
+      />
+      <PlayerSelectModal
         isOpen={modals.playerSelect.isOpen}
         onClose={modals.playerSelect.closeModal}
         players={selectedSession?.player_records || []}
@@ -259,26 +199,16 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
         onSelectPlayer={(player) => {
           setSelectedPlayerTraining(player);
           modals.playerSelect.closeModal();
-          modals.metrics.openModal();
-        }}
-        onConfigurePlayerMetrics={(player, metricIds) => {
-          assignPlayerMetrics({
-            playerTrainingId: player.id,
-            metricIds: metricIds
-          });
+          // Add a small delay before opening the metrics modal
+          setTimeout(() => {
+            modals.metrics.openModal();
+          }, 0);
         }}
       />
       <SessionMetricsConfigModal
         isOpen={modals.metricsConfig.isOpen}
         onClose={modals.metricsConfig.closeModal}
         session={selectedSession}
-        sessionMetrics={sessionMetrics}
-        onSave={(metricIds) => {
-          assignMetrics({
-            sessionId: selectedSession.id,
-            metricIds: metricIds
-          });
-        }}
       />
     </div>
   );

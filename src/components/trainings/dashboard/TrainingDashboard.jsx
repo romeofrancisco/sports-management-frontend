@@ -5,8 +5,8 @@ import TrainingMetricsList from "../metrics/TrainingMetricsList";
 import TrainingSessionsList from "../sessions/TrainingSessionsList";
 import TeamTrainingAnalytics from "../teams/TeamTrainingAnalytics";
 import { useSelector } from "react-redux";
-import PlayerProgressSection from "../players/PlayerProgressSection";
-
+import { PlayerProgressSection } from "../players";
+import { MetricUnitsManager } from "../MetricUnitsManager";
 const TrainingDashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState("sessions");
@@ -27,12 +27,13 @@ const TrainingDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
           <TabsTrigger value="sessions">Training Sessions</TabsTrigger>
           <TabsTrigger value="players">Player Progress</TabsTrigger>
           <TabsTrigger value="analytics">Team Analytics</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="metrics">Metrics</TabsTrigger>
+          <TabsTrigger value="units">Units</TabsTrigger>
         </TabsList>
 
         <TabsContent value="sessions" className="mt-6">
@@ -53,6 +54,10 @@ const TrainingDashboard = () => {
 
         <TabsContent value="metrics" className="mt-6">
           <TrainingMetricsList />
+        </TabsContent>
+
+        <TabsContent value="units" className="mt-6">
+          <MetricUnitsManager />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import {
 } from "@/constants/trainings";
 import { UserIcon, Settings, ClipboardPenLine } from "lucide-react";
 import PlayerMetricsConfigModal from "@/components/trainings/metrics/PlayerMetricsConfigModal";
+import { useAssignPlayerTrainingMetrics } from "@/hooks/useTrainings";
 
 // Status styles matching the design system
 const statusStyles = {
@@ -54,12 +55,23 @@ const PlayerSelectModal = ({
   onClose,
   players = [],
   onSelectPlayer,
-  onConfigurePlayerMetrics,
   sessionMetrics = [],
-}) => {
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+}) => {  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
-  
+  const { mutate: assignPlayerMetrics } = useAssignPlayerTrainingMetrics();
+
+  // Handle auto-selection for single player
+  useEffect(() => {
+    if (players.length === 1) {
+      const player = players[0];
+      if (player.attendance_status === ATTENDANCE_STATUS.PRESENT ||
+          player.attendance_status === ATTENDANCE_STATUS.LATE) {
+        onSelectPlayer(player);
+        onClose();
+      }
+    }
+  }, [players, onSelectPlayer, onClose]);
+
   // Filter only players with present or late status
   const availablePlayers = players.filter(
     (player) =>
@@ -91,7 +103,8 @@ const PlayerSelectModal = ({
                   player.attendance_status || ATTENDANCE_STATUS.PENDING;
                 const style = statusStyles[status] || statusStyles.pending;
 
-                return (                  <Button
+                return (
+                  <Button
                     key={player.id}
                     variant="outline"
                     className={cn(
@@ -116,10 +129,10 @@ const PlayerSelectModal = ({
                           status.charAt(0).toUpperCase() + status.slice(1)}
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2 w-full mt-3">
-                      <Button 
-                        variant="secondary" 
+                      <Button
+                        variant="secondary"
                         size="sm"
                         className="flex-1"
                         onClick={() => {
@@ -130,8 +143,8 @@ const PlayerSelectModal = ({
                         <ClipboardPenLine className="h-4 w-4 mr-2" />
                         Record Metrics
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         className="flex-1"
                         onClick={() => {
@@ -147,14 +160,15 @@ const PlayerSelectModal = ({
                 );
               })
             )}
-          </div>        </ScrollArea>
+          </div>
+        </ScrollArea>
 
         <div className="flex justify-end pt-4 border-t mt-2">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
         </div>
-          {/* Player Metrics Configuration Modal */}
+        {/* Player Metrics Configuration Modal */}
         {selectedPlayer && (
           <PlayerMetricsConfigModal
             isOpen={isConfigModalOpen}
@@ -163,11 +177,11 @@ const PlayerSelectModal = ({
             }}
             playerTraining={selectedPlayer}
             playerMetrics={selectedPlayer.assigned_metrics || []}
-            sessionMetrics={sessionMetrics}
-            onSave={(metricIds) => {
-              if (onConfigurePlayerMetrics) {
-                onConfigurePlayerMetrics(selectedPlayer, metricIds);
-              }
+            sessionMetrics={sessionMetrics}            onSave={(metricIds) => {
+              assignPlayerMetrics({
+                playerTrainingId: selectedPlayer.id,
+                metricIds: metricIds,
+              });
             }}
           />
         )}

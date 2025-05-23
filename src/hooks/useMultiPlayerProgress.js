@@ -30,7 +30,6 @@ export const useMultiPlayerProgress = (options = {}) => {
     // Otherwise, extract playerIds from player objects
     return players.map(player => player.user_id || player.id).filter(Boolean);
   }, [players, teamSlug]);
-
   const hasPlayerIds = playerIds.length > 0;
   const hasTeamSlug = !!teamSlug;
   const hasValidRequest = hasTeamSlug || hasPlayerIds; // Team slug is sufficient even without player IDs
@@ -43,7 +42,7 @@ export const useMultiPlayerProgress = (options = {}) => {
       playerIds, // We've already excluded playerIds when teamSlug is provided
       ...filters 
     }),
-    enabled: enabled && hasValidRequest && !!filters.metric,
+    enabled: enabled && hasValidRequest,
     // Don't refetch on window focus for better performance
     refetchOnWindowFocus: false,
   });

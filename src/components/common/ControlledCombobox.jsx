@@ -59,7 +59,7 @@ const ControlledCombobox = ({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="w-full justify-between"
+                  className="w-full justify-between font-normal"
                   size={size}
                   disabled={disabled}
                 >

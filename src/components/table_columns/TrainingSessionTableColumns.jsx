@@ -1,4 +1,11 @@
-import { Edit, MoreHorizontal, Trash, ClipboardCheck, ClipboardPenLine, Settings } from "lucide-react";
+import {
+  Edit,
+  MoreHorizontal,
+  Trash,
+  ClipboardCheck,
+  ClipboardPenLine,
+  Settings,
+} from "lucide-react";
 import React from "react";
 import {
   DropdownMenu,
@@ -10,7 +17,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatTo12HourTime } from "@/utils/formatTime";
 
-const getTrainingSessionTableColumns = ({ onEdit, onDelete, onAttendance, onRecord, onConfigureMetrics }) => [
+const getTrainingSessionTableColumns = ({
+  onEdit,
+  onDelete,
+  onAttendance,
+  onRecord,
+  onConfigureMetrics,
+}) => [
   {
     header: "Title",
     accessorKey: "title",
@@ -51,19 +64,26 @@ const getTrainingSessionTableColumns = ({ onEdit, onDelete, onAttendance, onReco
             <span className="sr-only">Open menu</span>
             <MoreHorizontal />
           </Button>
-        </DropdownMenuTrigger>        <DropdownMenuContent align="end">
+        </DropdownMenuTrigger>{" "}
+        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => onRecord(row.original)}>
             <ClipboardPenLine className="h-4 w-4 mr-2" />
             Record Player Metrics
-          </DropdownMenuItem>          <DropdownMenuItem onClick={() => onConfigureMetrics && onConfigureMetrics(row.original)}>
+          </DropdownMenuItem>{" "}
+          <DropdownMenuItem
+            onClick={() =>
+              onConfigureMetrics && onConfigureMetrics(row.original)
+            }
+          >
             <Settings className="h-4 w-4 mr-2" />
             Configure Metrics for Session
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onAttendance(row.original)}>
             <ClipboardCheck className="h-4 w-4 mr-2" />
             Mark Attendance
-          </DropdownMenuItem>          <DropdownMenuItem onClick={() => onEdit(row.original)}>
+          </DropdownMenuItem>{" "}
+          <DropdownMenuItem onClick={() => onEdit(row.original)}>
             <Edit className="h-4 w-4 mr-2" />
             Update Session
           </DropdownMenuItem>

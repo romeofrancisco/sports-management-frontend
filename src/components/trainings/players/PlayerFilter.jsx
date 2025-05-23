@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui";
+} from "@/components/ui/select";
 
 const PlayerFilter = ({ 
   players = [], 

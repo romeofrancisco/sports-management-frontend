@@ -56,7 +56,9 @@ export const updateTeam = async (teamData, team) => {
 
 export const fetchTeamsInSeason = async (leagueId, seasonId) => {
   try {
-    const { data } = await api.get(`leagues/${leagueId}/seasons/${seasonId}/teams/`);
+    const { data } = await api.get(
+      `leagues/${leagueId}/seasons/${seasonId}/teams/`
+    );
     return data;
   } catch (error) {
     console.log("Error fetching teams in season:", error);
@@ -83,3 +85,4 @@ export const fetchTeamPlayers = async (teamSlug) => {
     throw error;
   }
 };
+

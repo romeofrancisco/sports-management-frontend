@@ -32,6 +32,65 @@ const cleanParams = (params = {}) => {
   return cleanedParams;
 };
 
+// Utility function to format unit display
+export const formatMetricUnit = (metric) => {  if (!metric || !metric.metric_unit) return "-";
+  return `${metric.metric_unit.name} (×${metric.metric_unit.normalization_weight})`;
+};
+
+// Utility function to normalize improvement percentage
+export const normalizeImprovement = (improvement, metric) => {  if (improvement === null || improvement === undefined) return null;
+  if (!metric.metric_unit) return improvement;
+  return improvement * (parseFloat(metric.metric_unit.normalization_weight) || 1.0);
+};
+
+// Metric Units
+export const fetchMetricUnits = async (params = {}) => {
+  try {
+    const { data } = await api.get("trainings/metric-units/", {
+      params: cleanParams(params),
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchMetricUnit = async (id) => {
+  try {
+    const { data } = await api.get(`trainings/metric-units/${id}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createMetricUnit = async (unitData) => {
+  try {
+    const { data } = await api.post("trainings/metric-units/", unitData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateMetricUnit = async ({ id, ...unitData }) => {
+  try {
+    const { data } = await api.patch(`trainings/metric-units/${id}/`, unitData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteMetricUnit = async (id) => {
+  try {
+    const { data } = await api.delete(`trainings/metric-units/${id}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Training Categories
 export const fetchTrainingCategories = async () => {
   try {
@@ -344,19 +403,24 @@ export const fetchMultiPlayerProgress = async ({ playerIds = [], teamSlug = null
     // Use either player IDs, team slug, or both
     if (!teamSlug && (!playerIds || playerIds.length === 0)) {
       throw new Error("Either team slug or player IDs must be provided");
-    }
-
-    if (!params.metric) {
-      throw new Error("Metric ID is required");
-    }
-    
-    // Prepare query parameters
+    }    // Prepare query parameters
     const queryParams = {
       team: teamSlug,
-      metric_id: params.metric,
-      date_from: params.date_from,
-      date_to: params.date_to
     };
+    
+    // Only add metric_id if it's provided
+    if (params.metric) {
+      queryParams.metric_id = params.metric;
+    }
+    
+    // Only add date filters if they're provided
+    if (params.date_from) {
+      queryParams.date_from = params.date_from;
+    }
+    
+    if (params.date_to) {
+      queryParams.date_to = params.date_to;
+    }
     
     // Only add player_ids if they're provided and not empty
     if (playerIds && playerIds.length > 0) {
@@ -399,7 +463,7 @@ export const fetchTeamTrainingAnalyticsById = async ({ id, ...params }) => {
 
 export const assignMetricsToSession = async ({ sessionId, metricIds }) => {
   try {
-    const { data } = await api.post(`trainings/trainings/sessions/${sessionId}/assign_metrics/`, {
+    const { data } = await api.post(`trainings/sessions/${sessionId}/assign_metrics/`, {
       metrics: metricIds
     });
     return data;
@@ -410,7 +474,7 @@ export const assignMetricsToSession = async ({ sessionId, metricIds }) => {
 
 export const assignMetricsToPlayerTraining = async ({ playerTrainingId, metricIds }) => {
   try {
-    const { data } = await api.post(`trainings/trainings/player-trainings/${playerTrainingId}/assign_metrics/`, {
+    const { data } = await api.post(`trainings/player-trainings/${playerTrainingId}/assign_metrics/`, {
       metrics: metricIds
     });
     return data;

@@ -10,18 +10,43 @@ import {
   Dumbbell,
 } from "lucide-react";
 
-export const adminMain = () => {
+export const coachNavigation = () => {
   return [
     {
       title: "Dashboard",
       url: "/",
       icon: Gauge,
     },
+    {
+      title: "My Teams",
+      url: "/teams",
+      icon: Users,
+    },
+    {
+      title: "Players",
+      url: "/players",
+      icon: User,
+    },
+    {
+      title: "Game Schedules",
+      url: "/games",
+      icon: CalendarCog,
+    },
+    {
+      title: "Trainings",
+      url: "/trainings",
+      icon: Dumbbell,
+    },
   ];
 };
 
-export const adminManagement = () => {
+export const adminNavigation = () => {
   return [
+    {
+      title: "Dashboard",
+      url: "/",
+      icon: Gauge,
+    },
     {
       title: "Sports",
       url: "/sports",

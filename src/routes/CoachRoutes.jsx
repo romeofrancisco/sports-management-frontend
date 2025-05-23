@@ -1,5 +1,11 @@
 import CoachDashboard from "@/pages/coach/CoachDashboard";
 import TrainingsPage from "@/pages/admin/training/TrainingsPage";
+import TeamsList from "@/pages/admin/team/TeamsList";
+import TeamDetails from "@/pages/admin/team/TeamDetails";
+import PlayersList from "@/pages/admin/player/PlayersList";
+import GameSchedule from "@/pages/admin/game/GameSchedule";
+import PlayerDetails from "@/pages/admin/player/PlayerDetails";
+import TrainingSettingsPage from "@/pages/TrainingSettingsPage";
 
 export const coachRoutes = [
   {
@@ -7,7 +13,30 @@ export const coachRoutes = [
     element: <CoachDashboard />,
   },
   {
+    path: "/teams",
+    element: <TeamsList />,
+  },
+  {
+    path: "/teams/:id",
+    element: <TeamDetails />,
+  },
+  {
+    path: "/players",
+    element: <PlayersList />,
+  },
+    {
+    path: "/players/:id",
+    element: <PlayerDetails />,
+  },
+  {
+    path: "/games",
+    element: <GameSchedule />,
+  },  {
     path: "/trainings",
     element: <TrainingsPage />,
+  },
+  {
+    path: "/training-settings",
+    element: <TrainingSettingsPage />,
   },
 ];

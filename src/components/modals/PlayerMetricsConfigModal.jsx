@@ -36,15 +36,18 @@ const PlayerMetricsConfigModal = ({
   const { data: allMetrics, isLoading: metricsLoading } = useTrainingMetrics();
   const { data: categories } = useTrainingCategories();
   const { mutate: assignMetrics, isLoading: isAssigning } = useAssignPlayerTrainingMetrics();
-
   // Initialize selected metrics when modal opens or player changes
   useEffect(() => {
-    if (isOpen && assignedMetrics.length > 0) {
-      setSelectedMetrics(assignedMetrics.map(metric => metric.id));
-    } else if (isOpen) {
-      setSelectedMetrics([]);
+    if (isOpen) {
+      if (playerTraining.id && assignedMetrics.length > 0) {
+        // For existing player training, use assigned metrics
+        setSelectedMetrics(assignedMetrics.map(metric => metric.id));
+      } else {
+        // For new player training, clear selection
+        setSelectedMetrics([]);
+      }
     }
-  }, [isOpen, assignedMetrics]);
+  }, [isOpen, assignedMetrics, playerTraining]);
 
   // Filter metrics based on selected category
   const filteredMetrics = React.useMemo(() => {

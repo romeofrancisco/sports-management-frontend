@@ -32,7 +32,6 @@ const PlayerForm = ({ sports, onClose, player }) => {
       sex: player?.sex || "",
       year_level: player?.year_level || "",
       course: player?.course || "",
-      password: player?.password || "",
       profile: null,
       sport_slug: player?.sport.slug || "",
       height: player?.height || "",

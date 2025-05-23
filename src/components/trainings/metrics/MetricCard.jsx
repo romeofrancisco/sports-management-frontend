@@ -46,7 +46,7 @@ const MetricCard = ({ metric, categoryColor = '#007bff', onEdit, onDeleted }) =>
           <div>
             <CardTitle>{metric.name}</CardTitle>
             <div className="text-sm text-muted-foreground mt-1">
-              Unit: {metric.unit} |{" "}
+              Unit: {metric.metric_unit?.code || '-'} |{" "}
               {metric.is_lower_better ? "Lower is better" : "Higher is better"}
             </div>
           </div>

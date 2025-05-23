@@ -13,6 +13,7 @@ import {
   useCreateTrainingMetric,
   useUpdateTrainingMetric,
 } from "@/hooks/useTrainings";
+import { useMetricUnits } from "@/hooks/useMetricUnits";
 import ControlledInput from "@/components/common/ControlledInput";
 import ControlledTextarea from "@/components/common/ControlledTextarea";
 import ControlledCombobox from "@/components/common/ControlledCombobox";
@@ -31,14 +32,16 @@ const TrainingMetricFormDialog = ({
     useCreateTrainingMetric();
   const { mutateAsync: updateMetric, isPending: isUpdating } =
     useUpdateTrainingMetric();
+  const { data: availableUnits = [] } = useMetricUnits();
 
   const form = useForm({
     defaultValues: {
       name: "",
       description: "",
-      unit: "",
+      metric_unit: "",
       category: categories.length > 0 ? categories[0].id : "",
       is_lower_better: false,
+      weight: 1.0,
     },
   });
 
@@ -48,21 +51,24 @@ const TrainingMetricFormDialog = ({
         form.reset({
           name: metric.name || "",
           description: metric.description || "",
-          unit: metric.unit || "",
+          metric_unit: metric.metric_unit?.id || "",
           category: metric.category || "",
           is_lower_better: metric.is_lower_better ?? false,
+          weight: metric.weight || 1.0,
         });
       } else {
         form.reset({
           name: "",
           description: "",
-          unit: "",
+          metric_unit: availableUnits.length > 0 ? availableUnits[0].id : "",
           category: categories.length > 0 ? categories[0].id : "",
           is_lower_better: false,
+          weight: 1.0,
         });
       }
     }
-  }, [metric, categories, form, open]);
+  }, [metric, categories, availableUnits, form, open]);
+
   const onSubmit = async (data) => {
     try {
       if (metric) {
@@ -115,14 +121,18 @@ const TrainingMetricFormDialog = ({
           />
 
           <div className="flex space-x-4">
-            <ControlledInput
-              name="unit"
+            <ControlledCombobox
+              name="metric_unit"
               control={form.control}
               label="Unit"
-              placeholder="E.g., seconds, cm"
+              placeholder="Select unit"
+              options={availableUnits}
               rules={{ required: "Unit is required" }}
               errors={form.formState.errors}
               className="flex-1"
+              valueKey="id"
+              labelKey="name"
+              description={(unit) => `${unit.code} (weight: ${unit.normalization_weight})`}
             />
             <ControlledCombobox
               name="category"
@@ -154,7 +164,9 @@ const TrainingMetricFormDialog = ({
             >
               Cancel
             </Button>
-            <Button type="submit">{metric ? "Update" : "Create"} Metric</Button>
+            <Button type="submit" disabled={isCreating || isUpdating}>
+              {metric ? "Update" : "Create"} Metric
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
