@@ -32,7 +32,7 @@ const PlayerMetricRecorder = ({ player, onClose }) => {
     !!playerTraining?.session
   );
   // Get available metrics filtered by session categories
-  const { metrics, isLoading: metricsLoading } = useTrainingMetrics();
+  const { data: metrics, isLoading: metricsLoading } = useTrainingMetrics();
 
   // Filter metrics by session categories
   const filteredMetrics = React.useMemo(() => {
@@ -133,32 +133,19 @@ const PlayerMetricRecorder = ({ player, onClose }) => {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex justify-between items-start">
-            <span>{playerTraining.player_name}</span>
-            <Badge>{playerTraining.attendance_status}</Badge>
-          </CardTitle>
-          <CardDescription>
-            Session: {playerTraining.session_title} (
-            {playerTraining.session_date})
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          {playerTraining.metric_records &&
-          playerTraining.metric_records.length > 0 ? (
+      <Card className="mb-4">
+        <CardContent className="pt-6">
+          {playerTraining.metric_records.length > 0 ? (
             <>
-              <div className="font-medium mb-2">Recorded Metrics:</div>
+              <div className="font-medium mb-2">Previously Recorded:</div>
               <ul className="space-y-2">
                 {playerTraining.metric_records.map((record) => (
-                  <li
-                    key={record.id}
-                    className="flex justify-between items-center"
-                  >
-                    <span>{record.metric_name}</span>
-                    <span className="font-semibold">
-                      {record.value} {record.metric_unit}
+                  <li key={record.id} className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      {record.metric.name}:
+                    </span>
+                    <span>
+                      {record.value} {record.metric.metric_unit?.code || ''}
                     </span>
                   </li>
                 ))}
@@ -200,7 +187,7 @@ const PlayerMetricRecorder = ({ player, onClose }) => {
                     value={metric.id}
                     disabled={isSelected}
                   >
-                    {metric.name} ({metric.unit}){isSelected && " - Added"}
+                    {metric.name} ({metric.metric_unit?.code || '-'}){isSelected && " - Added"}
                   </SelectItem>
                 );
               })}

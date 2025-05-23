@@ -54,48 +54,39 @@ ChartJS.register(
 const TeamTrainingAnalytics = ({ teamSlug }) => {
   const [selectedMetric, setSelectedMetric] = useState(null);
   const [dateRange, setDateRange] = useState({
-    from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
-    to: new Date(),
+    from: null,
+    to: null,
   });
   const [activeTab, setActiveTab] = useState("attendance");
-
-  // Format date strings for API
+  // Format date strings for API only if dates are selected
   const formattedDateRange = useMemo(
-    () => ({
-      date_from: dateRange.from
-        ? dateRange.from.toISOString().split("T")[0]
-        : undefined,
-      date_to: dateRange.to
-        ? dateRange.to.toISOString().split("T")[0]
-        : undefined,
-    }),
+    () => {
+      if (!dateRange.from || !dateRange.to) return {};
+      
+      return {
+        date_from: dateRange.from.toISOString().split("T")[0],
+        date_to: dateRange.to.toISOString().split("T")[0],
+      };
+    },
     [dateRange]
   );
   // Get available metrics
   const { data: metrics = [] } = useTrainingMetrics();
-
-  // If no selected metric and metrics are available, select the first one
-  React.useEffect(() => {
-    if (!selectedMetric && metrics.length > 0) {
-      setSelectedMetric(metrics[0].id);
-    }
-  }, [selectedMetric, metrics]);
-  // Build query params for analytics API
+  // No automatic selection of the first metric
+  // User must explicitly select a metric to view data  // Build query params for analytics API
   const queryParams = useMemo(
     () => ({
-      id: teamSlug,
+      team: teamSlug,
       metric_id: selectedMetric,
-      ...formattedDateRange,
+      ...(dateRange.from && dateRange.to ? formattedDateRange : {})
     }),
-    [teamSlug, selectedMetric, formattedDateRange]
-  );
-  // Get team analytics data
+    [teamSlug, selectedMetric, dateRange, formattedDateRange]
+  );// Get team analytics data - only call API when a metric is selected
   const {
     data: analytics,
     isLoading,
     error,  } = useTeamTrainingAnalytics(
-    teamSlug, 
-    queryParams, 
+    teamSlug ? queryParams : null, 
     !!teamSlug && !!selectedMetric
   );
 
@@ -168,7 +159,7 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
               <SelectContent>
                 {metrics.map((metric) => (
                   <SelectItem key={metric.id} value={metric.id}>
-                    {metric.name} ({metric.unit})
+                    {metric.name} ({metric.metric_unit?.code || '-'})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -300,7 +291,7 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
               <CardDescription>
                 {selectedMetricDetails ? (
                   <>
-                    {selectedMetricDetails.name} ({selectedMetricDetails.unit})
+                    {selectedMetricDetails.name} ({selectedMetricDetails.metric_unit?.code || '-'})
                     -
                     {selectedMetricDetails.is_lower_better
                       ? " Lower values are better"
@@ -421,10 +412,10 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
                             {player.player_name}
                           </td>
                           <td className="border py-2 px-3 text-right">
-                            {player.first_value} {selectedMetricDetails?.unit}
+                            {player.first_value} {selectedMetricDetails?.metric_unit?.code || '-'}
                           </td>
                           <td className="border py-2 px-3 text-right">
-                            {player.last_value} {selectedMetricDetails?.unit}
+                            {player.last_value} {selectedMetricDetails?.metric_unit?.code || '-'}
                           </td>
                           <td className="border py-2 px-3 text-right">
                             <span
@@ -436,7 +427,7 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
                             >
                               {player.improvement >= 0 ? "+" : ""}
                               {player.improvement.toFixed(2)}{" "}
-                              {selectedMetricDetails?.unit}
+                              {selectedMetricDetails?.metric_unit?.code || ''}
                             </span>
                           </td>
                           <td className="border py-2 px-3 text-right">

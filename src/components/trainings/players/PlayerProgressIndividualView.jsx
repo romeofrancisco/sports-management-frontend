@@ -8,8 +8,15 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, LineChart, BarChart, BarChart3, PlusCircle } from "lucide-react";
-import PlayerProgressChart from "./PlayerProgressChart";
+import {
+  ChevronLeft,
+  LineChart,
+  BarChart,
+  BarChart3,
+  PlusCircle,
+} from "lucide-react";
+import PlayerProgressChart from "@/components/charts/PlayerProgressChart/PlayerProgressChart";
+import PlayerProgressStats from "./PlayerProgressStats";
 
 const PlayerProgressIndividualView = ({
   playerId,
@@ -22,8 +29,8 @@ const PlayerProgressIndividualView = ({
   const [activeTab, setActiveTab] = useState("chart");
 
   return (
-    <Card className="shadow-sm border overflow-hidden">
-      <CardHeader className="bg-muted/30 pb-2 border-b">
+    <Card className="shadow-sm border overflow-hidden pt-0">
+      <CardHeader className="bg-muted/30 pb-2 border-b py-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Button
@@ -46,6 +53,7 @@ const PlayerProgressIndividualView = ({
           </div>
         </div>
       </CardHeader>
+      <PlayerProgressStats playerId={playerId} />
 
       <Tabs
         defaultValue="chart"
@@ -90,9 +98,8 @@ const PlayerProgressIndividualView = ({
                     Detailed Metrics Data
                   </h3>
                   <p className="text-muted-foreground max-w-md mb-6">
-                    A comprehensive data table showing all recorded
-                    metrics and analytics for this player is coming
-                    soon.
+                    A comprehensive data table showing all recorded metrics and
+                    analytics for this player is coming soon.
                   </p>
                   <div className="flex gap-3">
                     <Button

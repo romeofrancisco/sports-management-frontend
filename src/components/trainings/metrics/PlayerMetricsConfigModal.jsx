@@ -222,7 +222,7 @@ const PlayerMetricsConfigModal = ({
                           {metric.name}
                         </Label>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {metric.description} ({metric.unit})
+                          {metric.description} ({metric.metric_unit ? metric.metric_unit.code : '-'})
                         </p>
                       </div>
                       {metric.category_name && (

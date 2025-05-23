@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import TrainingSessionFormDialog from "@/components/modals/TrainingSessionFormDialog";
+import TrainingSessionFormDialog from "@/components/modals/trainings/TrainingSessionFormDialog";
 import {
   AlertDialog,
   AlertDialogAction,

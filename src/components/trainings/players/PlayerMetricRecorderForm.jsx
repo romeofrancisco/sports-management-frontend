@@ -19,7 +19,7 @@ const PlayerMetricRecorderForm = ({
             <div className="font-medium">
               {metricDetails?.name}
               <span className="ml-1 text-muted-foreground">
-                ({metricDetails?.unit})
+                ({metricDetails?.metric_unit?.code || '-'})
               </span>
             </div>
             <Button
@@ -31,11 +31,12 @@ const PlayerMetricRecorderForm = ({
               Remove
             </Button>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ControlledInput
               control={form.control}
               name={`metrics.${index}.value`}
-              label={`Value (${metricDetails?.unit})`}
+              label={`Value (${metricDetails?.metric_unit?.code || '-'})`}
               type="number"
               step="0.01"
               placeholder={`Enter ${metricDetails?.name} value`}
@@ -60,19 +61,9 @@ const PlayerMetricRecorderForm = ({
         Select metrics to record from the dropdown above
       </div>
     )}
-    <div className="flex justify-end gap-2">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={form.onCancel || (() => {})}
-      >
-        Cancel
-      </Button>
-      <Button
-        type="submit"
-        disabled={form.watch("metrics")?.length === 0 || isSubmitting}
-      >
-        Save Metrics
+    <div className="flex justify-end gap-4">
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : "Save Metrics"}
       </Button>
     </div>
   </form>

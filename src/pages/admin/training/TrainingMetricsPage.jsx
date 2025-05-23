@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { useTrainingMetrics, useDeleteTrainingMetric } from "@/hooks/useTrainings";
+  import React, { useState } from "react";
+import { useTrainingMetrics, useDeleteTrainingMetric, useTrainingCategories } from "@/hooks/useTrainings";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Pencil, Trash2, Loader2, ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import TrainingMetricFormDialog from "@/components/modals/TrainingMetricFormDialog";
+import TrainingMetricFormDialog from "@/components/modals/trainings/TrainingMetricFormDialog";
+import { useMetricUnits } from "@/hooks/useMetricUnits";
+import { Link } from "react-router-dom";
 import { 
   AlertDialog, AlertDialogAction, AlertDialogCancel, 
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter, 
@@ -16,11 +18,13 @@ import { Input } from "@/components/ui/input";
 const TrainingMetricsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState(null);
-  const [metricToDelete, setMetricToDelete] = useState(null);
+  const [metricToDelete, setMetricToDelete] = useState(null);  
   const [searchQuery, setSearchQuery] = useState("");
   
   const { metrics, isLoading } = useTrainingMetrics();
   const { deleteMetric, isLoading: isDeleting } = useDeleteTrainingMetric();
+  const { data: categories = [] } = useTrainingCategories();
+  const { data: metricUnits = [] } = useMetricUnits();
 
   const filteredMetrics = React.useMemo(() => {
     if (!metrics) return [];
@@ -31,8 +35,8 @@ const TrainingMetricsPage = () => {
       metric => 
         metric.name.toLowerCase().includes(lowerQuery) ||
         metric.description.toLowerCase().includes(lowerQuery) ||
-        metric.categories_names?.some(catName => catName.toLowerCase().includes(lowerQuery)) ||
-        metric.unit.toLowerCase().includes(lowerQuery)
+        (metric.metric_unit?.name || '').toLowerCase().includes(lowerQuery) ||
+        (metric.category_name || '').toLowerCase().includes(lowerQuery)
     );
   }, [metrics, searchQuery]);
 
@@ -102,6 +106,7 @@ const TrainingMetricsPage = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Unit</TableHead>
+                <TableHead>Weight</TableHead>
                 <TableHead>Better Value</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -111,10 +116,18 @@ const TrainingMetricsPage = () => {
               {filteredMetrics.length > 0 ? (
                 filteredMetrics.map((metric) => (
                   <TableRow key={metric.id}>
-                    <TableCell className="font-medium">{metric.name}</TableCell>                    <TableCell>
+                    <TableCell className="font-medium">{metric.name}</TableCell>
+                    <TableCell>
                       {metric.category_name || (typeof metric.category === 'object' ? metric.category.name : '')}
                     </TableCell>
-                    <TableCell>{metric.unit}</TableCell>
+                    <TableCell>                      <span>{metric.metric_unit?.name || '-'} ({metric.metric_unit?.code || '-'})</span>
+                    </TableCell>
+                    <TableCell>
+                      {metric.metric_unit ? (
+                        <span className="text-sm text-muted-foreground">
+                          ×{metric.metric_unit.normalization_weight.toFixed(2)}
+                        </span>
+                      ) : "-"}                    </TableCell>
                     <TableCell>
                       {metric.is_lower_better ? (
                         <div className="flex items-center">
@@ -155,7 +168,7 @@ const TrainingMetricsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center">
+                  <TableCell colSpan={7} className="h-32 text-center">
                     No metrics found.
                     {searchQuery ? " Try adjusting your search." : ""}
                   </TableCell>
@@ -164,13 +177,11 @@ const TrainingMetricsPage = () => {
             </TableBody>
           </Table>
         </div>
-      )}
-
-      <TrainingMetricFormDialog
+      )}      <TrainingMetricFormDialog
         open={isModalOpen}
         onOpenChange={handleCloseModal}
         metric={selectedMetric}
-        onSuccess={handleCloseModal}
+        categories={categories}
       />
 
       <AlertDialog open={!!metricToDelete} onOpenChange={() => setMetricToDelete(null)}>
