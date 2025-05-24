@@ -24,8 +24,7 @@ const PlayerProgressChart = ({ metricData, data }) => {
             </div>
             <p className={`text-sm ${isImproved ? "text-green-600" : "text-red-600"}`}>
               {isImproved ? "Improvement" : "Decline"} from first to last record
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            </p>            <p className="text-sm text-muted-foreground mt-2">
               {improvementPercentage > 0 ? "+" : ""}
               {improvementPercentage.toFixed(2)}% Overall Improvement
             </p>

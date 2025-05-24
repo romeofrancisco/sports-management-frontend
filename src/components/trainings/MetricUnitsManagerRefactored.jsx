@@ -121,10 +121,11 @@ const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
         </TableHeader>
         <TableBody>
           {units.length > 0 ? (
-            units.map((unit) => (              <TableRow key={unit.id}>
+            units.map((unit) => (
+              <TableRow key={unit.id}>
                 <TableCell className="font-medium">{unit.code}</TableCell>
                 <TableCell>{unit.name}</TableCell>
-                <TableCell>×{(parseFloat(unit.normalization_weight) || 1.0).toFixed(2)}</TableCell>
+                <TableCell>×{unit.normalization_weight.toFixed(2)}</TableCell>
                 <TableCell className="max-w-xs truncate">
                   {unit.description || "-"}
                 </TableCell>

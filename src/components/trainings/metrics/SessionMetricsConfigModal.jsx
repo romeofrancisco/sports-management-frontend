@@ -35,14 +35,15 @@ const SessionMetricsConfigModal = ({
   // Fetch all metrics and categories
   const { data: allMetrics, isLoading: metricsLoading } = useTrainingMetrics();
   const { data: categories } = useTrainingCategories();
-  // Initialize selected metrics only when modal opens
+
+  // Initialize selected metrics when modal opens or session changes
   useEffect(() => {
-    if (isOpen) {
-      // Convert sessionMetrics to a Set for faster lookups
-      const sessionMetricIds = new Set(sessionMetrics.map(metric => metric.id));
-      setSelectedMetrics(Array.from(sessionMetricIds));
+    if (isOpen && sessionMetrics.length > 0) {
+      setSelectedMetrics(sessionMetrics.map((metric) => metric.id));
+    } else if (isOpen) {
+      setSelectedMetrics([]);
     }
-  }, [isOpen]); // Only depend on isOpen, not sessionMetrics
+  }, [isOpen, sessionMetrics]);
 
   // Filter metrics based on selected category
   const filteredMetrics = React.useMemo(() => {
@@ -89,47 +90,31 @@ const SessionMetricsConfigModal = ({
       }
     });
   };
+
   // Handle selecting or deselecting all visible metrics
-  const handleToggleAll = React.useCallback((select) => {
+  const handleToggleAll = (select) => {
     setSelectedMetrics((prev) => {
-      // Convert to Set for more efficient operations
-      const prevSet = new Set(prev);
-      const filteredIds = new Set(filteredMetrics.map(metric => metric.id));
-      
       if (select) {
-        // Add all filtered metrics
-        filteredIds.forEach(id => prevSet.add(id));
+        // Add all currently filtered metrics to selection
+        const newMetricIds = filteredMetrics
+          .filter((metric) => !prev.includes(metric.id))
+          .map((metric) => metric.id);
+        return [...prev, ...newMetricIds];
       } else {
-        // Remove all filtered metrics
-        filteredIds.forEach(id => prevSet.delete(id));
+        // Remove all currently filtered metrics from selection
+        return prev.filter(
+          (id) => !filteredMetrics.some((metric) => metric.id === id)
+        );
       }
-      
-      return Array.from(prevSet);
     });
-  }, [filteredMetrics]);// Handle saving the configuration
+  };
+  // Handle saving the configuration
   const handleSave = () => {
-    // Check if there are any changes
-    const currentMetricIds = new Set(sessionMetrics.map(metric => metric.id));
-    const selectedMetricIds = new Set(selectedMetrics);
-    const hasChanges = selectedMetrics.length !== sessionMetrics.length ||
-      selectedMetrics.some(id => !currentMetricIds.has(id));
-
-    if (!hasChanges) {
-      onClose();
-      return;
-    }
-
-    assignMetrics(
-      {
-        sessionId: session.id,
-        metricIds: selectedMetrics,
-      },
-      {
-        onSuccess: () => {
-          onClose();
-        }
-      }
-    );
+    assignMetrics({
+      sessionId: session.id,
+      metricIds: selectedMetrics,
+    });
+    onClose();
   };
 
   if (!session) return null;

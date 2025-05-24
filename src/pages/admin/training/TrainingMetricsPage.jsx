@@ -121,13 +121,12 @@ const TrainingMetricsPage = () => {
                       {metric.category_name || (typeof metric.category === 'object' ? metric.category.name : '')}
                     </TableCell>
                     <TableCell>                      <span>{metric.metric_unit?.name || '-'} ({metric.metric_unit?.code || '-'})</span>
-                    </TableCell>
-                    <TableCell>
+                    </TableCell>                    <TableCell>
                       {metric.metric_unit ? (
                         <span className="text-sm text-muted-foreground">
-                          ×{metric.metric_unit.normalization_weight.toFixed(2)}
+                          ×{(parseFloat(metric.metric_unit.normalization_weight) || 1.0).toFixed(2)}
                         </span>
-                      ) : "-"}                    </TableCell>
+                      ) : "-"}</TableCell>
                     <TableCell>
                       {metric.is_lower_better ? (
                         <div className="flex items-center">

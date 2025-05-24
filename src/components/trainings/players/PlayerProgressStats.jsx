@@ -70,11 +70,10 @@ const PlayerProgressStats = ({ playerId }) => {
           </div>          <div>
             <p className="text-sm font-medium text-muted-foreground">
               Recent Improvement
-            </p>
-            {playerData?.recent_improvement ? (
+            </p>            {playerData?.recent_improvement ? (
               <>
                 <p className={`text-xl font-semibold ${playerData.recent_improvement.is_positive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {playerData.recent_improvement.is_positive ? '+' : ''}{parseFloat(playerData.recent_improvement.percentage).toFixed(1)}%
+                  {playerData.recent_improvement.is_positive ? '+' : ''}{parseFloat(playerData.recent_improvement.percentage).toFixed(2)}%
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Last 30 days ({playerData.recent_improvement.metric_count} metrics)
@@ -100,11 +99,10 @@ const PlayerProgressStats = ({ playerId }) => {
           <div>
             <p className="text-sm font-medium text-muted-foreground">
               Overall Improvement
-            </p>
-            {playerData?.overall_improvement ? (
+            </p>            {playerData?.overall_improvement ? (
               <>
                 <p className={`text-xl font-semibold ${playerData.overall_improvement.is_positive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {playerData.overall_improvement.is_positive ? '+' : ''}{parseFloat(playerData.overall_improvement.percentage).toFixed(1)}%
+                  {playerData.overall_improvement.is_positive ? '+' : ''}{parseFloat(playerData.overall_improvement.percentage).toFixed(2)}%
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Across {playerData.overall_improvement.metric_count} metrics

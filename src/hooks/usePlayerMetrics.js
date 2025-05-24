@@ -78,14 +78,13 @@ export function usePlayerMetrics(playerId, dateRange = null) {
   useEffect(() => {
     // We removed automatic metric selection to fix the issue with default metrics
     // being sent in API requests. The user needs to manually select a metric now.
-  }, []);
-
-  // Find the selected metric's data
+  }, []);  // Find the selected metric's data
   const selectedMetricData = useMemo(() => {
     if (!playerData?.metrics_data || !Array.isArray(playerData.metrics_data)) {
       return null;
     }
 
+    // Look for the selected metric in metrics_data array (works for both overall and specific metrics)
     return playerData.metrics_data.find(
       (m) => String(m.metric_id) === String(selectedMetric)
     );
@@ -95,13 +94,12 @@ export function usePlayerMetrics(playerId, dateRange = null) {
   const hasMetricsData =
     playerData?.metrics_data &&
     Array.isArray(playerData.metrics_data) &&
-    playerData.metrics_data.length > 0;
-
-  // Check if we have any data points for the selected metric
-  const hasDataPoints =
-    selectedMetricData?.data_points &&
-    Array.isArray(selectedMetricData.data_points) &&
-    selectedMetricData.data_points.length > 0;
+    playerData.metrics_data.length > 0;  // Check if we have any data points for the selected metric
+  const hasDataPoints = useMemo(() => {
+    return selectedMetricData?.data_points &&
+           Array.isArray(selectedMetricData.data_points) &&
+           selectedMetricData.data_points.length > 0;
+  }, [selectedMetricData]);
 
   const handleDateChange = (newDateRange) => {
     setLocalDateRange(newDateRange);

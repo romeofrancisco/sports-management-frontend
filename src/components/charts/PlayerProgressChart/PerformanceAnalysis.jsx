@@ -59,11 +59,10 @@ export const PerformanceAnalysis = ({ metricData }) => {
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
-                  <div className="text-center">
-                    <div className={`text-3xl font-bold ${
+                  <div className="text-center">                    <div className={`text-3xl font-bold ${
                       overall_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
-                      {overall_improvement.is_positive ? "+" : ""}{overall_improvement.percentage.toFixed(1)}%
+                      {overall_improvement.is_positive ? "+" : ""}{overall_improvement.percentage.toFixed(2)}%
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
                       {overall_improvement.is_positive ? "Improvement" : "Decline"} across all metrics
@@ -92,11 +91,10 @@ export const PerformanceAnalysis = ({ metricData }) => {
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
-                  <div className="text-center">
-                    <div className={`text-3xl font-bold ${
+                  <div className="text-center">                <div className={`text-3xl font-bold ${
                       recent_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
-                      {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(1)}%
+                      {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(2)}%
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
                       Last {recent_improvement.sessions_count} sessions ({recent_improvement.metric_count} metric{recent_improvement.metric_count !== 1 ? 's' : ''})
@@ -214,11 +212,10 @@ export const PerformanceAnalysis = ({ metricData }) => {
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
-                  <div className="text-center">
-                    <div className={`text-3xl font-bold ${
+                  <div className="text-center">                    <div className={`text-3xl font-bold ${
                       isImproved ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
-                      {isImproved ? "+" : ""}{overall_improvement.percentage.toFixed(1)}%
+                      {isImproved ? "+" : ""}{overall_improvement.percentage.toFixed(2)}%
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
                       Overall percentage change
@@ -252,11 +249,10 @@ export const PerformanceAnalysis = ({ metricData }) => {
                       <TrendingDown className="h-6 w-6 text-red-600 dark:text-red-500" />
                     )}
                   </div>
-                  <div>
-                    <p className={`text-2xl font-bold ${
+                  <div>                    <p className={`text-2xl font-bold ${
                       recent_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
-                      {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(1)}%
+                      {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(2)}%
                     </p>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
                       Recent {recent_improvement.is_positive ? "improvement" : "decline"}

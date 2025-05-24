@@ -41,16 +41,15 @@ const ImprovementIndicator = ({ current, previous, isLowerBetter = true }) => {
         "text-xs font-medium flex items-center",
         isImprovement ? "text-green-500" : "text-red-500"
       )}
-    >
-      {isImprovement ? (
+    >      {isImprovement ? (
         <>
           <ArrowUpIcon className="h-3 w-3 mr-1" />
-          Improved by {Math.abs(percentChange).toFixed(1)}%
+          Improved by {Math.abs(percentChange).toFixed(2)}%
         </>
       ) : (
         <>
           <ArrowDownIcon className="h-3 w-3 mr-1" />
-          Decreased by {Math.abs(percentChange).toFixed(1)}%
+          Decreased by {Math.abs(percentChange).toFixed(2)}%
         </>
       )}
     </span>

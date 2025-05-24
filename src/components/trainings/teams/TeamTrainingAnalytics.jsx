@@ -238,11 +238,10 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
                             maintainAspectRatio: false,
                             plugins: {
                               tooltip: {
-                                callbacks: {
-                                  label: function (context) {
+                                callbacks: {                                  label: function (context) {
                                     return `${
                                       context.label
-                                    }: ${context.raw.toFixed(1)}%`;
+                                    }: ${context.raw.toFixed(2)}%`;
                                   },
                                 },
                               },
@@ -266,9 +265,8 @@ const TeamTrainingAnalytics = ({ teamSlug }) => {
                               <div className="text-sm font-medium">
                                 {item.name}
                               </div>
-                            </div>
-                            <div className="font-medium">
-                              {item.value.toFixed(1)}%
+                            </div>                            <div className="font-medium">
+                              {item.value.toFixed(2)}%
                             </div>
                           </div>
                         ))}

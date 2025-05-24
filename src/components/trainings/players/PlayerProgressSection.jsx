@@ -15,6 +15,7 @@ import PlayerCardList from "./PlayerCardList";
 import TeamCardList from "./TeamCardList";
 import LoadingCard from "./LoadingCard";
 import TeamPlayerView from "./TeamPlayerView";
+import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
 
 const PlayerProgressSection = () => {
   const [filter, setFilter] = useState({
@@ -174,12 +175,19 @@ const PlayerProgressSection = () => {
       selectedPlayer: null,
     }));
   };
-
   // Handle back button from team view
   const handleBackToTeamList = () => {
     setFilter((prev) => ({
       ...prev,
       selectedTeam: null,
+    }));
+  };
+
+  // Handle date range change
+  const handleDateRangeChange = (newDateRange) => {
+    setFilter((prev) => ({
+      ...prev,
+      dateRange: newDateRange,
     }));
   };
 
@@ -256,17 +264,18 @@ const PlayerProgressSection = () => {
       />
     );
   };
-
   return (
     <div className="space-y-6">
       <SectionHeader
         title="Player Progress Tracking"
         description="Track and analyze player performance metrics over time"
         actionComponent={
-          <ViewToggle 
-            activeView={filter.viewType} 
-            onViewChange={handleViewTypeChange} 
-          />
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <ViewToggle 
+              activeView={filter.viewType} 
+              onViewChange={handleViewTypeChange} 
+            />
+          </div>
         }
       />
       
