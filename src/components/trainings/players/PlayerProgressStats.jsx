@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Trophy, BarChart3 } from "lucide-react";
 import { usePlayerProgressById } from "@/hooks/useTrainings";
-import ContentLoading from "@/components/common/ContentLoading";
+import PlayerProgressStatsSkeleton from "./PlayerProgressStatsSkeleton";
 import { formatMetricValue } from "@/utils/formatters";
 
 const PlayerProgressStats = ({ playerId }) => {
@@ -11,79 +11,122 @@ const PlayerProgressStats = ({ playerId }) => {
     const to = new Date();
     const from = new Date();
     from.setDate(from.getDate() - 30);
-    
+
     return {
-      date_from: from.toISOString().split('T')[0],
-      date_to: to.toISOString().split('T')[0],
+      date_from: from.toISOString().split("T")[0],
+      date_to: to.toISOString().split("T")[0],
     };
   }, []);
   // Fetch player progress data with backend calculations
-  const { data: playerData, isLoading, isError } = usePlayerProgressById(playerId, !!playerId);
-
+  const {
+    data: playerData,
+    isLoading,
+    isError,
+  } = usePlayerProgressById(playerId, !!playerId);
   if (isLoading) {
+    return <PlayerProgressStatsSkeleton />;
+  } // If there's an error or the player has no metrics data at all
+  if (
+    isError ||
+    !playerData ||
+    (playerData.metrics_data && playerData.metrics_data.length === 0)
+  ) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <Card className="border shadow-sm">
-          <CardContent className="p-4">
-            <ContentLoading />
-          </CardContent>
-        </Card>
-        <Card className="border shadow-sm">
-          <CardContent className="p-4">
-            <ContentLoading />
-          </CardContent>
-        </Card>
-        <Card className="border shadow-sm">
-          <CardContent className="p-4">
-            <ContentLoading />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-  
-  // If there's an error or the player has no metrics data at all
-  if (isError || !playerData || (playerData.metrics_data && playerData.metrics_data.length === 0)) {
-    return (
-      <div className="grid grid-cols-1 gap-4 mb-6">
-        <Card className="border-0 shadow-none">
-          <CardContent className="p-6 text-center">
-            <div className="flex flex-col items-center justify-center">
-              <BarChart3 className="h-8 w-8 text-muted-foreground mb-2" />
-              <h3 className="text-lg font-medium mb-1">No Training Data Available</h3>
-              <p className="text-muted-foreground text-sm">
-                No metrics have been recorded for this player yet.
-              </p>
+      <div className="mb-6">
+        <Card className="relative overflow-hidden border-2 border-dashed border-muted-foreground/20 bg-gradient-to-br from-muted/5 to-background shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-muted/10 via-transparent to-muted/5" />
+          <CardContent className="relative p-8 text-center">
+            <div className="flex flex-col items-center justify-center space-y-6">
+              {/* Enhanced icon with animated background */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-muted/20 rounded-full animate-pulse" />
+                <div className="relative bg-gradient-to-br from-muted/30 to-muted/10 p-6 rounded-full shadow-inner">
+                  <BarChart3 className="h-12 w-12 text-muted-foreground/60" />
+                </div>
+              </div>
+              {/* Enhanced title and description */}
+              <div className="space-y-3 max-w-md">
+                <h3 className="text-xl font-bold text-foreground">
+                  No Training Data Available
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This player hasn't recorded any training metrics yet. Start
+                  tracking their progress by recording their first performance
+                  data.
+                </p>
+              </div>
+              {/* Enhanced call to action with better styling */}{" "}
+              <div className="flex items-center gap-3 text-sm text-muted-foreground bg-gradient-to-r from-muted/20 to-muted/30 px-4 py-3 rounded-full border border-muted-foreground/10 shadow-sm">
+                <div className="p-1 bg-primary/10 rounded-full">
+                  <Activity className="h-4 w-4 text-primary" />
+                </div>
+                <span className="font-medium">
+                  Use "Record New Training Session" to get started
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
     );
   }
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mx-5">
-      <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border shadow-sm card-hover-effect">
-        <CardContent className="p-4 flex items-center">
-          <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-full mr-4">
-            <Activity className="h-5 w-5 text-blue-700 dark:text-blue-300" />
-          </div>          <div>
-            <p className="text-sm font-medium text-muted-foreground">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      {/* Recent Improvement Card */}
+      <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50 dark:from-blue-950/50 dark:via-blue-900/50 dark:to-blue-950/50 border-blue-200/50 dark:border-blue-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
+        <CardContent className="relative p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="p-3 bg-blue-500/10 dark:bg-blue-400/10 rounded-xl shadow-sm">
+              <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-medium text-blue-600/70 dark:text-blue-400/70 uppercase tracking-wider">
+                Last 30 Days
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-muted-foreground">
               Recent Improvement
-            </p>            {playerData?.recent_improvement ? (
+            </h3>
+            {playerData?.recent_improvement ? (
               <>
-                <p className={`text-xl font-semibold ${playerData.recent_improvement.is_positive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {playerData.recent_improvement.is_positive ? '+' : ''}{parseFloat(playerData.recent_improvement.percentage).toFixed(2)}%
-                </p>
+                <div className="flex items-baseline gap-2">
+                  <p
+                    className={`text-3xl font-bold ${
+                      playerData.recent_improvement.is_positive
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
+                    }`}
+                  >
+                    {playerData.recent_improvement.is_positive ? "+" : ""}
+                    {parseFloat(
+                      playerData.recent_improvement.percentage
+                    ).toFixed(1)}
+                    %
+                  </p>
+                  <div
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      playerData.recent_improvement.is_positive
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    }`}
+                  >
+                    {playerData.recent_improvement.is_positive ? "↗" : "↘"}
+                  </div>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Last 30 days ({playerData.recent_improvement.metric_count} metrics)
+                  Across {playerData.recent_improvement.metric_count} metric
+                  {playerData.recent_improvement.metric_count !== 1 ? "s" : ""}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-xl font-semibold">--</p>
+                <p className="text-3xl font-bold text-muted-foreground">--</p>
                 <p className="text-xs text-muted-foreground">
-                  No recent data
+                  No recent data available
                 </p>
               </>
             )}
@@ -91,28 +134,61 @@ const PlayerProgressStats = ({ playerId }) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border shadow-sm card-hover-effect">
-        <CardContent className="p-4 flex items-center">
-          <div className="bg-amber-100 dark:bg-amber-800 p-2 rounded-full mr-4">
-            <BarChart3 className="h-5 w-5 text-amber-700 dark:text-amber-300" />
+      {/* Overall Improvement Card */}
+      <Card className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 dark:from-amber-950/50 dark:via-amber-900/50 dark:to-amber-950/50 border-amber-200/50 dark:border-amber-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
+        <CardContent className="relative p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="p-3 bg-amber-500/10 dark:bg-amber-400/10 rounded-xl shadow-sm">
+              <BarChart3 className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-medium text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider">
+                All Time
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-muted-foreground">
               Overall Improvement
-            </p>            {playerData?.overall_improvement ? (
+            </h3>
+            {playerData?.overall_improvement ? (
               <>
-                <p className={`text-xl font-semibold ${playerData.overall_improvement.is_positive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {playerData.overall_improvement.is_positive ? '+' : ''}{parseFloat(playerData.overall_improvement.percentage).toFixed(2)}%
-                </p>
+                <div className="flex items-baseline gap-2">
+                  <p
+                    className={`text-3xl font-bold ${
+                      playerData.overall_improvement.is_positive
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
+                    }`}
+                  >
+                    {playerData.overall_improvement.is_positive ? "+" : ""}
+                    {parseFloat(
+                      playerData.overall_improvement.percentage
+                    ).toFixed(1)}
+                    %
+                  </p>
+                  <div
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      playerData.overall_improvement.is_positive
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    }`}
+                  >
+                    {playerData.overall_improvement.is_positive ? "↗" : "↘"}
+                  </div>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Across {playerData.overall_improvement.metric_count} metrics
+                  Across {playerData.overall_improvement.metric_count} metric
+                  {playerData.overall_improvement.metric_count !== 1 ? "s" : ""}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-xl font-semibold">--</p>
+                <p className="text-3xl font-bold text-muted-foreground">--</p>
                 <p className="text-xs text-muted-foreground">
-                  Not enough data
+                  Not enough data for analysis
                 </p>
               </>
             )}
@@ -120,28 +196,47 @@ const PlayerProgressStats = ({ playerId }) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border shadow-sm card-hover-effect">
-        <CardContent className="p-4 flex items-center">
-          <div className="bg-green-100 dark:bg-green-800 p-2 rounded-full mr-4">
-            <Trophy className="h-5 w-5 text-green-700 dark:text-green-300" />
+      {/* Top Performance Card */}
+      <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-green-100 to-green-50 dark:from-green-950/50 dark:via-green-900/50 dark:to-green-950/50 border-green-200/50 dark:border-green-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:col-span-2 lg:col-span-1">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent" />
+        <CardContent className="relative p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="p-3 bg-green-500/10 dark:bg-green-400/10 rounded-xl shadow-sm">
+              <Trophy className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-medium text-green-600/70 dark:text-green-400/70 uppercase tracking-wider">
+                Best Result
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-muted-foreground">
               Top Performance
-            </p>
+            </h3>
             {playerData?.best_performance ? (
-              <>                <p className="text-xl font-semibold">
-                  {formatMetricValue(playerData.best_performance.value, playerData.best_performance.unit)} {playerData.best_performance.unit}
-                </p>
-                <p className="text-xs text-muted-foreground">
+              <>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {formatMetricValue(
+                      playerData.best_performance.value,
+                      playerData.best_performance.unit
+                    )}
+                  </p>
+                  <span className="text-lg font-medium text-green-600/70 dark:text-green-400/70">
+                    {playerData.best_performance.unit}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground font-medium">
                   {playerData.best_performance.metric_name}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-xl font-semibold">--</p>
+                <p className="text-3xl font-bold text-muted-foreground">--</p>
                 <p className="text-xs text-muted-foreground">
-                  No metrics recorded
+                  No performance data recorded
                 </p>
               </>
             )}

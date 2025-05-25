@@ -56,7 +56,8 @@ const PlayerSelectModal = ({
   players = [],
   onSelectPlayer,
   sessionMetrics = [],
-}) => {  const [selectedPlayer, setSelectedPlayer] = useState(null);
+}) => {
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const { mutate: assignPlayerMetrics } = useAssignPlayerTrainingMetrics();
 
@@ -64,8 +65,10 @@ const PlayerSelectModal = ({
   useEffect(() => {
     if (players.length === 1) {
       const player = players[0];
-      if (player.attendance_status === ATTENDANCE_STATUS.PRESENT ||
-          player.attendance_status === ATTENDANCE_STATUS.LATE) {
+      if (
+        player.attendance_status === ATTENDANCE_STATUS.PRESENT ||
+        player.attendance_status === ATTENDANCE_STATUS.LATE
+      ) {
         onSelectPlayer(player);
         onClose();
       }
@@ -88,14 +91,21 @@ const PlayerSelectModal = ({
         <ScrollArea className="max-h-[60vh] pr-2">
           <div className="space-y-2 pb-2 max-7">
             {availablePlayers.length === 0 ? (
-              <div className="text-center bg-muted/30 rounded-lg">
-                <UserIcon className="mx-auto h-10 w-10 text-muted-foreground/50 mb-2" />
-                <p className="text-muted-foreground font-medium">
-                  No players marked as present
+              <div className="text-center p-8 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
+                <div className="bg-muted/40 p-3 rounded-full mx-auto mb-4 w-fit">
+                  <UserIcon className="h-10 w-10 text-muted-foreground/60" />
+                </div>
+                <h4 className="text-sm font-medium text-foreground mb-2">
+                  No Players Present
+                </h4>
+                <p className="text-xs text-muted-foreground max-w-[250px] mx-auto mb-3">
+                  No players are currently marked as present for this training
+                  session.
                 </p>
-                <p className="text-xs text-muted-foreground/70 mt-1 max-w-[250px] mx-auto">
-                  Please mark player attendance first
-                </p>
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground bg-muted/40 px-3 py-2 rounded-full w-fit mx-auto">
+                  <ClipboardPenLine className="h-3 w-3" />
+                  <span>Mark attendance first to proceed</span>
+                </div>
               </div>
             ) : (
               availablePlayers.map((player) => {
@@ -177,7 +187,8 @@ const PlayerSelectModal = ({
             }}
             playerTraining={selectedPlayer}
             playerMetrics={selectedPlayer.assigned_metrics || []}
-            sessionMetrics={sessionMetrics}            onSave={(metricIds) => {
+            sessionMetrics={sessionMetrics}
+            onSave={(metricIds) => {
               assignPlayerMetrics({
                 playerTrainingId: selectedPlayer.id,
                 metricIds: metricIds,

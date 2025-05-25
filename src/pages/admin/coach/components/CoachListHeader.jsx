@@ -4,25 +4,31 @@ import { ChevronLeft, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/useModal";
 import CreateCoachModal from "@/components/modals/CoachModal";
+import PageHeader from "@/components/common/PageHeader";
 
 const CoachListHeader = () => {
   const { openModal, closeModal, isOpen } = useModal();
 
+  const actionComponent = (
+    <Button
+      onClick={openModal}
+      className="w-full sm:w-auto"
+      size="sm"
+    >
+      <CalendarPlus />
+      Register Coach
+    </Button>
+  );
+
   return (
-    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
-      <span className="font-medium text-sm row-start-2 md:text-lg">
-        Coach Management
-      </span>
-      <Button
-        onClick={openModal}
-        className="ml-auto row-span-2 col-start-2 md:py-5"
-        size="sm"
-      >
-        <CalendarPlus />
-        Register Coach
-      </Button>
+    <div className="border-b p-4">
+      <PageHeader 
+        title="Coach Management"
+        description="Register and manage coaches for your teams"
+        actionComponent={actionComponent}
+      />
       <CreateCoachModal isOpen={isOpen} onClose={closeModal} />
-    </header>
+    </div>
   );
 };
 

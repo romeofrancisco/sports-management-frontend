@@ -14,13 +14,13 @@ import TrainingCategoryForm from "@/components/forms/TrainingCategoryForm";
 const TrainingCategoryFormDialog = ({ open, onOpenChange, category }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-[95vw] max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {category ? "Edit" : "Create"} Training Category
           </DialogTitle>
         </DialogHeader>
-          <TrainingCategoryForm 
+        <TrainingCategoryForm 
           category={category} 
           onClose={() => onOpenChange(false)} 
           useDialogFooter={true} 

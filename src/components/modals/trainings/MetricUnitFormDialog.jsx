@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useCreateMetricUnit, useUpdateMetricUnit } from "@/hooks/useMetricUnits";
-import MetricUnitForm from "@/components/trainings/MetricUnitForm";
+import MetricUnitForm from "@/components/trainings/units/MetricUnitForm";
 
 const MetricUnitFormDialog = ({ open, onOpenChange, unit = null }) => {
   const { mutate: createUnit, isLoading: isCreating } = useCreateMetricUnit();

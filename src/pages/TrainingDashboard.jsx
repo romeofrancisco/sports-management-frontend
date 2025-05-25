@@ -1,21 +1,20 @@
 import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../components/ui";
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { User, Users, ChevronDown, BarChart3 } from "lucide-react";
 import TrainingCategoriesList from "@/components/trainings/TrainingCategoriesList";
 import TrainingMetricsList from "../components/trainings/TrainingMetricsList";
 import TrainingSessionsList from "../components/trainings/sessions/TrainingSessionsList";
 import { PlayerProgressChart } from "@/components/charts/PlayerProgressChart";
 import { PlayerProgressMultiView } from "@/components/trainings/players";
-import TeamTrainingAnalytics from "../components/trainings/TeamTrainingAnalytics";
+
 import TeamFilter from "../components/trainings/TeamFilter";
 import PlayerFilter from "../components/trainings/PlayerFilter";
 import PlayerSelectorChips from "../components/trainings/PlayerSelectorChips";
@@ -35,7 +34,7 @@ const TrainingDashboard = () => {
     setSelectedPlayerId,
     handleTeamChange,
     togglePlayerSelection,
-    handleQuickPlayerSelection
+    handleQuickPlayerSelection,
   } = useTrainingDashboard();
 
   return (
@@ -51,142 +50,185 @@ const TrainingDashboard = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <TeamFilter 
+            <TeamFilter
               teams={teams}
               selectedTeamId={selectedTeamId}
               onSelect={handleTeamChange}
             />
           </div>
         </div>
-        
+
         {/* Main tabs navigation */}
-        <Tabs 
-          value={activeTab} 
-          onValueChange={setActiveTab}
-          className="w-full"
-        >
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="sessions">Sessions</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="metrics">Metrics</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
-
           <div className="mt-6">
             {/* Sessions tab */}
-            <TabsContent value="sessions" className="space-y-4">              <TrainingSessionsList 
-                teamSlug={selectedTeamId} 
-                key={`sessions-${selectedTeamId || 'all'}`} 
-              />
-            </TabsContent>
-
-            {/* Categories tab */}
-            <TabsContent value="categories" className="space-y-4">
-              <TrainingCategoriesList />
-            </TabsContent>
-
-            {/* Metrics tab */}
-            <TabsContent value="metrics" className="space-y-4">
-              <TrainingMetricsList />
-            </TabsContent>
-
-            {/* Progress tab */}
-            <TabsContent value="progress" className="space-y-4">
-              {/* Individual progress section */}
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Individual Progress</h2>
-                <PlayerFilter
-                  players={players}
-                  selectedPlayerId={selectedPlayerId}
-                  onSelect={setSelectedPlayerId}
-                />
-              </div>
-              
-              {/* Individual player chart or empty message */}
-              {selectedPlayerId && selectedPlayerId !== "no_player" ? (                <PlayerProgressChart
-                  playerId={selectedPlayerId}
+            <TabsContent value="sessions" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingSessionsList
                   teamSlug={selectedTeamId}
-                  key={`progress-${selectedPlayerId}`}
+                  key={`sessions-${selectedTeamId || "all"}`}
                 />
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">
-                    Select a player to view their progress data
-                  </p>
-                </div>
-              )}
-
-              {/* Player comparison section */}
-              <div className="mt-8 pt-6 border-t">
-                <h2 className="text-2xl font-bold mb-4">Player Comparison</h2>
-
-                {/* Quick select control */}
-                <div className="flex justify-end mb-4">
-                  <div className="w-64">
-                    <Select
-                      value={selectedPlayerIds.length > 0 ? "custom" : "compare"}
-                      onValueChange={handleQuickPlayerSelection}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Quick select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="compare">
-                          Compare players...
-                        </SelectItem>
-                        <SelectItem value="all">Select all players</SelectItem>
-                        <SelectItem value="none">Clear selection</SelectItem>
-                        {selectedPlayerIds.length > 0 && (
-                          <SelectItem value="custom">
-                            {selectedPlayerIds.length} player{selectedPlayerIds.length !== 1 ? 's' : ''} selected
-                          </SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                {/* Player selection chips */}
-                <PlayerSelectorChips 
-                  players={players}
-                  selectedPlayerIds={selectedPlayerIds}
-                  onTogglePlayer={togglePlayerSelection}
-                />
-
-                {/* Multi-player progress chart or empty message */}
-                {selectedPlayerIds.length > 0 ? (                  <PlayerProgressMultiView
-                    players={players.filter((p) =>
-                      selectedPlayerIds.includes(p.id)
-                    )}
-                    teamSlug={selectedTeamId}
-                    key={`multi-${selectedPlayerIds.join('-')}`}
-                  />
-                ) : (
-                  <div className="text-center py-8 bg-muted/30 rounded-lg">
-                    <p className="text-muted-foreground">
-                      Select multiple players to compare their progress
-                    </p>
-                  </div>
-                )}
               </div>
             </TabsContent>
+            {/* Categories tab */}
+            <TabsContent value="categories" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingCategoriesList />
+              </div>
+            </TabsContent>
+            {/* Metrics tab */}
+            <TabsContent value="metrics" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingMetricsList />
+              </div>
+            </TabsContent>{" "}
+            {/* Progress tab */}
+            <TabsContent value="progress" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <div className="p-6 space-y-6">
+                  {/* Individual progress section */}
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">
+                      Individual Progress
+                    </h2>
+                    <PlayerFilter
+                      players={players}
+                      selectedPlayerId={selectedPlayerId}
+                      onSelect={setSelectedPlayerId}
+                    />
+                  </div>
 
-            {/* Analytics tab */}
-            <TabsContent value="analytics" className="space-y-4">
-              {selectedTeamId ? (                <TeamTrainingAnalytics 
-                  teamSlug={selectedTeamId} 
-                  key={`analytics-${selectedTeamId}`} 
-                />
-              ) : (
-                <div className="text-center py-12 bg-muted/30 rounded-lg">
-                  <p className="text-xl font-medium mb-2">Select a Team</p>
-                  <p className="text-muted-foreground">
-                    Please select a team from the dropdown above to view
-                    analytics
-                  </p>
+                  {/* Individual player chart or empty message */}
+                  {selectedPlayerId && selectedPlayerId !== "no_player" ? (
+                    <PlayerProgressChart
+                      playerId={selectedPlayerId}
+                      teamSlug={selectedTeamId}
+                      key={`progress-${selectedPlayerId}`}
+                    />
+                  ) : (
+                    <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
+                      <CardContent className="p-8 text-center">
+                        <div className="flex flex-col items-center justify-center space-y-4">
+                          {/* Icon with background */}
+                          <div className="bg-muted/20 p-4 rounded-full">
+                            <User className="h-12 w-12 text-muted-foreground/60" />
+                          </div>
+
+                          {/* Title and description */}
+                          <div className="space-y-2">
+                            <h3 className="text-lg font-semibold text-foreground">
+                              No Player Selected
+                            </h3>
+                            <p className="text-sm text-muted-foreground max-w-md">
+                              Choose a player from the dropdown above to view
+                              their individual training progress and performance
+                              metrics.
+                            </p>
+                          </div>
+
+                          {/* Call to action hint */}
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-full">
+                            <ChevronDown className="h-3 w-3" />
+                            <span>Use the player dropdown to get started</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Player comparison section */}
+                  <div className="pt-6 border-t">
+                    <h2 className="text-2xl font-bold mb-4">
+                      Player Comparison
+                    </h2>
+                    {/* Quick select control */}
+                    <div className="flex justify-end mb-4">
+                      <div className="w-64">
+                        <Select
+                          value={
+                            selectedPlayerIds.length > 0 ? "custom" : "compare"
+                          }
+                          onValueChange={handleQuickPlayerSelection}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Quick select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="compare">
+                              Compare players...
+                            </SelectItem>
+                            <SelectItem value="all">
+                              Select all players
+                            </SelectItem>
+                            <SelectItem value="none">
+                              Clear selection
+                            </SelectItem>
+                            {selectedPlayerIds.length > 0 && (
+                              <SelectItem value="custom">
+                                {selectedPlayerIds.length} player
+                                {selectedPlayerIds.length !== 1 ? "s" : ""}{" "}
+                                selected
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    {/* Player selection chips */}
+                    <PlayerSelectorChips
+                      players={players}
+                      selectedPlayerIds={selectedPlayerIds}
+                      onTogglePlayer={togglePlayerSelection}
+                    />
+                    {/* Multi-player progress chart or empty message */}
+                    {selectedPlayerIds.length > 0 ? (
+                      <PlayerProgressMultiView
+                        players={players.filter((p) =>
+                          selectedPlayerIds.includes(p.id)
+                        )}
+                        teamSlug={selectedTeamId}
+                        key={`multi-${selectedPlayerIds.join("-")}`}
+                      />
+                    ) : (
+                      <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex flex-col items-center justify-center space-y-4">
+                            {/* Icon with background */}
+                            <div className="bg-muted/20 p-4 rounded-full">
+                              <Users className="h-12 w-12 text-muted-foreground/60" />
+                            </div>
+
+                            {/* Title and description */}
+                            <div className="space-y-2">
+                              <h3 className="text-lg font-semibold text-foreground">
+                                No Players Selected for Comparison
+                              </h3>
+                              <p className="text-sm text-muted-foreground max-w-md">
+                                Select multiple players from the chips above to
+                                compare their training progress side by side.
+                              </p>
+                            </div>
+
+                            {/* Call to action hint */}
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-full">
+                              <BarChart3 className="h-3 w-3" />
+                              <span>
+                                Click on player chips to start comparing
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}{" "}
+                  </div>
                 </div>
-              )}
+              </div>
             </TabsContent>
           </div>
         </Tabs>

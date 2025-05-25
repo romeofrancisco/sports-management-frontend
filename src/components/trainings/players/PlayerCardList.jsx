@@ -1,9 +1,15 @@
 import React from "react";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import PlayerCard from "./PlayerCard";
 import PlayerSearchFilter from "./PlayerSearchFilter";
 import TablePagination from "@/components/ui/table-pagination";
-import ContentLoading from "@/components/common/ContentLoading";
+import PlayerCardListSkeleton from "./PlayerCardListSkeleton";
 
 const PlayerCardList = ({
   players,
@@ -20,15 +26,23 @@ const PlayerCardList = ({
   isLoading,
 }) => {
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <CardTitle>Players</CardTitle>
-        <CardDescription>
-          Select a player to view individual progress
-        </CardDescription>
+    <Card className="overflow-hidden border-0 shadow-none">
+      <CardHeader className="pb-4 px-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <CardTitle className="text-lg sm:text-xl">Players</CardTitle>
+            <CardDescription className="text-sm">
+              Select a player to view individual progress
+            </CardDescription>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {totalPlayers} total players
+          </div>
+        </div>
       </CardHeader>
-      {/* Player Filters - Always visible */}
-      <div className="px-6 pb-4">
+
+      {/* Player Filters - Mobile responsive */}
+      <div className="pb-4">
         <PlayerSearchFilter
           sports={sports}
           teams={teams}
@@ -36,48 +50,48 @@ const PlayerCardList = ({
           onFilterChange={onFilterChange}
         />
       </div>
-      <CardContent>
+
+      <CardContent className="px-0">
         {isLoading ? (
-          <div className="p-4 flex flex-col items-center justify-center gap-4">
-            <div className="flex items-center gap-4">
-              <ContentLoading />
-            </div>
-            <div className="w-full max-w-md space-y-3">
-              <div className="h-2 bg-muted rounded w-full"></div>
-              <div className="h-2 bg-muted rounded w-4/5"></div>
-              <div className="h-2 bg-muted rounded w-3/5"></div>
-            </div>
-          </div>
+          <PlayerCardListSkeleton count={pageSize} />
         ) : players.length === 0 ? (
-          <div className="text-center p-4">
-            <p className="text-muted-foreground">
-              No players found
-            </p>
+          <div className="text-center py-8">
+            <div className="space-y-2">
+              <p className="text-lg font-medium text-muted-foreground">
+                No players found
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Try adjusting your search filters
+              </p>
+            </div>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="space-y-6">
+            {/* Responsive grid with better spacing */}
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
               {players.map((player) => (
-                <PlayerCard 
-                  key={player.id} 
-                  player={player} 
+                <PlayerCard
+                  key={player.id}
+                  player={player}
                   onClick={onPlayerSelect}
                 />
               ))}
             </div>
 
-            {/* Pagination */}
-            <TablePagination
-              currentPage={page}
-              pageSize={pageSize}
-              totalItems={totalPlayers}
-              onPageChange={onPageChange}
-              onPageSizeChange={onPageSizeChange}
-              isLoading={isLoading}
-              pageSizeOptions={[12, 24, 36, 48]}
-              itemName="players"
-            />
-          </>
+            {/* Enhanced Pagination */}
+            <div className="border-t pt-4">
+              <TablePagination
+                currentPage={page}
+                pageSize={pageSize}
+                totalItems={totalPlayers}
+                onPageChange={onPageChange}
+                onPageSizeChange={onPageSizeChange}
+                isLoading={isLoading}
+                pageSizeOptions={[12, 24, 36, 48]}
+                itemName="players"
+              />
+            </div>
+          </div>
         )}
       </CardContent>
     </Card>

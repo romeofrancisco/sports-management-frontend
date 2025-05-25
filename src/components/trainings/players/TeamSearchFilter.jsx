@@ -19,28 +19,33 @@ const TeamSearchFilter = ({ sports, filters, onFilterChange }) => {
     if (onFilterChange) {
       onFilterChange(key, value);
     }
-  };
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="relative grid gap-1">
-        <Label className="text-xs text-muted-foreground text-left">Search</Label>
-        <Search className="absolute left-2.5 top-7 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search teams..."
-          className="pl-8"
-          value={filters.search || ""}
-          onChange={(e) => handleFilterChange("search", e.target.value)}
-        />
+  };  return (
+    <div className="space-y-4">
+      {/* Search Input - Full width on mobile */}
+      <div className="relative">
+        <Label className="text-xs text-muted-foreground">Search</Label>
+        <div className="relative mt-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search teams..."
+            className="pl-8 w-full"
+            value={filters.search || ""}
+            onChange={(e) => handleFilterChange("search", e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="place-self-end grid gap-1">
-        <Label className="text-xs text-muted-foreground text-left">Sport</Label>
-        <SportFilter
-          sports={sports}
-          selectedSport={filters.sport}
-          setSelectedSport={(value) => handleFilterChange("sport", value)}
-        />
+      {/* Sport Filter - Full width on mobile */}
+      <div>
+        <Label className="text-xs text-muted-foreground">Sport</Label>
+        <div className="mt-1">
+          <SportFilter
+            sports={sports}
+            selectedSport={filters.sport}
+            setSelectedSport={(value) => handleFilterChange("sport", value)}
+          />
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSportDetails } from "@/hooks/useSports";
 import { useModal } from "@/hooks/useModal";
 import SportModal from "@/components/modals/SportModal";
+import PageHeader from "@/components/common/PageHeader";
 
 const SportDetailsHeader = () => {
   const { sport: sportId } = useParams();
@@ -31,36 +32,24 @@ const SportDetailsHeader = () => {
     sportModal.openModal();
   };
 
+  const actionComponent = (
+    <Button 
+      variant="outline" 
+      className="gap-1.5 w-full sm:w-auto"
+      onClick={handleOpenSettings}
+    >
+      <Settings className="h-4 w-4" />
+      <span className="hidden sm:block">Sport Settings</span>
+    </Button>
+  );
   return (
-    <header className="bg-background border-b">
+    <div className="bg-background border-b">
       <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-primary h-12 w-12 md:h-14 md:w-14 rounded-md flex items-center justify-center text-white">
-              <Activity />
-            </div>
-
-            <div>
-              <div className="text-sm text-muted-foreground">
-                Sport Configuration
-              </div>
-              <h1 className="font-bold text-2xl md:text-3xl">
-                {getSportName()}
-              </h1>
-            </div>
-          </div>
-
-          <div>
-            <Button 
-              variant="outline" 
-              className="gap-1.5"
-              onClick={handleOpenSettings}
-            >
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:block">Sport Settings</span>
-            </Button>
-          </div>
-        </div>
+        <PageHeader 
+          title={getSportName()}
+          description="Configure sport settings, statistics, and management options"
+          actionComponent={actionComponent}
+        />
       </div>
 
       <SportModal 
@@ -68,7 +57,7 @@ const SportDetailsHeader = () => {
         onClose={sportModal.closeModal} 
         sport={sportData} 
       />
-    </header>
+    </div>
   );
 };
 

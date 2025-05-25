@@ -23,34 +23,39 @@ const PlayerSearchFilter = ({ sports, teams, filters, onFilterChange }) => {
       onFilterChange(key, value);
     }
   };
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Search Input */}
+    <div className="space-y-4">
+      {/* Search Input - Full width on mobile */}
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
           placeholder="Search players..."
-          className="pl-8"
+          className="pl-8 w-full"
           value={filters.search || ""}
           onChange={(e) => handleFilterChange("search", e.target.value)}
         />
       </div>
 
-      <div className="flex gap-2 place-self-end">
+      {/* Filters - Stack on mobile, inline on larger screens */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
         {/* Sport Filter */}
-        <SportFilter
-          sports={sports}
-          selectedSport={filters.sport}
-          setSelectedSport={(value) => handleFilterChange("sport", value)}
-        />
+        <div className="flex-1 sm:flex-initial">
+          <SportFilter
+            sports={sports}
+            selectedSport={filters.sport}
+            setSelectedSport={(value) => handleFilterChange("sport", value)}
+          />
+        </div>
+        
         {/* Team Filter */}
-        <TeamFilter
-          teams={teams}
-          selectedTeam={filters.team}
-          setSelectedTeam={(value) => handleFilterChange("team", value)}
-        />
+        <div className="flex-1 sm:flex-initial">
+          <TeamFilter
+            teams={teams}
+            selectedTeam={filters.team}
+            setSelectedTeam={(value) => handleFilterChange("team", value)}
+          />
+        </div>
       </div>
     </div>
   );

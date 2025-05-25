@@ -438,29 +438,6 @@ export const fetchMultiPlayerProgress = async ({ playerIds = [], teamSlug = null
   }
 };
 
-// Team Analytics
-export const fetchTeamTrainingAnalytics = async (params = {}) => {
-  try {
-    const { data } = await api.get("trainings/team-analytics/", {
-      params: cleanParams(params),
-    });
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const fetchTeamTrainingAnalyticsById = async ({ id, ...params }) => {
-  try {
-    const { data } = await api.get(`trainings/team-analytics/${id}/`, {
-      params: cleanParams(params),
-    });
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const assignMetricsToSession = async ({ sessionId, metricIds }) => {
   try {
     const { data } = await api.post(`trainings/sessions/${sessionId}/assign_metrics/`, {

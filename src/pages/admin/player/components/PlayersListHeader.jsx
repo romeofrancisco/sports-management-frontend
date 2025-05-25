@@ -4,25 +4,31 @@ import { UserPlus, ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
 import { useModal } from "@/hooks/useModal";
 import CreatePlayerModal from "@/components/modals/PlayerModal";
+import PageHeader from "@/components/common/PageHeader";
 
 const PlayersListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();
 
+  const actionComponent = (
+    <Button
+      onClick={openModal}
+      className="w-full sm:w-auto"
+      size="sm"
+    >
+      <UserPlus />
+      Register Player
+    </Button>
+  );
+
   return (
-    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
-      <span className="font-medium text-sm row-start-2 md:text-lg">
-        Players Management
-      </span>
-      <Button
-        onClick={openModal}
-        className="ml-auto row-span-2 col-start-2 md:py-5"
-        size="sm"
-      >
-        <UserPlus />
-        Register Player
-      </Button>
+    <div className="border-b p-4">
+      <PageHeader 
+        title="Players Management"
+        description="Register and manage players across all teams"
+        actionComponent={actionComponent}
+      />
       <CreatePlayerModal isOpen={isOpen} onClose={closeModal} />
-    </header>
+    </div>
   );
 };
 

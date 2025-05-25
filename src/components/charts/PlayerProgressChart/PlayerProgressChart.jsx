@@ -71,8 +71,6 @@ const PlayerProgressChart = ({
     setSelectedMetric,
     handleDateChange: internalHandleChange,
   } = usePlayerMetrics(playerId, dateRange);
-
-  console.log(selectedMetricData, "Selected Metric Data");
   
   // Use provided onDateChange if available, otherwise use the internal one
   const handleDateChange = onDateChange || internalHandleChange;
@@ -80,13 +78,10 @@ const PlayerProgressChart = ({
   if (error) return <ErrorState error={error} />;
 
   if (!playerData && !isLoading) return <EmptyState message="No player data available" />;
-
   return (
     <Card className="border-0 shadow-none">
       <ChartHeader
         playerName={playerData?.player_name || "Player"}
-        effectiveDateRange={effectiveDateRange}
-        onDateChange={handleDateChange}
         metrics={metrics || []}
         selectedMetric={selectedMetric}
         setSelectedMetric={setSelectedMetric}

@@ -9,13 +9,14 @@ import { usePlayers } from "@/hooks/usePlayers";
 // Import the components
 import PlayerProgressQuickActions from "./PlayerProgressQuickActions";
 import PlayerProgressIndividualView from "./PlayerProgressIndividualView";
-import SectionHeader from "./SectionHeader";
+import SectionHeader from "../../common/PageHeader";
 import ViewToggle from "./ViewToggle";
 import PlayerCardList from "./PlayerCardList";
 import TeamCardList from "./TeamCardList";
 import LoadingCard from "./LoadingCard";
 import TeamPlayerView from "./TeamPlayerView";
 import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
+import { TabLayout, TabHeader, TabContent, TabCard } from "@/components/common/TabLayout";
 
 const PlayerProgressSection = () => {
   const [filter, setFilter] = useState({
@@ -262,27 +263,44 @@ const PlayerProgressSection = () => {
         onTeamSelect={handleTeamSelect}
         isLoading={isTeamsLoading}
       />
-    );
-  };
-  return (
-    <div className="space-y-6">
-      <SectionHeader
+    );  };  return (
+    <TabLayout>
+      <TabHeader
         title="Player Progress Tracking"
         description="Track and analyze player performance metrics over time"
-        actionComponent={
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            <ViewToggle 
-              activeView={filter.viewType} 
-              onViewChange={handleViewTypeChange} 
-            />
-          </div>
+        actions={
+          <ViewToggle 
+            activeView={filter.viewType} 
+            onViewChange={handleViewTypeChange} 
+          />
         }
       />
-      
-      <div className="space-y-6">
-        {filter.viewType === "individual" ? renderIndividualContent() : renderCompareContent()}
-      </div>
-    </div>
+
+      <TabContent>
+        {/* Date Range Picker */}
+        {(filter.selectedPlayer || filter.selectedTeam) && (
+          <TabCard className="mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="font-medium">Date Range Filter:</span>
+              </div>
+              <div className="w-full sm:w-auto">
+                <DateRangePickerWithPresets
+                  value={filter.dateRange}
+                  onChange={handleDateRangeChange}
+                  className="w-full sm:w-auto"
+                />
+              </div>
+            </div>
+          </TabCard>
+        )}
+        
+        {/* Main Content */}
+        <div className="space-y-4">
+          {filter.viewType === "individual" ? renderIndividualContent() : renderCompareContent()}
+        </div>
+      </TabContent>
+    </TabLayout>
   );
 };
 

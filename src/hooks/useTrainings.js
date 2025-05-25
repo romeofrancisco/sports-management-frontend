@@ -29,8 +29,6 @@ import {
   fetchPlayerProgress,
   fetchPlayerProgressById,
   fetchMultiPlayerProgress,
-  fetchTeamTrainingAnalytics,
-  fetchTeamTrainingAnalyticsById,
   updatePlayerAttendance,
   bulkUpdateAttendance,
   assignMetricsToSession,
@@ -532,31 +530,6 @@ export const usePlayersProgressById = (players = [], filters = {}, enabled = tru
 
 // Export the optimized multi-player progress hook from the dedicated file
 export { useMultiPlayerProgress } from './useMultiPlayerProgress';
-
-// Team Analytics
-export const useTeamTrainingAnalytics = (filters = {}) => {
-  return useQuery({
-    queryKey: ["team-training-analytics", filters],
-    queryFn: () => fetchTeamTrainingAnalytics(filters),
-  });
-};
-
-export const useTeamTrainingAnalyticsById = (
-  id,
-  filters = {},
-  enabled = true
-) => {
-  const params = useMemo(() => ({ id, ...filters }), [id, filters]);
-
-  return useQuery({
-    queryKey: ["team-training-analytics-by-id", params],
-    queryFn: () => fetchTeamTrainingAnalyticsById(params),
-    enabled: enabled && !!id,
-    // Optimize caching - each metric selection is its own cache entry
-    staleTime: 5 * 60 * 1000, // 5 minutes 
-    cacheTime: 15 * 60 * 1000, // 15 minutes
-  });
-};
 
 export const useUpdatePlayerAttendance = () => {
   return useMutation({

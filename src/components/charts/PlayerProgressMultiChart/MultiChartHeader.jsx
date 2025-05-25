@@ -8,7 +8,8 @@ import {
   SelectSeparator,
 } from "@/components/ui/select";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { LineChart } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { LineChart, Filter, Calendar } from "lucide-react";
 
 /**
  * MultiChartHeader component for the header section of the PlayerProgressMultiView
@@ -29,37 +30,69 @@ const MultiChartHeader = ({
   dateRange,
   localDateRange,
   setLocalDateRange,
-}) => {
-  return (
-    <div className="flex flex-col md:flex-row gap-4 mt-4">
-      <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-        <SelectTrigger className="w-full md:w-[200px]">
-          <SelectValue placeholder="Select metric" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="overall">
-            <div className="flex items-center">
-              <LineChart className="mr-2 h-4 w-4" />
-              <span>Overall Performance</span>
-            </div>
-          </SelectItem>
-          <SelectSeparator />
-          {metrics &&
-            metrics.map((metric) => (
-              <SelectItem key={metric.id} value={metric.id.toString()}>
-                {metric.name}
+}) => {  return (
+    <div className="space-y-4">
+      {/* Control Labels */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary">
+          <Filter className="h-3 w-3 mr-1" />
+          Filters
+        </Badge>
+        <span className="text-xs text-muted-foreground">Customize your comparison view</span>
+      </div>
+      
+      {/* Controls Container */}
+      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-gradient-to-r from-muted/20 to-muted/10 rounded-lg border border-border/50">
+        {/* Metric Selection */}
+        <div className="flex-1 space-y-2">
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Performance Metric
+          </label>
+          <Select value={selectedMetric} onValueChange={setSelectedMetric}>
+            <SelectTrigger className="w-full bg-background/50 border-border/50 hover:border-border transition-colors">
+              <SelectValue placeholder="Select a metric to analyze" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="overall">
+                <div className="flex items-center">
+                  <div className="p-1 bg-primary/10 rounded mr-2">
+                    <LineChart className="h-3 w-3 text-primary" />
+                  </div>
+                  <div>
+                    <span className="font-medium">Overall Performance</span>
+                    <p className="text-xs text-muted-foreground">Comprehensive analysis</p>
+                  </div>
+                </div>
               </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+              <SelectSeparator />
+              {metrics &&
+                metrics.map((metric) => (
+                  <SelectItem key={metric.id} value={metric.id.toString()}>
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-chart-1 rounded-full mr-2" />
+                      <span>{metric.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {!dateRange && (
-        <DateRangePicker
-          date={localDateRange}
-          onDateChange={setLocalDateRange}
-          className="w-full md:w-auto"
-        />
-      )}
+        {/* Date Range Selection */}
+        {!dateRange && (
+          <div className="flex-1 space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              Date Range
+            </label>
+            <DateRangePicker
+              date={localDateRange}
+              onDateChange={setLocalDateRange}
+              className="w-full bg-background/50 border-border/50 hover:border-border transition-colors"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

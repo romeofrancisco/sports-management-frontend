@@ -92,12 +92,11 @@ const TrainingMetricFormDialog = ({
       });
     }
   };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-[95vw] max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {metric ? "Edit" : "Create"} Training Metric
           </DialogTitle>
         </DialogHeader>
@@ -120,7 +119,7 @@ const TrainingMetricFormDialog = ({
             errors={form.formState.errors}
           />
 
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <ControlledCombobox
               name="metric_unit"
               control={form.control}
@@ -156,15 +155,20 @@ const TrainingMetricFormDialog = ({
             errors={form.formState.errors}
           />
 
-          <DialogFooter>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              className="w-full sm:w-auto order-2 sm:order-1"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isCreating || isUpdating}>
+            <Button 
+              type="submit" 
+              disabled={isCreating || isUpdating}
+              className="w-full sm:w-auto order-1 sm:order-2"
+            >
               {metric ? "Update" : "Create"} Metric
             </Button>
           </DialogFooter>

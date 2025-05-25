@@ -2,7 +2,6 @@ import React from "react";
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
 
 /**
  * Chart Header component
@@ -10,24 +9,17 @@ import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-wi
  */
 export const ChartHeader = ({
   playerName,
-  effectiveDateRange,
-  onDateChange,
   metrics,
   selectedMetric,
   setSelectedMetric,
   selectedMetricData,
 }) => (
-  <CardHeader>    <div className="flex justify-between items-center flex-col sm:flex-row gap-4">
+  <CardHeader>
+    <div className="flex justify-between items-center flex-col sm:flex-row gap-4">
       <div>
         <CardTitle>{playerName || "Player"} Progress</CardTitle>
         <CardDescription>Track improvements over time</CardDescription>
       </div>
-      <DateRangePickerWithPresets 
-        value={effectiveDateRange} 
-        onChange={onDateChange}
-        placeholder="Select date range..."
-        className="w-full sm:w-auto"
-      />
     </div>
     <div className="flex gap-4 items-center mt-4">
       <div className="w-full sm:w-64">        <Select 

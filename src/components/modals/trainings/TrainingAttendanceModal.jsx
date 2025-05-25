@@ -88,48 +88,61 @@ const TrainingAttendanceModal = ({ isOpen, onClose, session }) => {
       }
     );
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] w-full p-0 overflow-hidden">
-        <DialogTitle className="px-6 pt-6">Training Attendance</DialogTitle>
+      <DialogContent className="w-[95vw] max-w-[700px] h-[90vh] max-h-[90vh] p-0 overflow-hidden flex flex-col">
+        <DialogTitle className="px-4 sm:px-6 pt-4 sm:pt-6 text-lg sm:text-xl">
+          Training Attendance
+        </DialogTitle>
         {isLoading ? (
-          <div className="py-4 text-center">Loading player records...</div>
+          <div className="py-8 text-center">Loading player records...</div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="overflow-hidden">
-            <div className="px-6">
-              <ScrollArea className="max-h-[60vh] overflow-auto">
-                <div className="w-full overflow-x-hidden">              <Controller
-                control={control}
-                name="playerRecords"
-                render={({ field }) => {
-                  // Use a memoized version of the attendance columns to prevent re-renders
-                  const memoizedColumns = React.useMemo(
-                    () => getAttendanceColumns(handleStatusChange, handleNotesChange),
-                    [handleStatusChange, handleNotesChange]
-                  );
-                  
-                  return (
-                    <DataTable
-                      columns={memoizedColumns}
-                      data={field.value || []}
-                      className="text-xs md:text-sm"
-                      showPagination={false}
-                      tableClassName="min-w-full border-separate border-spacing-0 table-fixed"
-                      headerClassName="bg-gray-50 sticky top-0 z-10"
-                      rowClassName="hover:bg-gray-100"
-                    />
-                  );
-                }}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+            <div className="flex-1 px-4 sm:px-6 overflow-hidden">
+              <ScrollArea className="h-full">
+                <div className="w-full">
+                  <Controller
+                    control={control}
+                    name="playerRecords"
+                    render={({ field }) => {
+                      // Use a memoized version of the attendance columns to prevent re-renders
+                      const memoizedColumns = React.useMemo(
+                        () => getAttendanceColumns(handleStatusChange, handleNotesChange),
+                        [handleStatusChange, handleNotesChange]
+                      );
+                      
+                      return (
+                        <div className="overflow-x-auto">
+                          <DataTable
+                            columns={memoizedColumns}
+                            data={field.value || []}
+                            className="text-xs sm:text-sm"
+                            showPagination={false}
+                            tableClassName="min-w-full"
+                            headerClassName="bg-gray-50 sticky top-0 z-10"
+                            rowClassName="hover:bg-gray-100"
+                          />
+                        </div>
+                      );
+                    }}
                   />
                 </div>
               </ScrollArea>
             </div>
-            <div className="flex flex-row gap-3 mt-6 justify-end p-6 pt-4 border-t">
-              <Button type="button" onClick={onClose} variant="outline">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-6 border-t bg-white">
+              <Button 
+                type="button" 
+                onClick={onClose} 
+                variant="outline"
+                className="w-full sm:w-auto order-2 sm:order-1"
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full sm:w-auto order-1 sm:order-2"
+              >
                 {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </div>

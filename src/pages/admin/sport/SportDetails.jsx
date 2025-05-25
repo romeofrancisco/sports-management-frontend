@@ -466,27 +466,31 @@ const Sport = () => {
                   />
                 )}
               </div>
-            </TabsContent>
-
-            <TabsContent
+            </TabsContent>            <TabsContent
               value="formulas"
-              className="p-0 focus-visible:outline-none focus-visible:ring-0"
+              className="space-y-0"
             >
-              <SportFormulaTable />
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <SportFormulaTable />
+              </div>
             </TabsContent>
 
             <TabsContent
               value="leaders"
-              className="p-0 focus-visible:outline-none focus-visible:ring-0"
+              className="space-y-0"
             >
-              <LeaderCategoriesTable />
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <LeaderCategoriesTable />
+              </div>
             </TabsContent>
 
             <TabsContent
               value="positions"
-              className="p-0 focus-visible:outline-none focus-visible:ring-0"
+              className="space-y-0"
             >
-              <SportPositionsTable />
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <SportPositionsTable />
+              </div>
             </TabsContent>
           </Tabs>
         </Card>

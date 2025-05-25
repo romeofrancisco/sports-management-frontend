@@ -8,6 +8,7 @@ import {
   Gauge,
   Medal,
   Dumbbell,
+  BarChart3,
 } from "lucide-react";
 
 export const coachNavigation = () => {
@@ -26,8 +27,7 @@ export const coachNavigation = () => {
       title: "Players",
       url: "/players",
       icon: User,
-    },
-    {
+    },    {
       title: "Game Schedules",
       url: "/games",
       icon: CalendarCog,
@@ -81,10 +81,8 @@ export const adminNavigation = () => {
       title: "Game Schedules",
       url: "/games",
       icon: CalendarCog,
-    },
-    {
-      title: "Trainings",
-      url: "/trainings",
+    },    {
+      title: "Trainings",      url: "/trainings",
       icon: Dumbbell,
     },
   ];

@@ -31,7 +31,6 @@ const PlayerProgressChart = ({ metricData, data }) => {
           </div>
         </CardContent>
       </Card>
-      {/* ...existing code for other cards or components... */}
     </div>
   );
 };

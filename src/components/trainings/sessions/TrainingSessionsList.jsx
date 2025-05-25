@@ -18,6 +18,7 @@ import PlayerMetricRecordModal from "@/components/modals/PlayerMetricRecordModal
 import PlayerSelectModal from "@/components/modals/trainings/PlayerSelectModal";
 import SessionMetricsConfigModal from "@/components/trainings/metrics/SessionMetricsConfigModal";
 import { toast } from "sonner";
+import { TabLayout, TabHeader, TabContent, TabCard } from "@/components/common/TabLayout";
 
 const TrainingSessionsList = ({ coachId, teamId }) => {
   const [selectedSession, setSelectedSession] = useState(null);
@@ -52,10 +53,13 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
     setPageSize(newSize);
     setCurrentPage(1);
   };
-
   if (isError)
     return (
-      <div className="text-red-500 p-4">Error loading training sessions.</div>
+      <TabLayout>
+        <TabContent>
+          <div className="text-red-500">Error loading training sessions.</div>
+        </TabContent>
+      </TabLayout>
     );
   const columns = getTrainingSessionTableColumns({
     onEdit: (session) => {
@@ -126,42 +130,53 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
         "configurePlayerMetrics",
         handleConfigurePlayerMetrics
       );
-    };
-  }, []);
-
-  return (
-    <div className="md:px-5 md:border md:bg-muted/30 md:p-5 lg:p-8 my-5 rounded-lg sm:max-w-[calc(100vw-5.5rem)] lg:max-w-[calc(100vw-5rem)]">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Training Sessions</h2>
-        <Button
-          onClick={() => {
-            setSelectedSession(null);
-            modals.session.openModal();
-          }}
-        >
-          <PlusIcon className="mr-2 h-4 w-4" />
-          New Session
-        </Button>
-      </div>
-      <DataTable
-        columns={columns}
-        data={sessions}
-        loading={isLoading}
-        className="text-xs md:text-sm"
-        showPagination={false}
-        pageSize={pageSize}
+    };  }, []);  return (
+    <TabLayout>
+      <TabHeader
+        title="Training Sessions"
+        description="Manage and track training sessions"
+        actions={
+          <Button
+            onClick={() => {
+              setSelectedSession(null);
+              modals.session.openModal();
+            }}
+          >
+            <PlusIcon className="mr-2 h-4 w-4" />
+            New Session
+          </Button>
+        }
       />
-      {totalSessions > 0 && (
-        <TablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={totalSessions}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          isLoading={isLoading}
-          itemName="sessions"
-        />
-      )}
+
+      <TabContent>
+        <TabCard className="p-0">
+          <div className="overflow-x-auto">
+            <DataTable
+              columns={columns}
+              data={sessions}
+              loading={isLoading}
+              className="text-xs sm:text-sm"
+              showPagination={false}
+              pageSize={pageSize}
+            />
+          </div>
+          
+          {/* Pagination */}
+          {totalSessions > 0 && (
+            <div className="border-t p-4">
+              <TablePagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalItems={totalSessions}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                isLoading={isLoading}
+                itemName="sessions"
+              />
+            </div>
+          )}
+        </TabCard>
+      </TabContent>
       <TrainingSessionFormDialog
         open={modals.session.isOpen}
         onOpenChange={modals.session.closeModal}
@@ -184,8 +199,7 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
         session={selectedSession}
         onSuccess={() => {
           setCurrentPage(1);
-        }}
-      />
+        }}      />
       <PlayerMetricRecordModal
         isOpen={modals.metrics.isOpen}
         onClose={modals.metrics.closeModal}
@@ -210,7 +224,7 @@ const TrainingSessionsList = ({ coachId, teamId }) => {
         onClose={modals.metricsConfig.closeModal}
         session={selectedSession}
       />
-    </div>
+    </TabLayout>
   );
 };
 

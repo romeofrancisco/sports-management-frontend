@@ -37,32 +37,33 @@ const TrainingSessionFormDialog = ({
   const { data: teams = [], isLoading: isLoadingTeams } = useTeams({
     enabled: open && !isCoach,
   });
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="w-[95vw] max-w-[600px] max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="p-6 pb-4">
+          <DialogTitle className="text-lg sm:text-xl">
             {sessionId ? "Edit" : "Create"} Training Session
           </DialogTitle>
         </DialogHeader>
-        {sessionId && isLoading ? (
-          <ContentLoading className="p-4" />
-        ) : error ? (
-          <div className="p-4 text-red-500">
-            Failed to load session details.
-          </div>
-        ) : (
-          <TrainingSessionForm
-            session={sessionId ? session : null}
-            coaches={!isCoach ? coaches : undefined}
-            categories={categories}
-            isLoadingCoaches={!isCoach ? isLoadingCoaches : false}
-            teams={!isCoach ? teams : undefined}
-            isLoadingTeams={!isCoach ? isLoadingTeams : false}
-            onClose={() => onOpenChange(false)}
-          />
-        )}
+        <div className="px-6 pb-6">
+          {sessionId && isLoading ? (
+            <ContentLoading className="p-4" />
+          ) : error ? (
+            <div className="p-4 text-red-500 text-sm">
+              Failed to load session details.
+            </div>
+          ) : (
+            <TrainingSessionForm
+              session={sessionId ? session : null}
+              coaches={!isCoach ? coaches : undefined}
+              categories={categories}
+              isLoadingCoaches={!isCoach ? isLoadingCoaches : false}
+              teams={!isCoach ? teams : undefined}
+              isLoadingTeams={!isCoach ? isLoadingTeams : false}
+              onClose={() => onOpenChange(false)}
+            />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

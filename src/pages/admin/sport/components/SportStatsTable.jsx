@@ -164,42 +164,46 @@ const SportStatsTable = ({ filter }) => {
                 Recording Settings
               </TabsTrigger>
             </TabsList>
-          </div>
-
-          <TabsContent value="essential" className="mt-0 p-0 data-[state=active]:border-0">
-            <DataTable
-              columns={essentialColumns}
-              data={filteredStats || []}
-              loading={isStatsLoading}
-              className="text-sm"
-              pagination={false}
-              unlimited={true}
-              alternateRowColors={true}
-            />
+          </div>          <TabsContent value="essential" className="space-y-0">
+            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+              <DataTable
+                columns={essentialColumns}
+                data={filteredStats || []}
+                loading={isStatsLoading}
+                className="text-sm"
+                pagination={false}
+                unlimited={true}
+                alternateRowColors={true}
+              />
+            </div>
           </TabsContent>
 
-          <TabsContent value="display" className="mt-0 p-0 data-[state=active]:border-0">
-            <DataTable
-              columns={displayColumns}
-              data={filteredStats || []}
-              loading={isStatsLoading}
-              className="text-sm"
-              pagination={false}
-              unlimited={true}
-              alternateRowColors={true}
-            />
+          <TabsContent value="display" className="space-y-0">
+            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+              <DataTable
+                columns={displayColumns}
+                data={filteredStats || []}
+                loading={isStatsLoading}
+                className="text-sm"
+                pagination={false}
+                unlimited={true}
+                alternateRowColors={true}
+              />
+            </div>
           </TabsContent>
           
-          <TabsContent value="recording" className="mt-0 p-0 data-[state=active]:border-0">
-            <DataTable
-              columns={recordingColumns}
-              data={filteredStats || []}
-              loading={isStatsLoading}
-              className="text-sm"
-              pagination={false}
-              unlimited={true}
-              alternateRowColors={true}
-            />
+          <TabsContent value="recording" className="space-y-0">
+            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+              <DataTable
+                columns={recordingColumns}
+                data={filteredStats || []}
+                loading={isStatsLoading}
+                className="text-sm"
+                pagination={false}
+                unlimited={true}
+                alternateRowColors={true}
+              />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
