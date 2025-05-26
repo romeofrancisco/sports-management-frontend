@@ -2,7 +2,7 @@ import React from "react";
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
 
 /**
  * Chart Header component
@@ -10,12 +10,12 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
  */
 export const ChartHeader = ({
   playerName,
-  effectiveDateRange,
-  onDateChange,
   metrics,
   selectedMetric,
   setSelectedMetric,
   selectedMetricData,
+  dateRange,
+  onDateChange,
 }) => (
   <CardHeader>
     <div className="flex justify-between items-center flex-col sm:flex-row gap-4">
@@ -23,10 +23,10 @@ export const ChartHeader = ({
         <CardTitle>{playerName || "Player"} Progress</CardTitle>
         <CardDescription>Track improvements over time</CardDescription>
       </div>
-      <DateRangePicker date={effectiveDateRange} onDateChange={onDateChange} />
     </div>
-    <div className="flex gap-4 items-center mt-4">
-      <div className="w-full sm:w-64">        <Select 
+    <div className="flex gap-4 items-center mt-4 flex-col sm:flex-row">
+      <div className="w-full sm:w-64">
+        <Select 
           value={selectedMetric} 
           onValueChange={(newValue) => {
             // Reset selected metric to trigger a new API call
@@ -53,6 +53,19 @@ export const ChartHeader = ({
           </SelectContent>
         </Select>
       </div>
+      
+      {/* Date Range Picker */}
+      {onDateChange && (
+        <div className="w-full sm:w-auto">
+          <DateRangePickerWithPresets
+            value={dateRange}
+            onChange={onDateChange}
+            className="w-full sm:w-auto"
+          />
+        </div>
+      )}
+      
+      {/* Metric Badge */}
       {selectedMetricData && (
         selectedMetricData.metric_id === "overall" ? (
           <Badge variant="outline" className="bg-primary/10">

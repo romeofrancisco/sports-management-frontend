@@ -62,7 +62,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
         title: "Start Season",
         description:
           "This will mark the season as ongoing. Games can now be scheduled and played.",
-        icon: <Play className="h-6 w-6 text-green-600" />,
+        icon: <Play className="h-6 w-6 text-red-600" />,
         confirmLabel: "Start Season",
       },
       pause: {
@@ -76,7 +76,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
         title: "Complete Season",
         description:
           "This will mark the season as completed. The final standings will be calculated and no more games can be added.",
-        icon: <CheckSquare className="h-6 w-6 text-blue-600" />,
+        icon: <CheckSquare className="h-6 w-6 text-amber-600" />,
         confirmLabel: "Complete Season",
       },
       cancel: {
@@ -106,19 +106,18 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
       }
     );
   };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "ongoing":
-        return "bg-green-100 text-green-800 border-green-300 dark:bg-green-950 dark:text-green-300";
+        return "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300";
       case "upcoming":
-        return "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950 dark:text-blue-300";
+        return "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300";
       case "completed":
         return "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300";
       case "canceled":
         return "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300";
       case "paused":
-        return "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300";
+        return "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-950 dark:text-yellow-300";
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -236,7 +235,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   variant="default"
                   size="sm"
                   onClick={() => handleManageAction("start")}
-                  className="gap-2 bg-green-600 hover:bg-green-700"
+                  className="gap-2 bg-red-800 hover:bg-red-900"
                 >
                   <Play size={15} />
                   Resume Season
@@ -280,7 +279,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="flex items-center gap-2 text-blue-600"
+                        className="flex items-center gap-2 text-amber-600"
                         onClick={() => handleManageAction("complete")}
                       >
                         <CheckSquare size={14} />

@@ -1,30 +1,36 @@
 import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { BarChart3, PlusCircle } from "lucide-react";
 
 /**
  * No metrics available component
  * Displays when player has no metrics recorded
  */
 export const NoMetricsState = () => (
-  <div className="flex flex-col items-center justify-center py-10 text-center">
-    <div className="bg-muted/20 p-3 rounded-full mb-4">
-      <svg
-        className="h-10 w-10 text-muted-foreground/80"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    </div>
-    <h3 className="text-lg font-medium mb-2">No Metrics Available</h3>
-    <p className="text-muted-foreground max-w-md mb-6">
-      This player doesn't have any training metrics recorded yet.
-    </p>
-  </div>
+  <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
+    <CardContent className="p-8 text-center">
+      <div className="flex flex-col items-center justify-center space-y-4">
+        {/* Icon with background */}
+        <div className="bg-muted/20 p-4 rounded-full">
+          <BarChart3 className="h-12 w-12 text-muted-foreground/60" />
+        </div>
+        
+        {/* Title and description */}
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold text-foreground">
+            No Metrics Available
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-md">
+            This player doesn't have any training metrics recorded yet. Start tracking their performance by recording their first training session.
+          </p>
+        </div>
+        
+        {/* Call to action hint */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-full">
+          <PlusCircle className="h-3 w-3" />
+          <span>Use the quick actions above to record new training data</span>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 );

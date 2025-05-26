@@ -21,7 +21,7 @@ export const ProgressChart = ({ selectedMetricData }) => {
         const trendDataset = {
           label: 'Trend',
           data: analysis.trend.points.map(point => point.y),
-          borderColor: analysis.trend.is_positive ? "#4ade80" : "#f87171", 
+          borderColor: analysis.trend.is_positive ? "#8B0000" : "#DC143C", 
           borderWidth: 2,
           borderDash: [5, 5],
           tension: 0,
@@ -159,8 +159,8 @@ export const ProgressChart = ({ selectedMetricData }) => {
                     font: {
                       weight: 'bold'
                     },
-                    backgroundColor: "rgba(0,100,0,0.9)", // Darker green with higher opacity
-                    borderColor: "#006400", // DarkGreen border
+                    backgroundColor: "rgba(139,21,56,0.9)", // Perpetual University maroon with higher opacity
+                    borderColor: "#8B0000", // Dark maroon border
                     borderWidth: 1,
                     borderRadius: 4,
                   },

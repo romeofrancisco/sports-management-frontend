@@ -48,9 +48,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
       previousSeasonId ? [season, previousSeasonId] : []
     );
 
-    console.log(seasonDetails);
-
-  // Find the previous season when seasons data is loaded
+      // Find the previous season when seasons data is loaded
   useEffect(() => {
     if (seasonsData?.results && seasonDetails?.year) {
       // Sort seasons by year descending
@@ -308,13 +306,12 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
         <InfoCard
           title="Season Status"
           value={seasonDetails.status || "upcoming"}
-          icon={
-            <Calendar
+          icon={            <Calendar
               className={`h-5 w-5 ${
                 seasonDetails.status === "ongoing"
-                  ? "text-green-600"
+                  ? "text-red-800"
                   : seasonDetails.status === "upcoming"
-                  ? "text-blue-600"
+                  ? "text-amber-600"
                   : seasonDetails.status === "completed"
                   ? "text-amber-600"
                   : "text-gray-600"
@@ -338,7 +335,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
         <InfoCard
           title="Games"
           value={`${seasonDetails.games_played || 0} / ${seasonDetails.games_count || 0}`}
-          icon={<Goal className="text-green-600 h-5 w-5" />}
+          icon={<Goal className="text-red-800 h-5 w-5" />}
           description={
             seasonDetails.games_played && seasonDetails.games_count
               ? `${Math.round(
@@ -367,7 +364,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
         <Card className="rounded-lg overflow-hidden border shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Medal className="h-5 w-5 text-blue-500" /> Season Progression
+              <Medal className="h-5 w-5 text-amber-600" /> Season Progression
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 pt-2">
@@ -442,7 +439,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
                   <InfoCard
                     title={isSetsScoring ? 'Dominant Sets' : 'Blowout Wins'}
                     value={teams && teams.length > 0 ? teams.reduce((sum, team) => sum + (team.blowout_wins || 0), 0) : 0}
-                    icon={<Zap className="h-4 w-4 text-emerald-600" />}
+                    icon={<Zap className="h-4 w-4 text-red-800" />}
                     description={isSetsScoring ? 'More than 10 pts' : 'More than 15 pts'}
                     className="bg-white"
                   />
@@ -450,7 +447,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
                   <InfoCard
                     title={isSetsScoring ? 'Extended Sets' : 'Overtime Games'}
                     value={teams && teams.length > 0 ? teams.reduce((sum, team) => sum + (team.overtime_games || 0), 0) : 0}
-                    icon={<Clock3 className="h-4 w-4 text-blue-600" />}
+                    icon={<Clock3 className="h-4 w-4 text-amber-600" />}
                     description="Extra time needed"
                     className="bg-white"
                   />

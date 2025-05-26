@@ -17,7 +17,7 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
         <InfoCard 
           title="Best Offensive Team"
           value={statsSummary.bestOffensiveTeam.name}
-          icon={<TrendingUp className="h-5 w-5 text-emerald-500" />}
+          icon={<TrendingUp className="h-5 w-5 text-red-900" />}
           description={`${statsSummary.bestOffensiveTeam.value} pts/set avg`}
           className="hover:shadow-md transition-all duration-300"
         />
@@ -25,7 +25,7 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
         <InfoCard 
           title="Best Defensive Team"
           value={statsSummary.bestDefensiveTeam.name}
-          icon={<Shield className="h-5 w-5 text-blue-500" />}
+          icon={<Shield className="h-5 w-5 text-amber-600" />}
           description={`${statsSummary.bestDefensiveTeam.value} pts allowed/set avg`}
           className="hover:shadow-md transition-all duration-300"
         />
@@ -53,7 +53,7 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
       <InfoCard 
         title="Best Offensive Team"
         value={statsSummary.bestOffensiveTeam.name}
-        icon={<TrendingUp className="h-5 w-5 text-emerald-500" />}
+        icon={<TrendingUp className="h-5 w-5 text-red-900" />}
         description={`${statsSummary.bestOffensiveTeam.value} pts/game`}
         className="hover:shadow-md transition-all duration-300"
       />
@@ -61,7 +61,7 @@ const LeagueStatCards = ({ statsSummary, isSetsScoring }) => {
       <InfoCard 
         title="Best Defensive Team"
         value={statsSummary.bestDefensiveTeam.name}
-        icon={<Shield className="h-5 w-5 text-blue-500" />}
+        icon={<Shield className="h-5 w-5 text-amber-600" />}
         description={`${statsSummary.bestDefensiveTeam.value} pts allowed`}
         className="hover:shadow-md transition-all duration-300"
       />

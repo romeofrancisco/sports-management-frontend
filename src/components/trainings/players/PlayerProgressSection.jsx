@@ -9,12 +9,18 @@ import { usePlayers } from "@/hooks/usePlayers";
 // Import the components
 import PlayerProgressQuickActions from "./PlayerProgressQuickActions";
 import PlayerProgressIndividualView from "./PlayerProgressIndividualView";
-import SectionHeader from "./SectionHeader";
+import SectionHeader from "../../common/PageHeader";
 import ViewToggle from "./ViewToggle";
 import PlayerCardList from "./PlayerCardList";
 import TeamCardList from "./TeamCardList";
 import LoadingCard from "./LoadingCard";
 import TeamPlayerView from "./TeamPlayerView";
+import {
+  TabLayout,
+  TabHeader,
+  TabContent,
+  TabCard,
+} from "@/components/common/TabLayout";
 
 const PlayerProgressSection = () => {
   const [filter, setFilter] = useState({
@@ -33,7 +39,7 @@ const PlayerProgressSection = () => {
     team: null,
     sport: null,
   });
-  
+
   // Pagination state for players
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
@@ -66,7 +72,7 @@ const PlayerProgressSection = () => {
   useEffect(() => {
     setPage(1);
   }, [playerFilters]);
-  
+
   // Player data with pagination
   const players = playersData.results || [];
   const totalPlayers = playersData.count || 0;
@@ -174,12 +180,19 @@ const PlayerProgressSection = () => {
       selectedPlayer: null,
     }));
   };
-
   // Handle back button from team view
   const handleBackToTeamList = () => {
     setFilter((prev) => ({
       ...prev,
       selectedTeam: null,
+    }));
+  };
+
+  // Handle date range change
+  const handleDateRangeChange = (newDateRange) => {
+    setFilter((prev) => ({
+      ...prev,
+      dateRange: newDateRange,
     }));
   };
 
@@ -196,24 +209,30 @@ const PlayerProgressSection = () => {
       if (isLoading) {
         return <LoadingCard />;
       }
-      
+
       return (
         <>
           <PlayerProgressQuickActions
-            openModal={() => handleOpenMetricRecorder(filter.selectedPlayer, null)}
+            openModal={() =>
+              handleOpenMetricRecorder(filter.selectedPlayer, null)
+            }
             playerId={filter.selectedPlayer}
           />
           <PlayerProgressIndividualView
             playerId={filter.selectedPlayer}
             playerName={selectedPlayerName}
             dateRangeParams={dateRangeParams}
+            dateRange={filter.dateRange}
             handleBackToCompare={handleBackToList}
-            openModal={() => handleOpenMetricRecorder(filter.selectedPlayer, null)}
+            onDateChange={handleDateRangeChange}
+            openModal={() =>
+              handleOpenMetricRecorder(filter.selectedPlayer, null)
+            }
           />
         </>
       );
     }
-    
+
     return (
       <PlayerCardList
         players={players}
@@ -236,14 +255,15 @@ const PlayerProgressSection = () => {
   const renderCompareContent = () => {
     if (filter.selectedTeam) {
       return (
-        <TeamPlayerView 
+        <TeamPlayerView
           teamSlug={filter.selectedTeam}
-          dateRange={dateRangeParams}
+          dateRange={filter.dateRange}
           onBackClick={handleBackToTeamList}
+          onDateChange={handleDateRangeChange}
         />
       );
     }
-    
+
     return (
       <TeamCardList
         teams={teams}
@@ -256,24 +276,27 @@ const PlayerProgressSection = () => {
       />
     );
   };
-
   return (
-    <div className="space-y-6">
-      <SectionHeader
+    <TabLayout>
+      <TabHeader
         title="Player Progress Tracking"
         description="Track and analyze player performance metrics over time"
-        actionComponent={
-          <ViewToggle 
-            activeView={filter.viewType} 
-            onViewChange={handleViewTypeChange} 
+        actions={
+          <ViewToggle
+            activeView={filter.viewType}
+            onViewChange={handleViewTypeChange}
           />
         }
       />
-      
-      <div className="space-y-6">
-        {filter.viewType === "individual" ? renderIndividualContent() : renderCompareContent()}
-      </div>
-    </div>
+      <TabContent>
+        {/* Main Content */}
+        <div className="space-y-4">
+          {filter.viewType === "individual"
+            ? renderIndividualContent()
+            : renderCompareContent()}
+        </div>
+      </TabContent>
+    </TabLayout>
   );
 };
 

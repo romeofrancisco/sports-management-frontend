@@ -310,11 +310,10 @@ const LeagueStandings = ({ rankings }) => {
         cell: ({ getValue }) => {
           const value = getValue() || 0;
           const isPositive = value > 0;
-          return (
-            <div
+          return (            <div
               className={`text-center font-medium ${
                 isPositive
-                  ? "text-emerald-600"
+                  ? "text-red-800"
                   : value < 0
                   ? "text-rose-600"
                   : ""
@@ -371,11 +370,10 @@ const LeagueStandings = ({ rankings }) => {
         cell: ({ getValue }) => {
           const value = getValue() || 0;
           const isPositive = value > 0;
-          return (
-            <div
+          return (            <div
               className={`text-center  ${
                 isPositive
-                  ? "text-emerald-600"
+                  ? "text-red-800"
                   : value < 0
                   ? "text-rose-600"
                   : ""
@@ -433,9 +431,8 @@ const LeagueStandings = ({ rankings }) => {
   );
 
   return (
-    <div>
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <TrendingUp size={20} className="text-blue-500" />
+    <div>      <h2 className="text-xl font-bold flex items-center gap-2">
+        <TrendingUp size={20} className="text-amber-600" />
         League Leaderboard
       </h2>
 

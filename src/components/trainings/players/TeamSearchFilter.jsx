@@ -2,7 +2,6 @@ import React from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SportFilter } from "@/components/trainings/dashboard/TrainingDashboardFilter";
-import { Label } from "@radix-ui/react-dropdown-menu";
 
 /**
  * A component that provides search and filtering functionality for teams
@@ -19,23 +18,22 @@ const TeamSearchFilter = ({ sports, filters, onFilterChange }) => {
     if (onFilterChange) {
       onFilterChange(key, value);
     }
-  };
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="relative grid gap-1">
-        <Label className="text-xs text-muted-foreground text-left">Search</Label>
-        <Search className="absolute left-2.5 top-7 h-4 w-4 text-muted-foreground" />
+  };  return (
+    <div className="space-y-4">
+      {/* Search Input - Full width on mobile */}
+      <div className="relative">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
           placeholder="Search teams..."
-          className="pl-8"
+          className="pl-8 w-full"
           value={filters.search || ""}
           onChange={(e) => handleFilterChange("search", e.target.value)}
         />
       </div>
 
-      <div className="place-self-end grid gap-1">
-        <Label className="text-xs text-muted-foreground text-left">Sport</Label>
+      {/* Sport Filter - Consistent with PlayerSearchFilter layout */}
+      <div className="flex-1 sm:flex-initial">
         <SportFilter
           sports={sports}
           selectedSport={filters.sport}

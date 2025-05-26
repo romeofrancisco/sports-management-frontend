@@ -74,27 +74,24 @@ const PlayerProgressChart = ({
   
   // Use provided onDateChange if available, otherwise use the internal one
   const handleDateChange = onDateChange || internalHandleChange;
-  
-  // Handle loading, error, and empty states
-  if (isLoading) return <LoadingState />;
-
+    // Handle early error and empty states (but not loading)
   if (error) return <ErrorState error={error} />;
 
-  if (!playerData) return <EmptyState message="No player data available" />;
-
-  return (
-    <Card className="border-0 shadow-none">
+  if (!playerData && !isLoading) return <EmptyState message="No player data available" />;
+  return (    <Card className="border-0 shadow-none">
       <ChartHeader
-        playerName={playerData.player_name}
-        effectiveDateRange={effectiveDateRange}
-        onDateChange={handleDateChange}
-        metrics={metrics}
+        playerName={playerData?.player_name || "Player"}
+        metrics={metrics || []}
         selectedMetric={selectedMetric}
         setSelectedMetric={setSelectedMetric}
         selectedMetricData={selectedMetricData}
+        dateRange={dateRange}
+        onDateChange={handleDateChange}
       />
       <CardContent>
-        {!hasMetricsData ? (
+        {isLoading ? (
+          <LoadingState />
+        ) : !hasMetricsData ? (
           <NoMetricsState />
         ) : !selectedMetric ? (
           <SelectMetricPrompt />

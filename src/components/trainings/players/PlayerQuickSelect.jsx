@@ -9,12 +9,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Users, PlusCircle } from "lucide-react";
 
-const PlayerQuickSelect = ({ 
-  players, 
-  selectedPlayerId, 
-  handlePlayerSelect, 
-  openModal, 
-  teamSlug 
+const PlayerQuickSelect = ({
+  players,
+  selectedPlayerId,
+  handlePlayerSelect,
+  openModal,
+  teamSlug,
 }) => {
   return (
     <Card className="border shadow-sm">
@@ -23,9 +23,7 @@ const PlayerQuickSelect = ({
           <CardTitle className="text-base font-semibold">
             Quick Player Selection
           </CardTitle>
-          <CardDescription>
-            {players.length} players available
-          </CardDescription>
+          <CardDescription>{players.length} players available</CardDescription>
         </div>
         <Button
           variant="outline"
@@ -38,9 +36,16 @@ const PlayerQuickSelect = ({
       </CardHeader>
       <CardContent>
         {players.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              No players available for this team
+          <div className="flex flex-col items-center justify-center p-8 text-center">
+            <div className="bg-muted/20 p-3 rounded-full mb-4">
+              <Users className="h-8 w-8 text-muted-foreground/60" />
+            </div>
+            <h4 className="text-sm font-medium text-foreground mb-2">
+              No Players Available
+            </h4>
+            <p className="text-xs text-muted-foreground max-w-xs">
+              No players are currently available for this team. Add players to
+              start tracking their progress.
             </p>
           </div>
         ) : (
@@ -50,15 +55,11 @@ const PlayerQuickSelect = ({
                 <Button
                   key={player.id}
                   variant={
-                    selectedPlayerId === player.id
-                      ? "default"
-                      : "outline"
+                    selectedPlayerId === player.id ? "default" : "outline"
                   }
                   size="sm"
                   className={`h-auto py-2 justify-start truncate player-select-btn ${
-                    selectedPlayerId === player.id
-                      ? "shadow-sm"
-                      : ""
+                    selectedPlayerId === player.id ? "shadow-sm" : ""
                   }`}
                   onClick={() => handlePlayerSelect(player.id)}
                 >
@@ -87,8 +88,7 @@ const PlayerQuickSelect = ({
                 className="w-full"
                 onClick={() => openModal(teamSlug)}
               >
-                <PlusCircle className="h-4 w-4 mr-2" /> Record New
-                Metric
+                <PlusCircle className="h-4 w-4 mr-2" /> Record New Metric
               </Button>
             </div>
           </>

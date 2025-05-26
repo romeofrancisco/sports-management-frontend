@@ -4,25 +4,31 @@ import { Users, ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
 import { useModal } from "@/hooks/useModal";
 import TeamModal from "@/components/modals/TeamModal";
+import PageHeader from "@/components/common/PageHeader";
 
 const TeamsListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();
 
+  const actionComponent = (
+    <Button
+      onClick={openModal}
+      className="w-full sm:w-auto"
+      size="sm"
+    >
+      <Users />
+      Create Team
+    </Button>
+  );
+
   return (
-    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
-      <span className="font-medium text-sm row-start-2 md:text-lg">
-        Team Management
-      </span>
-        <Button
-          onClick={openModal}
-          className="ml-auto row-span-2 col-start-2 md:py-5"
-          size="sm"
-        >
-          <Users />
-          Create Team
-        </Button>
+    <div className="border-b p-4">
+      <PageHeader 
+        title="Team Management"
+        description="Create and manage teams for your sports leagues"
+        actionComponent={actionComponent}
+      />
       <TeamModal isOpen={isOpen} onClose={closeModal} />
-    </header>
+    </div>
   );
 };
 

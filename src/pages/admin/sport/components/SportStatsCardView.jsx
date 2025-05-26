@@ -171,9 +171,9 @@ const SportStatsCardView = ({ stats, filter }) => {
       case "Scoring":
         return <Tag className="h-4 w-4 text-amber-500 dark:text-amber-400" />;
       case "Performance":
-        return <BarChart2 className="h-4 w-4 text-blue-500 dark:text-blue-400" />;
+        return <BarChart2 className="h-4 w-4 text-amber-600 dark:text-amber-400" />;
       case "Offensive":
-        return <PlusCircle className="h-4 w-4 text-green-500 dark:text-green-400" />;
+        return <PlusCircle className="h-4 w-4 text-red-900 dark:text-red-400" />;
       case "Defensive":
         return <Shield className="h-4 w-4 text-purple-500 dark:text-purple-400" />;
       default:
@@ -190,7 +190,7 @@ const SportStatsCardView = ({ stats, filter }) => {
           <InfoCard
             title="Total Stats"
             value={stats.length}
-            icon={<BarChart2 className="h-5 w-5 text-blue-500" />}
+            icon={<BarChart2 className="h-5 w-5 text-amber-600" />}
             description={`${Object.keys(categorizedStats).length} categories`}
             className="hover:shadow-md transition-all duration-300"
           />
@@ -198,7 +198,7 @@ const SportStatsCardView = ({ stats, filter }) => {
           <InfoCard
             title="Recording Stats"
             value={statsTypeCount.record}
-            icon={<CircleCheck className="h-5 w-5 text-emerald-500" />}
+            icon={<CircleCheck className="h-5 w-5 text-red-900" />}
             description={`${Math.round((statsTypeCount.record / stats.length) * 100)}% of total`}
             progress={Math.round((statsTypeCount.record / stats.length) * 100)}
             progressLabel="% of Total Stats"
@@ -302,7 +302,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                             </div>
                             <div>
                               {stat.is_record ? (
-                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-800">
+                                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-800">
                                   Recording
                                 </Badge>
                               ) : (
@@ -337,7 +337,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                                   ) : (
                                     <Badge
                                       variant="outline"
-                                      className="bg-green-100 text-green-700 border-green-200 ml-1 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800"
+                                      className="bg-red-100 text-red-700 border-red-200 ml-1 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800"
                                     >
                                       +{stat.point_value}
                                     </Badge>
@@ -346,7 +346,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                                     <div className="mt-1 flex items-center">
                                       <span className="font-medium mr-1">Uses Point Value:</span>
                                       {stat.uses_point_value ? (
-                                        <Check size={14} className="text-green-500 dark:text-green-400" />
+                                        <Check size={14} className="text-red-900 dark:text-red-400" />
                                       ) : (
                                         <X size={14} className="text-red-500 dark:text-red-400" />
                                       )}
@@ -367,10 +367,9 @@ const SportStatsCardView = ({ stats, filter }) => {
                           )}
                           </div>
 
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mt-auto">
-                            <div className="flex items-center gap-1">
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mt-auto">                            <div className="flex items-center gap-1">
                               {stat.is_player_stat ? (
-                                <Check size={14} className="text-green-500 dark:text-green-400" />
+                                <Check size={14} className="text-red-900 dark:text-red-400" />
                               ) : (
                                 <X size={14} className="text-red-500 dark:text-red-400" />
                               )}
@@ -378,7 +377,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                             </div>
                             <div className="flex items-center gap-1">
                               {stat.is_team_stat ? (
-                                <Check size={14} className="text-green-500 dark:text-green-400" />
+                                <Check size={14} className="text-red-900 dark:text-red-400" />
                               ) : (
                                 <X size={14} className="text-red-500 dark:text-red-400" />
                               )}
@@ -386,7 +385,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                             </div>
                             <div className="flex items-center gap-1">
                               {stat.is_boxscore ? (
-                                <Check size={14} className="text-green-500 dark:text-green-400" />
+                                <Check size={14} className="text-red-900 dark:text-red-400" />
                               ) : (
                                 <X size={14} className="text-red-500 dark:text-red-400" />
                               )}
@@ -394,7 +393,7 @@ const SportStatsCardView = ({ stats, filter }) => {
                             </div>
                             <div className="flex items-center gap-1">
                               {stat.is_team_comparison ? (
-                                <Check size={14} className="text-green-500 dark:text-green-400" />
+                                <Check size={14} className="text-red-900 dark:text-red-400" />
                               ) : (
                                 <X size={14} className="text-red-500 dark:text-red-400" />
                               )}

@@ -4,26 +4,33 @@ import { ChevronLeft, Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import SportModal from "@/components/modals/SportModal";
 import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/common/PageHeader";
 
 const SportsListHeader = () => {
   const { isOpen, closeModal, openModal } = useModal();
 
+  const actionComponent = (
+    <Button
+      onClick={openModal}
+      className="w-full sm:w-auto"
+      size="sm"
+    >
+      <Plus />
+      Register Sport
+    </Button>
+  );
+
   return (
-    <header className="border-b p-4 grid grid-cols-2 grid-rows-2 items-center">
-      <span className="font-medium text-sm row-start-2 md:text-lg">
-        Sports Management
-      </span>
-      <Button
-        onClick={openModal}
-        className="ml-auto row-span-2 col-start-2 md:py-5"
-        size="sm"
-      >
-        <Plus />
-        Register Sport
-      </Button>
+    <div className="border-b p-4">
+      <PageHeader 
+        title="Sports Management"
+        description="Manage and organize sports in your system"
+        actionComponent={actionComponent}
+      />
       <SportModal isOpen={isOpen} onClose={closeModal} />
-    </header>
+    </div>
   );
 };
+
 
 export default SportsListHeader;

@@ -60,7 +60,7 @@ const LeagueComprehensiveStats = ({ leagueId, sport }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">          <InfoCard
             title={isSetBased ? "Matches" : "Games"}
             value={isSetBased ? stats.total_matches : stats.total_games}
-            icon={<Goal className="h-5 w-5 text-blue-500" />}
+            icon={<Goal className="h-5 w-5 text-amber-600" />}
             description={isSetBased ? "Total matches played" : "Total games played"}
           />
           <InfoCard
@@ -74,7 +74,7 @@ const LeagueComprehensiveStats = ({ leagueId, sport }) => {
           <InfoCard
             title={isSetBased ? "Sets" : "Seasons"}
             value={isSetBased ? stats.total_sets : stats.seasons_count}
-            icon={<Calendar className="h-5 w-5 text-green-500" />}
+            icon={<Calendar className="h-5 w-5 text-amber-600" />}
             description={isSetBased ? "Total sets played" : "Total seasons"}
             progress={isSetBased ? null : seasonCompletionPercentage}
             progressLabel="Seasons Completed"

@@ -63,34 +63,32 @@ const getAttendanceColumns = (onStatusChange, onNotesChange) => [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.attendance_status || "pending";
-      const recordId = row.original.id;
-      
-      // Define status-based styles for better UX
+      const recordId = row.original.id;        // Define status-based styles for better UX
       const statusStyles = {
         present: {
-          bg: "rgba(34,197,94,0.08)",
-          color: "#22c55e",
-          hoverBg: "rgba(34,197,94,0.25)"
+          bg: "rgba(139,21,56,0.08)",
+          color: "#8B1538",
+          hoverBg: "rgba(139,21,56,0.25)"
         },
         absent: {
-          bg: "rgba(239,68,68,0.08)",
-          color: "#ef4444",
-          hoverBg: "rgba(239,68,68,0.25)"
+          bg: "rgba(220,20,60,0.08)",
+          color: "#DC143C",
+          hoverBg: "rgba(220,20,60,0.25)"
         },
         pending: {
-          bg: "rgba(234,179,8,0.08)",
-          color: "#eab308",
-          hoverBg: "rgba(234,179,8,0.25)"
+          bg: "rgba(184,134,11,0.08)",
+          color: "#B8860B",
+          hoverBg: "rgba(184,134,11,0.25)"
         },
         excused: {
-          bg: "rgba(107,114,128,0.08)",
-          color: "#6b7280",
-          hoverBg: "rgba(107,114,128,0.25)"
+          bg: "rgba(255,215,0,0.08)",
+          color: "#FFD700",
+          hoverBg: "rgba(255,215,0,0.25)"
         },
         late: {
-          bg: "rgba(59,130,246,0.08)",
-          color: "#3b82f6",
-          hoverBg: "rgba(59,130,246,0.25)"
+          bg: "rgba(218,165,32,0.08)",
+          color: "#DAA520",
+          hoverBg: "rgba(218,165,32,0.25)"
         }
       };
       

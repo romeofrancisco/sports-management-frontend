@@ -123,9 +123,9 @@ const TopLeaderInfoCard = ({ player, stats, rank }) => {
   if (rank === 1) {
     icon = <Trophy className="h-5 w-5 text-amber-500" />;
   } else if (mainStat?.category === 'scoring') {
-    icon = <Target className="h-5 w-5 text-green-500" />;
+    icon = <Target className="h-5 w-5 text-red-800" />;
   } else if (mainStat?.category === 'defensive') {
-    icon = <Shield className="h-5 w-5 text-blue-500" />;
+    icon = <Shield className="h-5 w-5 text-amber-600" />;
   } else if (mainStat?.category === 'offensive') {
     icon = <Activity className="h-5 w-5 text-purple-500" />;
   } else {

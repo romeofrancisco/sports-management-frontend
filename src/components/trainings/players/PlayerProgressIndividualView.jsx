@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardHeader,
@@ -6,15 +6,9 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeft,
-  LineChart,
-  BarChart,
-  BarChart3,
-  PlusCircle,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, User, TrendingUp } from "lucide-react";
 import PlayerProgressChart from "@/components/charts/PlayerProgressChart/PlayerProgressChart";
 import PlayerProgressStats from "./PlayerProgressStats";
 
@@ -23,105 +17,58 @@ const PlayerProgressIndividualView = ({
   playerName,
   dateRangeParams,
   handleBackToCompare,
-  openModal,
-  teamSlug,
+  onDateChange,
+  dateRange, // Add dateRange prop for the chart component
 }) => {
-  const [activeTab, setActiveTab] = useState("chart");
-
   return (
-    <Card className="shadow-sm border overflow-hidden pt-0">
-      <CardHeader className="bg-muted/30 pb-2 border-b py-5">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+    <div className="space-y-6">
+      {/* Enhanced Header Section */}
+      <Card className="bg-gradient-to-r from-primary/5 via-primary/10 to-secondary/5 border-0 shadow-lg overflow-hidden">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 rounded-full hover:bg-muted/80 transition-colors"
+              className="h-9 w-9 p-0 rounded-full hover:bg-white/20 transition-all duration-200 backdrop-blur-sm border border-white/10 shadow-sm"
               onClick={handleBackToCompare}
             >
               <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
+              <span className="sr-only">Back to comparison</span>
             </Button>
-            <div>
-              <CardTitle className="text-lg font-semibold">
-                {playerName || "Player"}'s Progress
-              </CardTitle>
-              <CardDescription>
-                Track individual performance over time
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="p-1.5 bg-primary/10 rounded-lg">
+                  <User className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  {playerName || "Player"}'s Progress
+                </CardTitle>
+              </div>
+              <CardDescription className="text-sm text-muted-foreground flex items-center gap-2">
+                <TrendingUp className="h-3 w-3" />
+                Comprehensive performance analysis and tracking
               </CardDescription>
             </div>
           </div>
-        </div>
-      </CardHeader>
-      <PlayerProgressStats playerId={playerId} />
+        </CardHeader>
+      </Card>
 
-      <Tabs
-        defaultValue="chart"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
-        <div className="px-4 pt-2 border-b">
-          <TabsList className="bg-background/80 backdrop-blur-sm border justify-start h-10 mb-2">
-            <TabsTrigger
-              value="chart"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              <LineChart className="h-4 w-4 mr-2" />
-              Chart
-            </TabsTrigger>
-            <TabsTrigger
-              value="data"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              <BarChart className="h-4 w-4 mr-2" />
-              Data
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="chart" className="m-0">
+      {/* Stats Section with Enhanced Spacing */}
+      <div className="px-1">
+        <PlayerProgressStats playerId={playerId} />
+      </div>
+      
+      {/* Chart Section with Improved Container */}
+      <Card className="bg-gradient-to-br from-background to-muted/20 overflow-hidden">
+        <CardContent className="p-0">
           <PlayerProgressChart
             playerId={playerId}
-            dateRange={dateRangeParams}
+            dateRange={dateRange}
+            onDateChange={onDateChange}
           />
-        </TabsContent>
-        <TabsContent value="data" className="m-0">
-          <div className="p-4">
-            <Card className="border shadow-sm bg-muted/5">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="bg-muted/20 p-3 rounded-full mb-4">
-                    <BarChart className="h-10 w-10 text-muted-foreground/80" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">
-                    Detailed Metrics Data
-                  </h3>
-                  <p className="text-muted-foreground max-w-md mb-6">
-                    A comprehensive data table showing all recorded metrics and
-                    analytics for this player is coming soon.
-                  </p>
-                  <div className="flex gap-3">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => openModal(playerId, teamSlug)}
-                    >
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      Record New Data Point
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <BarChart3 className="h-4 w-4 mr-2" />
-                      View All Data
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

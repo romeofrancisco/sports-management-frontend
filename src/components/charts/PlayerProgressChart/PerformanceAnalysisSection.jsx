@@ -23,8 +23,8 @@ export const PerformanceAnalysisSection = ({ metricData, playerData, selectedMet
   return (
     <div>
       <div className="flex items-center mb-6">
-        <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-md mr-3">
-          <BarChartBig className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+        <div className="p-2 bg-amber-100 dark:bg-amber-900 rounded-md mr-3">
+          <BarChartBig className="h-5 w-5 text-amber-700 dark:text-amber-400" />
         </div>
         <h3 className="text-xl font-semibold ">
           Performance Insights

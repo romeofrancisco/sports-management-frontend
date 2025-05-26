@@ -3,10 +3,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TrainingCategoriesList from "../categories/TrainingCategoriesList";
 import TrainingMetricsList from "../metrics/TrainingMetricsList";
 import TrainingSessionsList from "../sessions/TrainingSessionsList";
-import TeamTrainingAnalytics from "../teams/TeamTrainingAnalytics";
+import PageHeader from "@/components/common/PageHeader";
+import AttendanceAnalyticsTab from "../attendance/AttendanceAnalyticsTab";
+
 import { useSelector } from "react-redux";
 import { PlayerProgressSection } from "../players";
-import { MetricUnitsManager } from "../MetricUnitsManager";
+import { MetricUnitsManager } from "../units/MetricUnitsManager";
+
 const TrainingDashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState("sessions");
@@ -14,52 +17,93 @@ const TrainingDashboard = () => {
   // Get user roles
   const isCoach = user?.roles?.includes("coach");
 
-
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Training Management</h1>
-          <p className="text-muted-foreground">
-            Monitor and track player improvements through training
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+        {/* Header Section */}
+        <PageHeader
+          title="Training Management"
+          description="Monitor and track player improvements through comprehensive training analysis"
+        />
+
+        {/* Tabs Section - Enhanced responsive design */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Mobile-first tab layout */}
+          <div className="w-full overflow-x-auto">
+            <TabsList className="grid w-full min-w-fit grid-cols-2 sm:grid-cols-3 md:grid-cols-6 h-auto">
+              <TabsTrigger
+                value="sessions"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                <span className="hidden sm:inline">Training </span>Sessions
+              </TabsTrigger>
+              <TabsTrigger
+                value="players"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                <span className="hidden sm:inline">Player </span>Progress
+              </TabsTrigger>
+              <TabsTrigger
+                value="attendance"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                Attendance
+              </TabsTrigger>
+              <TabsTrigger
+                value="categories"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                Categories
+              </TabsTrigger>
+              <TabsTrigger
+                value="metrics"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                Metrics
+              </TabsTrigger>
+              <TabsTrigger
+                value="units"
+                className="whitespace-nowrap px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm"
+              >
+                Units
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          {/* Tab Content - Responsive containers */}
+          <div className="mt-6">
+            <TabsContent value="sessions" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingSessionsList coachId={isCoach ? user?.id : null} />
+              </div>
+            </TabsContent>
+            <TabsContent value="players" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <PlayerProgressSection />
+              </div>
+            </TabsContent>
+            <TabsContent value="attendance" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <AttendanceAnalyticsTab />
+              </div>
+            </TabsContent>
+            <TabsContent value="categories" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingCategoriesList />
+              </div>
+            </TabsContent>
+            <TabsContent value="metrics" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <TrainingMetricsList />
+              </div>
+            </TabsContent>
+            <TabsContent value="units" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <MetricUnitsManager />
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
-          <TabsTrigger value="sessions">Training Sessions</TabsTrigger>
-          <TabsTrigger value="players">Player Progress</TabsTrigger>
-          <TabsTrigger value="analytics">Team Analytics</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
-          <TabsTrigger value="metrics">Metrics</TabsTrigger>
-          <TabsTrigger value="units">Units</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="sessions" className="mt-6">
-          <TrainingSessionsList coachId={isCoach ? user?.id : null} />
-        </TabsContent>
-
-        <TabsContent value="players" className="mt-6">
-          <PlayerProgressSection />
-        </TabsContent>
-
-        <TabsContent value="analytics" className="mt-6">
-          <TeamTrainingAnalytics />
-        </TabsContent>
-
-        <TabsContent value="categories" className="mt-6">
-          <TrainingCategoriesList />
-        </TabsContent>
-
-        <TabsContent value="metrics" className="mt-6">
-          <TrainingMetricsList />
-        </TabsContent>
-
-        <TabsContent value="units" className="mt-6">
-          <MetricUnitsManager />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 };

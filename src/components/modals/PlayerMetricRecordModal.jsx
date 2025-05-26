@@ -34,23 +34,22 @@ const ImprovementIndicator = ({ current, previous, isLowerBetter = true }) => {
   // For metrics where lower is better (like time), we want diff to be negative
   // For metrics where higher is better (like reps), we want diff to be positive
   const isImprovement = isLowerBetter ? diff < 0 : diff > 0;
-
   return (
     <span
       className={cn(
         "text-xs font-medium flex items-center",
-        isImprovement ? "text-green-500" : "text-red-500"
+        isImprovement ? "text-green-900" : "text-red-500"
       )}
     >
       {isImprovement ? (
         <>
           <ArrowUpIcon className="h-3 w-3 mr-1" />
-          Improved by {Math.abs(percentChange).toFixed(1)}%
+          Improved by {Math.abs(percentChange).toFixed(2)}%
         </>
       ) : (
         <>
           <ArrowDownIcon className="h-3 w-3 mr-1" />
-          Decreased by {Math.abs(percentChange).toFixed(1)}%
+          Decreased by {Math.abs(percentChange).toFixed(2)}%
         </>
       )}
     </span>
@@ -193,13 +192,13 @@ const MetricInputField = ({ metric, value, onChange, previousValue }) => {
             placeholder="Value"
             className={cn(
               "rounded-r-none",
-              hasValue ? "border-green-500/50" : ""
+              hasValue ? "border-red-800/50" : ""
             )}
           />
           <div
             className={cn(
               "bg-muted h-10 px-3 inline-flex items-center rounded-r-md border border-l-0 border-input text-sm text-muted-foreground",
-              hasValue ? "border-green-500/50" : ""
+              hasValue ? "border-red-800/50" : ""
             )}
           >
             {metric.metric_unit?.code || "-"}
@@ -227,17 +226,17 @@ const PlayerMetricRecordModal = ({
     if (!playerTraining?.metric_records) return [];
 
     // Convert metric records to the format needed for the UI
-    return playerTraining.metric_records.map(record => ({
+    return playerTraining.metric_records.map((record) => ({
       id: record.metric,
       name: record.metric_name,
       description: "",
       metric_unit: {
         code: record.metric_unit_code,
-        name: record.metric_unit_name
+        name: record.metric_unit_name,
       },
-      is_lower_better: record.metric_name.toLowerCase().includes('time'), // Assume time-based metrics are lower-better
+      is_lower_better: record.metric_name.toLowerCase().includes("time"), // Assume time-based metrics are lower-better
       existing_record_id: record.id,
-      current_value: record.value
+      current_value: record.value,
     }));
   }, [playerTraining]);
 
@@ -246,24 +245,26 @@ const PlayerMetricRecordModal = ({
     if (!playerTraining) return;
 
     const initialValues = {};
-    const initialNotes = {};      // Initialize with values from metricsToShow
-      metricsToShow.forEach((metric) => {
-        initialValues[metric.id] = metric.current_value ? metric.current_value.toString() : "0";
-        initialNotes[metric.id] = metric.notes || "";
-      });
+    const initialNotes = {}; // Initialize with values from metricsToShow
+    metricsToShow.forEach((metric) => {
+      initialValues[metric.id] = metric.current_value
+        ? metric.current_value.toString()
+        : "0";
+      initialNotes[metric.id] = metric.notes || "";
+    });
 
-      setMetricValues(initialValues);
-      setNotes(initialNotes);
-    
+    setMetricValues(initialValues);
+    setNotes(initialNotes);
   }, [playerTraining, metricsToShow]);
 
-  if (!playerTraining) return null;  const handleSubmit = () => {
+  if (!playerTraining) return null;
+  const handleSubmit = () => {
     const metricsData = metricsToShow
       .map((metric) => ({
         metric_id: metric.id,
         value: parseFloat(metricValues[metric.id] || "0"),
         notes: notes[metric.id] || "",
-        record_id: metric.existing_record_id // Include the existing record ID if available
+        record_id: metric.existing_record_id, // Include the existing record ID if available
       }))
       .filter((data) => !isNaN(data.value));
 
@@ -351,7 +352,7 @@ const PlayerMetricRecordModal = ({
         </DialogHeader>
         <div className="space-y-2 py-2">
           {metricsToShow.length === 0 ? (
-            <div className="text-center py-6 bg-amber-50 border border-amber-200 rounded-md space-y-4">
+            <div className="text-center py-6 bg-muted rounded-md space-y-4">
               <div>
                 <span className="block text-amber-600 font-medium mb-1">
                   No metrics available for recording
@@ -361,23 +362,14 @@ const PlayerMetricRecordModal = ({
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2 items-center">
-                <Button
+              <div className="flex flex-col gap-2 items-center">                <Button
                   variant="outline"
                   size="sm"
-                  className="bg-white text-amber-600 border-amber-300 hover:bg-amber-100 hover:text-amber-700"
                   onClick={() => {
                     onClose();
-
-                    // Use the event system to trigger the metrics configuration
-                    const event = new CustomEvent("configureSessionMetrics", {
-                      detail: { sessionId: playerTraining.session },
-                    });
-                    window.dispatchEvent(event);
-
                     toast.info("Configure session metrics", {
                       description:
-                        "You can set up which metrics to track for this training session.",
+                        "You can set up which metrics to track for this training session from the training sessions list.",
                       richColors: true,
                     });
                   }}
@@ -388,21 +380,10 @@ const PlayerMetricRecordModal = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-white text-blue-600 border-blue-300 hover:bg-blue-100 hover:text-blue-700"
                   onClick={() => {
                     onClose();
-
-                    // Use the event system to trigger player-specific metrics configuration
-                    const event = new CustomEvent("configurePlayerMetrics", {
-                      detail: {
-                        playerTrainingId: playerTraining.id,
-                        playerName: playerTraining.player_name,
-                      },
-                    });
-                    window.dispatchEvent(event);
-
                     toast.info("Configure player metrics", {
-                      description: `Set up metrics specifically for ${playerTraining.player_name}.`,
+                      description: `Set up metrics specifically for ${playerTraining.player_name} from the player selection modal.`,
                       richColors: true,
                     });
                   }}

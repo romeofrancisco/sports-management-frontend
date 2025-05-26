@@ -12,14 +12,13 @@ export const PointsBasedStatsCards = ({ statsSummary }) => {
       <InfoCard 
         title="Avg Points Per Game" 
         value={statsSummary.avgPointsPerGame}
-        icon={<BarChart2 className="text-blue-500 h-5 w-5" />}
+        icon={<BarChart2 className="text-amber-600 h-5 w-5" />}
       />
-      
-      <InfoCard 
+        <InfoCard 
         title="Best Offensive Team" 
         value={statsSummary.bestOffensiveTeam.name}
         description={`${statsSummary.bestOffensiveTeam.value} pts/game`}
-        icon={<TrendingUp className="text-green-500 h-5 w-5" />}
+        icon={<TrendingUp className="text-red-900 h-5 w-5" />}
       />
       
       <InfoCard 
@@ -50,14 +49,13 @@ export const SetsBasedStatsCards = ({ statsSummary }) => {
         title="Best Win Rate" 
         value={statsSummary.bestWinRateTeam.name}
         description={`${statsSummary.bestWinRateTeam.value}% wins`}
-        icon={<Trophy className="text-blue-500 h-5 w-5" />}
+        icon={<Trophy className="text-amber-600 h-5 w-5" />}
       />
-      
-      <InfoCard 
+        <InfoCard 
         title="Best Offensive Team" 
         value={statsSummary.bestOffensiveTeam.name}
         description={`${statsSummary.bestOffensiveTeam.value} pts/set avg`}
-        icon={<TrendingUp className="text-green-500 h-5 w-5" />}
+        icon={<TrendingUp className="text-red-900 h-5 w-5" />}
       />
       
       <InfoCard 

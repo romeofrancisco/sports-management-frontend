@@ -1,11 +1,10 @@
 import CoachDashboard from "@/pages/coach/CoachDashboard";
-import TrainingsPage from "@/pages/admin/training/TrainingsPage";
 import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import PlayersList from "@/pages/admin/player/PlayersList";
 import GameSchedule from "@/pages/admin/game/GameSchedule";
 import PlayerDetails from "@/pages/admin/player/PlayerDetails";
-import TrainingSettingsPage from "@/pages/TrainingSettingsPage";
+import TrainingDashboard from "@/components/trainings/dashboard/TrainingDashboard";
 
 export const coachRoutes = [
   {
@@ -27,16 +26,12 @@ export const coachRoutes = [
     {
     path: "/players/:id",
     element: <PlayerDetails />,
-  },
-  {
+  },  {
     path: "/games",
     element: <GameSchedule />,
-  },  {
-    path: "/trainings",
-    element: <TrainingsPage />,
-  },
+  }, 
   {
-    path: "/training-settings",
-    element: <TrainingSettingsPage />,
+    path: "/trainings",
+    element: <TrainingDashboard />,
   },
 ];

@@ -13,7 +13,7 @@ const PlayerProgressQuickActions = ({ openModal, playerId, teamSlug }) => {
           openModal(playerId, teamSlug)
         }
       >
-        <PlusCircle className="h-4 w-4 mr-2" /> Record New Metric
+        <PlusCircle className="h-4 w-4 mr-2" /> Record New Session
       </Button>
       <Button variant="outline" size="sm" className="shadow-sm">
         <Calendar className="h-4 w-4 mr-2" /> View Training Schedule

@@ -34,7 +34,7 @@ const EmptyStateView = ({ sports, handleSportChange, openModal, teamSlug }) => {
             onClick={() => openModal(teamSlug)}
           >
             <Activity className="h-4 w-4" />
-            Record New Metrics
+            Record New Session
           </Button>
         </div>
       </div>

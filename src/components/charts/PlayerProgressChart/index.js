@@ -1,5 +1,6 @@
 import PlayerProgressChart from "./PlayerProgressChart";
 import { ChartHeader } from "./ChartHeader";
+import { ChartSkeleton } from "./ChartSkeleton";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 import { LoadingState } from "./LoadingState";
@@ -13,6 +14,7 @@ import { SelectMetricPrompt } from "./SelectMetricPrompt";
 export {
   PlayerProgressChart,
   ChartHeader,
+  ChartSkeleton,
   EmptyState,
   ErrorState,
   LoadingState,
