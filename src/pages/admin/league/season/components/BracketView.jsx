@@ -65,7 +65,7 @@ const BracketView = ({ season, leagueId }) => {
         <InfoCard
           title="Match Progress"
           value={`${completedMatches}/${totalMatches}`}
-          icon={<BarChart className="h-5 w-5 text-blue-500" />}
+          icon={<BarChart className="h-5 w-5 text-amber-600" />}
           description={`${completionPercentage}% complete`}
           className="hover:shadow-md transition-all duration-300"
         />

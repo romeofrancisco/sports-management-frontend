@@ -58,7 +58,7 @@ const OverviewTab = ({ overviewData, trendsData }) => {
           />
         </div>
       </div>      {/* Charts Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-[30%_1fr] gap-6 lg:gap-8">
         {/* Attendance Distribution Chart */}
         <div className="border rounded-lg bg-card p-6">
           <div className="mb-4">

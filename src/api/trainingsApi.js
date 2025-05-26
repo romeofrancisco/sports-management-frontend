@@ -28,8 +28,17 @@ const cleanParams = (params = {}) => {
         cleanedParams[key] = value;
       }
     }
+  }  return cleanedParams;
+};
+
+// Helper function to wrap API calls with consistent error handling
+const handleApiCall = async (apiCall) => {
+  try {
+    const { data } = await apiCall();
+    return data;
+  } catch (error) {
+    throw error;
   }
-  return cleanedParams;
 };
 
 // Utility function to format unit display
@@ -44,159 +53,58 @@ export const normalizeImprovement = (improvement, metric) => {  if (improvement 
 };
 
 // Metric Units
-export const fetchMetricUnits = async (params = {}) => {
-  try {
-    const { data } = await api.get("trainings/metric-units/", {
-      params: cleanParams(params),
-    });
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchMetricUnits = async (params = {}) => 
+  handleApiCall(() => api.get("trainings/metric-units/", { params: cleanParams(params) }));
 
-export const fetchMetricUnit = async (id) => {
-  try {
-    const { data } = await api.get(`trainings/metric-units/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchMetricUnit = async (id) => 
+  handleApiCall(() => api.get(`trainings/metric-units/${id}/`));
 
-export const createMetricUnit = async (unitData) => {
-  try {
-    const { data } = await api.post("trainings/metric-units/", unitData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createMetricUnit = async (unitData) => 
+  handleApiCall(() => api.post("trainings/metric-units/", unitData));
 
-export const updateMetricUnit = async ({ id, ...unitData }) => {
-  try {
-    const { data } = await api.patch(`trainings/metric-units/${id}/`, unitData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateMetricUnit = async ({ id, ...unitData }) => 
+  handleApiCall(() => api.patch(`trainings/metric-units/${id}/`, unitData));
 
-export const deleteMetricUnit = async (id) => {
-  try {
-    const { data } = await api.delete(`trainings/metric-units/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const deleteMetricUnit = async (id) => 
+  handleApiCall(() => api.delete(`trainings/metric-units/${id}/`));
 
 // Training Categories
-export const fetchTrainingCategories = async () => {
-  try {
-    const { data } = await api.get("trainings/categories/");
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchTrainingCategories = async () => 
+  handleApiCall(() => api.get("trainings/categories/"));
 
-export const fetchTrainingCategory = async (id) => {
-  try {
-    const { data } = await api.get(`trainings/categories/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchTrainingCategory = async (id) => 
+  handleApiCall(() => api.get(`trainings/categories/${id}/`));
 
-export const createTrainingCategory = async (categoryData) => {
-  try {
-    const { data } = await api.post("trainings/categories/", categoryData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createTrainingCategory = async (categoryData) => 
+  handleApiCall(() => api.post("trainings/categories/", categoryData));
 
-export const updateTrainingCategory = async ({ id, ...categoryData }) => {
-  try {
-    const { data } = await api.patch(
-      `trainings/categories/${id}/`,
-      categoryData
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateTrainingCategory = async ({ id, ...categoryData }) => 
+  handleApiCall(() => api.patch(`trainings/categories/${id}/`, categoryData));
 
-export const deleteTrainingCategory = async (id) => {
-  try {
-    const { data } = await api.delete(`trainings/categories/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const deleteTrainingCategory = async (id) => 
+  handleApiCall(() => api.delete(`trainings/categories/${id}/`));
 
 // Training Metrics
-export const fetchTrainingMetrics = async (params = {}) => {
-  try {
-    const { data } = await api.get("trainings/metrics/", {
-      params: cleanParams(params),
-    });
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchTrainingMetrics = async (params = {}) => 
+  handleApiCall(() => api.get("trainings/metrics/", { params: cleanParams(params) }));
 
-export const fetchTrainingMetric = async (id) => {
-  try {
-    const { data } = await api.get(`trainings/metrics/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchTrainingMetric = async (id) => 
+  handleApiCall(() => api.get(`trainings/metrics/${id}/`));
 
-export const createTrainingMetric = async (metricData) => {
-  try {
-    const { data } = await api.post("trainings/metrics/", metricData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createTrainingMetric = async (metricData) => 
+  handleApiCall(() => api.post("trainings/metrics/", metricData));
 
-export const updateTrainingMetric = async ({ id, ...metricData }) => {
-  try {
-    const { data } = await api.patch(`trainings/metrics/${id}/`, metricData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateTrainingMetric = async ({ id, ...metricData }) => 
+  handleApiCall(() => api.patch(`trainings/metrics/${id}/`, metricData));
 
-export const deleteTrainingMetric = async (id) => {
-  try {
-    const { data } = await api.delete(`trainings/metrics/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const deleteTrainingMetric = async (id) => 
+  handleApiCall(() => api.delete(`trainings/metrics/${id}/`));
 
 // Training Sessions
 export const fetchTrainingSessions = async (params = {}) => {
   try {
-    try {
-      const { data } = await api.get("trainings/sessions/", { params });
-      return data;
-    } catch (requestError) {
-      throw requestError;
-    }
+    const { data } = await api.get("trainings/sessions/", { params });
+    return data;
   } catch (error) {
     console.error(
       "Error fetching training sessions:",
@@ -206,94 +114,23 @@ export const fetchTrainingSessions = async (params = {}) => {
   }
 };
 
-export const fetchTrainingSession = async (id) => {
-  try {
-    const { data } = await api.get(`trainings/sessions/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchTrainingSession = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/`));
 
-export const createTrainingSession = async (sessionData) => {
-  try {
-    const { data } = await api.post("trainings/sessions/", sessionData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createTrainingSession = async (sessionData) => 
+  handleApiCall(() => api.post("trainings/sessions/", sessionData));
 
-export const updateTrainingSession = async ({ id, ...sessionData }) => {
-  try {
-    const { data } = await api.patch(`trainings/sessions/${id}/`, sessionData);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateTrainingSession = async ({ id, ...sessionData }) => 
+  handleApiCall(() => api.patch(`trainings/sessions/${id}/`, sessionData));
 
-export const deleteTrainingSession = async (id) => {
-  try {
-    const { data } = await api.delete(`trainings/sessions/${id}/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const deleteTrainingSession = async (id) => 
+  handleApiCall(() => api.delete(`trainings/sessions/${id}/`));
 
-export const addPlayersToSession = async ({ id, ...requestData }) => {
-  try {
-    const { data } = await api.post(
-      `trainings/sessions/${id}/add_players/`,
-      requestData
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const addPlayersToSession = async ({ id, ...requestData }) => 
+  handleApiCall(() => api.post(`trainings/sessions/${id}/add_players/`, requestData));
 
-export const updatePlayerAttendance = async ({ trainingId, attendance_status, notes }) => {
-  try {
-    const { data } = await api.patch(
-      `trainings/player-trainings/${trainingId}/update_attendance/`,
-      { 
-        attendance_status: attendance_status || 'present',
-        notes: notes || ''
-      }
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const bulkUpdateAttendance = async ({ sessionId, playerRecords }) => {
-  try {
-    console.log("Sending bulk update request with:", { sessionId, playerRecords });
-    const { data } = await api.post(
-      `trainings/player-trainings/bulk_update_attendance/`,
-      { 
-        sessionId, 
-        playerRecords 
-      }
-    );
-    return data;
-  } catch (error) {
-    console.error("Bulk update error:", error.response?.data || error);
-    throw error;
-  }
-};
-
-export const fetchSessionAnalytics = async (id) => {
-  try {
-    const { data } = await api.get(`trainings/sessions/${id}/analytics/`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const fetchSessionAnalytics = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/analytics/`));
 
 // Player Trainings
 export const fetchPlayerTrainings = async (params = {}) => {
@@ -456,6 +293,37 @@ export const assignMetricsToPlayerTraining = async ({ playerTrainingId, metricId
     });
     return data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const updatePlayerAttendance = async ({ trainingId, attendance_status, notes }) => {
+  try {
+    const { data } = await api.patch(
+      `trainings/player-trainings/${trainingId}/update_attendance/`,
+      { 
+        attendance_status: attendance_status || 'present',
+        notes: notes || ''
+      }
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const bulkUpdateAttendance = async ({ sessionId, playerRecords }) => {
+  try {
+    const { data } = await api.post(
+      `trainings/player-trainings/bulk_update_attendance/`,
+      { 
+        sessionId, 
+        playerRecords 
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error("Bulk update error:", error.response?.data || error);
     throw error;
   }
 };

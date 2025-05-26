@@ -17,12 +17,9 @@ const PlayerProgressMultiView = ({
   players = [],
   teamSlug = null,
   dateRange = null,
+  onDateChange,
 }) => {
   const [selectedMetric, setSelectedMetric] = useState("overall");
-  const [localDateRange, setLocalDateRange] = useState({
-    from: null,
-    to: null,
-  });
   
   // Use our custom hook to get all chart data and related info
   const {
@@ -38,7 +35,6 @@ const PlayerProgressMultiView = ({
     teamSlug,
     selectedMetric,
     dateRange,
-    localDateRange
   });
   // Enhanced No data message
   if (!isLoading && !metricsLoading && (!metrics || metrics.length === 0)) {
@@ -79,35 +75,17 @@ const PlayerProgressMultiView = ({
         </CardHeader>
       </Card>
     );
-  }
-  return (
+  }  return (
     <div className="space-y-6">
-      {/* Enhanced Header Section */}
+      {/* Control Header */}
       <Card className="w-full border-0 bg-gradient-to-r from-primary/5 via-secondary/10 to-primary/5 shadow-lg overflow-hidden">
         <CardHeader className="pb-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Users className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Player Comparison
-              </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground flex items-center gap-2">
-                <TrendingUp className="h-3 w-3" />
-                Compare performance metrics across multiple players
-              </CardDescription>
-            </div>
-          </div>
-          
-          {/* Enhanced Control Header */}
           <MultiChartHeader 
             metrics={metrics}
             selectedMetric={selectedMetric}
             setSelectedMetric={setSelectedMetric}
             dateRange={dateRange}
-            localDateRange={localDateRange}
-            setLocalDateRange={setLocalDateRange}
+            onDateChange={onDateChange}
           />
         </CardHeader>
       </Card>

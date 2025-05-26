@@ -95,16 +95,15 @@ const AttendanceAnalyticsDashboard = () => {
   // Combined loading and error states
   const isLoading = teamsLoading || overviewLoading || trendsLoading || heatmapLoading || playersLoading;
   const error = overviewError || trendsError || heatmapError || playersError;
-
   const getStatusColor = (status) => {
     const colors = {
-      present: '#4caf50',
-      absent: '#f44336',
-      late: '#ff9800',
-      excused: '#2196f3',
-      pending: '#9e9e9e',
+      present: '#8B0000',    // Dark maroon
+      absent: '#DC143C',     // Crimson
+      late: '#DAA520',       // Goldenrod
+      excused: '#B8860B',    // Dark goldenrod
+      pending: '#CD853F',    // Peru/brownish gold
     };
-    return colors[status] || '#9e9e9e';
+    return colors[status] || '#CD853F';
   };
   const StatCard = ({ title, value, subtitle, icon, trend, className }) => (
     <Card className={cn("relative overflow-hidden", className)}>
@@ -120,17 +119,16 @@ const AttendanceAnalyticsDashboard = () => {
           <p className="text-xs text-muted-foreground mt-1">
             {subtitle}
           </p>
-        )}
-        {trend !== undefined && (
+        )}        {trend !== undefined && (
           <div className="flex items-center mt-2">
             {trend > 0 ? (
-              <TrendingUp className="h-4 w-4 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-red-900" />
             ) : (
-              <TrendingDown className="h-4 w-4 text-red-500" />
+              <TrendingDown className="h-4 w-4 text-red-600" />
             )}
             <span className={cn(
               "text-xs ml-1",
-              trend > 0 ? "text-green-500" : "text-red-500"
+              trend > 0 ? "text-red-900" : "text-red-600"
             )}>
               {Math.abs(trend).toFixed(1)}%
             </span>
@@ -383,13 +381,12 @@ const AttendanceAnalyticsDashboard = () => {
                         <td className="p-2 text-center">
                           {player.best_streak} sessions
                         </td>
-                        <td className="p-2 text-center">
-                          <Badge 
+                        <td className="p-2 text-center">                          <Badge 
                             variant="outline"
                             className={cn(
-                              player.attendance_rate >= 80 ? "border-green-500 text-green-700" : 
-                              player.attendance_rate >= 60 ? "border-yellow-500 text-yellow-700" : 
-                              "border-red-500 text-red-700"
+                              player.attendance_rate >= 80 ? "border-red-900 text-red-900" : 
+                              player.attendance_rate >= 60 ? "border-yellow-600 text-yellow-700" : 
+                              "border-red-600 text-red-700"
                             )}
                           >
                             {player.attendance_rate >= 80 ? 'Excellent' : 
@@ -416,13 +413,12 @@ const AttendanceAnalyticsDashboard = () => {
       datasets: [
         {
           label: 'Attendance Rate',
-          data: heatmapData.map(item => item.attendance_rate),
-          backgroundColor: heatmapData.map(item => {
+          data: heatmapData.map(item => item.attendance_rate),          backgroundColor: heatmapData.map(item => {
             const rate = item.attendance_rate;
-            if (rate >= 80) return '#4caf50';
-            if (rate >= 60) return '#ff9800';
-            if (rate >= 40) return '#f44336';
-            return '#9e9e9e';
+            if (rate >= 80) return '#8B0000';    // Dark maroon for excellent
+            if (rate >= 60) return '#DAA520';    // Goldenrod for good
+            if (rate >= 40) return '#DC143C';    // Crimson for poor
+            return '#CD853F';                    // Peru/brownish gold for very poor
           }),
           borderColor: '#fff',
           borderWidth: 1,
@@ -473,22 +469,21 @@ const AttendanceAnalyticsDashboard = () => {
                   },
                 }}
               />
-            </div>
-            <div className="mt-4 flex justify-center gap-4 flex-wrap">
+            </div>            <div className="mt-4 flex justify-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-green-500 rounded" />
+                <div className="w-5 h-5 bg-red-900 rounded" />
                 <span className="text-sm">Excellent (80%+)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-orange-500 rounded" />
+                <div className="w-5 h-5 bg-yellow-600 rounded" />
                 <span className="text-sm">Good (60-79%)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-red-500 rounded" />
+                <div className="w-5 h-5 bg-red-600 rounded" />
                 <span className="text-sm">Poor (40-59%)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-gray-500 rounded" />
+                <div className="w-5 h-5 bg-yellow-700 rounded" />
                 <span className="text-sm">Very Poor (&lt;40%)</span>
               </div>
             </div>

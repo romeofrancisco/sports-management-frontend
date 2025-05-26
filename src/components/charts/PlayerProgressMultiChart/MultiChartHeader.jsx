@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectSeparator,
 } from "@/components/ui/select";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Filter, Calendar } from "lucide-react";
 
@@ -18,9 +18,8 @@ import { LineChart, Filter, Calendar } from "lucide-react";
  * @param {Array} props.metrics - Available metrics
  * @param {string|number|null} props.selectedMetric - Currently selected metric
  * @param {Function} props.setSelectedMetric - Function to set selected metric
- * @param {Object|null} props.dateRange - Date range from parent component
- * @param {Object} props.localDateRange - Local date range state
- * @param {Function} props.setLocalDateRange - Function to update local date range
+ * @param {Object|null} props.dateRange - Current date range
+ * @param {Function} props.onDateChange - Function to handle date range changes
  * @returns {JSX.Element} - Rendered component
  */
 const MultiChartHeader = ({
@@ -28,9 +27,8 @@ const MultiChartHeader = ({
   selectedMetric,
   setSelectedMetric,
   dateRange,
-  localDateRange,
-  setLocalDateRange,
-}) => {  return (
+  onDateChange,
+}) => {return (
     <div className="space-y-4">
       {/* Control Labels */}
       <div className="flex flex-wrap items-center gap-2">
@@ -44,12 +42,12 @@ const MultiChartHeader = ({
       {/* Controls Container */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 bg-gradient-to-r from-muted/20 to-muted/10 rounded-lg border border-border/50">
         {/* Metric Selection */}
-        <div className="flex-1 space-y-2">
+        <div className="space-y-2">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Performance Metric
           </label>
           <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-            <SelectTrigger className="w-full bg-background/50 border-border/50 hover:border-border transition-colors">
+            <SelectTrigger className="min-w-[15rem] bg-background/50 border-border/50 hover:border-border transition-colors">
               <SelectValue placeholder="Select a metric to analyze" />
             </SelectTrigger>
             <SelectContent>
@@ -76,22 +74,18 @@ const MultiChartHeader = ({
                 ))}
             </SelectContent>
           </Select>
+        </div>        {/* Date Range Selection */}
+        <div className="flex-1 space-y-2">
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            Date Range
+          </label>
+          <DateRangePickerWithPresets
+            value={dateRange}
+            onChange={onDateChange}
+            className="w-full border-border/50 hover:border-border transition-colors"
+          />
         </div>
-
-        {/* Date Range Selection */}
-        {!dateRange && (
-          <div className="flex-1 space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              Date Range
-            </label>
-            <DateRangePicker
-              date={localDateRange}
-              onDateChange={setLocalDateRange}
-              className="w-full bg-background/50 border-border/50 hover:border-border transition-colors"
-            />
-          </div>
-        )}
       </div>
     </div>
   );

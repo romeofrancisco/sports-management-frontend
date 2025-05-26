@@ -21,9 +21,8 @@ const SeasonStandings = ({ standings, sport }) => {
   const columns = getSeasonStandingsColumns({ sport, teamFormData });
 
   return (
-    <div className="bg-card rounded-lg border shadow-md overflow-hidden p-5">
-      <h2 className="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
-        <TrendingUp size={20} className="text-blue-500" />
+    <div className="bg-card rounded-lg border shadow-md overflow-hidden p-5">      <h2 className="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+        <TrendingUp size={20} className="text-amber-600" />
         Season Standings
       </h2>
       <DataTable

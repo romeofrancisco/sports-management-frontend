@@ -114,18 +114,17 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
       {/* League Overview Stats */}
       <div>
         <h3 className="text-lg font-semibold mb-4">League Overview</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <InfoCard
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">          <InfoCard
             title="Total Teams"
             value={teams_count}
-            icon={<Users size={20} className="text-blue-500" />}
+            icon={<Users size={20} className="text-amber-600" />}
             className="hover:shadow-md transition-all duration-300"
           />
           <InfoCard
             title="Total Seasons"
             value={seasons_count}
             icon={
-              <Flag size={20} className="text-green-500 dark:text-green-400" />
+              <Flag size={20} className="text-red-900 dark:text-red-400" />
             }
             description={`${active_seasons} active`}
             className="hover:shadow-md transition-all duration-300"
@@ -145,13 +144,12 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             }
             icon={<Calendar size={20} className="text-purple-500" />}
             description={
-              current_season ? (
-                <Badge
+              current_season ? (                <Badge
                   variant="outline"
                   className={`${
                     current_season.status === "ongoing"
-                      ? "bg-green-50 text-green-700"
-                      : "bg-blue-50 text-blue-700"
+                      ? "bg-red-50 text-red-700"
+                      : "bg-amber-50 text-amber-700"
                   }`}
                 >
                   {current_season.status}
@@ -177,11 +175,10 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
               description={`${Math.round((topTeams[0]?.win_percentage || 0) * 100)}% wins`}
               className="hover:shadow-md transition-all duration-300"
             />
-            
-            <InfoCard
+              <InfoCard
               title="Best Offense"
               value={topTeams[0]?.team_name || "N/A"}
-              icon={<TrendingUp size={20} className="text-emerald-500" />}
+              icon={<TrendingUp size={20} className="text-red-900" />}
               description={`${Math.round(topTeams[0]?.points_per_game || 0)} pts/game`}
               className="hover:shadow-md transition-all duration-300"
             />
@@ -189,7 +186,7 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             <InfoCard
               title="Most Games"
               value={topTeams.reduce((max, team) => Math.max(max, team.games_played || 0), 0)}
-              icon={<BarChart2 size={20} className="text-blue-500" />}
+              icon={<BarChart2 size={20} className="text-amber-600" />}
               description="Games played"
               className="hover:shadow-md transition-all duration-300"
             />
@@ -237,7 +234,7 @@ const LeagueOverview = ({ league, sport, onTabChange }) => {
             <Card className="shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
               <CardHeader className="pb-2 border-b">
                 <CardTitle className="text-base flex items-center">
-                  <Award className="h-4 w-4 text-blue-500 dark:text-blue-400 mr-2" />
+                  <Award className="h-4 w-4 text-amber-600 dark:text-amber-400 mr-2" />
                   Biggest Margins of Victory
                 </CardTitle>
                 <CardDescription className="text-xs text-muted-foreground">

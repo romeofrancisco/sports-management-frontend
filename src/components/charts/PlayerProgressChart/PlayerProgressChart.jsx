@@ -78,14 +78,15 @@ const PlayerProgressChart = ({
   if (error) return <ErrorState error={error} />;
 
   if (!playerData && !isLoading) return <EmptyState message="No player data available" />;
-  return (
-    <Card className="border-0 shadow-none">
+  return (    <Card className="border-0 shadow-none">
       <ChartHeader
         playerName={playerData?.player_name || "Player"}
         metrics={metrics || []}
         selectedMetric={selectedMetric}
         setSelectedMetric={setSelectedMetric}
         selectedMetricData={selectedMetricData}
+        dateRange={dateRange}
+        onDateChange={handleDateChange}
       />
       <CardContent>
         {isLoading ? (

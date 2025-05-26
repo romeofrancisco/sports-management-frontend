@@ -28,7 +28,6 @@ const MetricCard = ({
   onEdit,
   onDeleted,
 }) => {
-  console.log("MetricCard rendered with metric:", metric);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { mutateAsync: deleteMetric, isPending: isDeleting } =
     useDeleteTrainingMetric();
@@ -61,8 +60,8 @@ const MetricCard = ({
                 <span
                   className={`px-2 py-1 rounded ${
                     metric.is_lower_better
-                      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                      : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                      ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                      : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
                   }`}
                 >
                   {metric.is_lower_better

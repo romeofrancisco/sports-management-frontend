@@ -8,14 +8,12 @@ const TeamStreakIndicator = ({ results = [] }) => {
         <span className="text-xs text-muted-foreground">No recent games</span>
       </div>
     );
-  }
-
-  const getStreakColor = (result) => {
+  }  const getStreakColor = (result) => {
     switch (result) {
       case "W":
-        return "bg-emerald-500";
+        return "bg-green-500";
       case "L":
-        return "bg-rose-500";
+        return "bg-red-500";
       case "D":
         return "bg-amber-500";
       default:

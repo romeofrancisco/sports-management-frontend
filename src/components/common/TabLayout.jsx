@@ -36,11 +36,11 @@ const TabHeader = ({
       className
     )}>
       <div className="flex-1 min-w-0">
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 truncate">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground truncate">
           {title}
         </h2>
         {description && (
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {description}
           </p>
         )}
@@ -95,7 +95,7 @@ const TabCard = ({
 
   return (
     <div className={cn(
-      "rounded-lg border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm",
+      "rounded-lg border bg-card shadow-sm",
       paddingClasses[padding],
       className
     )}>
@@ -141,7 +141,7 @@ const TabError = ({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
           >
             Try Again
           </button>

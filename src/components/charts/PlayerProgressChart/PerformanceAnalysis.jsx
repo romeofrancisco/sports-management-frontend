@@ -44,23 +44,21 @@ export const PerformanceAnalysis = ({ metricData }) => {
             <Card className="pt-0">
               <CardHeader className="bg-muted/30 py-4 border-b">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <LineChart className="h-5 w-5 text-blue-600" /> 
+                  <LineChart className="h-5 w-5 text-amber-600" /> 
                   <span>Overall Progress</span>
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 pb-4">
-                <div className="flex items-center justify-center">
-                  <div className={`p-3 rounded-full mr-4 ${
+              </CardHeader>              <CardContent className="pt-6 pb-4">
+                <div className="flex items-center justify-center">                  <div className={`p-3 rounded-full mr-4 ${
                     overall_improvement.is_positive ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
                   }`}>
                     {overall_improvement.is_positive ? (
-                      <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-500" />
+                      <TrendingUp className="h-8 w-8 text-green-800 dark:text-green-500" />
                     ) : (
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
                   <div className="text-center">                    <div className={`text-3xl font-bold ${
-                      overall_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                      overall_improvement.is_positive ? "text-green-800 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
                       {overall_improvement.is_positive ? "+" : ""}{overall_improvement.percentage.toFixed(2)}%
                     </div>
@@ -79,20 +77,18 @@ export const PerformanceAnalysis = ({ metricData }) => {
                   <Activity className="h-5 w-5 text-indigo-600" />
                   <span>Recent Progress</span>
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 pb-4">
-                <div className="flex items-center justify-center">
-                  <div className={`p-3 rounded-full mr-4 ${
+              </CardHeader>              <CardContent className="pt-6 pb-4">
+                <div className="flex items-center justify-center">                  <div className={`p-3 rounded-full mr-4 ${
                     recent_improvement.is_positive ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
                   }`}>
                     {recent_improvement.is_positive ? (
-                      <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-500" />
+                      <TrendingUp className="h-8 w-8 text-green-800 dark:text-green-500" />
                     ) : (
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
                   <div className="text-center">                <div className={`text-3xl font-bold ${
-                      recent_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                      recent_improvement.is_positive ? "text-green-800 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
                       {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(2)}%
                     </div>
@@ -113,10 +109,9 @@ export const PerformanceAnalysis = ({ metricData }) => {
                 <span>Performance Overview</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="py-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-start space-x-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950">
-                  <Award className="h-6 w-6 text-blue-600 dark:text-blue-500 mt-1" />
+            <CardContent className="py-4">              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start space-x-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950">
+                  <Award className="h-6 w-6 text-amber-600 dark:text-amber-500 mt-1" />
                   <div>
                     <p className="font-medium text-sm text-slate-700 dark:text-slate-300">Best Performance</p>
                     <p className="text-lg font-bold">{stats.max.toFixed(1)}%</p>
@@ -165,23 +160,21 @@ export const PerformanceAnalysis = ({ metricData }) => {
             <Card className="pt-0">
               <CardHeader className="bg-muted/30 py-4 border-b">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Award className="h-5 w-5 text-blue-600" />
+                  <Award className="h-5 w-5 text-amber-600" />
                   <span>Total Progress</span>
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 pb-4">
-                <div className="flex items-center justify-center">
+              </CardHeader>              <CardContent className="pt-6 pb-4">                <div className="flex items-center justify-center">
                   <div className={`p-3 rounded-full mr-4 ${
                     isImproved ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
                   }`}>
                     {isImproved ? (
-                      <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-500" />
+                      <TrendingUp className="h-8 w-8 text-green-800 dark:text-green-500" />
                     ) : (
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
                   <div className="text-center">                    <div className={`text-3xl font-bold ${
-                      isImproved ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                      isImproved ? "text-green-800 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
                       {formatMetricValue(overall_improvement.absolute, metricData.unit)} {metricData.unit}
                     </div>
@@ -200,20 +193,19 @@ export const PerformanceAnalysis = ({ metricData }) => {
                   <BarChart3 className="h-5 w-5 text-indigo-600" />
                   <span>Percentage Change</span>
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 pb-4">
+              </CardHeader>              <CardContent className="pt-6 pb-4">
                 <div className="flex items-center justify-center">
                   <div className={`p-3 rounded-full mr-4 ${
                     isImproved ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
                   }`}>
                     {isImproved ? (
-                      <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-500" />
+                      <TrendingUp className="h-8 w-8 text-green-800 dark:text-green-500" />
                     ) : (
                       <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-500" />
                     )}
                   </div>
                   <div className="text-center">                    <div className={`text-3xl font-bold ${
-                      isImproved ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                      isImproved ? "text-green-800 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
                       {isImproved ? "+" : ""}{overall_improvement.percentage.toFixed(2)}%
                     </div>
@@ -238,19 +230,17 @@ export const PerformanceAnalysis = ({ metricData }) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">                <div className="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
                   <div className={`mr-4 p-3 rounded-full ${
-                    recent_improvement.is_positive ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"
-                  }`}>
+                    recent_improvement.is_positive ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"                  }`}>
                     {recent_improvement.is_positive ? (
-                      <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-500" />
+                      <TrendingUp className="h-6 w-6 text-green-800 dark:text-green-500" />
                     ) : (
                       <TrendingDown className="h-6 w-6 text-red-600 dark:text-red-500" />
                     )}
                   </div>
                   <div>                    <p className={`text-2xl font-bold ${
-                      recent_improvement.is_positive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                      recent_improvement.is_positive ? "text-green-800 dark:text-green-500" : "text-red-600 dark:text-red-500"
                     }`}>
                       {recent_improvement.is_positive ? "+" : ""}{recent_improvement.percentage.toFixed(2)}%
                     </p>
@@ -285,10 +275,9 @@ export const PerformanceAnalysis = ({ metricData }) => {
                 <span>Performance Statistics</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="py-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-start space-x-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950">
-                  <Award className="h-6 w-6 text-blue-600 dark:text-blue-500 mt-1" />
+            <CardContent className="py-4">              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start space-x-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950">
+                  <Award className="h-6 w-6 text-amber-600 dark:text-amber-500 mt-1" />
                   <div>
                     <p className="font-medium text-sm text-slate-700 dark:text-slate-300">Personal Best</p>
                     <p className="text-lg font-bold">{formatMetricValue(stats.max, metricData.unit)} {metricData.unit}</p>

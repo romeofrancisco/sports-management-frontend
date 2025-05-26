@@ -14,39 +14,38 @@ import {
 } from "@/constants/trainings";
 import { UserIcon, Settings, ClipboardPenLine } from "lucide-react";
 import PlayerMetricsConfigModal from "@/components/trainings/metrics/PlayerMetricsConfigModal";
-import { useAssignPlayerTrainingMetrics } from "@/hooks/useTrainings";
 
-// Status styles matching the design system
+// Status styles matching the maroon/gold design system
 const statusStyles = {
   present: {
-    bg: "rgba(34,197,94,0.08)",
-    color: "#22c55e",
-    hoverBg: "rgba(34,197,94,0.25)",
-    border: "border-green-200",
+    bg: "rgba(139,21,56,0.08)",
+    color: "#8B1538",
+    hoverBg: "rgba(139,21,56,0.25)",
+    border: "border-red-900",
   },
   absent: {
-    bg: "rgba(239,68,68,0.08)",
-    color: "#ef4444",
-    hoverBg: "rgba(239,68,68,0.25)",
-    border: "border-red-200",
+    bg: "rgba(220,20,60,0.08)",
+    color: "#DC143C",
+    hoverBg: "rgba(220,20,60,0.25)",
+    border: "border-red-600",
   },
   pending: {
-    bg: "rgba(234,179,8,0.08)",
-    color: "#eab308",
-    hoverBg: "rgba(234,179,8,0.25)",
-    border: "border-yellow-200",
+    bg: "rgba(184,134,11,0.08)",
+    color: "#B8860B",
+    hoverBg: "rgba(184,134,11,0.25)",
+    border: "border-yellow-600",
   },
   excused: {
-    bg: "rgba(107,114,128,0.08)",
-    color: "#6b7280",
-    hoverBg: "rgba(107,114,128,0.25)",
-    border: "border-gray-200",
+    bg: "rgba(255,215,0,0.08)",
+    color: "#FFD700",
+    hoverBg: "rgba(255,215,0,0.25)",
+    border: "border-yellow-500",
   },
   late: {
-    bg: "rgba(59,130,246,0.08)",
-    color: "#3b82f6",
-    hoverBg: "rgba(59,130,246,0.25)",
-    border: "border-blue-200",
+    bg: "rgba(218,165,32,0.08)",
+    color: "#DAA520",
+    hoverBg: "rgba(218,165,32,0.25)",
+    border: "border-yellow-500",
   },
 };
 
@@ -56,12 +55,13 @@ const PlayerSelectModal = ({
   players = [],
   onSelectPlayer,
   sessionMetrics = [],
+  onDataRefresh, // Add callback to refresh session data
+  selectedSession, // Add selectedSession to get fresh data
 }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
-  const { mutate: assignPlayerMetrics } = useAssignPlayerTrainingMetrics();
 
-  // Handle auto-selection for single player
+    // Handle auto-selection for single player
   useEffect(() => {
     if (players.length === 1) {
       const player = players[0];
@@ -74,6 +74,16 @@ const PlayerSelectModal = ({
       }
     }
   }, [players, onSelectPlayer, onClose]);
+
+  // Update selectedPlayer when players data changes (after refresh)
+  useEffect(() => {
+    if (selectedPlayer && players.length > 0) {
+      const updatedPlayer = players.find(p => p.id === selectedPlayer.id);
+      if (updatedPlayer) {
+        setSelectedPlayer(updatedPlayer);
+      }
+    }
+  }, [players, selectedPlayer]);
 
   // Filter only players with present or late status
   const availablePlayers = players.filter(
@@ -142,7 +152,6 @@ const PlayerSelectModal = ({
 
                     <div className="flex gap-2 w-full mt-3">
                       <Button
-                        variant="secondary"
                         size="sm"
                         className="flex-1"
                         onClick={() => {
@@ -172,28 +181,24 @@ const PlayerSelectModal = ({
             )}
           </div>
         </ScrollArea>
-
         <div className="flex justify-end pt-4 border-t mt-2">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-        </div>
-        {/* Player Metrics Configuration Modal */}
+        </div>        {/* Player Metrics Configuration Modal */}
         {selectedPlayer && (
           <PlayerMetricsConfigModal
             isOpen={isConfigModalOpen}
-            onClose={() => {
+            onClose={async () => {
               setIsConfigModalOpen(false);
+              
+              // Refresh session data - this will trigger the useEffect above to update selectedPlayer
+              if (onDataRefresh) {
+                await onDataRefresh();
+              }
             }}
             playerTraining={selectedPlayer}
-            playerMetrics={selectedPlayer.assigned_metrics || []}
             sessionMetrics={sessionMetrics}
-            onSave={(metricIds) => {
-              assignPlayerMetrics({
-                playerTrainingId: selectedPlayer.id,
-                metricIds: metricIds,
-              });
-            }}
           />
         )}
       </DialogContent>

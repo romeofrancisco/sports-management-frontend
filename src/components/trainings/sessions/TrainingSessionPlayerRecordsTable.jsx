@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import TrainingAttendanceModal from "@/components/modals/trainings/TrainingAttendanceModal";
 
 const attendanceStatusColor = {
-  present: "bg-green-100 text-green-800",
-  absent: "bg-red-100 text-red-800",
-  late: "bg-yellow-100 text-yellow-800",
-  excused: "bg-blue-100 text-blue-800",
-  pending: "bg-gray-100 text-gray-800",
+  present: "bg-red-100 text-red-800",
+  absent: "bg-rose-100 text-rose-800",
+  late: "bg-amber-100 text-amber-800",
+  excused: "bg-yellow-100 text-yellow-800",
+  pending: "bg-orange-100 text-orange-800",
 };
 
 const columns = (onEdit) => [

@@ -31,20 +31,27 @@ const SessionMetricsConfigModal = ({
   const [selectedMetrics, setSelectedMetrics] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
-
   // Fetch all metrics and categories
   const { data: allMetrics, isLoading: metricsLoading } = useTrainingMetrics();
   const { data: categories } = useTrainingCategories();
+  // Simple derivation - no need for useMemo for basic array map
+  const sessionMetricIds = sessionMetrics.map((metric) => metric.id);
 
   // Initialize selected metrics when modal opens or session changes
   useEffect(() => {
-    if (isOpen && sessionMetrics.length > 0) {
-      setSelectedMetrics(sessionMetrics.map((metric) => metric.id));
+    if (isOpen && sessionMetricIds.length > 0) {
+      setSelectedMetrics(prev => {
+        // Only update if the arrays are actually different
+        if (prev.length !== sessionMetricIds.length || 
+            !sessionMetricIds.every(id => prev.includes(id))) {
+          return sessionMetricIds;
+        }
+        return prev;
+      });
     } else if (isOpen) {
-      setSelectedMetrics([]);
+      setSelectedMetrics(prev => prev.length === 0 ? prev : []);
     }
-  }, [isOpen, sessionMetrics]);
-
+  }, [isOpen, sessionMetricIds]);
   // Filter metrics based on selected category
   const filteredMetrics = React.useMemo(() => {
     if (!allMetrics) return [];
@@ -58,7 +65,9 @@ const SessionMetricsConfigModal = ({
         }
         return metric.category === selectedCategoryId;
       });
-    } // Filter based on active tab
+    }
+    
+    // Filter based on active tab
     if (activeTab === "selected") {
       // Only show metrics that have been selected
       filtered = filtered.filter((metric) =>
@@ -69,19 +78,25 @@ const SessionMetricsConfigModal = ({
       filtered = filtered.filter(
         (metric) => !selectedMetrics.includes(metric.id)
       );
-    } else {
-      // In "all" tab, prioritize showing session metrics first
-      filtered = [
-        ...filtered.filter((metric) => selectedMetrics.includes(metric.id)),
-        ...filtered.filter((metric) => !selectedMetrics.includes(metric.id)),
-      ];
-    }
-
-    return filtered;
+    } else if (activeTab === "all") {
+      // In "all" tab, sort to prioritize selected metrics first
+      filtered = filtered.sort((a, b) => {
+        const aSelected = selectedMetrics.includes(a.id);
+        const bSelected = selectedMetrics.includes(b.id);
+        if (aSelected && !bSelected) return -1;
+        if (!aSelected && bSelected) return 1;
+        return 0;
+      });
+    }    return filtered;
   }, [allMetrics, selectedCategoryId, activeTab, selectedMetrics]);
 
+  // Memoize unselected count for performance
+  const unselectedCount = React.useMemo(() => {
+    return allMetrics ? allMetrics.length - selectedMetrics.length : 0;
+  }, [allMetrics, selectedMetrics]);
+
   // Handle toggling a metric selection
-  const handleToggleMetric = (metricId) => {
+  const handleToggleMetric = React.useCallback((metricId) => {
     setSelectedMetrics((prev) => {
       if (prev.includes(metricId)) {
         return prev.filter((id) => id !== metricId);
@@ -89,33 +104,30 @@ const SessionMetricsConfigModal = ({
         return [...prev, metricId];
       }
     });
-  };
-
+  }, []);
   // Handle selecting or deselecting all visible metrics
-  const handleToggleAll = (select) => {
+  const handleToggleAll = React.useCallback((select) => {
     setSelectedMetrics((prev) => {
       if (select) {
         // Add all currently filtered metrics to selection
-        const newMetricIds = filteredMetrics
-          .filter((metric) => !prev.includes(metric.id))
-          .map((metric) => metric.id);
-        return [...prev, ...newMetricIds];
+        const filteredMetricIds = filteredMetrics.map(metric => metric.id);
+        const newMetricIds = filteredMetricIds.filter(id => !prev.includes(id));
+        return newMetricIds.length > 0 ? [...prev, ...newMetricIds] : prev;
       } else {
         // Remove all currently filtered metrics from selection
-        return prev.filter(
-          (id) => !filteredMetrics.some((metric) => metric.id === id)
-        );
+        const filteredMetricIds = new Set(filteredMetrics.map(metric => metric.id));
+        const filtered = prev.filter(id => !filteredMetricIds.has(id));
+        return filtered.length !== prev.length ? filtered : prev;
       }
     });
-  };
-  // Handle saving the configuration
-  const handleSave = () => {
+  }, [filteredMetrics]);  // Handle saving the configuration
+  const handleSave = React.useCallback(() => {
     assignMetrics({
       sessionId: session.id,
       metricIds: selectedMetrics,
     });
     onClose();
-  };
+  }, [assignMetrics, session?.id, selectedMetrics, onClose]);
 
   if (!session) return null;
 
@@ -196,10 +208,8 @@ const SessionMetricsConfigModal = ({
                 <TabsTrigger value="all">All Metrics</TabsTrigger>
                 <TabsTrigger value="selected">
                   Selected ({selectedMetrics.length})
-                </TabsTrigger>
-                <TabsTrigger value="unselected">
-                  Unselected (
-                  {allMetrics ? allMetrics.length - selectedMetrics.length : 0})
+                </TabsTrigger>                <TabsTrigger value="unselected">
+                  Unselected ({unselectedCount})
                 </TabsTrigger>
               </TabsList>
 

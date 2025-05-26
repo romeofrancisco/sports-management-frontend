@@ -120,10 +120,9 @@ const PlayerImprovements = ({
             const Icon = improvementIcon;
 
             return (
-              <Card key={playerId} className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader className={`pb-3 bg-gradient-to-r ${
+              <Card key={playerId} className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">                <CardHeader className={`pb-3 bg-gradient-to-r ${
                   isImproved 
-                    ? 'from-green-50 to-green-100 dark:from-green-950/50 dark:to-green-900/50' 
+                    ? 'from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/50' 
                     : 'from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/50'
                 }`}>
                   <div className="flex items-center justify-between">

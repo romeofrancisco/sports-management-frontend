@@ -8,7 +8,14 @@ import {
 } from "@/hooks/useTrainings";
 import MetricCard from "./MetricCard";
 import TrainingMetricFormDialog from "@/components/modals/trainings/TrainingMetricFormDialog";
-import { TabLayout, TabHeader, TabContent, TabCard, TabLoading, TabError } from "@/components/common/TabLayout";
+import {
+  TabLayout,
+  TabHeader,
+  TabContent,
+  TabCard,
+  TabLoading,
+  TabError,
+} from "@/components/common/TabLayout";
 
 /**
  * Component for displaying and managing training metrics
@@ -33,7 +40,8 @@ const TrainingMetricsList = () => {
 
   const openEditDialog = (metric) => {
     setEditMetric(metric);
-    setOpenDialog(true);  };
+    setOpenDialog(true);
+  };
   return (
     <TabLayout>
       <TabHeader
@@ -63,9 +71,7 @@ const TrainingMetricsList = () => {
                       : "transparent",
                   borderColor: "var(--primary)",
                   color:
-                    selectedCategoryId === null
-                      ? "white"
-                      : "var(--primary)",
+                    selectedCategoryId === null ? "white" : "var(--primary)",
                 }}
                 onClick={() => setSelectedCategoryId(null)}
               >
@@ -96,9 +102,10 @@ const TrainingMetricsList = () => {
               ))}
             </div>
           </div>
-        </TabCard>        {/* Metrics Grid */}
+        </TabCard>
+        {/* Metrics Grid */}
         {metrics.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
             {metrics.map((metric) => (
               <MetricCard
                 key={metric.id}

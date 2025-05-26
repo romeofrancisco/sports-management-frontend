@@ -84,18 +84,16 @@ const getGameTableColumns = ({
           cell: ({ row }) => {
             const { lineup_status } = row.original;
             return (
-              <div className="flex justify-center gap-4 text-center">
-                <span
+              <div className="flex justify-center gap-4 text-center">                <span
                   className={
-                    lineup_status.home_ready ? "text-green-600" : "text-red-600"
+                    lineup_status.home_ready ? "text-red-800" : "text-red-600"
                   }
                 >
                   {lineup_status.home_ready  ? "Ready" : "Pending"}
                 </span>
-                <span>|</span>
-                <span
+                <span>|</span>                <span
                   className={
-                    lineup_status.away_ready ? "text-green-600" : "text-red-600"
+                    lineup_status.away_ready ? "text-red-800" : "text-red-600"
                   }
                 >
                   {lineup_status.away_ready ? "Ready" : "Pending"}

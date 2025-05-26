@@ -2,13 +2,13 @@
 
 export const getStatusColor = (status) => {
   const colors = {
-    present: '#4caf50',
-    absent: '#f44336',
-    late: '#ff9800',
-    excused: '#2196f3',
-    pending: '#9e9e9e',
+    present: '#8B0000',    // Dark maroon for positive status
+    absent: '#DC143C',     // Crimson for negative status
+    late: '#DAA520',       // Goldenrod for warning status
+    excused: '#B8860B',    // Dark goldenrod for neutral positive status
+    pending: '#CD853F',    // Peru (brownish gold) for pending status
   };
-  return colors[status] || '#9e9e9e';
+  return colors[status] || '#CD853F';
 };
 
 export const createAttendanceDistributionChart = (data) => ({
@@ -53,13 +53,12 @@ export const distributionChartOptions = {
           }
           return [];
         }
-      }
-    },
+      }    },
     tooltip: {
       backgroundColor: 'rgba(15, 23, 42, 0.9)',
       titleColor: '#f1f5f9',
       bodyColor: '#cbd5e1',
-      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: 'rgba(139, 0, 0, 0.3)',
       borderWidth: 1,
       cornerRadius: 12,
       padding: 12,
@@ -107,8 +106,8 @@ export const createTrendsChart = (data, format) => {
       {
         label: 'Attendance Rate (%)',
         data: data.map(item => item.attendance_rate),
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: '#8B0000',
+        backgroundColor: 'rgba(139, 0, 0, 0.1)',
         fill: true,
       },
     ],
@@ -130,22 +129,11 @@ export const trendsChartOptions = {
         color: '#64748b'
       }
     },
-    title: {
-      display: true,
-      text: 'Attendance Trends Over Time',
-      font: {
-        size: 16,
-        family: "'Inter', sans-serif",
-        weight: '600'
-      },
-      color: '#475569',
-      padding: 20
-    },
     tooltip: {
       backgroundColor: 'rgba(15, 23, 42, 0.9)',
       titleColor: '#f1f5f9',
       bodyColor: '#cbd5e1',
-      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: 'rgba(139, 0, 0, 0.3)',
       borderWidth: 1,
       cornerRadius: 12,
       padding: 12,
@@ -290,8 +278,7 @@ export const playerTrendsChartOptions = {
       display: false,
     },
     title: {
-      display: true,
-      text: 'Recent Sessions Summary (Last 20)',
+      display: true,      text: 'Recent Sessions Summary (Last 20)',
       font: {
         size: 16,
         family: "'Inter', sans-serif",
@@ -304,7 +291,7 @@ export const playerTrendsChartOptions = {
       backgroundColor: 'rgba(15, 23, 42, 0.9)',
       titleColor: '#f1f5f9',
       bodyColor: '#cbd5e1',
-      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: 'rgba(139, 0, 0, 0.3)',
       borderWidth: 1,
       cornerRadius: 12,
       padding: 12,
@@ -432,8 +419,7 @@ export const playerTimelineChartOptions = {
       display: false,
     },
     title: {
-      display: true,
-      text: 'Attendance Timeline (Last 15 Sessions)',
+      display: true,      text: 'Attendance Timeline (Last 15 Sessions)',
       font: {
         size: 16,
         family: "'Inter', sans-serif",
@@ -446,7 +432,7 @@ export const playerTimelineChartOptions = {
       backgroundColor: 'rgba(15, 23, 42, 0.9)',
       titleColor: '#f1f5f9',
       bodyColor: '#cbd5e1',
-      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: 'rgba(139, 0, 0, 0.3)',
       borderWidth: 1,
       cornerRadius: 12,
       padding: 12,

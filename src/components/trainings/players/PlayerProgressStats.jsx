@@ -1,22 +1,24 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Trophy, BarChart3 } from "lucide-react";
 import { usePlayerProgressById } from "@/hooks/useTrainings";
 import PlayerProgressStatsSkeleton from "./PlayerProgressStatsSkeleton";
 import { formatMetricValue } from "@/utils/formatters";
 
-const PlayerProgressStats = ({ playerId }) => {
-  // Get last 30 days as default date range
-  const dateRange = useMemo(() => {
-    const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - 30);
+// Get last 30 days as default date range - calculated once outside component
+const getDefaultDateRange = () => {
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - 30);
 
-    return {
-      date_from: from.toISOString().split("T")[0],
-      date_to: to.toISOString().split("T")[0],
-    };
-  }, []);
+  return {
+    date_from: from.toISOString().split("T")[0],
+    date_to: to.toISOString().split("T")[0],
+  };
+};
+
+const PlayerProgressStats = ({ playerId }) => {
+  const dateRange = getDefaultDateRange();
   // Fetch player progress data with backend calculations
   const {
     data: playerData,
@@ -55,7 +57,7 @@ const PlayerProgressStats = ({ playerId }) => {
                   data.
                 </p>
               </div>
-              {/* Enhanced call to action with better styling */}{" "}
+              {/* Enhanced call to action with better styling */}
               <div className="flex items-center gap-3 text-sm text-muted-foreground bg-gradient-to-r from-muted/20 to-muted/30 px-4 py-3 rounded-full border border-muted-foreground/10 shadow-sm">
                 <div className="p-1 bg-primary/10 rounded-full">
                   <Activity className="h-4 w-4 text-primary" />
@@ -73,15 +75,15 @@ const PlayerProgressStats = ({ playerId }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
       {/* Recent Improvement Card */}
-      <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50 dark:from-blue-950/50 dark:via-blue-900/50 dark:to-blue-950/50 border-blue-200/50 dark:border-blue-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
+      <Card className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 dark:from-amber-950/50 dark:via-amber-900/50 dark:to-amber-950/50 border-amber-200/50 dark:border-amber-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
         <CardContent className="relative p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className="p-3 bg-blue-500/10 dark:bg-blue-400/10 rounded-xl shadow-sm">
-              <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-3 bg-amber-500/10 dark:bg-amber-400/10 rounded-xl shadow-sm">
+              <Activity className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="text-right">
-              <p className="text-xs font-medium text-blue-600/70 dark:text-blue-400/70 uppercase tracking-wider">
+              <p className="text-xs font-medium text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider">
                 Last 30 Days
               </p>
             </div>
@@ -93,11 +95,12 @@ const PlayerProgressStats = ({ playerId }) => {
             </h3>
             {playerData?.recent_improvement ? (
               <>
+                
                 <div className="flex items-baseline gap-2">
                   <p
                     className={`text-3xl font-bold ${
                       playerData.recent_improvement.is_positive
-                        ? "text-green-600 dark:text-green-400"
+                        ? "text-green-900 dark:text-green-400"
                         : "text-red-600 dark:text-red-400"
                     }`}
                   >
@@ -133,7 +136,6 @@ const PlayerProgressStats = ({ playerId }) => {
           </div>
         </CardContent>
       </Card>
-
       {/* Overall Improvement Card */}
       <Card className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 dark:from-amber-950/50 dark:via-amber-900/50 dark:to-amber-950/50 border-amber-200/50 dark:border-amber-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
@@ -155,11 +157,12 @@ const PlayerProgressStats = ({ playerId }) => {
             </h3>
             {playerData?.overall_improvement ? (
               <>
+                
                 <div className="flex items-baseline gap-2">
                   <p
                     className={`text-3xl font-bold ${
                       playerData.overall_improvement.is_positive
-                        ? "text-green-600 dark:text-green-400"
+                        ? "text-green-900 dark:text-green-400"
                         : "text-red-600 dark:text-red-400"
                     }`}
                   >
@@ -195,17 +198,17 @@ const PlayerProgressStats = ({ playerId }) => {
           </div>
         </CardContent>
       </Card>
-
       {/* Top Performance Card */}
-      <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-green-100 to-green-50 dark:from-green-950/50 dark:via-green-900/50 dark:to-green-950/50 border-green-200/50 dark:border-green-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:col-span-2 lg:col-span-1">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent" />
+      <Card className="relative overflow-hidden bg-gradient-to-br from-red-50 via-red-100 to-red-50 dark:from-red-950/50 dark:via-red-900/50 dark:to-red-950/50 border-red-200/50 dark:border-red-800/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:col-span-2 lg:col-span-1">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
         <CardContent className="relative p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className="p-3 bg-green-500/10 dark:bg-green-400/10 rounded-xl shadow-sm">
-              <Trophy className="h-6 w-6 text-green-600 dark:text-green-400" />
+            
+            <div className="p-3 bg-red-900/10 dark:bg-red-400/10 rounded-xl shadow-sm">
+              <Trophy className="h-6 w-6 text-red-900 dark:text-red-400" />
             </div>
             <div className="text-right">
-              <p className="text-xs font-medium text-green-600/70 dark:text-green-400/70 uppercase tracking-wider">
+              <p className="text-xs font-medium text-red-900/70 dark:text-red-400/70 uppercase tracking-wider">
                 Best Result
               </p>
             </div>
@@ -218,13 +221,14 @@ const PlayerProgressStats = ({ playerId }) => {
             {playerData?.best_performance ? (
               <>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  
+                  <p className="text-3xl font-bold text-red-900 dark:text-red-400">
                     {formatMetricValue(
                       playerData.best_performance.value,
                       playerData.best_performance.unit
                     )}
                   </p>
-                  <span className="text-lg font-medium text-green-600/70 dark:text-green-400/70">
+                  <span className="text-lg font-medium text-red-900/70 dark:text-red-400/70">
                     {playerData.best_performance.unit}
                   </span>
                 </div>

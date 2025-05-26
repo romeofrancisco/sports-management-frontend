@@ -14,8 +14,8 @@ const TeamCardList = ({
   isLoading,
 }) => {
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-4 px-4 sm:px-6">
+    <Card className="overflow-hidden border-0 shadow-none">
+      <CardHeader className="pb-4 px-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <CardTitle className="text-lg sm:text-xl">Teams</CardTitle>
@@ -30,7 +30,7 @@ const TeamCardList = ({
       </CardHeader>
 
       {/* Team Filters - Mobile responsive */}
-      <div className="px-4 sm:px-6 pb-4">
+      <div className="pb-4">
         <TeamSearchFilter
           sports={sports}
           filters={filters}
@@ -38,7 +38,7 @@ const TeamCardList = ({
         />
       </div>
 
-      <CardContent className="px-4 sm:px-6">
+      <CardContent className="px-0">
         {isLoading ? (
           <TeamCardListSkeleton count={8} />
         ) : teams.length === 0 || filteredTeams.length === 0 ? (

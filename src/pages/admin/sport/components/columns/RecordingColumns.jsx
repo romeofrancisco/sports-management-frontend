@@ -8,28 +8,26 @@ const getRecordingColumns = ({ setSelectedStat, modals, filter }) => {
       accessorKey: "name",
       header: "Stat Name",
       cell: ({ getValue }) => getValue(),
-    },
-    {
+    },    {
       accessorKey: "is_record",
       header: () => <div className="text-center">Recording</div>,
       cell: ({ getValue }) => (
         <div className="flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-700 self-center" />
+            <CircleCheck size={20} className="text-red-900 self-center" />
           ) : (
             <CircleX size={20} className="text-red-700" />
           )}
         </div>
       ),
       size: 80,
-    },
-    {
+    },    {
       accessorKey: "is_points",
       header: () => <div className="text-center">Points</div>,
       cell: ({ getValue, row }) => (
         <div className="flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-700 self-center" />
+            <CircleCheck size={20} className="text-red-900 self-center" />
           ) : (
             <CircleX size={20} className="text-red-700" />
           )}
@@ -39,11 +37,10 @@ const getRecordingColumns = ({ setSelectedStat, modals, filter }) => {
     },
     {
       accessorKey: "uses_point_value",
-      header: () => <div className="text-center">Uses Points</div>,
-      cell: ({ getValue, row }) => (
+      header: () => <div className="text-center">Uses Points</div>,      cell: ({ getValue, row }) => (
         <div className="flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-700 self-center" />
+            <CircleCheck size={20} className="text-red-900 self-center" />
           ) : (
             <CircleX size={20} className="text-red-700" />
           )}
@@ -54,10 +51,9 @@ const getRecordingColumns = ({ setSelectedStat, modals, filter }) => {
     {
       accessorKey: "is_negative",
       header: () => <div className="text-center">Negative</div>,
-      cell: ({ getValue }) => (
-        <div className="flex justify-center">
+      cell: ({ getValue }) => (        <div className="flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-700 self-center" />
+            <CircleCheck size={20} className="text-red-900 self-center" />
           ) : (
             <CircleX size={20} className="text-red-700" />
           )}

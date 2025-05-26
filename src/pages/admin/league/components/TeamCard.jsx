@@ -12,19 +12,16 @@ const TeamCard = ({
   onClick 
 }) => {
   const { team_id, team_name, team_logo, championships = 0, win_ratio = 0, matches_played = 0, wins = 0, losses = 0 } = team;
-  
-  // Helper function for win ratio color
+    // Helper function for win ratio color
   const getWinRatioColor = (ratio) => {
-    if (ratio >= 0.7) return "text-emerald-600";
-    if (ratio >= 0.5) return "text-blue-600";
+    if (ratio >= 0.7) return "text-red-800";
+    if (ratio >= 0.5) return "text-amber-600";
     if (ratio >= 0.3) return "text-amber-600";
     return "text-rose-600";
-  };
-  
-  // Helper function for win ratio background
+  };    // Helper function for win ratio background
   const getWinRatioBackground = (ratio) => {
-    if (ratio >= 0.7) return "bg-emerald-50";
-    if (ratio >= 0.5) return "bg-blue-50";
+    if (ratio >= 0.7) return "bg-red-50";
+    if (ratio >= 0.5) return "bg-amber-50";
     if (ratio >= 0.3) return "bg-amber-50";
     return "bg-rose-50";
   };
@@ -103,7 +100,7 @@ const TeamCard = ({
           {/* Additional stats if available */}
           {team.current_streak > 0 && (
             <div className="mt-2 flex items-center gap-1">
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs py-0">
+              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs py-0">
                 {team.current_streak} game {team.streak_type === 'W' ? 'win' : 'loss'} streak
               </Badge>
             </div>

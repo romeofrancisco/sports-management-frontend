@@ -27,9 +27,8 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
               <div>
                 <div className="text-sm text-muted-foreground">Total Teams</div>
                 <div className="text-2xl font-bold">{teams?.length || 0}</div>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <Users className="text-blue-500 h-5 w-5" />
+              </div>              <div className="bg-amber-100 p-3 rounded-full">
+                <Users className="text-amber-600 h-5 w-5" />
               </div>
             </div>
           </CardContent>
@@ -59,9 +58,8 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                 <div className="text-2xl font-bold">
                   {teams && teams.length > 0 ? `${teams[0]?.wins || 0} wins` : "N/A"}
                 </div>
-              </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <TrendingUp className="text-green-500 h-5 w-5" />
+              </div>              <div className="bg-red-100 p-3 rounded-full">
+                <TrendingUp className="text-red-900 h-5 w-5" />
               </div>
             </div>
           </CardContent>
@@ -114,7 +112,9 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                           className={
                             result === "W"
                               ? "bg-green-100 text-green-800 h-5 w-5 p-0 flex items-center justify-center rounded-full"
-                              : "bg-red-100 text-red-800 h-5 w-5 p-0 flex items-center justify-center rounded-full"
+                              : result === "L"
+                              ? "bg-red-100 text-red-800 h-5 w-5 p-0 flex items-center justify-center rounded-full"
+                              : "bg-amber-100 text-amber-800 h-5 w-5 p-0 flex items-center justify-center rounded-full"
                           }
                         >
                           {result}

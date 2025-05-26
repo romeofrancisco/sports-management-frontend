@@ -14,7 +14,7 @@ export const StatCard = ({ title, value, subtitle, icon, trend, className }) => 
       <CardTitle className="text-sm font-semibold text-slate-600 dark:text-slate-300">
         {title}
       </CardTitle>
-      <div className="p-2.5 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+      <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
         {icon}
       </div>
     </CardHeader>
@@ -34,10 +34,10 @@ export const StatCard = ({ title, value, subtitle, icon, trend, className }) => 
         <div className="flex items-center mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-600/50">
           <div className={cn(
             "p-1.5 rounded-lg",
-            trend > 0 ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-red-100 dark:bg-red-900/30"
+            trend > 0 ? "bg-red-100 dark:bg-red-900/30" : "bg-red-100 dark:bg-red-900/30"
           )}>
             {trend > 0 ? (
-              <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              <TrendingUp className="h-3.5 w-3.5 text-red-800 dark:text-red-400" />
             ) : (
               <TrendingDown className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
             )}
@@ -45,7 +45,7 @@ export const StatCard = ({ title, value, subtitle, icon, trend, className }) => 
           <div className="ml-3 flex-1">
             <span className={cn(
               "text-sm font-bold",
-              trend > 0 ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300"
+              trend > 0 ? "text-red-700 dark:text-red-300" : "text-red-700 dark:text-red-300"
             )}>
               {trend > 0 ? '+' : ''}{Math.abs(trend).toFixed(1)}%
             </span>

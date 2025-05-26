@@ -4,7 +4,7 @@ import TeamDetails from "@/pages/admin/team/TeamDetails";
 import PlayersList from "@/pages/admin/player/PlayersList";
 import GameSchedule from "@/pages/admin/game/GameSchedule";
 import PlayerDetails from "@/pages/admin/player/PlayerDetails";
-import TrainingSettingsPage from "@/pages/TrainingSettingsPage";
+import TrainingDashboard from "@/components/trainings/dashboard/TrainingDashboard";
 
 export const coachRoutes = [
   {
@@ -31,7 +31,7 @@ export const coachRoutes = [
     element: <GameSchedule />,
   }, 
   {
-    path: "/training-settings",
-    element: <TrainingSettingsPage />,
+    path: "/trainings",
+    element: <TrainingDashboard />,
   },
 ];

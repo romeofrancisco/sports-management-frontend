@@ -90,7 +90,7 @@ const TrainingAttendanceModal = ({ isOpen, onClose, session }) => {
   };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-[700px] h-[90vh] max-h-[90vh] p-0 overflow-hidden flex flex-col">
+      <DialogContent className="w-[95vw] max-w-[800px] p-0 overflow-hidden flex flex-col">
         <DialogTitle className="px-4 sm:px-6 pt-4 sm:pt-6 text-lg sm:text-xl">
           Training Attendance
         </DialogTitle>
@@ -99,7 +99,7 @@ const TrainingAttendanceModal = ({ isOpen, onClose, session }) => {
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
             <div className="flex-1 px-4 sm:px-6 overflow-hidden">
-              <ScrollArea className="h-full">
+              <ScrollArea className="h-[70vh]">
                 <div className="w-full">
                   <Controller
                     control={control}
@@ -129,7 +129,7 @@ const TrainingAttendanceModal = ({ isOpen, onClose, session }) => {
                 </div>
               </ScrollArea>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-6 border-t bg-white">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-6 border-t mt-5 justify-end">
               <Button 
                 type="button" 
                 onClick={onClose} 
