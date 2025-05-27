@@ -26,7 +26,7 @@ const TrainingSessionsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [filter, setFilter] = useState({ search: "", team: "", date: "" });
-  
+
   const modals = {
     delete: useModal(),
     session: useModal(),
@@ -49,7 +49,7 @@ const TrainingSessionsList = () => {
   const handleDataRefresh = async () => {
     try {
       await refetch();
-      
+
       // Also refetch the detailed session data if we have a selectedSession
       if (selectedSession?.id) {
         const { fetchTrainingSession } = await import("@/api/trainingsApi");
@@ -95,7 +95,8 @@ const TrainingSessionsList = () => {
     onConfigureMetrics: (session) => {
       setSelectedSession(session);
       modals.metricsConfig.openModal();
-    },    onRecord: async (session) => {
+    },
+    onRecord: async (session) => {
       try {
         setSelectedSession(session);
         const { fetchTrainingSession } = await import("@/api/trainingsApi");
@@ -130,7 +131,6 @@ const TrainingSessionsList = () => {
           </Button>
         }
       />
-
       <TabContent>
         <TabCard className="p-0">
           <div className="overflow-x-auto">
@@ -188,7 +188,8 @@ const TrainingSessionsList = () => {
         isOpen={modals.metrics.isOpen}
         onClose={modals.metrics.closeModal}
         playerTraining={selectedPlayerTraining}
-      />      <PlayerSelectModal
+      />
+      <PlayerSelectModal
         isOpen={modals.playerSelect.isOpen}
         onClose={modals.playerSelect.closeModal}
         players={selectedSession?.player_records || []}

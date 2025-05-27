@@ -15,6 +15,7 @@ import {
   useRecordPlayerMetrics,
   usePreviousPlayerMetrics,
 } from "@/hooks/useTrainings";
+import { useMetricUnits } from "@/hooks/useMetricUnits";
 import { cn } from "@/lib/utils";
 import { ArrowUpIcon, ArrowDownIcon, CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -56,76 +57,133 @@ const ImprovementIndicator = ({ current, previous, isLowerBetter = true }) => {
   );
 };
 
-const MetricInputField = ({ metric, value, onChange, previousValue }) => {
-  // Determine if we should use a slider based on the unit type
-  const shouldUseSlider = (unit) => {
-    if (!unit) return false;
-    // Units that typically have bounded ranges and benefit from sliders
-    const sliderUnits = [
-      "cm",
-      "m",
-      "kg",
-      "lbs",
-      "%",
-      "percent",
-      "percentage",
-      "rating",
-      "points",
-      "score",
-      "reps",
-      "sets",
-    ];
-    return sliderUnits.some((u) =>
-      unit.toLowerCase().includes(u.toLowerCase())
-    );
-  };
+// Utility functions to determine metric input behavior based on unit data
+const getMetricInputConfig = (metricUnit, allUnits = []) => {
+  if (!metricUnit) {
+    return {
+      useSlider: false,
+      range: { min: 0, max: 100, step: 1 }
+    };
+  }
 
-  // Set appropriate min/max values based on the metric
-  const getSliderRange = (metricName, unit = "") => {
-    const unitLower = unit.toLowerCase();
-
+  const unitCode = metricUnit.code?.toLowerCase() || "";
+  const unitName = metricUnit.name?.toLowerCase() || "";
+  
+  // Enhanced mapping with more comprehensive patterns
+  // This mapping is now backed by the database default units
+  const unitConfigs = {
     // Distance units
-    if (unitLower.includes("cm")) return { min: 0, max: 300, step: 1 };
-    if (unitLower === "m" || unitLower === "meters")
-      return { min: 0, max: 30, step: 0.1 };
-    if (unitLower.includes("km")) return { min: 0, max: 10, step: 0.1 };
-    if (unitLower.includes("in") || unitLower.includes("inch"))
-      return { min: 0, max: 100, step: 0.5 };
-    if (unitLower.includes("ft") || unitLower.includes("feet"))
-      return { min: 0, max: 20, step: 0.1 };
-
+    cm: { useSlider: true, min: 0, max: 300, step: 1 },
+    centimeter: { useSlider: true, min: 0, max: 300, step: 1 },
+    centimeters: { useSlider: true, min: 0, max: 300, step: 1 },
+    m: { useSlider: true, min: 0, max: 30, step: 0.1 },
+    meter: { useSlider: true, min: 0, max: 30, step: 0.1 },
+    meters: { useSlider: true, min: 0, max: 30, step: 0.1 },
+    km: { useSlider: true, min: 0, max: 10, step: 0.1 },
+    kilometer: { useSlider: true, min: 0, max: 10, step: 0.1 },
+    kilometers: { useSlider: true, min: 0, max: 10, step: 0.1 },
+    in: { useSlider: true, min: 0, max: 100, step: 0.5 },
+    inch: { useSlider: true, min: 0, max: 100, step: 0.5 },
+    inches: { useSlider: true, min: 0, max: 100, step: 0.5 },
+    ft: { useSlider: true, min: 0, max: 20, step: 0.1 },
+    feet: { useSlider: true, min: 0, max: 20, step: 0.1 },
+    foot: { useSlider: true, min: 0, max: 20, step: 0.1 },
+    
     // Weight units
-    if (unitLower.includes("kg")) return { min: 0, max: 200, step: 0.5 };
-    if (unitLower.includes("lbs") || unitLower.includes("pound"))
-      return { min: 0, max: 400, step: 1 };
-
-    // Time units (not ideal for slider, but supported)
-    if (unitLower.includes("second")) return { min: 0, max: 60, step: 0.1 };
-    if (unitLower.includes("minute")) return { min: 0, max: 30, step: 0.1 };
-
-    // Other units
-    if (unitLower.includes("%") || unitLower.includes("percent"))
-      return { min: 0, max: 100, step: 1 };
-    if (unitLower.includes("rating")) return { min: 1, max: 10, step: 0.5 };
-    if (unitLower.includes("points") || unitLower.includes("score"))
-      return { min: 0, max: 100, step: 1 };
-    if (unitLower.includes("reps")) return { min: 0, max: 50, step: 1 };
-    if (unitLower.includes("sets")) return { min: 0, max: 10, step: 1 };
-    if (unitLower.includes("bpm")) return { min: 30, max: 220, step: 1 };
-
-    // Default range
-    return { min: 0, max: 100, step: 1 };
+    kg: { useSlider: true, min: 0, max: 200, step: 0.5 },
+    kilogram: { useSlider: true, min: 0, max: 200, step: 0.5 },
+    kilograms: { useSlider: true, min: 0, max: 200, step: 0.5 },
+    lbs: { useSlider: true, min: 0, max: 400, step: 1 },
+    pounds: { useSlider: true, min: 0, max: 400, step: 1 },
+    pound: { useSlider: true, min: 0, max: 400, step: 1 },
+    
+    // Time units (better with input for precision)
+    sec: { useSlider: false, min: 0, max: 300, step: 0.1 },
+    second: { useSlider: false, min: 0, max: 300, step: 0.1 },
+    seconds: { useSlider: false, min: 0, max: 300, step: 0.1 },
+    min: { useSlider: false, min: 0, max: 60, step: 0.1 },
+    minute: { useSlider: false, min: 0, max: 60, step: 0.1 },
+    minutes: { useSlider: false, min: 0, max: 60, step: 0.1 },
+    hr: { useSlider: false, min: 0, max: 24, step: 0.1 },
+    hour: { useSlider: false, min: 0, max: 24, step: 0.1 },
+    hours: { useSlider: false, min: 0, max: 24, step: 0.1 },
+    
+    // Percentage and ratings
+    "%": { useSlider: true, min: 0, max: 100, step: 1 },
+    percent: { useSlider: true, min: 0, max: 100, step: 1 },
+    percentage: { useSlider: true, min: 0, max: 100, step: 1 },
+    rating: { useSlider: true, min: 1, max: 10, step: 0.5 },
+    
+    // Counts and scores
+    reps: { useSlider: true, min: 0, max: 50, step: 1 },
+    repetitions: { useSlider: true, min: 0, max: 50, step: 1 },
+    rep: { useSlider: true, min: 0, max: 50, step: 1 },
+    sets: { useSlider: true, min: 0, max: 10, step: 1 },
+    set: { useSlider: true, min: 0, max: 10, step: 1 },
+    points: { useSlider: true, min: 0, max: 100, step: 1 },
+    point: { useSlider: true, min: 0, max: 100, step: 1 },
+    score: { useSlider: true, min: 0, max: 100, step: 1 },
+    
+    // Physiological measures
+    bpm: { useSlider: true, min: 30, max: 220, step: 1 },
+    "beats/min": { useSlider: true, min: 30, max: 220, step: 1 },
+    "beats per minute": { useSlider: true, min: 30, max: 220, step: 1 },
+    "heartrate": { useSlider: true, min: 30, max: 220, step: 1 },
+    "heart rate": { useSlider: true, min: 30, max: 220, step: 1 },
   };
 
-  const unitCode = metric.metric_unit?.code || "";
-  const useSlider = shouldUseSlider(unitCode);
-  const sliderRange = getSliderRange(metric.name, unitCode);
+  // Check both code and name for matches
+  let config = null;
+  
+  // First try exact matches with code
+  if (unitConfigs[unitCode]) {
+    config = unitConfigs[unitCode];
+  }
+  // Then try exact matches with name
+  else if (unitConfigs[unitName]) {
+    config = unitConfigs[unitName];
+  }
+  // Then try partial matches with code
+  else {
+    for (const [pattern, cfg] of Object.entries(unitConfigs)) {
+      if (unitCode.includes(pattern) || unitName.includes(pattern)) {
+        config = cfg;
+        break;
+      }
+    }
+  }
+
+  // Default configuration if no match found
+  if (!config) {
+    // For unrecognized units, use sensible defaults
+    config = {
+      useSlider: false, // Default to input for unknown units
+      min: 0,
+      max: 100,
+      step: 1
+    };
+  }
+
+  return {
+    useSlider: config.useSlider,
+    range: {
+      min: config.min,
+      max: config.max,
+      step: config.step
+    }
+  };
+};
+
+const MetricInputField = ({ metric, value, onChange, previousValue, allUnits }) => {
+  // Get the input configuration based on the metric unit
+  const inputConfig = getMetricInputConfig(metric.metric_unit, allUnits);
+  const { useSlider, range } = inputConfig;
 
   // For slider metrics, ensure value is within range
   const sliderValue = useSlider
     ? Math.max(
-        sliderRange.min,
-        Math.min(sliderRange.max, parseFloat(value) || 0)
+        range.min,
+        Math.min(range.max, parseFloat(value) || 0)
       )
     : 0;
 
@@ -148,7 +206,7 @@ const MetricInputField = ({ metric, value, onChange, previousValue }) => {
         {previousValue !== undefined && (
           <div className="text-sm flex flex-col items-end">
             <span className="text-muted-foreground">
-              Previous: {formatMetricValue(previousValue)}{" "}
+              Previous: {formatMetricValue(previousValue)}
               {metric.metric_unit?.code || "-"}
             </span>
             {value && !isNaN(parseFloat(value)) && (
@@ -167,15 +225,15 @@ const MetricInputField = ({ metric, value, onChange, previousValue }) => {
             <>
               <Slider
                 value={[sliderValue]}
-                min={sliderRange.min}
-                max={sliderRange.max}
-                step={sliderRange.step}
+                min={range.min}
+                max={range.max}
+                step={range.step}
                 onValueChange={(vals) => onChange(vals[0])}
                 className="py-4"
               />
               <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                <span>{sliderRange.min}</span>
-                <span>{sliderRange.max}</span>
+                <span>{range.min}</span>
+                <span>{range.max}</span>
               </div>
             </>
           )}
@@ -187,7 +245,7 @@ const MetricInputField = ({ metric, value, onChange, previousValue }) => {
             type="number"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            step={sliderRange.step}
+            step={range.step}
             min={metric.is_lower_better ? undefined : 0} // For metrics where higher is better, use 0 as min
             placeholder="Value"
             className={cn(
@@ -221,6 +279,9 @@ const PlayerMetricRecordModal = ({
   const { data: previousRecords = [] } = usePreviousPlayerMetrics(
     playerTraining?.id
   );
+  
+  // Fetch available metric units for flexible configuration
+  const { data: metricUnits = [] } = useMetricUnits();
   // Get metrics to show based only on player's assigned metrics  // Get metrics from the metric_records directly
   const metricsToShow = React.useMemo(() => {
     if (!playerTraining?.metric_records) return [];
@@ -362,7 +423,8 @@ const PlayerMetricRecordModal = ({
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2 items-center">                <Button
+              <div className="flex flex-col gap-2 items-center">
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
@@ -376,7 +438,6 @@ const PlayerMetricRecordModal = ({
                 >
                   Configure Session Metrics
                 </Button>
-
                 <Button
                   variant="outline"
                   size="sm"
@@ -397,8 +458,7 @@ const PlayerMetricRecordModal = ({
               <p className="text-sm text-muted-foreground pb-2">
                 Enter values for the training metrics below. At least one metric
                 is required.
-              </p>
-              {metricsToShow.map((metric) => (
+              </p>              {metricsToShow.map((metric) => (
                 <MetricInputField
                   key={metric.id}
                   metric={metric}
@@ -407,6 +467,7 @@ const PlayerMetricRecordModal = ({
                     setMetricValues({ ...metricValues, [metric.id]: value })
                   }
                   previousValue={getPreviousValue(metric)}
+                  allUnits={metricUnits}
                 />
               ))}
             </div>
@@ -423,7 +484,6 @@ const PlayerMetricRecordModal = ({
             />
           </div>
         </div>
-
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
             Cancel
@@ -431,7 +491,7 @@ const PlayerMetricRecordModal = ({
           <Button
             type="submit"
             onClick={handleSubmit}
-            disabled={isLoading || metrics.length === 0}
+            disabled={isLoading || metricsToShow.length === 0}
           >
             {isLoading ? "Saving..." : "Save Metrics"}
           </Button>
