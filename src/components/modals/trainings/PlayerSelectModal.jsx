@@ -56,12 +56,11 @@ const PlayerSelectModal = ({
   onSelectPlayer,
   sessionMetrics = [],
   onDataRefresh, // Add callback to refresh session data
-  selectedSession, // Add selectedSession to get fresh data
 }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
-    // Handle auto-selection for single player
+  // Handle auto-selection for single player
   useEffect(() => {
     if (players.length === 1) {
       const player = players[0];
@@ -78,7 +77,7 @@ const PlayerSelectModal = ({
   // Update selectedPlayer when players data changes (after refresh)
   useEffect(() => {
     if (selectedPlayer && players.length > 0) {
-      const updatedPlayer = players.find(p => p.id === selectedPlayer.id);
+      const updatedPlayer = players.find((p) => p.id === selectedPlayer.id);
       if (updatedPlayer) {
         setSelectedPlayer(updatedPlayer);
       }
@@ -185,13 +184,14 @@ const PlayerSelectModal = ({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-        </div>        {/* Player Metrics Configuration Modal */}
+        </div>
+        {/* Player Metrics Configuration Modal */}
         {selectedPlayer && (
           <PlayerMetricsConfigModal
             isOpen={isConfigModalOpen}
             onClose={async () => {
               setIsConfigModalOpen(false);
-              
+
               // Refresh session data - this will trigger the useEffect above to update selectedPlayer
               if (onDataRefresh) {
                 await onDataRefresh();

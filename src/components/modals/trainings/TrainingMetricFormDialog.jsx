@@ -28,6 +28,7 @@ const TrainingMetricFormDialog = ({
   metric,
   categories = [],
 }) => {
+  
   const { mutateAsync: createMetric, isPending: isCreating } =
     useCreateTrainingMetric();
   const { mutateAsync: updateMetric, isPending: isUpdating } =
@@ -51,7 +52,7 @@ const TrainingMetricFormDialog = ({
         form.reset({
           name: metric.name || "",
           description: metric.description || "",
-          metric_unit: metric.metric_unit?.id || "",
+          metric_unit: metric.metric_unit || "",
           category: metric.category || "",
           is_lower_better: metric.is_lower_better ?? false,
           weight: metric.weight || 1.0,
