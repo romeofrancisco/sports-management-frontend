@@ -1,0 +1,9 @@
+// Central export for all coach dashboard components
+export { default as OverviewCards } from './OverviewCards';
+export { default as PerformanceSummary } from './PerformanceSummary';
+export { default as MyTeamsSection } from './MyTeamsSection';
+export { default as UpcomingGamesSection } from './UpcomingGamesSection';
+export { default as RecentTrainingSection } from './RecentTrainingSection';
+export { default as PlayerProgressSection } from './PlayerProgressSection';
+export { default as TrainingSummarySection } from './TrainingSummarySection';
+export { default as DashboardSkeleton } from './DashboardSkeleton';
