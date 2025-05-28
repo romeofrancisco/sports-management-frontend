@@ -8,9 +8,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Trash, MoreHorizontal, Eye, Edit, Settings } from "lucide-react";
+import { Trash, MoreHorizontal, Eye, Edit, UserCog } from "lucide-react";
 
-const TeamActions = ({ onView, onEdit, onDelete }) => {
+const PlayerActions = ({ player, onView, onEdit, onDelete }) => {
   const [open, setOpen] = useState(false);
   
   const handleAction = (action) => {
@@ -19,7 +19,8 @@ const TeamActions = ({ onView, onEdit, onDelete }) => {
   };
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>      <DropdownMenuTrigger asChild>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
           size="icon" 
@@ -34,27 +35,33 @@ const TeamActions = ({ onView, onEdit, onDelete }) => {
         className="w-48 bg-card/95 backdrop-blur-sm border border-primary/20 shadow-xl"
       >
         <DropdownMenuLabel className="text-foreground font-semibold">
-          Team Actions
+          Player Actions
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-primary/20" /><DropdownMenuItem onClick={() => handleAction(onView)}>
+        <DropdownMenuSeparator className="bg-primary/20" />
+        
+        <DropdownMenuItem onClick={() => handleAction(() => onView && onView(player))}>
           <Eye className="mr-2 h-4 w-4" />
-          View Team
+          View Player
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction(onEdit)}>
+        <DropdownMenuItem onClick={() => handleAction(() => onEdit && onEdit(player))}>
           <Edit className="mr-2 h-4 w-4" />
-          Update Team
+          Update Player
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <UserCog className="mr-2 h-4 w-4" />
+          Player Profile
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
-          onClick={() => handleAction(onDelete)} 
+          onClick={() => handleAction(() => onDelete && onDelete(player))} 
           className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
         >
           <Trash className="mr-2 h-4 w-4" />
-          Delete Team
+          Delete Player
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export default TeamActions;
+export default PlayerActions;

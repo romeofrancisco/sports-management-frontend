@@ -32,11 +32,10 @@ const OverviewTab = ({ overviewData, trendsData }) => {
             subtitle="Training sessions recorded"
             icon={<CalendarDays className="h-5 w-5" />}
           />
-        </div>
-        <div>
+        </div>        <div>
           <StatCard
-            title="Total Attendees"
-            value={overviewData.total_attendees || 0}
+            title="Total Players"
+            value={overviewData.total_players || 0}
             subtitle="Unique participants"
             icon={<Users className="h-5 w-5" />}
           />

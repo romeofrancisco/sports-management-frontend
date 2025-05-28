@@ -12,9 +12,6 @@ import { toast } from "sonner";
 export const usePlayers = (filter, page = 1, pageSize = 10, enabled = true) => {
   const apiFilter = {
     ...filter,
-    sport: filter.sport === "all" ? "" : filter.sport,
-    year_level: filter.year_level === "all" ? "" : filter.year_level,
-    course: filter.course === "all" ? "" : filter.course,
     page,
     page_size: pageSize,
   };

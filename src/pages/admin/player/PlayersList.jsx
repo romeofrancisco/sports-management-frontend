@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import PlayersListHeader from "./components/PlayersListHeader";
-import { PlayersTable } from "./components/PlayersTable";
+import PlayersContainer from "./components/PlayersContainer";
 
 const PlayersList = () => {
-
   return (
-    <div>
-      <PlayersListHeader />
-      <PlayersTable />
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <PlayersListHeader />
+        <PlayersContainer />
     </div>
   );
 };

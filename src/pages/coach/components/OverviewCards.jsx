@@ -6,12 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Minus, Users, User, Calendar, Clock } from "lucide-react";
+import { Users, User, Calendar, Clock } from "lucide-react";
 
 /**
  * Overview cards component displaying key metrics with enhanced UI
  */
-const OverviewCards = ({ overview }) => {  const cards = [
+const OverviewCards = ({ overview }) => {
+  const cards = [
     {
       title: "My Teams",
       value: overview?.team_overview?.total_teams || 0,
@@ -22,8 +23,6 @@ const OverviewCards = ({ overview }) => {  const cards = [
       borderColor: "border-primary/30",
       iconBg: "bg-primary",
       textAccent: "text-primary",
-      change: "+12%",
-      trend: "up"
     },
     {
       title: "Total Players",
@@ -35,8 +34,6 @@ const OverviewCards = ({ overview }) => {  const cards = [
       borderColor: "border-secondary/30",
       iconBg: "bg-secondary",
       textAccent: "text-secondary",
-      change: "+8%",
-      trend: "up"
     },
     {
       title: "Upcoming Games",
@@ -48,8 +45,6 @@ const OverviewCards = ({ overview }) => {  const cards = [
       borderColor: "border-primary/25",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       textAccent: "text-primary/90",
-      change: "+2",
-      trend: "up"
     },
     {
       title: "Training Sessions",
@@ -61,63 +56,40 @@ const OverviewCards = ({ overview }) => {  const cards = [
       borderColor: "border-secondary/25",
       iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
       textAccent: "text-secondary/90",
-      change: "0%",
-      trend: "stable"
     },
-  ];  const getTrendIcon = (trend) => {
-    switch (trend) {
-      case "up":
-        return <TrendingUp className="h-4 w-4 text-secondary" />;
-      case "down":
-        return <TrendingDown className="h-4 w-4 text-primary" />;
-      default:
-        return <Minus className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
-
+  ];
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">      {cards.map((card, index) => (
-        <Card 
-          key={index} 
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card, index) => (
+        <Card
+          key={index}
           className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] border-2 ${card.borderColor} ${card.bgColor} backdrop-blur-sm group`}
         >
           {/* Enhanced Gradient Background */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-8 group-hover:opacity-12 transition-opacity duration-300`}></div>
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-8 group-hover:opacity-12 transition-opacity duration-300`}
+          ></div>
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/15 to-transparent rounded-full blur-2xl opacity-60"></div>
           <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-xl opacity-40"></div>
-          
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
             <CardTitle className="text-sm font-semibold text-foreground">
               {card.title}
             </CardTitle>
-            <div className={`p-3 rounded-xl ${card.iconBg} shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 group-hover:rotate-3`}>
+            <div
+              className={`p-3 rounded-xl ${card.iconBg} shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 group-hover:rotate-3`}
+            >
               {card.icon}
             </div>
-          </CardHeader>
+          </CardHeader>{" "}
           <CardContent className="relative z-10">
-            <div className="flex items-baseline gap-3">
-              <div className={`text-3xl md:text-4xl font-bold ${card.textAccent} drop-shadow-sm`}>
-                {card.value}
-              </div>
-              <div className="flex items-center gap-1.5 bg-card/60 backdrop-blur-sm rounded-full px-2 py-1">
-                {getTrendIcon(card.trend)}
-                <span className={`text-xs font-semibold ${
-                  card.trend === "up" ? "text-secondary" : 
-                  card.trend === "down" ? "text-primary" : "text-muted-foreground"
-                }`}>
-                  {card.change}
-                </span>
-              </div>
+            <div
+              className={`text-3xl md:text-4xl font-bold ${card.textAccent} drop-shadow-sm`}
+            >
+              {card.value}
             </div>
-            <p className="text-xs text-muted-foreground mt-3 font-medium tracking-wide">{card.description}</p>
-            
-            {/* Enhanced Progress indicator */}
-            <div className="mt-4 h-1.5 bg-muted/30 rounded-full overflow-hidden">
-              <div 
-                className={`h-full bg-gradient-to-r ${card.color} transition-all duration-1000 ease-out shadow-sm`}
-                style={{ width: '75%' }}
-              ></div>
-            </div>
+            <p className="text-xs text-muted-foreground mt-3 font-medium tracking-wide">
+              {card.description}
+            </p>
           </CardContent>
         </Card>
       ))}

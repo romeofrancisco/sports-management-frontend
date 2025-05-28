@@ -13,11 +13,16 @@ import {
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const useTeams = (filter, enabled = true) => {
+export const useTeams = (filter, page = 1, pageSize = 10, enabled = true) => {
+  const params = {
+    ...filter,
+    page,
+    page_size: pageSize,
+  };
 
   return useQuery({
-    queryKey: ["teams", filter],
-    queryFn: () => fetchTeams(filter),
+    queryKey: ["teams", params],
+    queryFn: () => fetchTeams(params),
     enabled,
     keepPreviousData: true,
   });
