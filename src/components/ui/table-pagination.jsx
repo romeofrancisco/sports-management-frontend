@@ -33,7 +33,7 @@ const TablePagination = ({
   onPageChange,
   onPageSizeChange,
   isLoading = false,
-  pageSizeOptions = [10, 20, 50, 100],
+  pageSizeOptions = [12, 24, 50, 100],
   itemName = "items"
 }) => {
   const totalPages = Math.ceil(totalItems / pageSize);

@@ -27,7 +27,35 @@ import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { STAT_TYPE } from "@/constants/sport";
 
-export const FilterYearLevel = ({ value, onChange, className = "" }) => {
+export const FilterYearLevel = ({ value, onChange, className = "", hideLabel = false }) => {
+  if (hideLabel) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+          <SelectValue placeholder="All Levels" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Year Level</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Levels
+            </SelectItem>
+            <SelectSeparator />
+            {YEAR_LEVEL_CHOICES.map((year) => (
+              <SelectItem
+                className="text-xs"
+                key={year.value}
+                value={year.value}
+              >
+                {year.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
     <div className={`grid gap-0.5 lg:w-[9rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Year Level</Label>
@@ -38,7 +66,7 @@ export const FilterYearLevel = ({ value, onChange, className = "" }) => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Year Level</SelectLabel>
-            <SelectItem className="text-xs" value="all">
+            <SelectItem className="text-xs" value={null}>
               All Levels
             </SelectItem>
             <SelectSeparator />
@@ -88,7 +116,31 @@ export const FilterStatType = ({ value, onChange, className = "" }) => {
   );
 };
 
-export const FilterSex = ({ value, onChange, className = "" }) => {
+export const FilterSex = ({ value, onChange, className = "", hideLabel = false }) => {
+  if (hideLabel) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+          <SelectValue placeholder="All Sexes" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sex</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All
+            </SelectItem>
+            <SelectSeparator />
+            {SEX.map((sex) => (
+              <SelectItem className="text-xs" key={sex.value} value={sex.value}>
+                {sex.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
     <div className={`grid gap-0.5 lg:w-[7rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Sex</Label>
@@ -99,6 +151,10 @@ export const FilterSex = ({ value, onChange, className = "" }) => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sex</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All
+            </SelectItem>
+            <SelectSeparator />
             {SEX.map((sex) => (
               <SelectItem className="text-xs" key={sex.value} value={sex.value}>
                 {sex.label}
@@ -111,7 +167,35 @@ export const FilterSex = ({ value, onChange, className = "" }) => {
   );
 };
 
-export const FilterCourse = ({ value, onChange, className = "" }) => {
+export const FilterCourse = ({ value, onChange, className = "", hideLabel = false }) => {
+  if (hideLabel) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+          <SelectValue placeholder="All Courses" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Course</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Courses
+            </SelectItem>
+            <SelectSeparator />
+            {COURSE_CHOICES.map((course) => (
+              <SelectItem
+                className="text-xs"
+                key={course.value}
+                value={course.value}
+              >
+                {course.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
     <div className={`grid gap-0.5 max-w-[15rem] min-w-[8rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Course</Label>
@@ -121,9 +205,9 @@ export const FilterCourse = ({ value, onChange, className = "" }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>All Course</SelectLabel>
-            <SelectItem className="text-xs" value="all">
-              All Course
+            <SelectLabel>Course</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Courses
             </SelectItem>
             <SelectSeparator />
             {COURSE_CHOICES.map((course) => (
@@ -142,8 +226,32 @@ export const FilterCourse = ({ value, onChange, className = "" }) => {
   );
 };
 
-export const FilterSport = ({ value, onChange, className = "" }) => {
+export const FilterSport = ({ value, onChange, className = "", hideLabel = false }) => {
   const { data: sports } = useSports();
+
+  if (hideLabel) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+          <SelectValue placeholder="All Sports" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sport</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Sports
+            </SelectItem>
+            <SelectSeparator />
+            {sports?.map((sport) => (
+              <SelectItem className="text-xs" key={sport?.id} value={sport?.id}>
+                {sport?.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    );
+  }
 
   return (
     <div className={`grid gap-0.5 ${className}`}>
@@ -172,7 +280,35 @@ export const FilterSport = ({ value, onChange, className = "" }) => {
 };
 
 
-export const FilterDivision = ({ value, onChange, className = "" }) => {
+export const FilterDivision = ({ value, onChange, className = "", hideLabel = false }) => {
+  if (hideLabel) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+          <SelectValue placeholder="All Divisions" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Divisions</SelectLabel>
+            <SelectItem className="text-xs" value={null}>
+              All Division
+            </SelectItem>
+            <SelectSeparator />
+            {DIVISIONS.map((division) => (
+              <SelectItem
+                className="text-xs"
+                key={division.value}
+                value={division.value}
+              >
+                {division.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Team's Division</Label>
@@ -203,7 +339,7 @@ export const FilterDivision = ({ value, onChange, className = "" }) => {
   );
 };
 
-export const SearchFilter = ({ value, onChange, className = "" }) => {
+export const SearchFilter = ({ value, onChange, className = "", placeholder = "Search name...", hideLabel = false }) => {
   const [searchInput, setSearchInput] = useState(value);
   const [debouncedValue] = useDebounce(searchInput, 500);
 
@@ -215,13 +351,24 @@ export const SearchFilter = ({ value, onChange, className = "" }) => {
     setSearchInput(value); // sync if value prop changes externally
   }, [value]);
 
+  if (hideLabel) {
+    return (
+      <Input
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        placeholder={placeholder}
+        className={`text-xs h-8 ${className}`}
+      />
+    );
+  }
+
   return (
     <div className={`grid gap-0.5 w-full ${className}`}>
       <Label className="text-xs text-muted-foreground">Search</Label>
       <Input
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
-        placeholder="Search name..."
+        placeholder={placeholder}
         className="text-xs h-8"
       />
     </div>

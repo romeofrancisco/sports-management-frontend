@@ -1,7 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { UserPlus, ChevronLeft } from "lucide-react";
-import { Link } from "react-router";
+import { UserPlus, Users, GraduationCap } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import CreatePlayerModal from "@/components/modals/PlayerModal";
 import PageHeader from "@/components/common/PageHeader";
@@ -9,26 +7,19 @@ import PageHeader from "@/components/common/PageHeader";
 const PlayersListHeader = () => {
   const { isOpen, openModal, closeModal } = useModal();
 
-  const actionComponent = (
-    <Button
-      onClick={openModal}
-      className="w-full sm:w-auto"
-      size="sm"
-    >
-      <UserPlus />
-      Register Player
-    </Button>
-  );
-
   return (
-    <div className="border-b p-4">
-      <PageHeader 
+    <>      <PageHeader
+        icon={Users}
         title="Players Management"
-        description="Register and manage players across all teams"
-        actionComponent={actionComponent}
+        description="Register and manage student-athletes across all teams and sports"
+        descriptionIcon={GraduationCap}
+        buttonText="Register Player"
+        buttonIcon={UserPlus}
+        onButtonClick={openModal}
       />
+      
       <CreatePlayerModal isOpen={isOpen} onClose={closeModal} />
-    </div>
+    </>
   );
 };
 
