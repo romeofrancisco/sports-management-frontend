@@ -7,6 +7,8 @@ export const dashboardService = {
   // Admin endpoints
   getAdminOverview: () => api.get('dashboard/admin_overview/'),
   getAdminAnalytics: () => api.get('dashboard/admin_analytics/'),
+  getAdminInsights: (aiEnabled = true) => api.get(`dashboard/admin_insights/?ai=${aiEnabled}`),
+  getAdminReports: (reportType) => api.get(`dashboard/admin_reports/?type=${reportType || 'summary'}`),
 
   // Coach endpoints
   getCoachOverview: () => api.get('dashboard/coach_overview/'),
@@ -133,6 +135,31 @@ export const usePlayerProgress = () => {
     },
     staleTime: 3 * 60 * 1000, // 3 minutes
     retry: 1,
+  });
+};
+
+export const useAdminInsights = (aiEnabled = true) => {
+  return useQuery({
+    queryKey: ['admin', 'insights', aiEnabled],
+    queryFn: async () => {
+      const response = await dashboardService.getAdminInsights(aiEnabled);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  });
+};
+
+export const useAdminReports = (reportType = 'summary') => {
+  return useQuery({
+    queryKey: ['admin', 'reports', reportType],
+    queryFn: async () => {
+      const response = await dashboardService.getAdminReports(reportType);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+    enabled: !!reportType, // Only run if reportType is provided
   });
 };
 

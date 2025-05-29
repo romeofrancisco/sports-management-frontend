@@ -1,5 +1,9 @@
 import React from "react";
-import { SearchFilter, FilterSport, FilterDivision } from "@/components/common/Filters";
+import {
+  SearchFilter,
+  FilterSport,
+  FilterDivision,
+} from "@/components/common/Filters";
 import { Search, X, Volleyball, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +13,7 @@ import { DIVISIONS } from "@/constants/team";
 const TeamFiltersBar = ({ filter, setFilter }) => {
   const { data: sports } = useSports();
   const hasActiveFilters = filter.search || filter.sport || filter.division;
-  
+
   const clearAllFilters = () => {
     setFilter({
       search: "",
@@ -22,7 +26,7 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
     const defaultValues = {
       search: "",
       sport: null,
-      division: null
+      division: null,
     };
     setFilter((prev) => ({ ...prev, [filterType]: defaultValues[filterType] }));
   };
@@ -30,13 +34,13 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
   // Helper functions to get display names
   const getSportName = () => {
     if (!filter.sport || !sports) return null;
-    const sport = sports.find(s => s.id === parseInt(filter.sport));
+    const sport = sports.find((s) => s.id === parseInt(filter.sport));
     return sport?.name || null;
   };
 
   const getDivisionName = () => {
     if (!filter.division) return null;
-    const division = DIVISIONS.find(d => d.value === filter.division);
+    const division = DIVISIONS.find((d) => d.value === filter.division);
     return division?.label || filter.division;
   };
   return (
@@ -73,7 +77,9 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
             <Shield className="h-4 w-4 text-muted-foreground shrink-0" />
             <FilterDivision
               value={filter.division}
-              onChange={(val) => setFilter((prev) => ({ ...prev, division: val }))}
+              onChange={(val) =>
+                setFilter((prev) => ({ ...prev, division: val }))
+              }
               className="min-w-[140px] lg:min-w-[160px]"
               hideLabel={true}
             />
@@ -93,18 +99,22 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
           )}
         </div>
       </div>
-      
+
       {/* Responsive Active Filters Display */}
       {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-2 p-2 bg-primary/5 border border-primary/20 rounded-lg">
-          <span className="text-xs font-medium text-muted-foreground shrink-0">Active filters:</span>
-          
+          <span className="text-xs font-medium text-muted-foreground shrink-0">
+            Active filters:
+          </span>
+
           {filter.search && (
-            <Badge variant="secondary" className="text-xs flex items-center gap-1">
-              <Search className="h-3 w-3" />
-              "{filter.search}"
+            <Badge
+              variant="secondary"
+              className="text-xs flex items-center gap-1"
+            >
+              <Search className="h-3 w-3" />"{filter.search}"
               <Button
-                onClick={() => clearSpecificFilter('search')}
+                onClick={() => clearSpecificFilter("search")}
                 variant="ghost"
                 size="sm"
                 className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
@@ -113,13 +123,16 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
               </Button>
             </Badge>
           )}
-          
+
           {filter.sport && getSportName() && (
-            <Badge variant="secondary" className="text-xs flex items-center gap-1">
-              <Trophy className="h-3 w-3" />
+            <Badge
+              variant="secondary"
+              className="text-xs flex items-center gap-1"
+            >
+              <Volleyball className="h-3 w-3" />
               {getSportName()}
               <Button
-                onClick={() => clearSpecificFilter('sport')}
+                onClick={() => clearSpecificFilter("sport")}
                 variant="ghost"
                 size="sm"
                 className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
@@ -128,13 +141,16 @@ const TeamFiltersBar = ({ filter, setFilter }) => {
               </Button>
             </Badge>
           )}
-          
+
           {filter.division && (
-            <Badge variant="secondary" className="text-xs flex items-center gap-1">
+            <Badge
+              variant="secondary"
+              className="text-xs flex items-center gap-1"
+            >
               <Shield className="h-3 w-3" />
               {getDivisionName()}
               <Button
-                onClick={() => clearSpecificFilter('division')}
+                onClick={() => clearSpecificFilter("division")}
                 variant="ghost"
                 size="sm"
                 className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"

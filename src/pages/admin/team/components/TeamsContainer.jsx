@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import ContentLoading from "@/components/common/ContentLoading";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import TablePagination from "@/components/ui/table-pagination";
 import { Users, Table2, LayoutGrid } from "lucide-react";
 
 const   TeamsContainer = () => {
@@ -86,30 +87,48 @@ const   TeamsContainer = () => {
           
           {isLoading ? (
             <ContentLoading />
-          ) : teams && teams.length > 0 ? (
-            viewMode === "cards" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {teams.map((team, index) => (
-                  <div 
-                    key={team.id}
-                    className="animate-in fade-in-50 duration-500"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <TeamCard
-                      team={team}
-                      onView={() => navigate(`/teams/${team.slug}`)}
-                      onEdit={() => {
-                        setSelectedTeam(team);
-                        updateModal.openModal();
-                      }}
-                      onDelete={() => {
-                        setSelectedTeam(team);
-                        deleteModal.openModal();
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
+          ) : teams && teams.length > 0 ? (            viewMode === "cards" ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {teams.map((team, index) => (
+                    <div 
+                      key={team.id}
+                      className="animate-in fade-in-50 duration-500"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <TeamCard
+                        team={team}
+                        onView={() => navigate(`/teams/${team.slug}`)}
+                        onEdit={() => {
+                          setSelectedTeam(team);
+                          updateModal.openModal();
+                        }}
+                        onDelete={() => {
+                          setSelectedTeam(team);
+                          deleteModal.openModal();
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Pagination for cards view */}
+                {totalTeams > 0 && (
+                  <TablePagination
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    totalItems={totalTeams}
+                    onPageChange={setCurrentPage}
+                    onPageSizeChange={(newSize) => {
+                      setPageSize(newSize);
+                      setCurrentPage(1);
+                    }}
+                    isLoading={isLoading}
+                    pageSizeOptions={[12, 24, 36, 48]}
+                    itemName="teams"
+                  />
+                )}
+              </>
             ) : (
               <TeamsTableView
                 teams={teams}

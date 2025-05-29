@@ -15,6 +15,7 @@ import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import GameResult from "@/pages/admin/game/GameResult";
 import TrainingDashboard from "@/components/trainings/dashboard/TrainingDashboard";
+import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 
 export const adminRoutes = [
   {
@@ -83,5 +84,9 @@ export const adminRoutes = [
   },  {
     path: "/trainings",
     element: <TrainingDashboard />,
+  },
+  {
+    path: "/settings",
+    element: <SystemSettingsPage />,
   },
 ];
