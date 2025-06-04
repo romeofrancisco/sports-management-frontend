@@ -19,12 +19,13 @@ import { getPeriodLabel } from "@/constants/sport";
 export const useGames = (filter, page = 1, pageSize = 10, enabled = true) => {
   const apiFilter = {
     ...filter,
-    sport: filter.sport === "all" ? "" : filter.sport,
+    page,
+    page_size: pageSize,
   };
 
   return useQuery({
-    queryKey: ["games", apiFilter, page, pageSize],
-    queryFn: () => fetchGames(apiFilter, page, pageSize),
+    queryKey: ["games", apiFilter],
+    queryFn: () => fetchGames(apiFilter),
     enabled,
   });
 };

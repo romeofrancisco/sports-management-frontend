@@ -29,14 +29,16 @@ const TrainingSessionFormDialog = ({
   } = useTrainingSession(sessionId, open && !!sessionId);
   const { data: categories = [] } =
     useTrainingCategories(open);
-
   // Only fetch coaches and teams if user is not a coach
   const { data: coaches = [], isLoading: isLoadingCoaches } = useCoaches({
     enabled: open && !isCoach,
   });
-  const { data: teams = [], isLoading: isLoadingTeams } = useTeams({
+  const { data: teamsData = { results: [] }, isLoading: isLoadingTeams } = useTeams({
     enabled: open && !isCoach,
   });
+  
+  // Extract teams array from paginated response
+  const teams = teamsData.results || [];
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-[600px] max-h-[90vh] overflow-y-auto p-0">

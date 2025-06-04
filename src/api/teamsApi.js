@@ -86,3 +86,64 @@ export const fetchTeamPlayers = async (teamSlug) => {
   }
 };
 
+export const fetchTeamAnalytics = async (teamSlug, days = 30) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/analytics/?days=${days}`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team analytics:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamPerformance = async (teamSlug, season = null) => {
+  try {
+    const params = season ? { season } : {};
+    const { data } = await api.get(`teams/${teamSlug}/performance/`, { params });
+    return data;
+  } catch (error) {
+    console.log("Error fetching team performance:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamGames = async (teamSlug, params = {}) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/games/`, { params });
+    return data;
+  } catch (error) {
+    console.log("Error fetching team games:", error);
+    throw error;
+  }
+};
+
+export const fetchAllTeamGames = async (teamSlug) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/games_all/`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching all team games:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamTrainingSessions = async (teamSlug, params = {}) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/training_sessions/`, { params });
+    return data;
+  } catch (error) {
+    console.log("Error fetching team training sessions:", error);
+    throw error;
+  }
+};
+
+export const fetchTeamStatistics = async (teamSlug, period = 'season') => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/statistics/?period=${period}`);
+    return data;
+  } catch (error) {
+    console.log("Error fetching team statistics:", error);
+    throw error;
+  }
+};
+

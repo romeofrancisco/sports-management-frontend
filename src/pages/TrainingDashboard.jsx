@@ -14,11 +14,12 @@ import TrainingMetricsList from "../components/trainings/TrainingMetricsList";
 import TrainingSessionsList from "../components/trainings/sessions/TrainingSessionsList";
 import { PlayerProgressChart } from "@/components/charts/PlayerProgressChart";
 import { PlayerProgressMultiView } from "@/components/trainings/players";
+import { PlayerRadarChartContainer } from "@/components/charts/PlayerRadarChart";
+import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 
 import TeamFilter from "../components/trainings/TeamFilter";
 import PlayerFilter from "../components/trainings/PlayerFilter";
 import PlayerSelectorChips from "../components/trainings/PlayerSelectorChips";
-import { LayoutContainer } from "../layout/Container";
 import useTrainingDashboard from "../hooks/useTrainingDashboard";
 
 const TrainingDashboard = () => {
@@ -36,19 +37,17 @@ const TrainingDashboard = () => {
     togglePlayerSelection,
     handleQuickPlayerSelection,
   } = useTrainingDashboard();
-
   return (
-    <LayoutContainer>
-      <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className="p-4 md:p-6 space-y-8">
         {/* Header with team selection */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Training Management</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Monitor training progress and manage training activities
-            </p>
-          </div>
-
+        <UniversityPageHeader
+          title="Training Management"
+          subtitle="Training Portal"
+          description="Monitor training progress and manage training activities"
+          showOnlineStatus={true}
+          showUniversityColors={true}
+        >
           <div className="flex items-center space-x-4">
             <TeamFilter
               teams={teams}
@@ -56,15 +55,15 @@ const TrainingDashboard = () => {
               onSelect={handleTeamChange}
             />
           </div>
-        </div>
+        </UniversityPageHeader>
 
         {/* Main tabs navigation */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="sessions">Sessions</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="metrics">Metrics</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
+            <TabsTrigger value="radar">Radar Analysis</TabsTrigger>
           </TabsList>
           <div className="mt-6">
             {/* Sessions tab */}
@@ -224,16 +223,79 @@ const TrainingDashboard = () => {
                             </div>
                           </div>
                         </CardContent>
-                      </Card>
-                    )}{" "}
+                      </Card>                    )}{" "}
                   </div>
                 </div>
               </div>
             </TabsContent>
-          </div>
-        </Tabs>
+            
+            {/* Radar Analysis tab */}
+            <TabsContent value="radar" className="space-y-0">
+              <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+                <div className="p-6 space-y-6">
+                  {/* Player selection for radar */}
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        Performance Radar Analysis
+                      </h2>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Multi-dimensional performance visualization across training categories
+                      </p>
+                    </div>
+                    <PlayerFilter
+                      players={players}
+                      selectedPlayerId={selectedPlayerId}
+                      onSelect={setSelectedPlayerId}
+                    />
+                  </div>
+
+                  {/* Radar chart or empty message */}
+                  {selectedPlayerId && selectedPlayerId !== "no_player" ? (
+                    <PlayerRadarChartContainer
+                      playerId={selectedPlayerId}
+                      playerName={
+                        players.find(p => p.id === parseInt(selectedPlayerId))?.full_name ||
+                        players.find(p => p.id === parseInt(selectedPlayerId))?.name ||
+                        "Selected Player"
+                      }
+                      key={`radar-${selectedPlayerId}`}
+                    />
+                  ) : (
+                    <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
+                      <CardContent className="p-8 text-center">
+                        <div className="flex flex-col items-center justify-center space-y-4">
+                          {/* Icon with background */}
+                          <div className="bg-muted/20 p-4 rounded-full">
+                            <BarChart3 className="h-12 w-12 text-muted-foreground/60" />
+                          </div>
+
+                          {/* Title and description */}
+                          <div className="space-y-2">
+                            <h3 className="text-lg font-semibold text-foreground">
+                              No Player Selected for Radar Analysis
+                            </h3>
+                            <p className="text-sm text-muted-foreground max-w-md">
+                              Choose a player from the dropdown above to view their performance radar chart 
+                              across different training categories like strength, endurance, speed, and more.
+                            </p>
+                          </div>
+
+                          {/* Call to action hint */}
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-full">
+                            <ChevronDown className="h-3 w-3" />
+                            <span>Select a player to view their radar analysis</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </div></Tabs>
       </div>
-    </LayoutContainer>
+    </div>
   );
 };
 

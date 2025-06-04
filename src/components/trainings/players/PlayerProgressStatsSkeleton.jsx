@@ -7,9 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
  * Displays skeleton for player statistics cards
  */
 const PlayerProgressStatsSkeleton = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-      {[1, 2, 3].map((i) => (
+  return (    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      {[1, 2, 3, 4].map((i) => (
         <Card key={i} className="border shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center space-x-4">

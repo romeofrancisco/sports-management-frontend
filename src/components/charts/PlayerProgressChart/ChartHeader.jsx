@@ -16,16 +16,11 @@ export const ChartHeader = ({
   selectedMetricData,
   dateRange,
   onDateChange,
-}) => (
-  <CardHeader>
-    <div className="flex justify-between items-center flex-col sm:flex-row gap-4">
-      <div>
-        <CardTitle>{playerName || "Player"} Progress</CardTitle>
-        <CardDescription>Track improvements over time</CardDescription>
-      </div>
-    </div>
-    <div className="flex gap-4 items-center mt-4 flex-col sm:flex-row">
-      <div className="w-full sm:w-64">
+  showDateControls = true,
+}) => (  <CardHeader className="pb-3">
+    <div className="flex gap-3 items-center flex-col sm:flex-row">
+      {/* Metric Selection with integrated badge */}
+      <div className="flex items-center gap-2 w-full sm:w-auto">
         <Select 
           value={selectedMetric} 
           onValueChange={(newValue) => {
@@ -33,7 +28,7 @@ export const ChartHeader = ({
             setSelectedMetric(newValue);
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full sm:w-64">
             <SelectValue placeholder="Select a metric" />
           </SelectTrigger>
           <SelectContent>
@@ -52,10 +47,22 @@ export const ChartHeader = ({
             ))}
           </SelectContent>
         </Select>
-      </div>
-      
-      {/* Date Range Picker */}
-      {onDateChange && (
+        
+        {/* Metric Badge - positioned next to selector */}
+        {selectedMetricData && (
+          selectedMetricData.metric_id === "overall" ? (
+            <Badge variant="outline" className="bg-primary/10 whitespace-nowrap">
+              Overall
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="whitespace-nowrap">
+              {selectedMetricData.is_lower_better ? "Lower↓" : "Higher↑"}
+            </Badge>
+          )
+        )}
+      </div>      
+      {/* Date Range Picker - Only show if enabled */}
+      {showDateControls && onDateChange && (
         <div className="w-full sm:w-auto">
           <DateRangePickerWithPresets
             value={dateRange}
@@ -63,21 +70,6 @@ export const ChartHeader = ({
             className="w-full sm:w-auto"
           />
         </div>
-      )}
-      
-      {/* Metric Badge */}
-      {selectedMetricData && (
-        selectedMetricData.metric_id === "overall" ? (
-          <Badge variant="outline" className="bg-primary/10">
-            Overall Performance
-          </Badge>
-        ) : (
-          <Badge variant="outline">
-            {selectedMetricData.is_lower_better
-              ? "Lower is better"
-              : "Higher is better"}
-          </Badge>
-        )
       )}
     </div>
   </CardHeader>

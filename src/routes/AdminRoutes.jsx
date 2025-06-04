@@ -15,6 +15,16 @@ import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import GameResult from "@/pages/admin/game/GameResult";
 import TrainingDashboard from "@/components/trainings/dashboard/TrainingDashboard";
+import TrainingSessionsPage from "@/pages/trainings/TrainingSessionsPage";
+import PlayerProgressPage from "@/pages/trainings/PlayerProgressPage";
+import PlayerProgressIndividualPage from "@/pages/trainings/PlayerProgressIndividualPage";
+import PlayerProgressTeamPage from "@/pages/trainings/PlayerProgressTeamPage";
+import PlayerProgressIndividualSelectionPage from "@/pages/trainings/PlayerProgressIndividualSelectionPage";
+import PlayerProgressTeamSelectionPage from "@/pages/trainings/PlayerProgressTeamSelectionPage";
+import AttendanceAnalyticsPage from "@/pages/trainings/AttendanceAnalyticsPage";
+import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
+import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
+import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 
 export const adminRoutes = [
@@ -84,6 +94,45 @@ export const adminRoutes = [
   },  {
     path: "/trainings",
     element: <TrainingDashboard />,
+  },
+  {
+    path: "/trainings/sessions",
+    element: <TrainingSessionsPage />,
+  },  {
+    path: "/trainings/progress",
+    element: <PlayerProgressPage />,
+  },
+  {
+    path: "/trainings/progress/individual",
+    element: <PlayerProgressIndividualSelectionPage />,
+  },
+  {
+    path: "/trainings/progress/teams",
+    element: <PlayerProgressTeamSelectionPage />,
+  },
+  {
+    path: "/trainings/progress/player/:playerId",
+    element: <PlayerProgressIndividualPage />,
+  },
+  {
+    path: "/trainings/progress/team/:teamSlug",
+    element: <PlayerProgressTeamPage />,
+  },
+  {
+    path: "/trainings/attendance",
+    element: <AttendanceAnalyticsPage />,
+  },
+  {
+    path: "/trainings/categories",
+    element: <TrainingCategoriesPage />,
+  },
+  {
+    path: "/trainings/metrics",
+    element: <TrainingMetricsPage />,
+  },
+  {
+    path: "/trainings/units",
+    element: <TrainingUnitsPage />,
   },
   {
     path: "/settings",

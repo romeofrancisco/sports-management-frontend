@@ -1,0 +1,91 @@
+import React, { useState, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, RotateCcw } from "lucide-react";
+import { subMonths } from "date-fns";
+import UniversityPageHeader from "@/components/common/UniversityPageHeader";
+import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker-with-presets";
+import PlayerProgressIndividualView from "@/components/trainings/players/PlayerProgressIndividualView";
+import { usePlayers } from "@/hooks/usePlayers";
+
+const PlayerProgressIndividualPage = () => {
+  const { playerId } = useParams();
+  const navigate = useNavigate();
+
+  // Create default date range (1 month from now)
+  const createDefaultDateRange = () => {
+    const today = new Date();
+    return {
+      from: subMonths(today, 1), // 1 month ago
+      to: today, // today
+    };
+  };
+
+  const [dateRange, setDateRange] = useState(createDefaultDateRange());
+
+  // Fetch player data to get player name
+  const { data: playersData } = usePlayers({}, 1, 1000);
+  const players = playersData?.results || [];
+  const currentPlayer = players.find(p => p.id === parseInt(playerId));
+  const playerName = currentPlayer?.full_name || "Player";
+
+  // Handle date range change
+  const handleDateRangeChange = (newDateRange) => {
+    setDateRange(newDateRange);
+  };
+
+  // Handle back navigation
+  const handleBackClick = () => {
+    navigate("/trainings/progress");
+  };
+
+  // Format date range for API requests
+  const dateRangeParams = useMemo(() => {
+    return {
+      date_from: dateRange?.from
+        ? dateRange.from.toISOString().split("T")[0]
+        : undefined,
+      date_to: dateRange?.to
+        ? dateRange.to.toISOString().split("T")[0]
+        : undefined,
+    };
+  }, [dateRange]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className="p-4 md:p-6 space-y-8">
+        <UniversityPageHeader
+          title={`${playerName}'s Progress`}
+          subtitle="Training Management"
+          description="Individual performance analysis and progress tracking"
+          showUniversityColors={true}
+          showBackButton={true}
+          backButtonText="Back to Player List"
+          onBackClick={handleBackClick}        >
+          {/* Date Controls in header with enhanced styling */}
+          <div className="flex items-center gap-3">
+            <DateRangePickerWithPresets
+              value={dateRange}
+              onChange={handleDateRangeChange}
+              placeholder="Select date range..."
+              className="w-auto"
+            />
+          </div>
+        </UniversityPageHeader>
+
+        <PlayerProgressIndividualView
+          playerId={parseInt(playerId)}
+          playerName={playerName}
+          dateRangeParams={dateRangeParams}
+          dateRange={dateRange}
+          openModal={() => {
+            // Handle modal opening if needed
+            console.log("Open modal for player", playerId);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default PlayerProgressIndividualPage;

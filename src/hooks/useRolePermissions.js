@@ -97,27 +97,64 @@ export const useRolePermissions = () => {
         if (!team) return false;
         return isAdmin() || (isCoach() && team?.coach_id === user?.id);
       },
-    },
-
-    // Games management
+    },    // Games management
     games: {
       create: isAdmin() || isCoach(),
       view: true, // Everyone can view games
       edit: (game) => {
         if (!game) return false;
-        // Admins can edit any game, coaches can edit games for their teams
-        return isAdmin() || (isCoach() && (
-          game?.home_team?.coach_id === user?.id || 
-          game?.away_team?.coach_id === user?.id
-        ));
+        // Admins can edit any game
+        if (isAdmin()) return true;
+          // Coaches can only edit practice games (normal type) for their teams
+        if (isCoach()) {
+          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
+                             game?.away_team?.coach_id === user?.id;
+          const isPracticeGame = game?.type === "practice";
+          return isCoachTeam && isPracticeGame;
+        }
+        
+        return false;
       },
       delete: (game) => isAdmin(), // Only admins can delete games
+      start: (game) => {
+        if (!game) return false;
+        // Admins can start any game
+        if (isAdmin()) return true;
+          // Coaches can only start practice games for their teams
+        if (isCoach()) {
+          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
+                             game?.away_team?.coach_id === user?.id;
+          const isPracticeGame = game?.type === "practice";
+          return isCoachTeam && isPracticeGame;
+        }
+        
+        return false;
+      },
+      recordScores: (game) => {
+        if (!game) return false;
+        // Admins can record scores for any game
+        if (isAdmin()) return true;
+          // Coaches can only record scores for practice games involving their teams
+        if (isCoach()) {
+          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
+                             game?.away_team?.coach_id === user?.id;
+          const isPracticeGame = game?.type === "practice";
+          return isCoachTeam && isPracticeGame;
+        }
+        
+        return false;
+      },
       recordStats: (game) => {
         if (!game) return false;
-        return isAdmin() || (isCoach() && (
-          game?.home_team?.coach_id === user?.id || 
-          game?.away_team?.coach_id === user?.id
-        ));
+        // Use same logic as recordScores
+        return permissions.games.recordScores(game);
+      },
+      manage: (game) => {
+        if (!game) return false;
+        // General game management - combines edit, start, and scoring permissions
+        return permissions.games.edit(game) || 
+               permissions.games.start(game) || 
+               permissions.games.recordScores(game);
       },
     },
 

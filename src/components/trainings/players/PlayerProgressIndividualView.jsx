@@ -1,73 +1,97 @@
 import React from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, User, TrendingUp } from "lucide-react";
-import PlayerProgressChart from "@/components/charts/PlayerProgressChart/PlayerProgressChart";
 import PlayerProgressStats from "./PlayerProgressStats";
+import {
+  PerformanceInsightCard,
+  RadarAnalysisSummaryCard,
+  ProgressChartCard,
+  RadarChartCard,
+  CategoryBreakdown,
+  QuickActionsCard,
+} from "./dashboard";
+import { usePlayerRadarChart } from "@/hooks/useTrainings";
 
 const PlayerProgressIndividualView = ({
   playerId,
   playerName,
   dateRangeParams,
-  handleBackToCompare,
-  onDateChange,
-  dateRange, // Add dateRange prop for the chart component
+  dateRange,
+  openModal,
 }) => {
+  // Get radar data for the CategoryBreakdown component
+  const {
+    data: radarData,
+  } = usePlayerRadarChart(playerId, dateRange, !!playerId);
+
   return (
-    <div className="space-y-6">
-      {/* Enhanced Header Section */}
-      <Card className="bg-gradient-to-r from-primary/5 via-primary/10 to-secondary/5 border-0 shadow-lg overflow-hidden">
-        <CardHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-9 w-9 p-0 rounded-full hover:bg-white/20 transition-all duration-200 backdrop-blur-sm border border-white/10 shadow-sm"
-              onClick={handleBackToCompare}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Back to comparison</span>
-            </Button>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="p-1.5 bg-primary/10 rounded-lg">
-                  <User className="h-4 w-4 text-primary" />
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className="space-y-6">
+        {/* Performance Stats Overview */}
+        <div className="animate-in fade-in-50 duration-500 delay-100">
+          <PlayerProgressStats playerId={playerId} />
+        </div>
+
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          {/* Charts Section - Takes up most space */}
+          <div className="xl:col-span-8 space-y-6">            {/* Progress Chart */}
+            <div className="animate-in fade-in-50 duration-500 delay-200">
+              <ProgressChartCard
+                playerId={playerId}
+                dateRange={dateRange}
+                openModal={openModal}
+              />
+            </div>            {/* Radar Chart */}
+            <div className="animate-in fade-in-50 duration-500 delay-300">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Radar Chart - Takes 1 column */}
+                <div>
+                  <RadarChartCard
+                    playerId={playerId}
+                    playerName={playerName}
+                    dateRange={dateRange}
+                  />
                 </div>
-                <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {playerName || "Player"}'s Progress
-                </CardTitle>
+                
+                {/* Category Breakdown - Takes 1 column */}
+                <div>
+                  <CategoryBreakdown
+                    categories={radarData?.categories || []}
+                  />
+                </div>
               </div>
-              <CardDescription className="text-sm text-muted-foreground flex items-center gap-2">
-                <TrendingUp className="h-3 w-3" />
-                Comprehensive performance analysis and tracking
-              </CardDescription>
             </div>
           </div>
-        </CardHeader>
-      </Card>
 
-      {/* Stats Section with Enhanced Spacing */}
-      <div className="px-1">
-        <PlayerProgressStats playerId={playerId} />
+          {/* Sidebar with Insights and Actions */}
+          <div className="xl:col-span-4 space-y-6">
+            {/* Performance Insights */}
+            <div className="animate-in fade-in-50 duration-500 delay-400">
+              <PerformanceInsightCard
+                playerId={playerId}
+                dateRange={dateRange}
+                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30"
+              />
+            </div>
+
+            {/* Radar Analysis Summary */}
+            <div className="animate-in fade-in-50 duration-500 delay-500">
+              <RadarAnalysisSummaryCard
+                playerId={playerId}
+                dateRange={dateRange}
+                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-secondary/20 transition-all duration-300 hover:shadow-2xl hover:border-secondary/30"
+              />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="animate-in fade-in-50 duration-500 delay-600">
+              <QuickActionsCard
+                openModal={openModal}
+                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-accent/20 transition-all duration-300 hover:shadow-2xl hover:border-accent/30"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      
-      {/* Chart Section with Improved Container */}
-      <Card className="bg-gradient-to-br from-background to-muted/20 overflow-hidden">
-        <CardContent className="p-0">
-          <PlayerProgressChart
-            playerId={playerId}
-            dateRange={dateRange}
-            onDateChange={onDateChange}
-          />
-        </CardContent>
-      </Card>
     </div>
   );
 };

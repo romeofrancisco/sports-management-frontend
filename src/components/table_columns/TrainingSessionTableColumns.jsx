@@ -5,6 +5,8 @@ import {
   ClipboardCheck,
   ClipboardPenLine,
   Settings,
+  PlayCircle,
+  StopCircle,
 } from "lucide-react";
 import React from "react";
 import {
@@ -15,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { formatTo12HourTime } from "@/utils/formatTime";
 
 const getTrainingSessionTableColumns = ({
@@ -23,6 +26,8 @@ const getTrainingSessionTableColumns = ({
   onAttendance,
   onRecord,
   onConfigureMetrics,
+  onStartTraining,
+  onEndTraining,
 }) => [
   {
     header: "Title",
@@ -49,10 +54,34 @@ const getTrainingSessionTableColumns = ({
   {
     header: "Team",
     accessorKey: "team_name",
-  },
-  {
+  },  {
     header: "Venue",
     accessorKey: "location",
+  },
+  {
+    header: "Status",
+    accessorKey: "status",
+    cell: ({ getValue, row }) => {
+      const status = getValue() || 'upcoming'; // Default to upcoming if no status
+      const getStatusConfig = (status) => {
+        switch(status) {
+          case 'upcoming':
+            return { variant: 'secondary', className: 'bg-blue-100 text-blue-700 hover:bg-blue-200', text: 'Upcoming' };
+          case 'ongoing':
+            return { variant: 'secondary', className: 'bg-green-100 text-green-700 hover:bg-green-200', text: 'Ongoing' };
+          case 'completed':
+            return { variant: 'secondary', className: 'bg-gray-100 text-gray-700 hover:bg-gray-200', text: 'Completed' };
+          default:
+            return { variant: 'secondary', className: 'bg-blue-100 text-blue-700 hover:bg-blue-200', text: 'Upcoming' };
+        }
+      };
+      const config = getStatusConfig(status);
+      return (
+        <Badge variant={config.variant} className={config.className}>
+          {config.text}
+        </Badge>
+      );
+    },
   },
   {
     header: "Actions",
@@ -70,15 +99,33 @@ const getTrainingSessionTableColumns = ({
           <DropdownMenuItem onClick={() => onRecord(row.original)}>
             <ClipboardPenLine className="h-4 w-4 mr-2" />
             Record Player Metrics
-          </DropdownMenuItem>{" "}
-          <DropdownMenuItem
+          </DropdownMenuItem>{" "}          <DropdownMenuItem
             onClick={() =>
               onConfigureMetrics && onConfigureMetrics(row.original)
             }
           >
             <Settings className="h-4 w-4 mr-2" />
             Configure Metrics for Session
-          </DropdownMenuItem>
+          </DropdownMenuItem>          {/* Start Training Button - Only for upcoming sessions */}
+          {row.original.status === 'upcoming' && onStartTraining && (
+            <DropdownMenuItem 
+              onClick={() => onStartTraining(row.original)}
+              className="text-green-600 focus:text-green-600"
+            >
+              <PlayCircle className="h-4 w-4 mr-2" />
+              Start Training
+            </DropdownMenuItem>
+          )}
+          {/* End Training Button - Only for ongoing sessions */}
+          {row.original.status === 'ongoing' && onEndTraining && (
+            <DropdownMenuItem 
+              onClick={() => onEndTraining(row.original)}
+              className="text-red-600 focus:text-red-600"
+            >
+              <StopCircle className="h-4 w-4 mr-2" />
+              End Training
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => onAttendance(row.original)}>
             <ClipboardCheck className="h-4 w-4 mr-2" />
             Mark Attendance

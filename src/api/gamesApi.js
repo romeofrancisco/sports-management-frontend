@@ -1,13 +1,11 @@
 import api from ".";
 
-export const fetchGames = async (filter, page = 1, pageSize = 10) => {
+export const fetchGames = async (filter) => {
   try {
-    const { data } = await api.get("/games/", { 
-      params: { 
+    const { data } = await api.get("/games/", {
+      params: {
         ...filter,
-        page,
-        page_size: pageSize
-      } 
+      },
     });
     return data;
   } catch (error) {
@@ -113,7 +111,7 @@ export const manageGame = async (gameId, action) => {
 export const fetchGameLeaders = async (gameId, limit = 2) => {
   try {
     const { data } = await api.get(`games/${gameId}/game_leaders/`, {
-      params: { limit }
+      params: { limit },
     });
     return data;
   } catch (error) {
@@ -126,7 +124,7 @@ export const fetchGameLeaders = async (gameId, limit = 2) => {
 export const fetchTeamLeaders = async (gameId, limit = 2) => {
   try {
     const { data } = await api.get(`games/${gameId}/team_leaders/`, {
-      params: { limit }
+      params: { limit },
     });
     return data;
   } catch (error) {

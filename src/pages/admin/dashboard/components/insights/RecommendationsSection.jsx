@@ -139,15 +139,38 @@ const RecommendationsSection = ({ recommendations }) => {
                     <h4 className="font-medium text-sm">
                       {recommendation.title}
                     </h4>
-                  )}
-                  <p className="text-sm leading-relaxed">
-                    {safeRender(
-                      recommendation.description ||
-                        recommendation.message ||
-                        recommendation,
-                      "No description available"
-                    )}
-                  </p>
+                  )}                  <div className="text-sm leading-relaxed">
+                    {(() => {
+                      const content = safeRender(
+                        recommendation.description ||
+                          recommendation.message ||
+                          recommendation,
+                        "No description available"
+                      );
+                      
+                      // Check if content has bullet points
+                      if (content.includes('•')) {
+                        // Split by bullet points and newlines, then filter out empty items
+                        const items = content
+                          .split(/\n?\s*•\s*/)
+                          .filter(item => item.trim())
+                          .map(item => item.trim());
+                        
+                        return (
+                          <div className="space-y-1">
+                            {items.map((item, index) => (
+                              <div key={index} className="flex items-start gap-2">
+                                <span className="text-primary font-bold mt-0.5">•</span>
+                                <span className="flex-1">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      } else {
+                        return <span>{content}</span>;
+                      }
+                    })()}
+                  </div>
                   {recommendation.category && (
                     <div className="text-xs text-muted-foreground capitalize">
                       Category: {recommendation.category}
@@ -171,26 +194,44 @@ const RecommendationsSection = ({ recommendations }) => {
                       Priority
                     </Badge>
                   </div>
-                )}
-                {recommendation.suggested_actions &&
+                )}                {recommendation.suggested_actions &&
                   recommendation.suggested_actions.length > 0 && (
                     <div className="mt-3">
                       <div className="text-xs font-medium text-muted-foreground mb-1">
                         Suggested Actions:
                       </div>
-                      <ul className="text-xs text-muted-foreground space-y-1">
+                      <div className="text-xs text-muted-foreground space-y-1">
                         {recommendation.suggested_actions.map(
-                          (action, actionIndex) => (
-                            <li
-                              key={actionIndex}
-                              className="flex items-start gap-1"
-                            >
-                              <span className="text-primary">•</span>
-                              <span>{action}</span>
-                            </li>
-                          )
+                          (action, actionIndex) => {
+                            // Parse bullet points from the action string
+                            const actionText = action || '';
+                            
+                            // Split by bullet points and newlines, then filter out empty items
+                            let actionItems = [];
+                            
+                            if (actionText.includes('•')) {
+                              // Handle bullet points with newlines: "• item1\n• item2\n• item3"
+                              actionItems = actionText
+                                .split(/\n?\s*•\s*/)
+                                .filter(item => item.trim())
+                                .map(item => item.trim());
+                            } else {
+                              // Handle as single action if no bullet points
+                              actionItems = [actionText.trim()];
+                            }
+                            
+                            return actionItems.map((item, itemIndex) => (
+                              <div
+                                key={`${actionIndex}-${itemIndex}`}
+                                className="flex items-start gap-2 mb-1"
+                              >
+                                <span className="text-primary font-bold mt-0.5">•</span>
+                                <span className="flex-1">{item}</span>
+                              </div>
+                            ));
+                          }
                         )}
-                      </ul>
+                      </div>
                     </div>
                   )}
               </CardContent>
