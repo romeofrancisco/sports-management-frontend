@@ -27,7 +27,6 @@ export const useMultiPlayerChartData = ({
   const playerIds = useMemo(() => {
     return players.map((player) => player.user_id || player.id).filter(Boolean);
   }, [players]);
-
   // Filter params for player progress - use passed dateRange if available
   const filters = useMemo(() => {
     const baseFilters = {
@@ -35,9 +34,20 @@ export const useMultiPlayerChartData = ({
     };
 
     if (dateRange) {
+      // Convert dateRange format (from/to) to API format (date_from/date_to)
+      const dateFilters = {};
+      
+      if (dateRange.from) {
+        dateFilters.date_from = new Date(dateRange.from).toISOString().split('T')[0];
+      }
+      
+      if (dateRange.to) {
+        dateFilters.date_to = new Date(dateRange.to).toISOString().split('T')[0];
+      }
+      
       return {
         ...baseFilters,
-        ...dateRange,
+        ...dateFilters,
       };
     }
     

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import LeaguesListHeader from "./components/LeaguesListHeader";
 import { useLeagues } from "@/hooks/useLeagues";
 import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
 import { useModal } from "@/hooks/useModal";
-import { Trash, MoreHorizontal, Settings, SquarePen } from "lucide-react";
+import { Trash, MoreHorizontal, Settings, SquarePen, Plus } from "lucide-react";
+import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -111,14 +111,29 @@ const LeaguesContainer = ({ leagues }) => {
 
 const LeaguesList = () => {
   const { data, isLoading, isError } = useLeagues();
+  const { isOpen, closeModal, openModal } = useModal();
 
   if (isLoading) return <Loading />;
   if (isError) return <PageError />;
-
   return (
-    <div>
-      <LeaguesListHeader />
-      <LeaguesContainer leagues={data} />
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className="p-4 md:p-6 space-y-8">
+        <UniversityPageHeader
+          title="Leagues"
+          subtitle="Administrative Portal"
+          description="Create and manage sports leagues and competitions"
+          buttonText="Create League"
+          buttonIcon={Plus}
+          onButtonClick={openModal}
+          showUniversityColors={true}
+        />
+        
+        <div className="animate-in fade-in-50 duration-500 delay-100">
+          <LeaguesContainer leagues={data} />
+        </div>
+      </div>
+      
+      <LeagueModal isOpen={isOpen} onClose={closeModal} />
     </div>
   );
 };

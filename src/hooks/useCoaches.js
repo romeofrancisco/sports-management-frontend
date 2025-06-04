@@ -3,11 +3,18 @@ import { fetchCoaches, createCoach, deleteCoach, updateCoach } from "@/api/coach
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
-export const useCoaches = ({filter, enabled = true}) => {
+export const useCoaches = (filter = {}, page = 1, pageSize = 12, enabled = true) => {
+  const apiFilter = {
+    ...filter,
+    page,
+    page_size: pageSize,
+  };
+
   return useQuery({
-    queryKey: ["coaches"],
-    queryFn: () => fetchCoaches(filter),
+    queryKey: ["coaches", apiFilter, page, pageSize],
+    queryFn: () => fetchCoaches(apiFilter),
     enabled,
+    keepPreviousData: true,
   });
 };
 

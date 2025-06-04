@@ -17,6 +17,14 @@ export const dashboardService = {
   // Player endpoints
   getPlayerOverview: () => api.get('dashboard/player_overview/'),
   getPlayerProgress: () => api.get('dashboard/player_progress/'),
+    // New Summary Service Endpoints
+  getDashboardSummary: (days = 30) => api.get(`dashboard/dashboard_summary/?days=${days}`),
+  getTrainingSummary: (days = 30, weeks = 8) => api.get(`dashboard/training_summary/?days=${days}&weeks=${weeks}`),
+  getLeagueSummary: (days = 30, limit = 10) => api.get(`dashboard/league_summary/?days=${days}&limit=${limit}`),
+  getGameSummary: (days = 30, weeks = 8, limit = 10) => api.get(`dashboard/game_summary/?days=${days}&weeks=${weeks}&limit=${limit}`),
+  getAnalyticsSummary: (days = 30, months = 12, heatmapDays = 30) => api.get(`dashboard/analytics_summary/?days=${days}&months=${months}&heatmap_days=${heatmapDays}`),
+  getSystemSummary: (days = 7) => api.get(`dashboard/system_summary/?days=${days}`),
+  getChartData: (chartType, days = 30) => api.get(`dashboard/chart_data/?chart_type=${chartType}&days=${days}`),
 };
 
 // Role-based dashboard data fetcher
@@ -145,8 +153,11 @@ export const useAdminInsights = (aiEnabled = true) => {
       const response = await dashboardService.getAdminInsights(aiEnabled);
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1,
+    staleTime: 2 * 60 * 1000, // 2 minutes (shorter for AI analysis)
+    retry: 2, // Retry up to 2 times
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    timeout: 30000, // 30 second timeout
+    refetchOnWindowFocus: false, // Prevent refetch on window focus for expensive AI calls
   });
 };
 

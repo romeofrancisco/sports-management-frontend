@@ -21,6 +21,8 @@ import {
   deleteTrainingSession,
   addPlayersToSession,
   fetchSessionAnalytics,
+  startTrainingSession,
+  endTrainingSession,
   fetchPlayerTrainings,
   fetchPlayerTraining,
   createPlayerTraining,
@@ -34,6 +36,7 @@ import {
   bulkUpdateAttendance,
   assignMetricsToSession,
   assignMetricsToPlayerTraining,
+  getPlayerRadarChartData,
 } from "@/api/trainingsApi";
 
 // Training Categories
@@ -293,6 +296,46 @@ export const useDeleteTrainingSession = () => {
   });
 };
 
+export const useStartTrainingSession = () => {
+  return useMutation({
+    mutationFn: startTrainingSession,
+    onSuccess: (data, sessionId) => {
+      toast.success("Training session started!", {
+        description: `${data.session_title || "Session"} is now ongoing.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["training-sessions"]);
+      queryClient.invalidateQueries(["training-session", sessionId]);
+    },
+    onError: (error) => {
+      toast.error("Failed to start training session", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useEndTrainingSession = () => {
+  return useMutation({
+    mutationFn: endTrainingSession,
+    onSuccess: (data, sessionId) => {
+      toast.success("Training session ended!", {
+        description: `${data.session_title || "Session"} has been completed.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["training-sessions"]);
+      queryClient.invalidateQueries(["training-session", sessionId]);
+    },
+    onError: (error) => {
+      toast.error("Failed to end training session", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
 export const useAddPlayersToSession = () => {
   return useMutation({
     mutationFn: addPlayersToSession,
@@ -407,7 +450,6 @@ export const useRecordPlayerMetrics = () => {
     },
   });
 };
-
 
 export const usePreviousPlayerMetrics = (playerTrainingId) => {
   return useQuery({
@@ -623,18 +665,18 @@ export const useAssignPlayerTrainingMetrics = (sessionId) => {
         } metrics have been assigned to this player.`,
         richColors: true,
       });
-      
+
       // Invalidate training sessions to refresh the UI
       queryClient.invalidateQueries(["training-sessions"]);
-      
+
       // Invalidate the specific session if we have a sessionId
       if (sessionId) {
         queryClient.invalidateQueries(["training-session", sessionId]);
       }
-      
+
       // Invalidate player trainings to refresh any player-specific data
       queryClient.invalidateQueries(["player-trainings"]);
-      
+
       // Invalidate player progress data that might depend on these metrics
       queryClient.invalidateQueries(["player-progress"]);
     },
@@ -644,5 +686,23 @@ export const useAssignPlayerTrainingMetrics = (sessionId) => {
         richColors: true,
       });
     },
+  });
+};
+
+// Player Radar Chart Hook
+export const usePlayerRadarChart = (
+  playerId,
+  dateRange = {},
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: ["player-radar-chart", playerId, dateRange],
+    queryFn: async () => {
+      const { getPlayerRadarChartData } = await import("@/api/trainingsApi");
+      return getPlayerRadarChartData(playerId, dateRange);
+    },
+    enabled: enabled && !!playerId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };

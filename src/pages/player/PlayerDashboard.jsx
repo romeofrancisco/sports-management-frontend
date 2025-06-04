@@ -4,11 +4,15 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { usePlayerOverview, usePlayerProgress } from '@/api/dashboardApi'
-import { User, Trophy, Calendar, TrendingUp, Target, Activity, Clock } from 'lucide-react'
+import { User, Trophy, Calendar, TrendingUp, Target, Activity, Clock, Radar } from 'lucide-react'
+import UniversityPageHeader from '@/components/common/UniversityPageHeader'
+import PlayerRadarChartContainer from '@/components/charts/PlayerRadarChart/PlayerRadarChartContainer'
+import { useSelector } from 'react-redux'
 
 const PlayerDashboard = () => {
   const { data: overview, isLoading: overviewLoading, error: overviewError } = usePlayerOverview()
   const { data: progress, isLoading: progressLoading, error: progressError } = usePlayerProgress()
+  const { user } = useSelector((state) => state.auth)
 
   if (overviewLoading || progressLoading) {
     return <DashboardSkeleton />
@@ -16,12 +20,14 @@ const PlayerDashboard = () => {
 
   if (overviewError || progressError) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">Error Loading Dashboard</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {overviewError?.message || progressError?.message || 'Failed to load dashboard data'}
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className="p-4 md:p-6">
+          <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
+            <h3 className="text-destructive font-semibold">Error Loading Dashboard</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {overviewError?.message || progressError?.message || 'Failed to load dashboard data'}
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -30,16 +36,17 @@ const PlayerDashboard = () => {
   const playerInfo = overview?.player_info
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Player Dashboard</h1>
-        <p className="text-muted-foreground">
-          Track your performance and upcoming activities
-        </p>
-      </div>
-
-      {/* Player Info Card */}
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className="p-4 md:p-6 space-y-8">
+        {/* Header */}
+        <UniversityPageHeader
+          title={`Welcome ${user?.first_name || 'Player'}!`}
+          subtitle="Player Portal"
+          description="Track your performance and upcoming activities"
+          showOnlineStatus={true}
+          showUniversityColors={true}
+        />        <div className="animate-in fade-in-50 duration-500 delay-100 space-y-6">
+          {/* Player Info Card */}
       {playerInfo && (
         <Card>
           <CardHeader>
@@ -261,19 +268,21 @@ const PlayerDashboard = () => {
                 <div className="text-sm text-muted-foreground">Goals Achieved</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </CardContent>        </Card>
       )}
+        </div>
+      </div>
     </div>
   )
 }
 
 const DashboardSkeleton = () => (
-  <div className="p-6 space-y-6">
-    <div>
-      <Skeleton className="h-8 w-64 mb-2" />
-      <Skeleton className="h-4 w-96" />
-    </div>
+  <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div className="p-4 md:p-6 space-y-8">
+      <div>
+        <Skeleton className="h-8 w-64 mb-2" />
+        <Skeleton className="h-4 w-96" />
+      </div>
     
     <Card>
       <CardHeader>
@@ -311,12 +320,10 @@ const DashboardSkeleton = () => (
         <CardHeader>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-48" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-32 w-full" />
-        </CardContent>
-      </Card>
+        </CardHeader>        <CardContent>
+          <Skeleton className="h-32 w-full" />        </CardContent>      </Card>
     ))}
+    </div>
   </div>
 )
 

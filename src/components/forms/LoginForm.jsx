@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useLogin } from "@/hooks/useAuth";
-import logo from "@/assets/perpetual_logo.png";
 import { Loader2 } from "lucide-react";
 
 const LoginForm = () => {
@@ -81,7 +80,7 @@ const LoginForm = () => {
           </div>
         </form>
         <div className="bg-primary hidden md:block content-center place-items-center">
-          <img src={logo} alt="Image" />
+          <img src="/perpetual_logo.png" alt="UPHSD LOGO" />
         </div>
       </CardContent>
     </Card>

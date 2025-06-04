@@ -81,7 +81,8 @@ const AttendanceAnalyticsDashboard = () => {
   };
 
   // Tanstack Query hooks
-  const { data: teams = [], isLoading: teamsLoading } = useTeams();
+  const { data: teamsResponse = {}, isLoading: teamsLoading } = useTeams();
+  const teams = teamsResponse.results || [];
   const {
     data: overviewData,
     isLoading: overviewLoading,

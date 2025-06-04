@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "@/pages/auth/LoginPage";
 import { RoleRoutes } from "./RoleRoutes";
 import PageNotFound from "@/pages/PageNotFound";
-import Layout from "@/layout/sidebar-provider";
+import NavbarProvider from "@/layout/navbar-provider";
 
 
 export const router = createBrowserRouter([
@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    element: <Layout />,
+    element: <NavbarProvider />,
     children: [
       {
         path: "/*",

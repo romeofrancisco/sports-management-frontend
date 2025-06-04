@@ -22,6 +22,12 @@ const TrainingSessionForm = ({
   onClose,
 }) => {
   const isEdit = Boolean(session);
+  // Ensure teams is always an array to prevent "find is not a function" errors
+  const safeTeams = Array.isArray(teams) ? teams : teams?.results || [];
+  // Ensure coaches is always an array to prevent "find is not a function" errors  
+  const safeCoaches = Array.isArray(coaches) ? coaches : coaches?.results || [];
+  // Ensure categories is always an array to prevent "find is not a function" errors
+  const safeCategories = Array.isArray(categories) ? categories : categories?.results || [];
   const { mutate: createSession, isPending: isCreating } =
     useCreateTrainingSession();
   const { mutate: updateSession, isPending: isUpdating } =
@@ -50,16 +56,15 @@ const TrainingSessionForm = ({
     },
   });
 
-  const selectedTeamId = watch("team");
-  // Find the selected team's slug
+  const selectedTeamId = watch("team");  // Find the selected team's slug
   const selectedTeamObj = React.useMemo(
     () =>
-      teams?.find(
+      safeTeams?.find(
         (t) =>
           t.id === selectedTeamId ||
           t.id?.toString() === selectedTeamId?.toString()
       ),
-    [teams, selectedTeamId]
+    [safeTeams, selectedTeamId]
   );
 
 
@@ -167,44 +172,38 @@ const TrainingSessionForm = ({
         rules={{ required: "Training type is required" }}
       />
 
-      {trainingType === "team" && (
-        <ControlledCombobox
+      {trainingType === "team" && (        <ControlledCombobox
           control={control}
           name="team"
           label="Team"
           placeholder="Select team"
-          options={teams}
+          options={safeTeams}
           valueKey="id"
           labelKey="name"
         />
-      )}
-
-      <ControlledCombobox
+      )}      <ControlledCombobox
         control={control}
         name="coach"
         label="Coach"
         placeholder="Select coach"
-        options={coaches}
+        options={safeCoaches}
         rules={{ required: "Coach is required" }}
         valueKey="id"
         labelKey="full_name"
-      />
-
-      <ControlledMultiSelect
+      />      <ControlledMultiSelect
         control={control}
         name="categories"
         label="Training Categories"
         placeholder="Select training categories"
-        options={categories}
+        options={safeCategories}
         rules={{ required: "At least one category is required" }}
       />
 
       {selectedCategories.length > 0 && (
         <div>
           <div className="text-sm font-medium mb-2">Selected Categories:</div>
-          <div className="flex flex-wrap gap-2">
-            {selectedCategories.map((catId) => {
-              const category = categories.find((c) => c.id === catId);
+          <div className="flex flex-wrap gap-2">          {selectedCategories.map((catId) => {
+              const category = safeCategories.find((c) => c.id === catId);
               if (!category) return null;
               return (
                 <Badge key={catId} style={{ backgroundColor: "#007bff" }}>

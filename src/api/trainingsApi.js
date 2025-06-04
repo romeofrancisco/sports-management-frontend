@@ -132,6 +132,12 @@ export const addPlayersToSession = async ({ id, ...requestData }) =>
 export const fetchSessionAnalytics = async (id) => 
   handleApiCall(() => api.get(`trainings/sessions/${id}/analytics/`));
 
+export const startTrainingSession = async (id) => 
+  handleApiCall(() => api.post(`trainings/sessions/${id}/start_training/`));
+
+export const endTrainingSession = async (id) => 
+  handleApiCall(() => api.post(`trainings/sessions/${id}/end_training/`));
+
 // Player Trainings
 export const fetchPlayerTrainings = async (params = {}) => {
   try {
@@ -326,4 +332,22 @@ export const bulkUpdateAttendance = async ({ sessionId, playerRecords }) => {
     console.error("Bulk update error:", error.response?.data || error);
     throw error;
   }
+};
+
+// Player Radar Chart API
+export const getPlayerRadarChartData = async (playerId, dateRange = {}) => {
+  const params = {
+    player_id: playerId,
+    // Format dates to YYYY-MM-DD format that backend expects
+    ...(dateRange.from && { 
+      date_from: new Date(dateRange.from).toISOString().split('T')[0] 
+    }),
+    ...(dateRange.to && { 
+      date_to: new Date(dateRange.to).toISOString().split('T')[0] 
+    })
+  };
+
+  return handleApiCall(() => 
+    api.get('trainings/player-progress/player_radar_chart/', { params })
+  );
 };

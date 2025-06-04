@@ -40,96 +40,75 @@ const safeRender = (content, fallback = "No data available") => {
   return fallback;
 };
 
-// Enhanced formatting function for structured content
+// Simple and effective formatting function for AI content
 const formatContent = (content, isModal = false) => {
   if (!content) return "";
 
-  let formatted = content;
+  let formatted = content.trim();
+  const spacing = isModal ? "10px" : "8px";
 
-  // Check for numbered lists pattern: "1. text 2. text 3. text"
-  const numberedPattern = /(\d+)\.\s+([^0-9]*?)(?=\s+\d+\.\s+|$)/g;
-  const hasNumberedList = numberedPattern.test(content);
-
-  if (hasNumberedList) {
-    // Reset regex for actual processing
-    const regex = /(\d+)\.\s+([^0-9]*?)(?=\s+\d+\.\s+|$)/g;
-    const items = [];
-    let match;    while ((match = regex.exec(content)) !== null) {
-      const [, number, text] = match;
-      const cleanText = text.trim().replace(/^\s+/g, '');
-      const spacing = isModal ? "8px" : "6px";      items.push(`
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: ${spacing}; width: 100%;">          <div style="
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: #8B1538;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 0.5;
-            margin-top: 0;
-            min-width: 24px;
-            box-sizing: border-box;
-            padding: 0;
-          ">
-            ${number}
-          </div>          <div style="
-            flex: 1;
-            font-size: 14px;
-            line-height: 1.5;
-            color: hsl(var(--foreground));
-            margin: 0;
-            padding: 0;
-            text-indent: 0;
-            padding-left: 0;
-            margin-left: 0;
-            text-align: left;
-          ">
-            ${cleanText}
-          </div>
+  // Handle bullet points that might be on same line or multiple lines
+  // This handles the main issue: "• item1 • item2 • item3" or "• item1\n• item2\n• item3"
+  if (formatted.includes('•')) {
+    // First, replace any inline bullet points with newlines
+    formatted = formatted.replace(/•\s*/g, '\n• ');
+    
+    // Split by newlines and filter out empty lines
+    const lines = formatted.split(/\r?\n/).filter(line => line.trim());
+    const bulletItems = [];
+    
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('•')) {
+        // Extract text after bullet point
+        const item = trimmed.substring(1).trim();
+        if (item) {
+          bulletItems.push(item);
+        }
+      } else if (trimmed && !trimmed.startsWith('•')) {
+        // Handle lines that don't start with bullet but contain content
+        bulletItems.push(trimmed);
+      }
+    });
+    
+    if (bulletItems.length > 0) {
+      const bulletHTML = bulletItems.map(item => `
+        <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: ${spacing}; line-height: 1.5;">
+          <span style="color: #8B1538; font-weight: bold; margin-top: 2px; flex-shrink: 0;">•</span>
+          <span style="color: hsl(var(--foreground));">${item}</span>
         </div>
-      `);
-    }    if (items.length > 0) {
-      formatted = `<div style="display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; text-indent: 0;">${items.join(
-        ""
-      )}</div>`;
+      `).join('');
+      
+      return `<div style="margin: 0; padding: 0;">${bulletHTML}</div>`;
     }
-  } else {
-    // Handle regular formatting for non-numbered content
-    formatted = content
-      // Handle bullet points
-      .replace(
-        /^[-•]\s+(.+)$/gm,
-        '<div style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px;"><div style="flex-shrink: 0; margin-top: 8px; color: #8B1538; font-weight: bold;">•</div><div style="flex: 1; color: hsl(var(--foreground));">$1</div></div>'
-      )
-      // Handle line breaks
-      .replace(/\n\n/g, '</div><div style="margin-bottom: 12px;">')
-      .replace(/\n/g, "<br>");
-  }
-  // Handle text formatting
-  formatted = formatted
-    .replace(
-      /\*\*(.*?)\*\*/g,
-      '<strong style="font-weight: 600; color: hsl(var(--foreground));">$1</strong>'
-    )
-    .replace(
-      /\*(.*?)\*/g,
-      '<em style="font-style: italic; color: hsl(var(--muted-foreground));">$1</em>'
-    );
-  // Ensure proper container wrapping
-  if (
-    !formatted.includes("<div style=") &&
-    !formatted.includes("<div class=")
-  ) {
-    formatted = `<div style="color: hsl(var(--foreground)); line-height: 1.6;">${formatted}</div>`;
   }
 
-  return formatted;
+  // Handle numbered lists and convert them to bullet points
+  const numberedPattern = /(\d+)\.\s*([^\d]+?)(?=\s*\d+\.\s*|$)/g;
+  const matches = [...formatted.matchAll(numberedPattern)];
+  
+  if (matches.length > 0) {
+    const items = matches.map(match => match[2].trim()).filter(item => item);
+    
+    if (items.length > 0) {
+      const bulletHTML = items.map(item => `
+        <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: ${spacing}; line-height: 1.5;">
+          <span style="color: #8B1538; font-weight: bold; margin-top: 2px; flex-shrink: 0;">•</span>
+          <span style="color: hsl(var(--foreground));">${item}</span>
+        </div>
+      `).join('');
+      
+      return `<div style="margin: 0; padding: 0;">${bulletHTML}</div>`;
+    }
+  }
+
+  // Handle regular text formatting
+  formatted = formatted
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 600;">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em style="font-style: italic;">$1</em>')
+    .replace(/\n/g, '<br>');
+
+  return `<div style="color: hsl(var(--foreground)); line-height: 1.6;">${formatted}</div>`;
 };
 
 const AIAnalysisSection = ({ insights }) => {
@@ -193,6 +172,7 @@ const AIAnalysisSection = ({ insights }) => {
   if (!insights?.ai_insights?.ai_analysis) {
     return null;
   }
+
   return (
     <Card className="border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
       <CardHeader>
@@ -212,10 +192,10 @@ const AIAnalysisSection = ({ insights }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {" "}
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           {Object.entries(insights.ai_insights.ai_analysis).map(
-            ([key, value], index) => {              const isExpanded = expandedCards.has(key);
+            ([key, value], index) => {
+              const isExpanded = expandedCards.has(key);
               const content = safeRender(value, "AI analysis in progress...");
               const isVeryLong = content.length > 500; // Threshold for showing modal option
               const isTruncated = truncatedCards.has(key);
@@ -227,7 +207,6 @@ const AIAnalysisSection = ({ insights }) => {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    {" "}
                     <h4 className="font-semibold text-primary flex items-center gap-2 text-sm xl:text-base">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       {key.replace(/_/g, " ")}
@@ -235,7 +214,6 @@ const AIAnalysisSection = ({ insights }) => {
                     {isVeryLong && (
                       <Dialog>
                         <DialogTrigger asChild>
-                          {" "}
                           <Button
                             variant="ghost"
                             size="sm"
@@ -245,7 +223,6 @@ const AIAnalysisSection = ({ insights }) => {
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                          {" "}
                           <DialogHeader>
                             <DialogTitle className="flex items-center gap-2">
                               <Brain className="h-5 w-5 text-primary" />
@@ -257,7 +234,6 @@ const AIAnalysisSection = ({ insights }) => {
                           </DialogHeader>
                           <div className="mt-4">
                             <div className="flex justify-between items-center mb-4">
-                              {" "}
                               <Badge
                                 variant="outline"
                                 className="bg-primary/10 text-primary border-primary/30"
@@ -284,7 +260,7 @@ const AIAnalysisSection = ({ insights }) => {
                                   </>
                                 )}
                               </Button>
-                            </div>{" "}
+                            </div>
                             <div className="prose prose-sm max-w-none">
                               <div
                                 className="leading-relaxed"
@@ -298,7 +274,8 @@ const AIAnalysisSection = ({ insights }) => {
                         </DialogContent>
                       </Dialog>
                     )}
-                  </div>{" "}                  <div
+                  </div>
+                  <div
                     ref={el => contentRefs.current[key] = el}
                     className={`text-xs xl:text-sm leading-relaxed transition-all duration-300 ${
                       isExpanded ? "" : "line-clamp-3"
@@ -313,7 +290,6 @@ const AIAnalysisSection = ({ insights }) => {
                   </div>
                   {(isTruncated || isExpanded) && (
                     <div className="flex items-center justify-between mt-2">
-                      {" "}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -357,7 +333,7 @@ const AIAnalysisSection = ({ insights }) => {
               );
             }
           )}
-        </div>{" "}
+        </div>
         {insights.ai_insights.fallback_used && (
           <div className="mt-4 p-3 bg-secondary/10 border border-secondary/30 rounded-lg">
             <p className="text-sm text-secondary-foreground">

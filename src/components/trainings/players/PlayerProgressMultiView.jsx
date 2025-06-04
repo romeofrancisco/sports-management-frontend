@@ -17,10 +17,11 @@ const PlayerProgressMultiView = ({
   players = [],
   teamSlug = null,
   dateRange = null,
+  dateRangeParams = null,
   onDateChange,
 }) => {
   const [selectedMetric, setSelectedMetric] = useState("overall");
-  
+
   // Use our custom hook to get all chart data and related info
   const {
     metrics,
@@ -34,19 +35,21 @@ const PlayerProgressMultiView = ({
     players,
     teamSlug,
     selectedMetric,
-    dateRange,
-  });
-  // Enhanced No data message
+    dateRange: dateRange || dateRangeParams,
+  });// Enhanced No data message
   if (!isLoading && !metricsLoading && (!metrics || metrics.length === 0)) {
     return (
-      <Card className="w-full border-0 bg-gradient-to-br from-muted/30 to-muted/10">
+      <Card className="w-full border-0 bg-gradient-to-br from-muted/20 to-muted/5 shadow-lg">
         <CardHeader className="text-center pb-8">
-          <div className="mx-auto w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mb-4">
-            <BarChart3 className="h-8 w-8 text-muted-foreground" />
+          <div className="mx-auto w-20 h-20 bg-muted/30 rounded-full flex items-center justify-center mb-6">
+            <BarChart3 className="h-10 w-10 text-muted-foreground" />
           </div>
-          <CardTitle className="text-xl">No Metrics Available</CardTitle>
-          <CardDescription className="text-base">
-            No performance metrics have been defined yet. Set up training metrics to start comparing player progress.
+          <CardTitle className="text-2xl font-bold text-foreground mb-2">
+            No Metrics Available
+          </CardTitle>
+          <CardDescription className="text-base max-w-md mx-auto">
+            No performance metrics have been defined yet. Set up training
+            metrics to start comparing player progress across your team.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -54,68 +57,95 @@ const PlayerProgressMultiView = ({
   }
 
   // Enhanced No players selected message
-  if (!isLoading && multiPlayerData && 
-      (!multiPlayerData.results || Object.keys(multiPlayerData.results).length === 0) && !teamSlug) {
+  if (
+    !isLoading &&
+    multiPlayerData &&
+    (!multiPlayerData.results ||
+      Object.keys(multiPlayerData.results).length === 0) &&
+    !teamSlug
+  ) {
     return (
-      <Card className="w-full border-0 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <Card className="w-full border-0 bg-gradient-to-br from-primary/8 to-secondary/8 shadow-lg">
         <CardHeader className="text-center pb-8">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <Users className="h-8 w-8 text-primary" />
+          <div className="mx-auto w-20 h-20 bg-primary/15 rounded-full flex items-center justify-center mb-6 ring-4 ring-primary/10">
+            <Users className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-xl">Ready to Compare Players</CardTitle>
-          <CardDescription className="text-base">
-            Select multiple players from the list above to compare their performance and progress over time.
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+            Ready to Compare Players
+          </CardTitle>
+          <CardDescription className="text-base max-w-md mx-auto mb-6">
+            Select multiple players from the list above to compare their
+            performance and progress over time.
           </CardDescription>
-          <div className="mt-4">
-            <Badge variant="outline" className="bg-primary/5 border-primary/20">
-              <Activity className="h-3 w-3 mr-1" />
+          <div className="flex justify-center">
+            <Badge
+              variant="outline"
+              className="bg-primary/10 border-primary/30 text-primary px-4 py-2 text-sm"
+            >
+              <Activity className="h-4 w-4 mr-2" />
               Choose 2+ players to begin
             </Badge>
           </div>
         </CardHeader>
       </Card>
-    );
-  }  return (
-    <div className="space-y-6">
-      {/* Control Header */}
-      <Card className="w-full border-0 bg-gradient-to-r from-primary/5 via-secondary/10 to-primary/5 shadow-lg overflow-hidden">
-        <CardHeader className="pb-4">
-          <MultiChartHeader 
-            metrics={metrics}
-            selectedMetric={selectedMetric}
-            setSelectedMetric={setSelectedMetric}
-            dateRange={dateRange}
-            onDateChange={onDateChange}
-          />
-        </CardHeader>
-      </Card>
-
-      {/* Main Content Section */}
-      <Card className="w-full border-0 shadow-lg bg-gradient-to-br from-background to-muted/10 overflow-hidden">
-        <CardContent className="p-6">
+    );  }
+  return (
+    <Card className="border shadow-sm overflow-hidden card-hover-effect">
+      <CardHeader className="bg-muted/30 pb-3 border-b">
+        <div className="flex items-baseline justify-between">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary/70" />
+            Team Comparison
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <CardDescription>
+              Compare performance metrics across multiple players
+            </CardDescription>
+            {players.length > 0 && (
+              <Badge variant="outline" className="bg-primary/10">
+                {players.length} Players
+              </Badge>
+            )}
+          </div>
+        </div>
+        <MultiChartHeader
+          metrics={metrics}
+          selectedMetric={selectedMetric}
+          setSelectedMetric={setSelectedMetric}
+          dateRange={dateRange}
+          onDateChange={onDateChange}
+        />
+      </CardHeader>
+      <CardContent className="p-6">
           {isLoading ? (
-            <div className="h-[400px] flex flex-col items-center justify-center space-y-4">
-              <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-              <div className="text-center">
-                <p className="text-lg font-medium">Loading player data...</p>
-                <p className="text-sm text-muted-foreground">Analyzing performance metrics</p>
+            <div className="h-[500px] flex flex-col items-center justify-center space-y-6">
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-secondary/30 rounded-full animate-pulse"></div>
               </div>
-            </div>
-          ) : (
+              <div className="text-center space-y-2">
+                <p className="text-xl font-semibold text-foreground">
+                  Loading player data...
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Analyzing performance metrics and generating insights
+                </p>
+              </div>
+            </div>          ) : (
             <div className="space-y-8">
               {/* Chart Section */}
-              <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                <PlayerProgressMultiChart 
+              <div className="bg-gradient-to-br from-card/50 to-muted/20 rounded-lg p-6">
+                <PlayerProgressMultiChart
                   chartData={chartData}
                   playerColors={playerColors}
                   multiPlayerData={multiPlayerData}
                   selectedMetricDetails={selectedMetricDetails}
                 />
               </div>
-              
+
               {/* Improvements Section */}
               {chartData.length > 0 && (
-                <div className="bg-gradient-to-br from-muted/30 to-background rounded-lg p-4 border border-border/30">
+                <div className="bg-gradient-to-br from-secondary/5 to-background rounded-lg p-6">
                   <PlayerImprovements
                     multiPlayerData={multiPlayerData}
                     selectedMetric={selectedMetric}
@@ -126,10 +156,8 @@ const PlayerProgressMultiView = ({
                 </div>
               )}
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          )}</CardContent>
+    </Card>
   );
 };
 

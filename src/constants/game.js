@@ -6,13 +6,13 @@ export const GAME_STATUS = [
 ];
 
 export const GAME_TYPES = [
-  { value: "normal", label: "Normal Game" },
+  { value: "practice", label: "Practice Game" },
   { value: "league", label: "League" },
   { value: "tournament", label: "Tournament" },
 ];
 
 export const GAME_TYPE_VALUES = {
-  NORMAL: "normal",
+  PRACTICE: "practice",
   LEAGUE: "league",
   TOURNAMENT: "tournament"
 };

@@ -6,9 +6,8 @@ import { getDivisionLabel } from "@/constants/team";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Trophy, Target, User } from "lucide-react";
 
-const TeamCard = ({ team, onView, onEdit, onDelete }) => {
-  // Get team color for styling
-  const teamColor = team.color || "#3B82F6";
+const TeamCard = ({ team, onView, onEdit, onDelete }) => {  // Get team color for styling
+  const teamColor = team.color;
   
   // Check if team has a coach
   const hasCoach = team.coach_name || team.coach?.full_name;

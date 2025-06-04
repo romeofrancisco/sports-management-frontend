@@ -9,6 +9,12 @@ import {
   fetchTeamsInSeason,
   fetchTeamCoaches,
   fetchTeamPlayers,
+  fetchTeamAnalytics,
+  fetchTeamPerformance,
+  fetchTeamGames,
+  fetchAllTeamGames,
+  fetchTeamTrainingSessions,
+  fetchTeamStatistics,
 } from "@/api/teamsApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -107,5 +113,53 @@ export const useTeamPlayers = (teamSlug, options = {}) => {
     queryFn: () => fetchTeamPlayers(teamSlug),
     enabled: !!teamSlug && options?.enabled !== false,
     ...options,
+  });
+};
+
+export const useTeamAnalytics = (teamSlug, days = 30) => {
+  return useQuery({
+    queryKey: ["team-analytics", teamSlug, days],
+    queryFn: () => fetchTeamAnalytics(teamSlug, days),
+    enabled: !!teamSlug, // 5 minutes
+  });
+};
+
+export const useTeamPerformance = (teamSlug, season = null) => {
+  return useQuery({
+    queryKey: ["team-performance", teamSlug, season],
+    queryFn: () => fetchTeamPerformance(teamSlug, season),
+    enabled: !!teamSlug, // 10 minutes
+  });
+};
+
+export const useTeamGames = (teamSlug, params = {}) => {
+  return useQuery({
+    queryKey: ["team-games", teamSlug, params],
+    queryFn: () => fetchTeamGames(teamSlug, params),
+    enabled: !!teamSlug,
+  });
+};
+
+export const useAllTeamGames = (teamSlug) => {
+  return useQuery({
+    queryKey: ["all-team-games", teamSlug],
+    queryFn: () => fetchAllTeamGames(teamSlug),
+    enabled: !!teamSlug,
+  });
+};
+
+export const useTeamTrainingSessions = (teamSlug, params = {}) => {
+  return useQuery({
+    queryKey: ["team-training-sessions", teamSlug, params],
+    queryFn: () => fetchTeamTrainingSessions(teamSlug, params),
+    enabled: !!teamSlug,
+  });
+};
+
+export const useTeamStatistics = (teamSlug, period = "season") => {
+  return useQuery({
+    queryKey: ["team-statistics", teamSlug, period],
+    queryFn: () => fetchTeamStatistics(teamSlug, period),
+    enabled: !!teamSlug,
   });
 };
