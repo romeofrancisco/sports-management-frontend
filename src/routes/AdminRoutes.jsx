@@ -73,7 +73,34 @@ export const adminRoutes = [
     element: <LeagueDetails />,
   },
   {
-    path: "/leagues/:league/season/:season",
+    path: "/leagues/:league/leaderboard",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/teams",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons",
+    element: <LeagueDetails />,
+  },  {
+    path: "/leagues/:league/seasons/:season",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/standings",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/games",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/teams",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
   },
   {
@@ -91,14 +118,16 @@ export const adminRoutes = [
   {
     path: "/games/:gameId/game-result",
     element: <GameResult />,
-  },  {
+  },
+  {
     path: "/trainings",
     element: <TrainingDashboard />,
   },
   {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
-  },  {
+  },
+  {
     path: "/trainings/progress",
     element: <PlayerProgressPage />,
   },

@@ -7,15 +7,12 @@
  * @param {Array} teamPerformance - Raw team performance data
  * @returns {Array} - Sanitized team performance data
  */
-export const sanitizeTeamPerformance = (teamPerformance) => {
-  return teamPerformance?.map(team => ({
+export const sanitizeTeamPerformance = (teamPerformance) => {  return teamPerformance?.map(team => ({
     ...team,
     team_name: team.team_name || 'Unknown Team',
     avg_points_scored: typeof team.avg_points_scored === 'number' ? team.avg_points_scored : 0,
     avg_points_conceded: typeof team.avg_points_conceded === 'number' ? team.avg_points_conceded : 0,
     max_streak: typeof team.max_streak === 'number' ? team.max_streak : 0,
-    first_half_wins: typeof team.first_half_wins === 'number' ? team.first_half_wins : 0,
-    second_half_wins: typeof team.second_half_wins === 'number' ? team.second_half_wins : 0,
     total_games: typeof team.total_games === 'number' ? team.total_games : 0
   })) || [];
 };
@@ -104,57 +101,6 @@ export const getPointsData = (sanitizedPerformance, isSetsScoring) => {
       ]
     };
   }
-};
-
-/**
- * Processes team performance data for wins chart
- * @param {Array} sanitizedPerformance - Sanitized team performance data
- * @param {Boolean} isSetsScoring - Whether the sport uses sets scoring
- * @returns {Object} - Chart data structure for wins chart
- */
-export const getWinsData = (sanitizedPerformance, isSetsScoring) => {
-  if (!sanitizedPerformance || sanitizedPerformance.length === 0) return { labels: [], datasets: [] };
-  
-  // Filter teams that have played games
-  const teamsWithGames = sanitizedPerformance.filter(
-    team => team.total_games > 0
-  );
-  if (teamsWithGames.length === 0) return { labels: [], datasets: [] };
-  
-  const topTeams = [...teamsWithGames]
-    .sort((a, b) => {
-      const aTotalWins = (a.first_half_wins || 0) + (a.second_half_wins || 0);
-      const bTotalWins = (b.first_half_wins || 0) + (b.second_half_wins || 0);
-      return bTotalWins - aTotalWins;
-    })
-    .slice(0, 5);
-  
-  // Ensure data is present even if values are 0
-  const preparedData = topTeams.map(team => ({
-    team_name: team.team_name,
-    first_half_wins: team.first_half_wins || 0,
-    second_half_wins: team.second_half_wins || 0
-  }));
-    
-  return {
-    labels: preparedData.map(team => team.team_name),
-    datasets: [
-      {
-        label: isSetsScoring ? 'First Half Sets Won' : 'First Half Wins',
-        data: preparedData.map(team => team.first_half_wins),
-        backgroundColor: 'rgba(255, 206, 86, 0.5)',
-        borderColor: 'rgba(255, 206, 86, 1)',
-        borderWidth: 1
-      },
-      {
-        label: isSetsScoring ? 'Second Half Sets Won' : 'Second Half Wins',
-        data: preparedData.map(team => team.second_half_wins),
-        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-        borderColor: 'rgba(153, 102, 255, 1)',
-        borderWidth: 1
-      }
-    ]
-  };
 };
 
 /**
@@ -365,15 +311,12 @@ export const getStatsSummary = (sanitizedPerformance, isSetsScoring) => {
           name: team.team_name, 
           value: maxStreak
         };
-      }
-
-      // Calculate win rate
-      const totalWins = (team.first_half_wins || 0) + (team.second_half_wins || 0);
-      const winRate = gameCount > 0 ? totalWins / gameCount : 0;
-      if (winRate > bestWinRate.value) {
+      }      // Calculate win rate based on existing win percentage if available
+      const winPercentage = team.win_percentage || 0;
+      if (winPercentage > bestWinRate.value) {
         bestWinRate = {
           name: team.team_name,
-          value: parseFloat((winRate * 100).toFixed(1))
+          value: parseFloat(winPercentage.toFixed(1))
         };
       }
     }

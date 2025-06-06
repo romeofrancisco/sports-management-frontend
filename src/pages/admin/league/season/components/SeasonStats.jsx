@@ -17,7 +17,6 @@ import { SeasonCharts } from "./SeasonCharts";
 import {
   sanitizeTeamPerformance,
   getPointsData,
-  getWinsData,
   getStreakData,
   getDifferentialData,
   getStatsSummary
@@ -39,13 +38,12 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
   const { isSetsScoring, isLoading: isSportLoading } = useSportScoringType(sport);
   
   if (isLoading || isSportLoading) return <Loading />;
-
   // Sanitize team performance data
   const sanitizedPerformance = sanitizeTeamPerformance(teamPerformance);
+
   // Prepare all the data using the utility functions
   const statsSummary = getStatsSummary(sanitizedPerformance, isSetsScoring);
   const pointsData = getPointsData(sanitizedPerformance, isSetsScoring);
-  const winsData = getWinsData(sanitizedPerformance, isSetsScoring);
   const streakData = getStreakData(sanitizedPerformance, isSetsScoring);
   const differentialData = getDifferentialData(sanitizedPerformance, isSetsScoring);
 
@@ -55,8 +53,7 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-4">Season Statistics</h2>
       
-      {/* Stats Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      {/* Stats Cards Section */}      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {isSetsScoring ? (
           <SetsBasedStatsCards statsSummary={statsSummary} />
         ) : (
@@ -67,7 +64,6 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
       {/* Charts Section */}
       <SeasonCharts 
         pointsData={pointsData}
-        winsData={winsData}
         streakData={streakData}
         differentialData={differentialData}
         isSetsScoring={isSetsScoring}

@@ -22,7 +22,7 @@ import { useCreateBracket } from "@/hooks/useBrackets";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
-const GenerateBracketModal = ({ isOpen, onClose, season, league, setActiveTab }) => {
+const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
   const { mutate: createBracket, isPending } = useCreateBracket(league, season);
   const {
     control,
@@ -41,11 +41,9 @@ const GenerateBracketModal = ({ isOpen, onClose, season, league, setActiveTab })
   const onSubmit = (data) => {
     createBracket(data, {
       onSuccess: () => {
-        if (setActiveTab) {
-          // Set the active tab to "bracket" and close the modal
-          setActiveTab("bracket");
-          onClose();
-        }
+        // Navigate to the bracket page and close the modal
+        navigate(`/leagues/${league}/seasons/${season}/bracket`);
+        onClose();
       },
       onError: () => {},
     });

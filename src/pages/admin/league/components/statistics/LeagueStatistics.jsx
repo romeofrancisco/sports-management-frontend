@@ -25,7 +25,6 @@ import LeagueStatCards from "./LeagueStatCards";
 // Import chart components and utilities
 import { 
   PointsChart,
-  WinsChart,
   StreakChart, 
   DifferentialChart
 } from '@/components/charts/SeasonCharts';
@@ -33,13 +32,12 @@ import {
 import {
   sanitizeTeamPerformance,
   getPointsData,
-  getWinsData,
   getStreakData,
   getDifferentialData,
   getStatsSummary
 } from '@/components/charts/SeasonCharts/utils';
 
-import LeagueComprehensiveStats from "./LeagueComprehensiveStats";
+import LeagueCharts from "./charts/LeagueCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Register ChartJS components
@@ -65,11 +63,9 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
 
   // Sanitize team performance data
   const sanitizedPerformance = sanitizeTeamPerformance(teamPerformance);
-
   // Prepare data for charts using utility functions
   const statsSummary = getStatsSummary(sanitizedPerformance, isSetsScoring);
   const pointsData = getPointsData(sanitizedPerformance, isSetsScoring);
-  const winsData = getWinsData(sanitizedPerformance, isSetsScoring);
   const streakData = getStreakData(sanitizedPerformance, isSetsScoring);
   const differentialData = getDifferentialData(sanitizedPerformance, isSetsScoring);
 
@@ -83,7 +79,7 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
       </TabsList>
 
       <TabsContent value="league">
-        <LeagueComprehensiveStats leagueId={leagueId} sport={sport} />
+        <LeagueCharts leagueId={leagueId} sport={sport} />
       </TabsContent>
 
       <TabsContent value="season">
@@ -114,17 +110,14 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
               statsSummary={statsSummary} 
               isSetsScoring={isSetsScoring} 
             />
-          </div>
-
-          {/* Charts - first row */}
+          </div>          {/* Charts - updated layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             <PointsChart data={pointsData} isSetsScoring={isSetsScoring} />
-            <WinsChart data={winsData} isSetsScoring={isSetsScoring} />
+            <StreakChart data={streakData} isSetsScoring={isSetsScoring} />
           </div>
 
           {/* Charts - second row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <StreakChart data={streakData} isSetsScoring={isSetsScoring} />
+          <div className="grid grid-cols-1 gap-4">
             <DifferentialChart data={differentialData} isSetsScoring={isSetsScoring} />
           </div>
         </Card>

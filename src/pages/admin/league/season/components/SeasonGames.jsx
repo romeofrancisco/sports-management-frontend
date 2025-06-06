@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSeasonGames } from "@/hooks/useSeasons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ContentLoading from "@/components/common/ContentLoading";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
-import { format, isSameDay, parseISO, isToday } from "date-fns";
+import { format, isSameDay, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, ArrowRightIcon, TrophyIcon } from "lucide-react";
+import { CalendarIcon, TrophyIcon } from "lucide-react";
 
 export const SeasonGames = ({ seasonId, leagueId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -114,7 +114,6 @@ const GameRow = ({ game }) => {
     const date = new Date(dateString);
     return format(date, "MMM d, yyyy");
   };
-
   // Get sport information
   const sportName = game.sport_slug
     ? game.sport_slug.charAt(0).toUpperCase() + game.sport_slug.slice(1)
