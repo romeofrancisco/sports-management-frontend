@@ -73,6 +73,18 @@ export const adminRoutes = [
     element: <LeagueDetails />,
   },
   {
+    path: "/leagues/:league/leaderboard",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/teams",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons",
+    element: <LeagueDetails />,
+  },
+  {
     path: "/leagues/:league/season/:season",
     element: <SeasonDetails />,
   },
@@ -91,14 +103,16 @@ export const adminRoutes = [
   {
     path: "/games/:gameId/game-result",
     element: <GameResult />,
-  },  {
+  },
+  {
     path: "/trainings",
     element: <TrainingDashboard />,
   },
   {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
-  },  {
+  },
+  {
     path: "/trainings/progress",
     element: <PlayerProgressPage />,
   },

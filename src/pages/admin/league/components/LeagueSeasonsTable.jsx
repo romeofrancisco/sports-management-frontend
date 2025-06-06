@@ -26,6 +26,7 @@ import SeasonModal from "@/components/modals/SeasonModal";
 import { Badge } from "@/components/ui/badge";
 import { useParams } from "react-router";
 import TablePagination from "@/components/ui/table-pagination";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) => {
   const { league } = useParams();
@@ -187,44 +188,64 @@ const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) 
       size: 40,
     },
   ];
-
   return (
-    <div >
-      <div className="flex justify-between items-center mb-4 border-b pb-3">
-        <h2 className="text-xl font-bold flex items-center gap-2">Seasons</h2>
-        {!compact && (
-          <Button
-            onClick={() => handleSeason()}
-            variant="default"
-            size="sm"
-            className="gap-1"
-          >
-            <Plus size={16} />
-            New Season
-          </Button>
-        )}
-      </div>
-      <DataTable
-        columns={columns}
-        data={seasons}
-        className="text-sm"
-        alternateRowColors={true}
-        loading={isLoading}
-        showPagination={false} // Disable built-in pagination
-        pageSize={pageSize} // Still pass pageSize for row rendering
-      />
+    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      {/* Enhanced background effects */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
       
-      {showPagination && (
-        <TablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={totalSeasons}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          isLoading={isLoading}
-          itemName="seasons"
+      <CardHeader className="relative">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+              <Calendar className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                Seasons
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Season history and management
+              </p>
+            </div>
+          </div>
+          {!compact && (
+            <Button
+              onClick={() => handleSeason()}
+              variant="default"
+              size="sm"
+              className="gap-1"
+            >
+              <Plus size={16} />
+              New Season
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+
+      <CardContent className="relative p-6">
+        <DataTable
+          columns={columns}
+          data={seasons}
+          className="text-sm"
+          alternateRowColors={true}
+          loading={isLoading}
+          showPagination={false} // Disable built-in pagination
+          pageSize={pageSize} // Still pass pageSize for row rendering
         />
-      )}
+        
+        {showPagination && (
+          <TablePagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={totalSeasons}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            isLoading={isLoading}
+            itemName="seasons"
+          />
+        )}
+      </CardContent>
 
       <DeleteSeasonModal
         isOpen={modals.delete.isOpen}
@@ -241,7 +262,7 @@ const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) 
         season={selectedSeason}
         sport={sport}
       />
-    </div>
+    </Card>
   );
 };
 

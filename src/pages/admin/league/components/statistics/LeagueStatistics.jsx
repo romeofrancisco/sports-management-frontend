@@ -39,7 +39,7 @@ import {
   getStatsSummary
 } from '@/components/charts/SeasonCharts/utils';
 
-import LeagueComprehensiveStats from "./LeagueComprehensiveStats";
+import LeagueCharts from "./charts/LeagueCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Register ChartJS components
@@ -83,7 +83,7 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
       </TabsList>
 
       <TabsContent value="league">
-        <LeagueComprehensiveStats leagueId={leagueId} sport={sport} />
+        <LeagueCharts leagueId={leagueId} sport={sport} />
       </TabsContent>
 
       <TabsContent value="season">

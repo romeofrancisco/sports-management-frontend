@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -28,12 +28,22 @@ import {
 import { Menu, ChevronDown, ChevronRight } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavbarNavUser } from "./navbar-nav-user";
+import { useNavigate } from "react-router-dom";
+import logo from "/perpetual_logo.png";
 
 const AppNavbar = ({ navItems = [] }) => {
   const location = useLocation();
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCollapsibles, setOpenCollapsibles] = useState(new Set());
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const isActive = (href) => {
     if (href === "/") {
@@ -311,7 +321,7 @@ const AppNavbar = ({ navItems = [] }) => {
             to="/"
             className="flex items-center gap-2 transition-all duration-300 hover:scale-105"
           >
-            <img src="perpetual_logo.png" alt="UPHSD LOGO" className="w-7" />
+            <img src={logo} alt="UPHSD" className="w-7" />
             <div className="hidden sm:inline-block">
               <div className="font-bold text-lg bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 Sports Management

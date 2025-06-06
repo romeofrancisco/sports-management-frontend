@@ -1,21 +1,30 @@
-import React, { useState } from "react";
-import LeagueDetailsHeader from "./components/LeagueDetailsHeader";
+import React from "react";
+import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
 import PageError from "@/pages/PageError";
 import Loading from "@/components/common/FullLoading";
-import { useParams } from "react-router";
+import { useParams, Link, useLocation } from "react-router-dom";
 import LeagueSeasonsTable from "./components/LeagueSeasonsTable";
-import LeagueStandings from "./components/LeagueStandings";
+import LeagueStandings from "./components/standings/LeagueStandings";
 import { useSeasons } from "@/hooks/useSeasons";
-import LeagueOverview from "./components/LeagueOverview";
-import LeagueTeamsGrid from "./components/LeagueTeamsGrid";
-import LeagueStatistics from "./components/LeagueStatistics";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LeagueTeamsGrid from "./components/teams/LeagueTeamsGrid";
 import { Card, CardContent } from "@/components/ui/card";
+import { LeagueOverview } from "./components/overview";
+import { cn } from "@/lib/utils";
+import { Trophy, Users, Calendar } from "lucide-react";
 
 const LeagueDetails = () => {
   const { league } = useParams();
-  const {
+  const location = useLocation();
+  // Get current page from URL path
+  const currentPath = location.pathname;  const getCurrentPage = () => {
+    if (currentPath.includes("/teams")) return "teams";
+    if (currentPath.includes("/seasons")) return "seasons";
+    if (currentPath.includes("/leaderboard")) return "leaderboard";
+    return "overview"; // default to overview
+  };
+
+  const currentPage = getCurrentPage();  const {
     data: leagueDetails,
     isLoading: isLeagueLoading,
     isError: isLeagueError,
@@ -30,7 +39,6 @@ const LeagueDetails = () => {
     isLoading: isSeasonsLoading,
     isError: isSeasonsError,
   } = useSeasons(league);
-  const [activeTab, setActiveTab] = useState("overview");
 
   // Extract seasons results from the paginated data
   const seasons = seasonsData?.results || [];
@@ -43,78 +51,97 @@ const LeagueDetails = () => {
   if (isError) return <PageError />;
 
   const { name, sport } = leagueDetails;
-  const activeSeasons = seasons.filter(s => s.status === 'ongoing' || s.status === 'upcoming').slice(0, 3);
-
-  // Handler for changing tabs
-  const handleTabChange = (tabValue) => {
-    setActiveTab(tabValue);
+  // Navigation items for the league details
+  const navigationItems = [
+    {
+      key: "overview",
+      label: "Overview",
+      path: `/leagues/${league}`,
+      description: "League overview and summary",
+      icon: Trophy,
+    },
+    {
+      key: "leaderboard",
+      label: "Leaderboard",
+      path: `/leagues/${league}/leaderboard`,
+      description: "Team standings and rankings",
+      icon: Trophy,
+    },
+    {
+      key: "teams",
+      label: "Teams",
+      path: `/leagues/${league}/teams`,
+      description: "All teams in this league",
+      icon: Users,
+    },
+    {
+      key: "seasons",
+      label: "Seasons",
+      path: `/leagues/${league}/seasons`,
+      description: "Season history and details",
+      icon: Calendar,
+    },
+  ];  // Render content based on current page
+  const renderContent = () => {
+    switch (currentPage) {
+      case "overview":
+        return <LeagueOverview league={league} sport={sport} />;
+      case "leaderboard":
+        return <LeagueStandings rankings={leagueRankings} />;
+      case "teams":
+        return <LeagueTeamsGrid />;
+      case "seasons":
+        return <LeagueSeasonsTable seasons={seasons} sport={sport} />;
+      default:
+        return <LeagueOverview league={league} sport={sport} />;
+    }
   };
-
   return (
-    <div className="container mx-auto px-4 pb-8">
-      <LeagueDetailsHeader name={name} sport={sport} />
+    <div className="md:p-6">
+      <UniversityPageHeader
+        title={name}
+        subtitle={`${sport.name} League`}
+        description="Manage league details, teams, and statistics"
+        showBackButton={true}
+        backButtonText="Back to Leagues"
+        backButtonPath="/leagues"
+      />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-        <TabsList className="mb-4">
-          <TabsTrigger className="text-xs sm:text-sm" value="overview">Overview</TabsTrigger>
-          <TabsTrigger className="text-xs sm:text-sm" value="leaderboard">Leaderboard</TabsTrigger>
-          <TabsTrigger className="text-xs sm:text-sm" value="teams">Teams</TabsTrigger>
-          <TabsTrigger className="text-xs sm:text-sm" value="seasons">Seasons</TabsTrigger>
-          <TabsTrigger className="text-xs sm:text-sm" value="statistics">Statistics</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview">
-          <div className="space-y-8">
-            <LeagueOverview 
-              league={league} 
-              sport={sport} 
-              onTabChange={handleTabChange}
-            />
+      {/* Navigation Links */}
+      <div className="my-4">
+        <nav className="border-b border-border">
+          <div className="flex space-x-3 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.key}
+                  to={item.path}
+                  className={cn(
+                    "group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200",
+                    currentPage === item.key
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  )}
+                >
+                  <IconComponent
+                    className={cn(
+                      "mr-2 h-4 w-4 transition-colors duration-200",
+                      currentPage === item.key
+                        ? "text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    )}
+                  />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
-        </TabsContent>
+        </nav>
+      </div>
 
-        <TabsContent value="leaderboard">
-          <Card className="shadow-sm">
-            <CardContent className="pt-6">
-              <LeagueStandings rankings={leagueRankings} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="teams">
-          <Card className="shadow-sm">
-            <CardContent className="pt-6">
-            <LeagueTeamsGrid teams={leagueRankings} className="md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="seasons">
-          <Card className="shadow-sm">
-            <CardContent className="pt-6">
-              <LeagueSeasonsTable seasons={seasons} sport={sport} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="statistics">
-          {seasons.length > 0 ? (
-            <LeagueStatistics
-              leagueId={league}
-              latestSeasonId={seasons[0]?.id}
-              sport={sport}
-            />
-          ) : (
-            <Card className="shadow-sm">
-              <CardContent className="py-8">
-                <div className="text-center text-muted-foreground">
-                  No seasons available to show statistics
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+      {/* Content */}
+      {renderContent()}
     </div>
   );
 };

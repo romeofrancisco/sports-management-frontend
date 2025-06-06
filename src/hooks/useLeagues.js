@@ -77,7 +77,7 @@ export const useUpdateLeague = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, newLeague }) => updateLeague(id, newLeague),
+    mutationFn: ({ id, data }) => updateLeague(id, data),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["leagues"]);
       queryClient.invalidateQueries(["league-details", variables.id]);
@@ -90,7 +90,7 @@ export const useDeleteLeague = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id) => deleteLeague(id),
+    mutationFn: ({id}) => deleteLeague(id),
     onSuccess: () => {
       queryClient.invalidateQueries(["leagues"]);
       toast.success("League deleted successfully");
