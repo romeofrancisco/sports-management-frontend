@@ -155,10 +155,9 @@ const LeagueSeasonsTable = ({ seasons: passedSeasons, sport, compact = false }) 
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
+              <DropdownMenuSeparator />              <DropdownMenuItem
                 onClick={() =>
-                  navigate(`/leagues/${league}/season/${season.id}`)
+                  navigate(`/leagues/${league}/seasons/${season.id}`)
                 }
                 className="flex items-center gap-2"
               >

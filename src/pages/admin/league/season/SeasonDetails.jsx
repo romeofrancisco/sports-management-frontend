@@ -1,25 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   useSeasonDetails,
   useSeasonStandings,
   useSeasons,
 } from "@/hooks/useSeasons";
 import { useLeagueDetails } from "@/hooks/useLeagues";
-import SeasonDetailsHeader from "./components/SeasonDetailsHeader";
+import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import SeasonOverview from "./components/SeasonOverview";
 import SeasonStandings from "./components/SeasonStandings";
 import { SeasonGames } from "./components/SeasonGames";
 import { SeasonTeams } from "./components/SeasonTeams";
-import { SeasonStats } from "./components/SeasonStats";
 import BracketView from "./components/BracketView";
+import SeasonActions from "./components/SeasonActions";
 import PageError from "@/pages/PageError";
 import Loading from "@/components/common/FullLoading";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { Trophy, Users, Calendar, BarChart3, Target } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const SeasonDetails = () => {
   const { league, season } = useParams();
-  const [activeTab, setActiveTab] = useState("overview");
+  const location = useLocation();
+    // Get current page from URL path
+  const currentPath = location.pathname;
+  
+  const getCurrentPage = () => {
+    if (currentPath.includes("/standings")) return "standings";
+    if (currentPath.includes("/games")) return "games";
+    if (currentPath.includes("/teams")) return "teams";
+    if (currentPath.includes("/bracket")) return "bracket";
+    return "overview"; // default to overview
+  };
+
+  const currentPage = getCurrentPage();
 
   const {
     data: leagueDetails,
@@ -40,75 +54,152 @@ const SeasonDetails = () => {
   const isLoading =
     isLeagueLoading || isSeasonStandingsLoading || isSeasonLoading;
   const isError = isLeagueError || isSeasonStandingsError || isSeasonError;
-
   if (isLoading) return <Loading />;
   if (isError) return <PageError />;
 
   const { sport } = leagueDetails;
 
+  // Navigation items for the season details
+  const navigationItems = [
+    {
+      key: "overview",
+      label: "Overview",
+      path: `/leagues/${league}/seasons/${season}`,
+      description: "Season overview and summary",
+      icon: Trophy,
+    },
+    {
+      key: "standings",
+      label: "Standings", 
+      path: `/leagues/${league}/seasons/${season}/standings`,
+      description: "Team standings and rankings",
+      icon: BarChart3,
+    },
+    {
+      key: "games",
+      label: "Games",
+      path: `/leagues/${league}/seasons/${season}/games`,
+      description: "All games in this season",
+      icon: Target,
+    },    {
+      key: "teams",
+      label: "Teams",
+      path: `/leagues/${league}/seasons/${season}/teams`,
+      description: "Teams participating in this season",
+      icon: Users,
+    },
+  ];
+
+  // Add bracket navigation item if season has bracket
+  if (seasonDetails.has_bracket) {
+    navigationItems.push({
+      key: "bracket",
+      label: "Bracket",
+      path: `/leagues/${league}/seasons/${season}/bracket`,
+      description: "Tournament bracket",
+      icon: Trophy,
+    });
+  }
+
+  // Render content based on current page
+  const renderContent = () => {
+    switch (currentPage) {
+      case "overview":
+        return <SeasonOverview seasonDetails={seasonDetails} sport={sport} />;
+      case "standings":
+        return <SeasonStandings standings={seasonStandings} sport={sport} />;
+      case "games":
+        return <SeasonGames seasonId={season} leagueId={league} />;
+      case "teams":
+        return <SeasonTeams seasonId={season} leagueId={league} />;
+      case "bracket":
+        return seasonDetails.has_bracket ? (
+          <BracketView season={seasonDetails} leagueId={league} />
+        ) : null;
+      default:
+        return <SeasonOverview seasonDetails={seasonDetails} sport={sport} />;    }
+  };
+
+  const getStatusColor= (status) => {
+    switch (status) {
+      case "ongoing":
+        return "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300";
+      case "upcoming":
+        return "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300";
+      case "completed":
+        return "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300";
+      case "canceled":
+        return "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300";
+      case "paused":
+        return "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-950 dark:text-yellow-300";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
+
+  const titleWithBadge = (
+    <div className="flex items-center gap-3">
+      <span>{seasonDetails?.name || "Season"}</span>
+      {seasonDetails?.status && (
+        <Badge
+          variant="outline"
+          className={`capitalize ${getStatusColor(seasonDetails.status)}`}
+        >
+          {seasonDetails.status}
+        </Badge>
+      )}
+    </div>
+  );
+
   return (
-    <div className="flex flex-col">
-      <SeasonDetailsHeader
-        season={seasonDetails}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        defaultValue="overview"
-        className="w-full"
+    <div className="md:p-6">
+      <UniversityPageHeader
+        title={titleWithBadge}
+        subtitle={`${sport?.name} League - ${seasonDetails?.year || ""}`}
+        description="Manage season details, games, and statistics"
+        showBackButton={true}
+        backButtonText="Back to League"
+        backButtonPath={`/leagues/${league}`}
       >
-        <div className="flex items-center justify-center sm:justify-start">
-          <TabsList className="self-center mt-5 mb-3">
-            <TabsTrigger className="text-xs md:text-sm" value="overview">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger className="text-xs md:text-sm" value="standings">
-              Standings
-            </TabsTrigger>
-            <TabsTrigger className="text-xs md:text-sm" value="games">
-              Games
-            </TabsTrigger>
-            <TabsTrigger className="text-xs md:text-sm" value="teams">
-              Teams
-            </TabsTrigger>
-            <TabsTrigger className="text-xs md:text-sm" value="stats">
-              Stats
-            </TabsTrigger>
-            {seasonDetails.has_bracket && (
-              <TabsTrigger className="text-xs md:text-sm" value="bracket">
-                Bracket
-              </TabsTrigger>
-            )}
-          </TabsList>
-        </div>        <TabsContent value="overview">
-          <SeasonOverview seasonDetails={seasonDetails} sport={sport} />
-        </TabsContent>
+        {/* Season Management Actions */}
+        <SeasonActions season={seasonDetails} />
+      </UniversityPageHeader>
 
-        <TabsContent value="standings">
-          <SeasonStandings standings={seasonStandings} sport={sport} />
-        </TabsContent>
+      {/* Navigation Links */}
+      <div className="my-4">
+        <nav className="border-b border-border">
+          <div className="flex space-x-3 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.key}
+                  to={item.path}
+                  className={cn(
+                    "group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200",
+                    currentPage === item.key
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  )}
+                >
+                  <IconComponent
+                    className={cn(
+                      "mr-2 h-4 w-4 transition-colors duration-200",
+                      currentPage === item.key
+                        ? "text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    )}
+                  />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      </div>
 
-        <TabsContent value="games">
-          <SeasonGames seasonId={season} leagueId={league} />
-        </TabsContent>
-
-        <TabsContent value="teams">
-          <SeasonTeams seasonId={season} leagueId={league} />
-        </TabsContent>
-
-        <TabsContent value="stats">
-          <SeasonStats seasonId={season} leagueId={league} sport={sport} />
-        </TabsContent>
-
-        {seasonDetails.has_bracket && (
-          <TabsContent value="bracket">
-            <BracketView season={seasonDetails} leagueId={league} />
-          </TabsContent>
-        )}
-      </Tabs>
+      {/* Content */}
+      {renderContent()}
     </div>
   );
 };

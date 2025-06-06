@@ -25,9 +25,9 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
               <div>
-                <div className="text-sm text-muted-foreground">Total Teams</div>
-                <div className="text-2xl font-bold">{teams?.length || 0}</div>
-              </div>              <div className="bg-amber-100 p-3 rounded-full">
+                <div className="text-sm text-muted-foreground">Total Teams</div>                <div className="text-2xl font-bold">{teams?.length || 0}</div>
+              </div>
+              <div className="bg-amber-100 p-3 rounded-full">
                 <Users className="text-amber-600 h-5 w-5" />
               </div>
             </div>
@@ -49,8 +49,7 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
             </div>
           </CardContent>
         </Card>
-        
-        <Card>
+          <Card>
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
               <div>
@@ -58,7 +57,8 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                 <div className="text-2xl font-bold">
                   {teams && teams.length > 0 ? `${teams[0]?.wins || 0} wins` : "N/A"}
                 </div>
-              </div>              <div className="bg-red-100 p-3 rounded-full">
+              </div>
+              <div className="bg-red-100 p-3 rounded-full">
                 <TrendingUp className="text-red-900 h-5 w-5" />
               </div>
             </div>

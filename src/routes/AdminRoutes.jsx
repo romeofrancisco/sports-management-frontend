@@ -83,9 +83,24 @@ export const adminRoutes = [
   {
     path: "/leagues/:league/seasons",
     element: <LeagueDetails />,
+  },  {
+    path: "/leagues/:league/seasons/:season",
+    element: <SeasonDetails />,
   },
   {
-    path: "/leagues/:league/season/:season",
+    path: "/leagues/:league/seasons/:season/standings",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/games",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/teams",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
   },
   {

@@ -8,44 +8,53 @@ import { Trophy, Medal, Target, Activity, Shield, Star } from "lucide-react";
 import InfoCard from "@/components/common/InfoCard";
 
 const SeasonLeaders = ({ leagueId, seasonId }) => {
-  const { data, isLoading } = useSeasonLeaders(leagueId, seasonId);
-  if (isLoading) return (
-    <Card className="rounded-lg overflow-hidden border shadow-sm">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
+  const { data, isLoading } = useSeasonLeaders(leagueId, seasonId);  if (isLoading) return (
+    <Card className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-gradient-to-br backdrop-blur-sm">
+      {/* Enhanced Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5 opacity-8"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-40"></div>
+      
+      <CardHeader className="pb-3 relative z-10">
+        <CardTitle className="text-lg flex items-center gap-2 font-semibold">
           <Trophy className="h-5 w-5 text-amber-500" /> Season Leaders
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 flex items-center justify-center h-48">
+      <CardContent className="p-4 flex items-center justify-center h-48 relative z-10">
         <Loading size="sm" />
       </CardContent>
     </Card>
   );
-  
-  if (!data || !data.leaders || data.leaders.length === 0) {
+    if (!data || !data.leaders || data.leaders.length === 0) {
     return (
-      <Card className="rounded-lg overflow-hidden border shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
+      <Card className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-gradient-to-br backdrop-blur-sm">
+        {/* Enhanced Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5 opacity-8"></div>
+        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-40"></div>
+        
+        <CardHeader className="pb-3 relative z-10">
+          <CardTitle className="text-lg flex items-center gap-2 font-semibold">
             <Trophy className="h-5 w-5 text-amber-500" /> Season Leaders
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 flex items-center justify-center h-48">
+        <CardContent className="p-4 flex items-center justify-center h-48 relative z-10">
           <div className="text-center text-muted-foreground">
             No season leaders data available
           </div>
         </CardContent>
       </Card>
     );
-  }
-  return (
-    <Card className="rounded-lg overflow-hidden border shadow-sm">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
+  }return (
+    <Card className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-gradient-to-br backdrop-blur-sm">
+      {/* Enhanced Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5 opacity-8 group-hover:opacity-12 transition-opacity duration-300"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-40"></div>
+      
+      <CardHeader className="pb-3 relative z-10">
+        <CardTitle className="text-lg flex items-center gap-2 font-semibold">
           <Trophy className="h-5 w-5 text-amber-500" /> Season Leaders
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-2">
+      <CardContent className="p-4 pt-2 relative z-10">
         <Tabs
           defaultValue={data.leaders[0]?.category_id?.toString() || ""}
           className="w-full"

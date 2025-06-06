@@ -19,6 +19,7 @@ import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
 import { useModal } from "@/hooks/useModal";
 import { Badge } from "@/components/ui/badge";
 import { useManageSeason } from "@/hooks/useSeasons";
+import { getStatusColor, formatDate } from "@/utils/seasonUtils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -103,34 +104,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
         onSuccess: () => {
           setShowConfirm(false);
         },
-      }
-    );
-  };
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "ongoing":
-        return "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300";
-      case "upcoming":
-        return "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950 dark:text-amber-300";
-      case "completed":
-        return "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300";
-      case "canceled":
-        return "bg-red-100 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-300";
-      case "paused":
-        return "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-950 dark:text-yellow-300";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+      }    );
   };
 
   // Get current date to check if season can be started
