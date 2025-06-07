@@ -7,6 +7,11 @@ import { Loader2 } from "lucide-react";
 import SelectPlayer from "../common/SelectPlayer";
 
 const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
+  // Safety check to prevent null reference errors
+  if (!game || !teams || !sport) {
+    return null;
+  }
+
   const { mutate: updateLineup, isPending } = useUpdateStartingLineup(game.id);
   const { home_team, away_team } = teams;
 

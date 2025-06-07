@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { useSeasonGames } from "@/hooks/useSeasons";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/useModal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ContentLoading from "@/components/common/ContentLoading";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
-import { cn } from "@/lib/utils";
-import { CalendarIcon, TrophyIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
+import { GameCard, StatusSection } from "@/components/games";
+import GameModal from "@/components/modals/GameModal";
 
 export const SeasonGames = ({ seasonId, leagueId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  
+  const [editingGame, setEditingGame] = useState(null);
+
+  // Use the useModal hook instead of manual state management
+  const {
+    isOpen: showEditModal,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
   // Format the selected date as YYYY-MM-DD for API filtering
-  const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-  
+  const formattedDate = format(selectedDate, "yyyy-MM-dd");
+
   // Fetch only games for the selected date from the backend
-  const { data: filteredGames = [], isLoading } = useSeasonGames(leagueId, seasonId, {
-    date: formattedDate
-  });
-  
+  const { data: filteredGames = [], isLoading } = useSeasonGames(
+    leagueId,
+    seasonId,
+    {
+      date: formattedDate,
+    }
+  );
+
   // Also fetch all games to support the date navigation bar
   const { data: allGames = [] } = useSeasonGames(leagueId, seasonId);
 
@@ -39,7 +52,6 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
       setSelectedDate(initialDate);
     }
   }, [allGames]);
-
   // Get games count for a specific date (used by the DateNavigationBar)
   const getGamesCountForDate = (date) => {
     if (!allGames || allGames.length === 0) return 0;
@@ -48,269 +60,138 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
       return isSameDay(gameDate, date);
     }).length;
   };
-
-  return (
-    <div className="mt-6 space-y-6">
-      {/* Header with title and view toggle */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <CalendarIcon className="h-6 w-6 text-primary" />
-          <h2 className="text-xl sm:text-2xl font-bold">Game Schedule</h2>
-        </div>
-      </div>
-
-      {/* Date Navigation Bar - enhanced with shadow */}
-      <div className="bg-card rounded-xl shadow-md p-1">
-        <DateNavigationBar
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          data={allGames}
-          dateProperty="date"
-          getDataCountForDate={getGamesCountForDate}
-          countLabel="Game"
-          className="overflow-x-auto"
-        />
-      </div>
-
-      {/* Games List with ContentLoading */}
-      <div className="grid gap-4">
-        {isLoading ? (
-          <ContentLoading count={3} />
-        ) : filteredGames.length > 0 ? (
-          filteredGames.map((game, i) => (
-            <GameRow key={game.id || i} game={game} />
-          ))
-        ) : (
-          <div className="text-center py-16 px-4 border rounded-xl bg-card/50 flex flex-col items-center">
-            <CalendarIcon className="h-12 w-12 text-muted-foreground mb-3" />
-            <p className="text-muted-foreground text-base sm:text-lg font-medium">
-              No games scheduled for {format(selectedDate, "MMMM d, yyyy")}
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const GameRow = ({ game }) => {
-  const homeTeam = game.home_team || {};
-  const awayTeam = game.away_team || {};
-  const isCompleted = game.status === "completed";
-  const isLive = game.status === "in_progress";
-  const isScheduled = game.status === "scheduled";
-
-  const homeScore = game.score_summary.total.home || 0;
-  const awayScore = game.score_summary.total.away || 0;
-
-  const formatTime = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return format(date, "h:mm a");
+  // Handle edit game modal
+  const handleEditGame = (game) => {
+    setEditingGame(game);
+    openEditModal();
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return format(date, "MMM d, yyyy");
-  };
-  // Get sport information
-  const sportName = game.sport_slug
-    ? game.sport_slug.charAt(0).toUpperCase() + game.sport_slug.slice(1)
-    : "";
-
   return (
-    <div
-      className={cn(
-        "flex justify-between gap-4 border rounded-xl transition-all duration-200",
-        "hover:shadow-md p-4 md:p-5"
-      )}
-    >
-      {/* Teams section */}
-      <div className="flex items-center justify-center sm:justify-start gap-4">
-        {/* Home team */}
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            {homeTeam.logo ? (
-              <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center">
-                <img
-                  src={homeTeam.logo}
-                  alt={homeTeam.name || ""}
-                  className="max-w-[95%] max-h-[95%] object-contain"
-                />
-              </div>
-            ) : (
-              <div
-                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-lg font-bold rounded-md"
-                style={{
-                  backgroundColor:
-                    homeTeam.color || "rgba(var(--primary), 0.1)",
-                  color: homeTeam.color ? "#fff" : "var(--primary)",
-                }}
-              >
-                {(homeTeam.name || "").charAt(0)}
-              </div>
-            )}
-            {isCompleted && game.home_team_score > game.away_team_score && (
-              <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-1">
-                <TrophyIcon className="h-4 w-4 text-white" />
-              </div>
-            )}
-          </div>
-          <span className="text-xs font-semibold mt-2 hidden sm:block">
-            {homeTeam.abbreviation || "HOME"}
-          </span>
-        </div>
+    <div className="animate-in fade-in-50 duration-500">
+      <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+        {/* Enhanced background effects */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-        {/* Center section with scores or VS */}
-        <div className="flex flex-col items-center justify-center">
-          {isCompleted ? (
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xl font-bold">{homeScore || 0}</span>
-                <span className="text-sm text-muted-foreground font-medium">
-                  -
-                </span>
-                <span className="text-xl font-bold">{awayScore || 0}</span>
-              </div>
-              <Badge variant="outline" className="mt-1">
-                Final
-              </Badge>
+        <CardHeader className="relative">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+              <CalendarIcon className="h-5 w-5 text-primary-foreground" />
             </div>
-          ) : isLive ? (
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xl font-bold">
-                  {game.away_team_score || 0}
-                </span>
-                <span className="text-sm text-destructive font-medium">•</span>
-                <span className="text-xl font-bold">
-                  {game.home_team_score || 0}
-                </span>
-              </div>
-              <Badge variant="destructive" className="animate-pulse mt-1">
-                Live
-              </Badge>
+            <div>
+              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                Game Schedule
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Season games and matchups
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="relative p-6">
+          {/* Date Navigation Bar - enhanced with shadow */}
+          <div className="bg-card rounded-xl shadow-md p-1 mb-6">
+            <DateNavigationBar
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+              data={allGames}
+              dateProperty="date"
+              getDataCountForDate={getGamesCountForDate}
+              countLabel="Game"
+              className="overflow-x-auto"
+            />
+          </div>{" "}
+          {/* Games List with ContentLoading */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }, (_, i) => (
+                <ContentLoading key={i} count={1} />
+              ))}
+            </div>
+          ) : filteredGames.length > 0 ? (
+            <div className="space-y-6">              {/* Live Games Section */}
+              <StatusSection
+                status="in_progress"
+                games={filteredGames.filter(
+                  (game) => game.status === "in_progress"
+                )}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredGames
+                    .filter((game) => game.status === "in_progress")
+                    .map((game, i) => (
+                      <GameCard
+                        key={game.id || `live-${i}`}
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    ))}
+                </div>
+              </StatusSection>              {/* Scheduled Games Section */}
+              <StatusSection
+                status="scheduled"
+                games={filteredGames.filter(
+                  (game) => game.status === "scheduled"
+                )}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredGames
+                    .filter((game) => game.status === "scheduled")
+                    .map((game, i) => (
+                      <GameCard
+                        key={game.id || `scheduled-${i}`}
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    ))}
+                </div>
+              </StatusSection>              {/* Completed Games Section */}
+              <StatusSection
+                status="completed"
+                games={filteredGames.filter(
+                  (game) => game.status === "completed"
+                )}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredGames
+                    .filter((game) => game.status === "completed")
+                    .map((game, i) => (
+                      <GameCard
+                        key={game.id || `completed-${i}`}
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    ))}
+                </div>
+              </StatusSection>
             </div>
           ) : (
-            <div className="px-4 py-1 rounded-full bg-muted text-primary text-sm font-bold border shadow-sm">
-              VS
+            <div>
+              <Card className="border-2 border-dashed border-muted-foreground/25 bg-muted/10">
+                <CardContent className="flex flex-col items-center justify-center py-16 px-4">
+                  <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground text-base sm:text-lg font-medium">
+                    No games scheduled for{" "}
+                    {format(selectedDate, "MMMM d, yyyy")}
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-          )}
-        </div>
+          )}{" "}
+        </CardContent>
+      </Card>
 
-        {/* Away team */}
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            {awayTeam.logo ? (
-              <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center">
-                <img
-                  src={awayTeam.logo}
-                  alt={awayTeam.name || ""}
-                  className="max-w-[95%] max-h-[95%] object-contain"
-                />
-              </div>
-            ) : (
-              <div
-                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-lg font-bold rounded-md"
-                style={{
-                  backgroundColor:
-                    awayTeam.color || "rgba(var(--primary), 0.1)",
-                  color: awayTeam.color ? "#fff" : "var(--primary)",
-                }}
-              >
-                {(awayTeam.name || "").charAt(0)}
-              </div>
-            )}
-            {isCompleted && game.away_team_score > game.home_team_score && (
-              <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-1">
-                <TrophyIcon className="h-4 w-4 text-white" />
-              </div>
-            )}
-          </div>
-          <span className="text-xs font-semibold mt-2 hidden sm:block">
-            {awayTeam.abbreviation || "AWAY"}
-          </span>
-        </div>
-      </div>
-
-      {/* Game info section */}
-      <div className="lg:flex flex-col justify-center hidden">
-        {isCompleted && (
-          <div className="text-center font-medium mx-5">
-            <table className="hidden md:block text-[0.65rem] mt-3">
-              <thead className="border-b">
-                <tr>
-                  <th className="px-5"></th>
-                  {game.score_summary.periods.map((p, index) => (
-                    <th key={index} className="text-muted-foreground px-3">
-                      {p.label}
-                    </th>
-                  ))}
-                  <th className="px-3">T</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-start py-1">{homeTeam.abbreviation}</td>
-                  {game.score_summary.periods.map((p, index) => (
-                    <td
-                      key={index}
-                      className={`${
-                        p.home > p.away
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {p.home}
-                    </td>
-                  ))}
-                  <td className="font-bold">{homeScore}</td>
-                </tr>
-                <tr>
-                  <td className="text-start">{awayTeam.abbreviation}</td>
-                  {game.score_summary.periods.map((p, index) => (
-                    <td
-                      key={index}
-                      className={`${
-                        p.home < p.away
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {p.away}
-                    </td>
-                  ))}
-                  <td className="font-bold">{awayScore}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Game time section */}
-      <div className="flex justify-center sm:justify-start items-center lg:place-self-end">
-        <div className="text-center sm:text-left bg-muted/50 px-3 py-2 rounded-lg">
-          <div className="font-bold text-base">{formatTime(game.date)}</div>
-          <div className="flex items-center text-xs text-muted-foreground">
-            <CalendarIcon className="h-3 w-3 mr-1" />
-            {formatDate(game.date)}
-          </div>
-          {game.location && (
-            <div className="text-xs font-medium mt-1">{game.location}</div>
-          )}
-        </div>
-      </div>
-
-      {/* Action button */}
-      {isCompleted && (
-        <div className="flex justify-center sm:justify-end items-center col-span-1">
-          <Button variant="outline">
-            Boxscore
-          </Button>
-        </div>
-      )}
+      {/* Edit Game Modal */}
+      <GameModal
+        isOpen={showEditModal}
+        onClose={closeEditModal}
+        game={editingGame}
+        isLeagueGame={true}
+      />
     </div>
   );
 };

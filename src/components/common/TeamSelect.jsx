@@ -1,4 +1,5 @@
-import { Label } from "@radix-ui/react-dropdown-menu";
+import React from "react";
+import { Label } from "@/components/ui/label";
 import { Controller } from "react-hook-form";
 import {
   Select,
@@ -18,18 +19,21 @@ export const TeamSelect = ({
   teams = [],
   excludeTeamId = [],
   errorMessage,
+  disabled = false,
+  helperText,
 }) => {
   return (
     <div className="grid gap-1">
-      <Label className="text-sm text-left">{label}</Label>
-      <Controller
+      <Label htmlFor={name} className="text-sm text-left">
+        {label}
+      </Label><Controller
         name={name}
         control={control}
         render={({ field }) => (
           <Select
             onValueChange={field.onChange}
-            value={String(field.value)}
-            disabled={!teams.length > 0}
+            value={field.value ? String(field.value) : ""}
+            disabled={disabled || !teams.length > 0}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder={placeholder} />
@@ -49,6 +53,9 @@ export const TeamSelect = ({
           </Select>
         )}
       />
+      {helperText && (
+        <p className="text-xs text-muted-foreground">{helperText}</p>
+      )}
       {errorMessage && (
         <p className="text-xs text-left text-destructive">{errorMessage}</p>
       )}

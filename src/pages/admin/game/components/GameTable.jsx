@@ -11,11 +11,13 @@ import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import TablePagination from "@/components/ui/table-pagination";
 import { Button } from "@/components/ui/button";
-import { Table2, LayoutGrid } from "lucide-react";
+import { Table2, LayoutGrid, Calendar, Filter } from "lucide-react";
+import { DateNavigationBar } from "@/components/ui/date-navigation";
+import { format, isSameDay, parseISO } from "date-fns";
 
 import GameFilterBar from "./GameFilterBar";
 import getGameTableColumns from "./GameTableColumns";
-import GameCard from "./GameCard";
+import { GameCard, StatusSection } from "@/components/games";
 
 const GameTable = () => {
   const navigate = useNavigate();
@@ -23,6 +25,8 @@ const GameTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
+  const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [filter, setFilter] = useState({
     search: "",
@@ -36,7 +40,16 @@ const GameTable = () => {
     end_date: "",
   });
 
-  const { isLoading, isError, data } = useGames(filter, currentPage, pageSize);
+  // Create filter for API based on mode
+  const apiFilter = filterMode === "date" 
+    ? { ...filter, start_date: format(selectedDate, "yyyy-MM-dd"), end_date: format(selectedDate, "yyyy-MM-dd") }
+    : filter;
+
+  const { isLoading, isError, data } = useGames(apiFilter, currentPage, pageSize);
+  
+  // Also fetch all games for date navigation
+  const { data: allGamesData } = useGames({}, 1, 1000); // Get all games for date navigation
+  const allGames = allGamesData?.results || [];
 
   const games = data?.results || [];
   const totalGames = data?.count || 0;
@@ -65,8 +78,7 @@ const GameTable = () => {
     setSelectedGame,
     modals,
   });
-
-  // Handle card actions
+  // Handle card actions - adapt for season games GameCard
   const handleEditGame = (game) => {
     setSelectedGame(game);
     modals.update.openModal();
@@ -85,20 +97,107 @@ const GameTable = () => {
     setSelectedGame(game);
     modals.startGame.openModal();
   };
-
   const handleStartingLineup = (game) => {
     setSelectedGame(game);
     modals.startingLineup.openModal();
   };
-  return (
+
+  // Reset filters and switch modes
+  const handleFilterModeToggle = () => {
+    if (filterMode === "date") {
+      // Switch to filter mode - reset filters
+      setFilter({
+        search: "",
+        team_name: "",
+        status: "",
+        type: "",
+        sport: "",
+        league: "",
+        season: "",
+        start_date: "",
+        end_date: "",
+      });
+      setFilterMode("filter");
+    } else {
+      // Switch to date mode - reset to today
+      setSelectedDate(new Date());
+      setFilterMode("date");
+    }
+    setCurrentPage(1);
+  };
+
+  // Get games count for a specific date (used by DateNavigationBar)
+  const getGamesCountForDate = (date) => {
+    if (!allGames || allGames.length === 0) return 0;
+    return allGames.filter((game) => {
+      const gameDate = parseISO(game.date);
+      return isSameDay(gameDate, date);
+    }).length;
+  };
+
+  // Separate games by status
+  const separateGamesByStatus = (games) => {
+    const liveGames = games.filter(game => game.status === "in_progress");
+    const scheduledGames = games.filter(game => game.status === "scheduled");
+    const completedGames = games.filter(game => game.status === "completed");
+    const otherGames = games.filter(game => !["in_progress", "scheduled", "completed"].includes(game.status));
+    
+    return { liveGames, scheduledGames, completedGames, otherGames };
+  };
+  const { liveGames, scheduledGames, completedGames, otherGames } = separateGamesByStatus(games);return (
     <div className="space-y-6">
-      <GameFilterBar
-        filter={filter}
-        setFilter={(newFilter) => {
-          setFilter(newFilter);
-          setCurrentPage(1); // Reset to first page when filter changes
-        }}
-      />
+      {/* Filter Mode Toggle and Filter/Date Bar */}
+      <div className="space-y-4">
+        {/* Mode Toggle */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant={filterMode === "date" ? "default" : "outline"}
+              size="sm"
+              onClick={handleFilterModeToggle}
+              className="flex items-center gap-2"
+            >
+              <Calendar className="h-4 w-4" />
+              Date View
+            </Button>
+            <Button
+              variant={filterMode === "filter" ? "default" : "outline"}
+              size="sm"
+              onClick={handleFilterModeToggle}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filter View
+            </Button>
+          </div>
+        </div>
+
+        {/* Conditional Filter/Date Bar */}
+        {filterMode === "filter" ? (
+          <GameFilterBar
+            filter={filter}
+            setFilter={(newFilter) => {
+              setFilter(newFilter);
+              setCurrentPage(1); // Reset to first page when filter changes
+            }}
+          />
+        ) : (
+          <div className="bg-card rounded-xl shadow-md p-1">
+            <DateNavigationBar
+              selectedDate={selectedDate}
+              onDateChange={(date) => {
+                setSelectedDate(date);
+                setCurrentPage(1); // Reset to first page when date changes
+              }}
+              data={allGames}
+              dateProperty="date"
+              getDataCountForDate={getGamesCountForDate}
+              countLabel="Game"
+              className="overflow-x-auto"
+            />
+          </div>
+        )}
+      </div>
 
       <div className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl rounded-xl p-4 md:p-6 relative overflow-hidden">
         {/* Enhanced background effects */}
@@ -148,26 +247,103 @@ const GameTable = () => {
               className="text-xs md:text-sm"
               showPagination={false} // Disable built-in pagination
               pageSize={pageSize} // Still pass pageSize for row rendering
-            />
-          ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              {games.map((game, index) => (
-                <div
-                  key={game.id}
-                  className="animate-in fade-in-50 duration-500"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <GameCard
-                    game={game}
-                    onEdit={handleEditGame}
-                    onDelete={handleDeleteGame}
-                    onView={handleViewGame}
-                    onStartGame={handleStartGame}
-                    onStartingLineup={handleStartingLineup}
-                    filterStatus={filter.status}
-                  />
+            />          ) : (
+            <div className="space-y-8">
+              {/* Live Games */}
+              <StatusSection 
+                status="in_progress" 
+                games={liveGames}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {liveGames.map((game, index) => (
+                    <div
+                      key={game.id}
+                      className="animate-in fade-in-50 duration-500"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <GameCard
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </StatusSection>
+              
+              {/* Scheduled Games */}
+              <StatusSection 
+                status="scheduled" 
+                games={scheduledGames}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {scheduledGames.map((game, index) => (
+                    <div
+                      key={game.id}
+                      className="animate-in fade-in-50 duration-500"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <GameCard
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </StatusSection>
+              
+              {/* Completed Games */}
+              <StatusSection 
+                status="completed" 
+                games={completedGames}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {completedGames.map((game, index) => (
+                    <div
+                      key={game.id}
+                      className="animate-in fade-in-50 duration-500"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <GameCard
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </StatusSection>
+              
+              {/* Other Status Games */}
+              <StatusSection 
+                status="other" 
+                games={otherGames}
+                variant="default"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {otherGames.map((game, index) => (
+                    <div
+                      key={game.id}
+                      className="animate-in fade-in-50 duration-500"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <GameCard
+                        game={game}
+                        onEditGame={handleEditGame}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </StatusSection>
+              
+              {/* No games message */}
+              {games.length === 0 && !isLoading && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="text-lg font-medium">No games found</p>
+                  <p className="text-sm">Try adjusting your filters or create a new game.</p>
+                </div>
+              )}
             </div>
           )}
 
