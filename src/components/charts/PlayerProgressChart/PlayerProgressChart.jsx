@@ -48,6 +48,7 @@ ChartJS.register(
  * @param {Function} [props.onDateChange] - Optional callback for date range changes
  * @param {boolean} [props.showDateControls=true] - Whether to show date controls in the chart header
  * @param {boolean} [props.showPerformanceAnalysis=true] - Whether to show the performance analysis section
+ * @param {boolean} [props.showMetricSelect=true] - Whether to show the metric selector
  * @returns {JSX.Element} Rendered component
  */
 const PlayerProgressChart = ({
@@ -56,6 +57,7 @@ const PlayerProgressChart = ({
   onDateChange,
   showDateControls = true,
   showPerformanceAnalysis = true,
+  showMetricSelect = true,
 }) => {
   // Use our dedicated hook for player metrics data
   const {
@@ -79,8 +81,7 @@ const PlayerProgressChart = ({
 
   if (!playerData && !isLoading) return <EmptyState message="No player data available" />;  return (
     <div className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl shadow-xl border border-border/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:border-primary/20">
-      <div className="p-6 space-y-6">
-        <ChartHeader
+      <div className="p-6 space-y-6">        <ChartHeader
           playerName={playerData?.player_name || "Player"}
           metrics={metrics || []}
           selectedMetric={selectedMetric}
@@ -89,7 +90,8 @@ const PlayerProgressChart = ({
           dateRange={dateRange}
           onDateChange={handleDateChange}
           showDateControls={showDateControls}
-        />        <div>
+          showMetricSelect={showMetricSelect}
+        /><div>
           {isLoading ? (
             <LoadingState />
           ) : !hasMetricsData ? (

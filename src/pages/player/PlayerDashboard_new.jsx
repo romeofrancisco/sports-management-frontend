@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { usePlayerOverview, usePlayerProgress } from "@/api/dashboardApi";
 import {
@@ -53,6 +53,19 @@ const PlayerDashboard = () => {
     isLoading: progressLoading,
     error: progressError,
   } = usePlayerProgress();
+
+  // Calculate 3-month date range for faster loading
+  const dateRange = useMemo(() => {
+    const today = new Date();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(today.getMonth() - 3);
+
+    return {
+      from: threeMonthsAgo.toISOString().split("T")[0],
+      to: today.toISOString().split("T")[0],
+    };
+  }, []);
+
   if (overviewLoading || progressLoading) {
     return <DashboardSkeleton />;
   }
@@ -115,11 +128,14 @@ const PlayerDashboard = () => {
             {/* Progress Summary */}
             <div className="animate-in fade-in-50 duration-500 delay-400">
               <ProgressSummarySection progress={progress} />
-            </div>            {/* Charts Section */}
+            </div>
+
+            {/* Charts Section */}
             <div className="animate-in fade-in-50 duration-500 delay-500">
               <ChartsSection
                 user={user}
                 overview={overview}
+                dateRange={dateRange}
               />
             </div>
           </div>
