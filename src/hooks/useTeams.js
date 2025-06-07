@@ -34,6 +34,17 @@ export const useTeams = (filter, page = 1, pageSize = 10, enabled = true) => {
   });
 };
 
+// Hook to fetch all teams for dropdowns and forms
+export const useAllTeams = (enabled = true) => {
+  return useQuery({
+    queryKey: ["teams", "all"],
+    queryFn: () => fetchTeams({ page_size: 1000 }), // Large page size to get all teams
+    enabled,
+    select: (data) => data?.results || data || [], // Extract the teams array
+    staleTime: 5 * 60 * 1000, // Keep data fresh for 5 minutes
+  });
+};
+
 export const useTeamDetails = (team) => {
   return useQuery({
     queryKey: ["team", team],

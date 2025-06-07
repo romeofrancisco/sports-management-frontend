@@ -53,28 +53,29 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
     );
   }
 
-  if (!seasonDetails) return null;
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="space-y-8">
-        {/* Season Overview Stats */}
-        <SeasonOverviewStats seasonDetails={seasonDetails} />
-        
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Left Column - Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* Season Statistics Charts */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
-              <SeasonChartsContainer 
-                teamPerformance={teamPerformance}
-                isSetsScoring={isSetsScoring}
-              />
+  if (!seasonDetails) return null;  return (
+    <div className="animate-in fade-in-50 duration-500">
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className="space-y-8">
+          {/* Season Overview Stats */}
+          <SeasonOverviewStats seasonDetails={seasonDetails} />
+          
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            {/* Left Column - Primary Content */}
+            <div className="xl:col-span-2 space-y-6">
+              {/* Season Statistics Charts */}
+              <div className="animate-in fade-in-50 duration-500 delay-200">
+                <SeasonChartsContainer 
+                  teamPerformance={teamPerformance}
+                  isSetsScoring={isSetsScoring}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Right Column - Secondary Content */}
-          <SeasonOverviewSidebar leagueId={league} seasonId={season} />
+            {/* Right Column - Secondary Content */}
+            <SeasonOverviewSidebar leagueId={league} seasonId={season} />
+          </div>
         </div>
       </div>
     </div>

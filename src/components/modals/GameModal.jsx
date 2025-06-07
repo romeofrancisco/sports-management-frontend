@@ -7,14 +7,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import GameForm from "../forms/GameForm";
-import { useTeams } from "@/hooks/useTeams";
+import { useAllTeams } from "@/hooks/useTeams";
 import { useSports } from "@/hooks/useSports";
 import Loading from "../common/FullLoading";
 
-const GameModal = ({ isOpen, onClose, game = null }) => {
+const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false }) => {
   const isEdit = !!game;
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
-  const { data: teams, isLoading: isTeamsLoading } = useTeams(isOpen);
+  
+  // Fetch all teams for the dropdown selections
+  const { data: teams, isLoading: isTeamsLoading } = useAllTeams(isOpen);
 
   if (isSportsLoading || isTeamsLoading) return <Loading />;
 
@@ -27,7 +29,9 @@ const GameModal = ({ isOpen, onClose, game = null }) => {
           </DialogTitle>
           <DialogDescription>
             {isEdit 
-              ? "Update game details for the selected teams." 
+              ? isLeagueGame 
+                ? "Update game details. Note: Teams and sport cannot be changed for league games."
+                : "Update game details for the selected teams." 
               : "Create a new game schedule between two teams."}
           </DialogDescription>
           <GameForm 
@@ -35,6 +39,7 @@ const GameModal = ({ isOpen, onClose, game = null }) => {
             teams={teams} 
             onClose={onClose} 
             game={game} 
+            isLeagueGame={isLeagueGame}
           />
         </DialogHeader>
       </DialogContent>
