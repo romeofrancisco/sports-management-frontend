@@ -27,7 +27,7 @@ const OverviewCards = ({ overview, personalStats }) => {
     {
       title: "Training Sessions",
       value: personalStats?.total_sessions_last_30_days || 0,
-      description: "Last 30 days",
+      description: "Sessions attended (last 30 days)",
       icon: <Activity className="h-5 w-5 text-secondary-foreground" />,
       color: "from-secondary via-secondary/90 to-secondary/80",
       bgColor: "bg-secondary/8",
@@ -38,24 +38,23 @@ const OverviewCards = ({ overview, personalStats }) => {
     {
       title: "Attendance Rate",
       value: `${personalStats?.attendance_rate?.toFixed(1) || 0}%`,
-      description: "Training attendance",
+      description: "Training attendance rate",
       icon: <TrendingUp className="h-5 w-5 text-primary-foreground" />,
       color: "from-primary/80 via-primary/70 to-primary/60",
       bgColor: "bg-primary/6",
       borderColor: "border-primary/25",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       textAccent: "text-primary/90",
-    },
-    {
-      title: "Sessions Attended",
+    },    {
+      title: "Attended Sessions",
       value: personalStats?.attended_sessions || 0,
-      description: `Out of ${personalStats?.total_sessions_last_30_days || 0}`,
-      icon: <Clock className="h-5 w-5 text-accent-foreground" />,
-      color: "from-accent via-accent/90 to-accent/80",
-      bgColor: "bg-accent/8",
-      borderColor: "border-accent/30",
-      iconBg: "bg-accent",
-      textAccent: "text-accent",
+      description: "Sessions attended overall",
+      icon: <Clock className="h-5 w-5 text-secondary-foreground" />,
+      color: "from-secondary/80 via-secondary/70 to-secondary/60",
+      bgColor: "bg-secondary/6",
+      borderColor: "border-secondary/25",
+      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
+      textAccent: "text-secondary/90",
     },
   ];
 

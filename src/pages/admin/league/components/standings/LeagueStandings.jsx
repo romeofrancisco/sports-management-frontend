@@ -452,7 +452,7 @@ const LeagueStandings = ({ rankings }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="relative p-6">
+      <CardContent className="relative px-6">
         <DataTable
           columns={baseColumns}
           data={sortedRankings || []}

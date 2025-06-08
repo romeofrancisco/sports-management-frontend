@@ -4,9 +4,13 @@ import {
   Calendar,
   Users,
   Target,
+  Trophy,
+  TrendingUp,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import LeagueActions from "./LeagueActions";
 
 const LeagueCard = ({ league, index, viewMode }) => {
@@ -16,128 +20,258 @@ const LeagueCard = ({ league, index, viewMode }) => {
     navigate(`/leagues/${league.id}`);
   };
 
+  // Check if league is active
+  const isActive = league.status === "active" || !league.status;
+
   if (viewMode === "list") {
     return (
-      <Card
-        className="group relative bg-gradient-to-r from-card/90 via-card to-card/95 shadow-lg border-2 border-primary/10 transition-all duration-500 hover:shadow-xl hover:border-primary/30 hover:scale-[1.01] overflow-hidden cursor-pointer animate-in fade-in-50"
+      <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
         style={{
           animationDelay: `${index * 50}ms`,
           animationDuration: "500ms",
         }}
         onClick={handleCardClick}
       >
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {/* League color indicator */}
+        <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
+        
+        {/* Hover effects */}
+        <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+        
+        <CardHeader className="relative p-5 space-y-4">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3 flex-1">
+              {/* League Avatar/Logo */}
+              <div className="relative">
+                <Avatar className="h-12 w-12 ring-2 ring-primary/30 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/50">
+                  <AvatarImage src={league.logo} alt={league.name} />
+                  <AvatarFallback className="font-bold text-white bg-primary">
+                    {league.name[0]}
+                  </AvatarFallback>
+                </Avatar>
+                {/* League status indicator */}
+                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
+                    : 'bg-gradient-to-r from-amber-400 to-amber-500'
+                }`}></div>
+              </div>
 
-        <CardContent className="relative p-4">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-40 h-40 rounded-xl overflow-hidden bg-gradient-to-br from-muted/60 to-muted/40 border border-primary/10 flex-shrink-0">
-                <img
-                  src={league.logo}
-                  alt={league.name}
-                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110 p-4"
-                />
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                  {league.name}
+                </CardTitle>
+                
+                {/* Sport and status badges */}
+                <div className="flex items-center gap-2 mt-1">
+                  {league.sport?.name && (
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
+                    >
+                      {league.sport.name}
+                    </Badge>
+                  )}
+                  <Badge
+                    variant={isActive ? "default" : "secondary"}
+                    className={`text-xs font-medium px-2 py-0.5 ${
+                      isActive
+                        ? "bg-green-500/20 text-green-700 border-green-500/30"
+                        : "bg-amber-500/20 text-amber-700 border-amber-500/30"
+                    }`}
+                  >
+                    {league.status || "Active"}
+                  </Badge>
+                </div>                {/* League details */}
+                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 cursor-help">
+                        <Users className="h-3 w-3" />
+                        <span className="font-medium">{league.teams_count || 0} teams</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Total number of teams across all seasons
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 cursor-help">
+                        <Target className="h-3 w-3" />
+                        <span>{league.games_count || 0} games</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Total number of games played across all seasons
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 cursor-help">
+                        <TrendingUp className="h-3 w-3" />
+                        <span>{league.seasons_count || 0} seasons</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Total number of seasons for this league
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  {league.season && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1 cursor-help">
+                          <Calendar className="h-3 w-3" />
+                          <span className="truncate">{league.season}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Current or most recent season
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-300 truncate">
-                {league.name}
-              </h3>
-              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  <span>{league.teams_count || 0} Teams</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Target className="h-4 w-4" />
-                  <span>{league.games_count || 0} Games</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{league.season || "Current Season"}</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge
-                variant={league.status === "active" ? "default" : "secondary"}
-                className={
-                  league.status === "active"
-                    ? "bg-green-500/20 text-green-700 hover:bg-green-500/30"
-                    : ""
-                }
-              >
-                {league.status || "Active"}
-              </Badge>
+            
+            <div className="ml-2">
+              <LeagueActions league={league} />
             </div>
           </div>
-        </CardContent>
-
-        <LeagueActions league={league} />
+        </CardHeader>
       </Card>
     );
   }
 
+  // Grid view (card view)
   return (
-    <div
-      className="group relative aspect-square animate-in fade-in-50 cursor-pointer"
-      style={{ animationDelay: `${index * 100}ms`, animationDuration: "500ms" }}
+    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
+      style={{
+        animationDelay: `${index * 100}ms`,
+        animationDuration: "500ms",
+      }}
       onClick={handleCardClick}
     >
-      <Card className="relative h-full bg-gradient-to-br from-card/90 via-card to-card/95 shadow-lg border-2 border-primary/10 transition-all duration-500 hover:shadow-2xl hover:border-primary/30 hover:scale-[1.05] overflow-hidden">
-        {/* Enhanced background effects */}
-        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/8 to-transparent rounded-full blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-tr from-secondary/8 to-transparent rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
-
-        {/* Status Badge */}
-        <div className="absolute top-3 left-3 z-10">
+      {/* League color indicator */}
+      <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
+      
+      {/* Hover effects */}
+      <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+      
+      <CardHeader className="relative p-5 space-y-4">
+        {/* Status Badge and Actions */}
+        <div className="flex items-start justify-between">
           <Badge
-            variant={league.status === "active" ? "default" : "secondary"}
-            className={`text-xs ${
-              league.status === "active"
+            variant={isActive ? "default" : "secondary"}
+            className={`text-xs font-medium px-2 py-0.5 ${
+              isActive
                 ? "bg-green-500/20 text-green-700 border-green-500/30"
-                : "bg-muted text-muted-foreground"
+                : "bg-amber-500/20 text-amber-700 border-amber-500/30"
             }`}
           >
             {league.status || "Active"}
           </Badge>
+          <LeagueActions league={league} />
         </div>
 
-        <LeagueActions league={league} />
-
-        <CardContent className="relative p-6 h-full flex flex-col">
-          {/* Logo Section */}
-          <div className="flex-1 flex items-center justify-center mb-4">
-            <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-gradient-to-br from-muted/60 to-muted/40 border-2 border-primary/10 group-hover:border-primary/30 transition-all duration-300">
-              <img
-                src={league.logo}
-                alt={league.name}
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-3"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
+        {/* Logo Section */}
+        <div className="flex items-center justify-center">
+          <div className="relative">
+            <Avatar className="h-20 w-20 ring-2 ring-primary/30 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/50">
+              <AvatarImage src={league.logo} alt={league.name} />
+              <AvatarFallback className="font-bold text-2xl text-white bg-primary">
+                {league.name[0]}
+              </AvatarFallback>
+            </Avatar>
+            {/* League status indicator */}
+            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card shadow-sm ${
+              isActive 
+                ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
+                : 'bg-gradient-to-r from-amber-400 to-amber-500'
+            }`}></div>
           </div>
-          {/* League Info */}
-          <div className="space-y-2">
-            <h3 className="font-bold text-center text-foreground group-hover:text-primary transition-colors duration-300 truncate">
-              {league.name}
-            </h3>
+        </div>
 
-            <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Users className="h-3 w-3" />
-                <span>{league.teams_count || 0}</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
-              <div className="flex items-center gap-1">
-                <Target className="h-3 w-3" />
-                <span>{league.games_count || 0}</span>
-              </div>
+        {/* League Info */}
+        <div className="space-y-2 text-center">
+          <CardTitle className="text-sm font-bold text-foreground group-hover:text-primary transition-colors duration-300 truncate">
+            {league.name}
+          </CardTitle>
+
+          {/* Sport badge */}
+          {league.sport?.name && (
+            <div className="flex justify-center">
+              <Badge 
+                variant="secondary" 
+                className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
+              >
+                {league.sport.name}
+              </Badge>
             </div>
+          )}          {/* Statistics */}
+          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1 cursor-help">
+                  <Users className="h-3 w-3" />
+                  <span className="font-medium">{league.teams_count || 0}</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total teams across all seasons</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1 cursor-help">
+                  <Target className="h-3 w-3" />
+                  <span className="font-medium">{league.games_count || 0}</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total games played</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1 cursor-help">
+                  <TrendingUp className="h-3 w-3" />
+                  <span className="font-medium">{league.seasons_count || 0}</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Number of seasons</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            {league.season && (
+              <>
+                <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 cursor-help">
+                      <Trophy className="h-3 w-3" />
+                      <span className="font-medium truncate max-w-16">{league.season}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Current/Recent season: {league.season}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </>
+            )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardHeader>
+    </Card>
   );
 };
 

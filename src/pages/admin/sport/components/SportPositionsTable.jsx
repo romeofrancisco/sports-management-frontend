@@ -182,7 +182,7 @@ const SportPositionsTable = () => {
             columns={columns}
             data={filteredPositions || []}
             className="text-sm"
-            pagination={true}
+            showPagination={false}
             pageSize={8}
             alternateRowColors={true}
             emptyMessage={

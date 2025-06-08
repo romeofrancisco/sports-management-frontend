@@ -147,7 +147,7 @@ export const getStreakChartData = (sanitizedPerformance, isSetsScoring) => {
   const streakTeams = [...sanitizedPerformance]
     .filter(team => team.max_streak > 0)
     .sort((a, b) => b.max_streak - a.max_streak)
-    .slice(0, 6); // Limit to top 6 teams for readability
+    .slice(0, 5); // Limit to top 6 teams for readability
     
   if (streakTeams.length === 0) 
     return { labels: [], datasets: [] };

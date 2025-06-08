@@ -15,10 +15,11 @@ export const useCreateBracket = (leagueId, seasonId) => {
   });
 };
 
-export const useBracket = (leagueId, seasonId) => {
+export const useBracket = (leagueId, seasonId, options = {}) => {
   return useQuery({
     queryKey: ["bracket", leagueId, seasonId],
     queryFn: () => fetchBracket(seasonId),
-    enabled: !!seasonId,
+    enabled: !!seasonId && (options.enabled !== false),
+    ...options,
   });
 };

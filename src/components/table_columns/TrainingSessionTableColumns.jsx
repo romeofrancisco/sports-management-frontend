@@ -47,10 +47,10 @@ const getTrainingSessionTableColumns = ({
       return `${formatTo12HourTime(start)} - ${formatTo12HourTime(end)}`;
     },
   },
-  {
-    header: "Coach",
-    accessorKey: "coach_name",
-  },
+  // {
+  //   header: "Coach",
+  //   accessorKey: "coach_name",
+  // },
   {
     header: "Team",
     accessorKey: "team_name",

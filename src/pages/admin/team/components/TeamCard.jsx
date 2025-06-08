@@ -13,7 +13,7 @@ const TeamCard = ({ team, onView, onEdit, onDelete }) => {  // Get team color fo
   const hasCoach = team.coach_name || team.coach?.full_name;
   
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30">
+    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30">
       {/* Enhanced team color indicator */}
       <div 
         className="absolute top-0 right-0 w-3 h-full opacity-80"

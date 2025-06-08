@@ -89,7 +89,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="relative p-6">
+        <CardContent className="relative px-6">
           {/* Date Navigation Bar - enhanced with shadow */}
           <div className="bg-card rounded-xl shadow-md p-1 mb-6">
             <DateNavigationBar

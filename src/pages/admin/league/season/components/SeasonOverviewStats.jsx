@@ -2,7 +2,11 @@ import React from "react";
 import { Calendar, Users, Goal, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getSeasonProgress, formatDate, getStatusColor } from "@/utils/seasonUtils";
+import {
+  getSeasonProgress,
+  formatDate,
+  getStatusColor,
+} from "@/utils/seasonUtils";
 
 const SeasonOverviewStats = ({ seasonDetails }) => {
   if (!seasonDetails) return null;
@@ -14,39 +18,38 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
   const formattedStartDate = seasonDetails.start_date
     ? `Started on ${formatDate(seasonDetails.start_date)}`
     : "";
-  const teamsCount = seasonDetails?.teams_count || seasonDetails?.teams_list?.length || 0;
-
-  const statsData = [
-    {
+  const teamsCount =
+    seasonDetails?.teams_count || seasonDetails?.teams_list?.length || 0;
+  const statsData = [    {
       title: "Season Status",
-      value: seasonDetails.status || "upcoming",
+      value: seasonDetails.status ? seasonDetails.status.charAt(0).toUpperCase() + seasonDetails.status.slice(1) : "Upcoming",
       icon: Calendar,
       description: formattedStartDate,
       color: "from-primary via-primary/90 to-primary/80",
       iconBg: "bg-primary",
-      iconColor: getStatusColor(seasonDetails.status || "upcoming"),
+      iconColor: "text-primary",
       progress: seasonDetails.status === "ongoing" ? seasonProgress : null,
       progressLabel: "Season Progress",
-      badge: seasonDetails.status,
     },
     {
       title: "Teams",
       value: teamsCount,
       icon: Users,
-      description: seasonDetails.top_team
-        ? `Current leader: ${seasonDetails.top_team}`
-        : "No leader yet",
+      description: "Total teams in this season",
       color: "from-secondary via-secondary/90 to-secondary/80",
       iconBg: "bg-secondary",
       iconColor: "text-secondary",
     },
     {
       title: "Games Progress",
-      value: `${seasonDetails.games_played || 0}/${seasonDetails.games_count || 0}`,
+      value: `${seasonDetails.games_played || 0}/${
+        seasonDetails.games_count || 0
+      }`,
       icon: Goal,
-      description: seasonDetails.games_played && seasonDetails.games_count
-        ? `${gamesProgress}% completed`
-        : "No games played yet",
+      description:
+        seasonDetails.games_played && seasonDetails.games_count
+          ? `${gamesProgress}% completed`
+          : "No games played yet",
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
@@ -81,7 +84,6 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
               ></div>
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/15 to-transparent rounded-full blur-2xl opacity-60"></div>
               <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-xl opacity-40"></div>
-
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative">
                 <CardTitle className="text-sm font-semibold text-foreground">
                   {stat.title}
@@ -91,8 +93,7 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
                 >
                   <Icon className="h-5 w-5 text-primary-foreground" />
                 </div>
-              </CardHeader>
-
+              </CardHeader>{" "}
               <CardContent className="relative z-10">
                 <div
                   className={`text-2xl md:text-3xl font-bold ${stat.iconColor} drop-shadow-sm tracking-tight`}
@@ -104,7 +105,6 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
                 <p className="text-xs text-muted-foreground mt-3 font-medium tracking-wide">
                   {stat.description}
                 </p>
-                
                 {/* Progress bar for applicable stats */}
                 {stat.progress && (
                   <div className="mt-3">
@@ -119,8 +119,7 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
                       ></div>
                     </div>
                   </div>
-                )}
-
+                )}{" "}
                 {/* Badge for status */}
                 {stat.badge && stat.title === "Season Status" && (
                   <div className="mt-2">

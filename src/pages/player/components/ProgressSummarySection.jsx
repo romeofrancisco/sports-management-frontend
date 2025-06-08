@@ -7,29 +7,75 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+    import { usePlayerRadarChart } from "@/hooks/useTrainings";
 
 /**
- * Progress summary section for player dashboard
+ * Enhanced Progress summary section for player dashboard
  */
-const ProgressSummarySection = ({ progress }) => {
-  const summaryCards = [
+const ProgressSummarySection = ({ progress, playerId }) => {
+  // Get date range for radar chart (last 30 days)
+  const getDefaultDateRange = () => {
+    const to = new Date();
+    const from = new Date();
+    from.setDate(from.getDate() - 30);
+
+    return {
+      date_from: from.toISOString().split("T")[0],
+      date_to: to.toISOString().split("T")[0],
+    };
+  };
+
+  const dateRange = getDefaultDateRange();
+
+  // Fetch radar chart data for best category calculation
+  const {
+    data: radarData,
+    isLoading: isRadarLoading,
+  } = usePlayerRadarChart(playerId, dateRange, !!playerId);
+
+  // Helper function to find the best category from radar chart data
+  const getBestCategory = () => {
+    if (!radarData?.categories || radarData.categories.length === 0) {
+      return null;
+    }
+
+    // Find the category with the highest average_improvement
+    let bestCategory = null;
+    let highestImprovement = -Infinity;
+
+    radarData.categories.forEach((category) => {
+      if (
+        category.average_improvement !== undefined &&
+        category.average_improvement !== null
+      ) {
+        const improvement = parseFloat(category.average_improvement);
+        if (improvement > highestImprovement) {
+          highestImprovement = improvement;
+          bestCategory = category;
+        }
+      }
+    });
+
+    return bestCategory;
+  };
+
+  const bestCategory = getBestCategory();  const summaryCards = [
     {
       title: "Metrics Tracked",
       value: progress?.progress_summary?.total_metrics || 0,
+      description: "Performance indicators monitored",
       color: "text-primary",
       bgColor: "bg-primary/10",
-    },
-    {
-      title: "Avg Improvement",
-      value: `${progress?.progress_summary?.average_improvement?.toFixed(1) || 0}%`,
-      color: "text-secondary",
-      bgColor: "bg-secondary/10",
-    },
-    {
-      title: "Goals Achieved",
-      value: progress?.progress_summary?.goals_achieved || 0,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+    },    {
+      title: "Recent Improvement",
+      value: `${progress?.progress_summary?.recent_improvement?.toFixed(1) || 0}%`,
+      description: "Last 90 days progress",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
     },
   ];
 
@@ -37,29 +83,41 @@ const ProgressSummarySection = ({ progress }) => {
     return null;
   }
 
-  return (
-    <Card className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-secondary/3 to-transparent" />
-      <CardHeader className="relative z-10">
-        <CardTitle className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-secondary shadow-lg">
-            <TrendingUp className="h-4 w-4 text-secondary-foreground" />
+  return (    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-secondary shadow-lg">
+            <TrendingUp className="h-5 w-5 text-secondary-foreground" />
           </div>
-          Progress Summary
-        </CardTitle>
-        <CardDescription>Overview of your development</CardDescription>
+          <div>
+            <CardTitle className="text-lg font-semibold text-gradient">
+              Progress Summary
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Overview of your development progress
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent className="relative z-10">
-        <div className="grid gap-4 md:grid-cols-3">
+      <CardContent>        <div className="grid gap-4 md:grid-cols-2">
           {summaryCards.map((card, index) => (
             <div
               key={index}
-              className={`text-center p-4 border rounded-lg ${card.bgColor} backdrop-blur-sm transition-all duration-200 hover:scale-105`}
+              className={`relative overflow-hidden border-2 ${card.borderColor} rounded-xl p-4 ${card.bgColor} transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group`}
             >
-              <div className={`text-2xl font-bold ${card.color}`}>
-                {card.value}
+              {/* Enhanced background effects */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative z-10 text-center">
+                <div className={`text-2xl font-bold ${card.color} mb-1`}>
+                  {card.value}
+                </div>
+                <div className="text-sm text-muted-foreground font-medium">
+                  {card.title}
+                </div>
+                <div className="text-xs text-muted-foreground/70 mt-1">
+                  {card.description}
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">{card.title}</div>
             </div>
           ))}
         </div>

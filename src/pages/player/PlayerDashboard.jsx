@@ -1,18 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { usePlayerOverview, usePlayerProgress } from "@/api/dashboardApi";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-} from "chart.js";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 
 // Import refactored components using index files for cleaner imports
@@ -20,25 +8,12 @@ import {
   DashboardSkeleton,
   OverviewCards,
   PlayerProfileSection,
-  UpcomingGamesSection,
+  UpcomingActivitiesSection,
   RecentMetricsSection,
   PersonalProgressSection,
   ProgressSummarySection,
 } from "./components";
 import { ChartsSection } from "./charts";
-
-// Register Chart.js components
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title
-);
 
 const PlayerDashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -106,29 +81,26 @@ const PlayerDashboard = () => {
                 teamInfo={teamInfo}
               />
             </div>
-
-            {/* Personal Progress Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
-              <PersonalProgressSection progress={progress} />
+            {/* Charts Section */}
+            <div className="animate-in fade-in-50 duration-500 delay-500">
+              <ChartsSection user={user} overview={overview} />
             </div>
 
-            {/* Progress Summary */}
-            <div className="animate-in fade-in-50 duration-500 delay-400">
-              <ProgressSummarySection progress={progress} />
-            </div>            {/* Charts Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-500">
-              <ChartsSection
-                user={user}
-                overview={overview}
-              />
+            {/* Upcoming Activities */}
+            <div className="animate-in fade-in-50 duration-500 delay-200">
+              <UpcomingActivitiesSection overview={overview} />
             </div>
           </div>
 
           {/* Right Column - Secondary Content */}
           <div className="xl:col-span-1 space-y-6">
-            {/* Upcoming Games */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
-              <UpcomingGamesSection overview={overview} />
+            {/* Progress Summary */}
+            <div className="animate-in fade-in-50 duration-500 delay-400">
+              <ProgressSummarySection progress={progress} playerId={user?.id} />
+            </div>
+            {/* Personal Progress Section */}
+            <div className="animate-in fade-in-50 duration-500 delay-300">
+              <PersonalProgressSection progress={progress} />
             </div>
 
             {/* Recent Metrics */}

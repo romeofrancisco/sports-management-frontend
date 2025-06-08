@@ -43,10 +43,10 @@ const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range
   return (
     <div className="space-y-6">
       {/* Progress and Radar Charts */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-5">
         {/* Progress Chart */}
         {user?.id && (
-          <Card className="relative overflow-hidden col-span-2">
+          <Card className="relative overflow-hidden col-span-3">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent" />
             <CardHeader className="relative z-10">
               <CardTitle className="flex items-center gap-2">
@@ -79,7 +79,7 @@ const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range
         
         {/* Radar Chart */}
         {user?.id && (
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden col-span-2">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-secondary/3 to-transparent" />
             <CardHeader className="relative z-10">
               <CardTitle className="flex items-center gap-2">
