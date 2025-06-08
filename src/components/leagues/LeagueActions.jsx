@@ -66,7 +66,7 @@ const LeagueActions = ({ league }) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 absolute right-2 top-2 z-10 bg-background/90 backdrop-blur-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-105 transition-all duration-300 shadow-lg"
+            className="h-8 w-8 p-0 absolute right-4 top-0 z-10 bg-background/90 backdrop-blur-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-105 transition-all duration-300"
           >
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />

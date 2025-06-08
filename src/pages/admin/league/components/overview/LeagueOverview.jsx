@@ -78,8 +78,6 @@ const LeagueOverview = ({ league, sport }) => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
           <div className="xl:col-span-2 space-y-6">
-            {/* League Standings Section */}
-            <LeagueStandingsSection league={league} />
             {/* League Statistics Charts */}
             <LeagueCharts leagueId={league} sport={sport} />
             {/* Game Highlights section */}

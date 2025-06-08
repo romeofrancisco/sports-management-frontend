@@ -26,6 +26,13 @@ import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
+import { Navigate, useParams } from "react-router-dom";
+
+// Component to redirect to stats section
+const SportRedirect = () => {
+  const { sport } = useParams();
+  return <Navigate to={`/sports/${sport}/stats`} replace />;
+};
 
 export const adminRoutes = [
   {
@@ -35,9 +42,24 @@ export const adminRoutes = [
   {
     path: "/sports",
     element: <SportsList />,
+  },  {
+    path: "/sports/:sport",
+    element: <SportRedirect />,
   },
   {
-    path: "/sports/:sport",
+    path: "/sports/:sport/stats",
+    element: <SportDetails />,
+  },
+  {
+    path: "/sports/:sport/formulas",
+    element: <SportDetails />,
+  },
+  {
+    path: "/sports/:sport/leaders",
+    element: <SportDetails />,
+  },
+  {
+    path: "/sports/:sport/positions",
     element: <SportDetails />,
   },
   {

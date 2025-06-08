@@ -24,7 +24,7 @@ const SportsContainer = () => {
     setSelectedSport(sport);
     modals.delete.openModal();
   };  return (
-    <div className="container mx-auto p-4 md:p-6">
+    <>
       <div className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden rounded-lg min-h-[calc(100vh-10.5rem)]">
         <div className="relative p-4 md:p-6">
           {isLoading ? (
@@ -53,7 +53,7 @@ const SportsContainer = () => {
         isOpen={modals.delete.isOpen}
         onClose={modals.delete.closeModal}
       />
-    </div>
+    </>
   );
 };
 

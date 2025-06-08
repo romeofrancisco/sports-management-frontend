@@ -1,11 +1,10 @@
 import React from "react";
-import UniversityPageHeader from "@/components/common/UniversityPageHeader";
+import SportDetailsHeader from "./components/SportDetailsHeader";
 import SportStatsView from "./components/SportStatsView";
 import SportFormulasView from "./components/SportFormulasView";
 import SportLeadersView from "./components/SportLeadersView";
 import SportPositionsView from "./components/SportPositionsView";
 import { useParams, Link, useLocation } from "react-router-dom";
-import { useSportDetails } from "@/hooks/useSports";
 import { cn } from "@/lib/utils";
 import {
   CheckCircle,
@@ -17,7 +16,6 @@ import {
 const Sport = () => {
   const { sport } = useParams();
   const location = useLocation();
-  const { data: sportDetails } = useSportDetails(sport);
   
   // Get current page from URL path
   const currentPath = location.pathname;
@@ -79,16 +77,10 @@ const Sport = () => {
         return <SportStatsView />;
     }
   };
+
   return (
-    <div className="md:p-6">
-      <UniversityPageHeader
-        title={sportDetails?.name || sport}
-        subtitle="Sport Management"
-        description="Manage sport statistics, formulas, leader categories, and player positions"
-        showBackButton={true}
-        backButtonText="Back to Sports"
-        backButtonPath="/sports"
-      />
+    <div className="w-full max-w-screen overflow-x-hidden bg-background">
+      <SportDetailsHeader />
 
       <div className="container mx-auto px-4 py-6">
         {/* Navigation Links */}

@@ -9,13 +9,12 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
     isLoading,
     error,
   } = usePlayerRadarChart(playerId, dateRange, !!playerId);
-
   if (isLoading) {
     return (
       <Card className={`${className}`}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <PieChart className="h-5 w-5 text-secondary" />
+            <PieChart className="h-5 w-5 text-primary dark:text-secondary" />
             Radar Analysis Summary
           </CardTitle>
         </CardHeader>
@@ -34,11 +33,12 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
       <Card className={`${className}`}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <PieChart className="h-5 w-5 text-secondary" />
+            <PieChart className="h-5 w-5 text-primary dark:text-secondary" />
             Radar Analysis Summary
           </CardTitle>
         </CardHeader>
-        <CardContent>          <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-lg border border-gray-200/50 dark:border-gray-700/50">
+        <CardContent>
+          <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-lg border border-gray-200/50 dark:border-gray-700/50">
             <div className="text-center space-y-3">
               <div className="mx-auto w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                 <PieChart className="w-6 h-6 text-gray-400 dark:text-gray-500" />
@@ -48,7 +48,8 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
                   No Analysis Data
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  Performance insights will appear when sufficient data is available
+                  Performance insights will appear when sufficient data is
+                  available
                 </p>
               </div>
             </div>
@@ -60,23 +61,33 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
 
   // Find best and areas for improvement
   const categories = radarData.categories || [];
-  const bestCategory = categories.reduce((best, current) => 
-    current.average_improvement > (best?.average_improvement || -Infinity) ? current : best
-  , null);
-  
-  const needsImprovement = categories.reduce((worst, current) => 
-    current.average_improvement < (worst?.average_improvement || Infinity) ? current : worst
-  , null);
+  const bestCategory = categories.reduce(
+    (best, current) =>
+      current.average_improvement > (best?.average_improvement || -Infinity)
+        ? current
+        : best,
+    null
+  );
 
-  const averagePerformance = categories.length > 0 
-    ? categories.reduce((sum, cat) => sum + cat.performance_score, 0) / categories.length 
-    : 0;
+  const needsImprovement = categories.reduce(
+    (worst, current) =>
+      current.average_improvement < (worst?.average_improvement || Infinity)
+        ? current
+        : worst,
+    null
+  );
+
+  const averagePerformance =
+    categories.length > 0
+      ? categories.reduce((sum, cat) => sum + cat.performance_score, 0) /
+        categories.length
+      : 0;
 
   return (
     <Card className={`${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <PieChart className="h-5 w-5 text-secondary" />
+          <PieChart className="h-5 w-5 text-primary dark:text-secondary" />
           Radar Analysis Summary
         </CardTitle>
       </CardHeader>
@@ -84,58 +95,66 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
         <div className="space-y-4">
           {/* Best Performing Category */}
           {bestCategory && (
-            <div className="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-secondary/20 dark:to-secondary/10 rounded-lg border border-primary/20 dark:border-secondary/30">
               <div className="flex items-center gap-2 mb-2">
-                <Star className="w-4 h-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
+                <Star className="w-4 h-4 text-primary dark:text-secondary" />
+                <span className="text-sm font-medium text-primary dark:text-secondary">
                   Best Category
                 </span>
               </div>
-              <p className="text-xs text-yellow-600 dark:text-yellow-400">
-                <span className="font-semibold">{bestCategory.category_name}</span> with{" "}
-                {bestCategory.average_improvement.toFixed(1)}% improvement
-              </p>
-            </div>
-          )}          {/* Overall Performance */}
-          {categories.length > 0 && (
-            <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
-              <div className="flex items-center gap-2 mb-2">
-                <Activity className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  Overall Performance
+              <p className="text-xs text-primary/80 dark:text-secondary/70">
+                <span className="font-semibold">
+                  {bestCategory.category_name}
                 </span>
-              </div>
-              <p className="text-xs text-blue-600 dark:text-blue-400">
-                Average score of {averagePerformance.toFixed(1)}/100 across {categories.length} categories
+                with {bestCategory.average_improvement.toFixed(1)}% improvement
               </p>
             </div>
           )}
-
+          {/* Overall Performance */}
+          {categories.length > 0 && (
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-secondary/20 dark:to-secondary/10 rounded-lg border border-primary/20 dark:border-secondary/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-4 h-4 text-primary dark:text-secondary" />
+                <span className="text-sm font-medium text-primary dark:text-secondary">
+                  Overall Performance
+                </span>
+              </div>
+              <p className="text-xs text-primary/80 dark:text-secondary/70">
+                Average score of {averagePerformance.toFixed(1)}/100 across
+                {categories.length} categories
+              </p>
+            </div>
+          )}
           {/* Improvement Area */}
           {needsImprovement && needsImprovement !== bestCategory && (
-            <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/30 rounded-lg border border-orange-200/50 dark:border-orange-800/50">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-secondary/20 dark:to-secondary/10 rounded-lg border border-primary/20 dark:border-secondary/30">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-orange-600" />
-                <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                <TrendingUp className="w-4 h-4 text-primary dark:text-secondary" />
+                <span className="text-sm font-medium text-primary dark:text-secondary">
                   Focus Area
                 </span>
               </div>
-              <p className="text-xs text-orange-600 dark:text-orange-400">
-                <span className="font-semibold">{needsImprovement.category_name}</span> needs attention with{" "}
+              <p className="text-xs text-primary/80 dark:text-secondary/70">
+                <span className="font-semibold">
+                  {needsImprovement.category_name}
+                </span>
+                needs attention with
                 {needsImprovement.average_improvement.toFixed(1)}% change
               </p>
             </div>
-          )}          {/* Categories Summary */}
+          )}
+          {/* Categories Summary */}
           {categories.length > 0 && (
-            <div className="p-4 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-secondary/20 dark:to-secondary/10 rounded-lg border border-primary/20 dark:border-secondary/30">
               <div className="flex items-center gap-2 mb-2">
-                <PieChart className="w-4 h-4 text-purple-600" />
-                <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                <PieChart className="w-4 h-4 text-primary dark:text-secondary" />
+                <span className="text-sm font-medium text-primary dark:text-secondary">
                   Coverage
                 </span>
               </div>
-              <p className="text-xs text-purple-600 dark:text-purple-400">
-                Tracking {categories.length} training categories with detailed metrics analysis
+              <p className="text-xs text-primary/80 dark:text-secondary/70">
+                Tracking {categories.length} training categories with detailed
+                metrics analysis
               </p>
             </div>
           )}

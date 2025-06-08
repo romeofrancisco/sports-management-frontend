@@ -31,7 +31,7 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 p-0 absolute right-2 top-2"
+          className="h-8 w-8 p-0 absolute right-4 -top-2"
         >
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
@@ -51,7 +51,6 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
         <DropdownMenuItem
           variant="destructive"
           onClick={() => handleAction(() => onDelete(sport))}
-          className="text-destructive"
         >
           <Trash className="mr-2 h-4 w-4" />
           Delete Sport

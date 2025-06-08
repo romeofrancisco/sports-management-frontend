@@ -1,18 +1,16 @@
 import React, { useMemo } from "react";
 import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { 
-  PointsAnalysisChart, 
-  WinStreakChart, 
-  PerformanceDifferentialChart 
+import {
+  PointsAnalysisChart,
+  WinStreakChart,
+  PerformanceDifferentialChart,
 } from "./index";
-import { 
-  prepareChartData
-} from "./utils";
+import { prepareChartData } from "./utils";
 
 /**
  * Container component for all season charts
- * @param {Array} teamPerformance - Team performance data 
+ * @param {Array} teamPerformance - Team performance data
  * @param {boolean} isSetsScoring - Whether the sport uses sets scoring
  */
 const SeasonChartsContainer = ({ teamPerformance, isSetsScoring }) => {
@@ -20,14 +18,14 @@ const SeasonChartsContainer = ({ teamPerformance, isSetsScoring }) => {
   const { pointsData, streakData, differentialData } = useMemo(() => {
     return prepareChartData(teamPerformance, isSetsScoring);
   }, [teamPerformance, isSetsScoring]);
-    // If no team performance data is available, show empty state
+  // If no team performance data is available, show empty state
   if (!teamPerformance || teamPerformance.length === 0) {
     return (
       <Card className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-gradient-to-br backdrop-blur-sm animate-in fade-in-50 duration-500 delay-200">
         {/* Enhanced Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5 opacity-8"></div>
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-40"></div>
-        
+
         <CardHeader className="relative z-10">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
@@ -37,11 +35,14 @@ const SeasonChartsContainer = ({ teamPerformance, isSetsScoring }) => {
           </div>
         </CardHeader>
         <CardContent className="h-64 flex items-center justify-center relative z-10">
-          <p className="text-muted-foreground">No team performance data available</p>
+          <p className="text-muted-foreground">
+            No team performance data available
+          </p>
         </CardContent>
       </Card>
     );
-  }return (
+  }
+  return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden animate-in fade-in-50 duration-500 delay-200">
       {/* Enhanced background effects */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
@@ -63,22 +64,19 @@ const SeasonChartsContainer = ({ teamPerformance, isSetsScoring }) => {
 
       <CardContent className="relative space-y-6">
         {/* Points Analysis and Win Streak Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PointsAnalysisChart 
-            data={pointsData} 
-            isSetsScoring={isSetsScoring} 
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <PerformanceDifferentialChart
+            data={differentialData}
+            isSetsScoring={isSetsScoring}
           />
-          <WinStreakChart 
-            data={streakData} 
-            isSetsScoring={isSetsScoring} 
-          />
+          <WinStreakChart data={streakData} isSetsScoring={isSetsScoring} />
         </div>
 
         {/* Performance Differential Chart Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <PerformanceDifferentialChart 
-            data={differentialData} 
-            isSetsScoring={isSetsScoring} 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <PointsAnalysisChart
+            data={pointsData}
+            isSetsScoring={isSetsScoring}
           />
         </div>
       </CardContent>
