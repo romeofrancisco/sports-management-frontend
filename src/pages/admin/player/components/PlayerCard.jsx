@@ -19,7 +19,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
   const allPositions =
     player.positions?.map((pos) => pos.abbreviation).join(", ") || "N/A";
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30">
+    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30">
       {/* University color indicator  */}
       <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
 

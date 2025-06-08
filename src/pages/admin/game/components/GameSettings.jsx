@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Clock, Replace, Settings, ChartColumn, Flag } from "lucide-react";
+import {
+  Clock,
+  Replace,
+  Settings,
+  ChartColumn,
+  Flag,
+  Undo2,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,10 +24,12 @@ import CompleteGameConfirmation from "@/components/modals/CompleteGameConfirmati
 import SubstitutionModal from "@/components/modals/SubstitutionModal";
 import { reset } from "@/store/slices/playerStatSlice";
 import { getPeriodLabel } from "@/constants/sport";
+import { useUndoLastStat } from "@/hooks/useStats";
 
 const GameSettings = () => {
   const dispatch = useDispatch();
   const { scoring_type } = useSelector((state) => state.sport);
+  const { game_id } = useSelector((state) => state.game);
   const period = getPeriodLabel(scoring_type);
 
   const modals = {
@@ -30,12 +39,20 @@ const GameSettings = () => {
     completeGame: useModal(),
   };
 
+  const undoLastStatMutation = useUndoLastStat(game_id);
+
   const [open, setOpen] = React.useState(false);
 
   const handleStatAction = (modalType) => {
-    dispatch(reset());  // Reset stats before opening any stat-related modal
+    dispatch(reset()); // Reset stats before opening any stat-related modal
     modals[modalType].openModal();
     setOpen(false); // Close the dropdown menu when opening a modal
+  };
+  const handleUndoLastStat = () => {
+    if (game_id) {
+      undoLastStatMutation.mutate();
+    }
+    setOpen(false); // Close the dropdown menu
   };
 
   return (
@@ -50,7 +67,7 @@ const GameSettings = () => {
           >
             <Settings className="h-5 w-5" />
           </Button>
-        </DropdownMenuTrigger>
+        </DropdownMenuTrigger>{" "}
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Game Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -61,6 +78,18 @@ const GameSettings = () => {
           <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
             <Replace className="mr-2 h-4 w-4" />
             <span>Substitution</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={handleUndoLastStat}
+            disabled={undoLastStatMutation.isPending}
+          >
+            <Undo2 className="mr-2 h-4 w-4" />
+            <span>
+              {undoLastStatMutation.isPending
+                ? "Undoing..."
+                : "Undo Stat Record"}
+            </span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleStatAction("nextPeriod")}>

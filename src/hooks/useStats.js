@@ -6,6 +6,7 @@ import {
   fetchTeamStatsSummary,
   fetchTeamStatsComparison,
   fetchBoxscore,
+  undoLastStat,
 } from "@/api/statsApi";
 import {
   createSportStats,
@@ -152,6 +153,62 @@ export const useUpdateSportStats = () => {
         richColors: true,
       });
       queryClient.invalidateQueries(["sport-stats"]);
+    },
+  });
+};
+
+export const useUndoLastStat = (gameId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => {
+      return undoLastStat(gameId);
+    },
+
+    onMutate: async () => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: ["game-details", gameId],
+        exact: true,
+      });
+
+      // Snapshot the previous value for rollback
+      const previousGame = queryClient.getQueryData(["game-details", gameId]);
+      return { previousGame };
+    },
+
+    onSuccess: (data) => {
+      // Show success message with details of what was undone
+      toast.success("Stat Undone", {
+        description: `Removed ${data.undone_stat.stat_type} for ${data.undone_stat.player_name}`,
+        richColors: true,
+      });
+    },
+
+    onError: (error, variables, context) => {
+      // Rollback optimistic update if needed
+      if (context?.previousGame) {
+        queryClient.setQueryData(
+          ["game-details", gameId],
+          context.previousGame
+        );
+      }
+
+      // Show error message
+      const errorMessage = error?.response?.data?.error || "Failed to undo stat";
+      toast.error("Error", {
+        description: errorMessage,
+        richColors: true,
+      });
+    },
+
+    onSettled: () => {
+      // Invalidate and refetch all related queries
+      queryClient.invalidateQueries(["game-details", gameId]);
+      queryClient.invalidateQueries(["player-summary-stats"]);
+      queryClient.invalidateQueries(["team-summary-stats", gameId]);
+      queryClient.invalidateQueries(["team-comparison-stats", gameId]);
+      queryClient.invalidateQueries(["box-score", gameId]);
     },
   });
 };

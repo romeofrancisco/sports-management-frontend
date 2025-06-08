@@ -25,7 +25,7 @@ const LeagueCard = ({ league, index, viewMode }) => {
 
   if (viewMode === "list") {
     return (
-      <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
+      <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
         style={{
           animationDelay: `${index * 50}ms`,
           animationDuration: "500ms",
@@ -147,7 +147,7 @@ const LeagueCard = ({ league, index, viewMode }) => {
 
   // Grid view (card view)
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
+    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
       style={{
         animationDelay: `${index * 100}ms`,
         animationDuration: "500ms",

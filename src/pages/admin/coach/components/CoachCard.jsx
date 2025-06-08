@@ -17,7 +17,7 @@ const CoachCard = ({ coach, onDelete, onUpdate }) => {
   const teamCount = coach.teams?.length || 0;
 
   return (
-    <Card className="w-full max-w-sm h-[400px] flex flex-col bg-gradient-to-br from-card via-card/90 to-primary/5 border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:border-primary/30 group overflow-hidden relative">
+    <Card className="w-full max-w-sm h-[400px] flex flex-col bg-gradient-to-br from-card via-card/90 to-primary/5 border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-primary/30 group overflow-hidden relative">
       {/* Background Effects */}
       <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
       <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>

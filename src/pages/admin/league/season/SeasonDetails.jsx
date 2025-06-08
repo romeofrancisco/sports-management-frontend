@@ -22,9 +22,9 @@ import { Badge } from "@/components/ui/badge";
 const SeasonDetails = () => {
   const { league, season } = useParams();
   const location = useLocation();
-    // Get current page from URL path
+  // Get current page from URL path
   const currentPath = location.pathname;
-  
+
   const getCurrentPage = () => {
     if (currentPath.includes("/standings")) return "standings";
     if (currentPath.includes("/games")) return "games";
@@ -58,7 +58,6 @@ const SeasonDetails = () => {
   if (isError) return <PageError />;
 
   const { sport } = leagueDetails;
-
   // Navigation items for the season details
   const navigationItems = [
     {
@@ -70,7 +69,7 @@ const SeasonDetails = () => {
     },
     {
       key: "standings",
-      label: "Standings", 
+      label: "Standings",
       path: `/leagues/${league}/seasons/${season}/standings`,
       description: "Team standings and rankings",
       icon: BarChart3,
@@ -81,25 +80,22 @@ const SeasonDetails = () => {
       path: `/leagues/${league}/seasons/${season}/games`,
       description: "All games in this season",
       icon: Target,
-    },    {
+    },
+    {
       key: "teams",
       label: "Teams",
       path: `/leagues/${league}/seasons/${season}/teams`,
       description: "Teams participating in this season",
       icon: Users,
     },
-  ];
-
-  // Add bracket navigation item if season has bracket
-  if (seasonDetails.has_bracket) {
-    navigationItems.push({
+    {
       key: "bracket",
       label: "Bracket",
       path: `/leagues/${league}/seasons/${season}/bracket`,
       description: "Tournament bracket",
       icon: Trophy,
-    });
-  }
+    },
+  ];
 
   // Render content based on current page
   const renderContent = () => {
@@ -113,14 +109,14 @@ const SeasonDetails = () => {
       case "teams":
         return <SeasonTeams seasonId={season} leagueId={league} />;
       case "bracket":
-        return seasonDetails.has_bracket ? (
-          <BracketView season={seasonDetails} leagueId={league} />
-        ) : null;
+        return <BracketView season={seasonDetails} leagueId={league} />;
+
       default:
-        return <SeasonOverview seasonDetails={seasonDetails} sport={sport} />;    }
+        return <SeasonOverview seasonDetails={seasonDetails} sport={sport} />;
+    }
   };
 
-  const getStatusColor= (status) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "ongoing":
         return "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300";

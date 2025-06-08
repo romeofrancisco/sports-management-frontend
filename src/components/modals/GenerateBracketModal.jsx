@@ -20,7 +20,6 @@ import { Button } from "../ui/button";
 import { useForm, Controller } from "react-hook-form";
 import { useCreateBracket } from "@/hooks/useBrackets";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router";
 
 const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
   const { mutate: createBracket, isPending } = useCreateBracket(league, season);
@@ -36,16 +35,11 @@ const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
     mode: "onBlur",
   });
 
-  const navigate = useNavigate();
-
   const onSubmit = (data) => {
     createBracket(data, {
       onSuccess: () => {
-        // Navigate to the bracket page and close the modal
-        navigate(`/leagues/${league}/seasons/${season}/bracket`);
         onClose();
       },
-      onError: () => {},
     });
   };
 

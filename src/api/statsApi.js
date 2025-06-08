@@ -115,3 +115,17 @@ export const fetchBoxscore = async (gameId) => {
     throw error;
   }
 };
+
+export const undoLastStat = async (gameId) => {
+  try {
+    console.log("Making undo request for game ID:", gameId);
+    const { data } = await api.delete(
+      `player-stats/undo_last_stat/?game_id=${gameId}`
+    );
+    console.log("Undo response:", data);
+    return data;
+  } catch (error) {
+    console.error("Undo error:", error);
+    throw error;
+  }
+};
