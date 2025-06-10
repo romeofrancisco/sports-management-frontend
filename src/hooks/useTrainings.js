@@ -36,7 +36,9 @@ import {
   bulkUpdateAttendance,
   assignMetricsToSession,
   assignMetricsToPlayerTraining,
+  assignMetricsToPlayersInSession,
   getPlayerRadarChartData,
+  assignMetricsToSinglePlayer,
 } from "@/api/trainingsApi";
 
 // Training Categories
@@ -683,6 +685,90 @@ export const useAssignPlayerTrainingMetrics = (sessionId) => {
     onError: (error) => {
       toast.error("Failed to configure player metrics", {
         description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
+// Hook to assign metrics to specific players in a session
+export const useAssignMetricsToPlayersInSession = () => {
+  return useMutation({
+    mutationFn: assignMetricsToPlayersInSession,    onSuccess: async (data, variables) => {
+      const total_added = data.total_metrics_added || 0;
+      const total_removed = data.total_metrics_removed || 0;
+      const players_processed = data.total_players_processed || 0;
+
+      let description = "";
+      if (total_added > 0 && total_removed > 0) {
+        description = `${total_added} metrics added, ${total_removed} metrics removed across ${players_processed} players.`;
+      } else if (total_added > 0) {
+        description = `${total_added} metrics added to ${players_processed} players.`;
+      } else if (total_removed > 0) {
+        description = `${total_removed} metrics removed from ${players_processed} players.`;
+      } else {
+        description = `${players_processed} players processed.`;
+      }
+
+      toast.success("Player metrics updated successfully!", {
+        description: description,
+        richColors: true,
+      });
+
+      // Invalidate training sessions to refresh the UI
+      queryClient.invalidateQueries(["training-sessions"]);
+
+      // Invalidate the specific session
+      if (variables.sessionId) {
+        queryClient.invalidateQueries([
+          "training-session",
+          variables.sessionId.toString(),
+        ]);
+      }
+
+      // Invalidate player trainings to refresh any player-specific data
+      queryClient.invalidateQueries(["player-trainings"]);
+    },    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.detail || "Failed to assign metrics to players";
+      toast.error("Error assigning metrics", {
+        description: errorMessage,
+        richColors: true,
+      });
+    },
+  });
+};
+
+// Hook to assign metrics to a single player in a session
+export const useAssignMetricsToSinglePlayer = () => {
+  return useMutation({
+    mutationFn: ({ sessionId, playerId, metricIds }) => {
+      return assignMetricsToSinglePlayer({ sessionId, playerId, metricIds });
+    },    onSuccess: async (data, variables) => {
+
+      toast.success("Metrics Configuration Updated", {
+        description: data.detail || "Player metrics assigned successfully.",
+        richColors: true,
+      });
+
+      // Invalidate training sessions to refresh the UI
+      queryClient.invalidateQueries(["training-sessions"]);
+
+      // Invalidate the specific session
+      if (variables.sessionId) {
+        queryClient.invalidateQueries([
+          "training-session",
+          variables.sessionId.toString(),
+        ]);
+      }
+
+      // Invalidate player trainings to refresh any player-specific data
+      queryClient.invalidateQueries(["player-trainings"]);
+    },    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.detail || "Unable to update player metrics. Please try again.";
+      toast.error("Metrics Configuration Failed", {
+        description: errorMessage,
         richColors: true,
       });
     },

@@ -4,8 +4,6 @@ import { Button } from "../../ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   useTrainingSessions,
-  useStartTrainingSession,
-  useEndTrainingSession,
 } from "@/hooks/useTrainings";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
@@ -13,80 +11,30 @@ import getTrainingSessionTableColumns from "../../table_columns/TrainingSessionT
 import TrainingSessionCard from "./TrainingSessionCard";
 import { useModal } from "@/hooks/useModal";
 import DeleteTrainingSessionModal from "@/components/modals/trainings/DeleteTrainingSessionModal";
-import TrainingAttendanceModal from "@/components/modals/trainings/TrainingAttendanceModal";
-import PlayerMetricRecordModal from "@/components/modals/PlayerMetricRecordModal";
-import PlayerSelectModal from "@/components/modals/trainings/PlayerSelectModal";
-import SessionMetricsConfigModal from "@/components/trainings/metrics/SessionMetricsConfigModal";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
+  const navigate = useNavigate();
   const [selectedSession, setSelectedSession] = useState(null);
-  const [selectedPlayerTraining, setSelectedPlayerTraining] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
   const [filter, setFilter] = useState({ search: "", team: "", date: "" });
+  
   const modals = {
     delete: useModal(),
-    attendance: useModal(),
-    metrics: useModal(),
-    playerSelect: useModal(),
-    metricsConfig: useModal(),
   };
-  const { data, isLoading, isError, refetch } = useTrainingSessions(
+    const { data, isLoading, isError, refetch } = useTrainingSessions(
     filter,
     currentPage,
     pageSize
-  );
-  const { mutate: startTraining, isPending: isStartingTraining } =
-    useStartTrainingSession();
-  const { mutate: endTraining, isPending: isEndingTraining } =
-    useEndTrainingSession();
-
-  const sessions = data?.results || [];
+  );  const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
-  // Function to refresh session data and return updated session
-  const handleDataRefresh = async () => {
-    try {
-      await refetch();
 
-      // Also refetch the detailed session data if we have a selectedSession
-      if (selectedSession?.id) {
-        const { fetchTrainingSession } = await import("@/api/trainingsApi");
-        const updatedSession = await fetchTrainingSession(selectedSession.id);
-        setSelectedSession(updatedSession);
-        return updatedSession;
-      }
-    } catch (error) {
-      console.error("Error refreshing session data:", error);
-    }
-  };
-  // Function to handle start training session
-  const handleStartTraining = async (session) => {
-    try {
-      await startTraining(session.id, {
-        onSuccess: () => {
-          // Refresh the sessions data to reflect the status change
-          refetch();
-        },
-      });
-    } catch (error) {
-      console.error("Error starting training session:", error);
-    }
-  };
-
-  // Function to handle end training session
-  const handleEndTraining = async (session) => {
-    try {
-      await endTraining(session.id, {
-        onSuccess: () => {
-          // Refresh the sessions data to reflect the status change
-          refetch();
-        },
-      });
-    } catch (error) {
-      console.error("Error ending training session:", error);
-    }
+  // Function to handle manage session navigation
+  const handleManageSession = (session) => {
+    navigate(`/sessions/${session.id}/manage/attendance`);
   };
 
   const handlePageChange = (newPage) => {
@@ -112,33 +60,8 @@ const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
       setSelectedSession(session);
       modals.delete.openModal();
     },
-    onAttendance: (session) => {
-      setSelectedSession(session);
-      modals.attendance.openModal();
-    },
-    onConfigureMetrics: (session) => {
-      setSelectedSession(session);
-      modals.metricsConfig.openModal();
-    },
-    onStartTraining: handleStartTraining,
-    onEndTraining: handleEndTraining,
-    onRecord: async (session) => {
-      try {
-        setSelectedSession(session);
-        const { fetchTrainingSession } = await import("@/api/trainingsApi");
-        const detailedSession = await fetchTrainingSession(session.id);
-
-        // Update the session with player records
-        setSelectedSession(detailedSession);
-        modals.playerSelect.openModal();
-      } catch (error) {
-        console.error("Error fetching session details:", error);
-        toast.error("Failed to load session details", {
-          description: error.message || "Please try again",
-        });
-      }
-    },
-  });  return (
+    onManage: handleManageSession,
+  });return (
     <>
       {/* Enhanced Header with View Toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 p-4 md:p-6">
@@ -245,41 +168,7 @@ const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
                           onDeleted={() => {
                             setCurrentPage(1);
                           }}
-                          onAttendance={() => {
-                            setSelectedSession(session);
-                            modals.attendance.openModal();
-                          }}
-                          onConfigureMetrics={() => {
-                            setSelectedSession(session);
-                            modals.metricsConfig.openModal();
-                          }}
-                          onRecord={async () => {
-                            try {
-                              setSelectedSession(session);
-                              const { fetchTrainingSession } =
-                                await import("@/api/trainingsApi");
-                              const detailedSession =
-                                await fetchTrainingSession(session.id);
-                              setSelectedSession(detailedSession);
-                              modals.playerSelect.openModal();
-                            } catch (error) {
-                              console.error(
-                                "Error fetching session details:",
-                                error
-                              );
-                              toast.error(
-                                "Failed to load session details",
-                                {
-                                  description:
-                                    error.message || "Please try again",
-                                }
-                              );
-                            }
-                          }}
-                          onStartTraining={() =>
-                            handleStartTraining(session)
-                          }
-                          onEndTraining={() => handleEndTraining(session)}
+                          onManage={() => handleManageSession(session)}
                         />
                       </div>
                     ))}
@@ -305,9 +194,7 @@ const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
             )}
           </>
         )}
-      </div>
-
-      {/* Modals */}
+      </div>      {/* Modals */}
       <DeleteTrainingSessionModal
         isOpen={modals.delete.isOpen}
         onClose={modals.delete.closeModal}
@@ -315,39 +202,6 @@ const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
         onSuccess={() => {
           setCurrentPage(1);
         }}
-      />
-      <TrainingAttendanceModal
-        isOpen={modals.attendance.isOpen}
-        onClose={modals.attendance.closeModal}
-        session={selectedSession}
-        onSuccess={() => {
-          setCurrentPage(1);
-        }}
-      />
-      <PlayerMetricRecordModal
-        isOpen={modals.metrics.isOpen}
-        onClose={modals.metrics.closeModal}
-        playerTraining={selectedPlayerTraining}
-      />
-      <PlayerSelectModal
-        isOpen={modals.playerSelect.isOpen}
-        onClose={modals.playerSelect.closeModal}
-        players={selectedSession?.player_records || []}
-        sessionMetrics={selectedSession?.metrics || []}
-        selectedSession={selectedSession}
-        onDataRefresh={handleDataRefresh}
-        onSelectPlayer={(player) => {
-          setSelectedPlayerTraining(player);
-          modals.playerSelect.closeModal();
-          setTimeout(() => {
-            modals.metrics.openModal();
-          }, 0);
-        }}
-      />
-      <SessionMetricsConfigModal
-        isOpen={modals.metricsConfig.isOpen}
-        onClose={modals.metricsConfig.closeModal}
-        session={selectedSession}
       />
     </>
   );

@@ -2,8 +2,6 @@ import {
   Edit,
   MoreHorizontal,
   Trash,
-  ClipboardCheck,
-  ClipboardPenLine,
   Settings,
   PlayCircle,
   StopCircle,
@@ -23,11 +21,7 @@ import { formatTo12HourTime } from "@/utils/formatTime";
 const getTrainingSessionTableColumns = ({
   onEdit,
   onDelete,
-  onAttendance,
-  onRecord,
-  onConfigureMetrics,
-  onStartTraining,
-  onEndTraining,
+  onManage,
 }) => [
   {
     header: "Title",
@@ -93,43 +87,12 @@ const getTrainingSessionTableColumns = ({
             <span className="sr-only">Open menu</span>
             <MoreHorizontal />
           </Button>
-        </DropdownMenuTrigger>{" "}
-        <DropdownMenuContent align="end">
+        </DropdownMenuTrigger>{" "}        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onRecord(row.original)}>
-            <ClipboardPenLine className="h-4 w-4 mr-2" />
-            Record Player Metrics
-          </DropdownMenuItem>{" "}          <DropdownMenuItem
-            onClick={() =>
-              onConfigureMetrics && onConfigureMetrics(row.original)
-            }
-          >
+          <DropdownMenuItem onClick={() => onManage(row.original)}>
             <Settings className="h-4 w-4 mr-2" />
-            Configure Metrics for Session
-          </DropdownMenuItem>          {/* Start Training Button - Only for upcoming sessions */}
-          {row.original.status === 'upcoming' && onStartTraining && (
-            <DropdownMenuItem 
-              onClick={() => onStartTraining(row.original)}
-              className="text-green-600 focus:text-green-600"
-            >
-              <PlayCircle className="h-4 w-4 mr-2" />
-              Start Training
-            </DropdownMenuItem>
-          )}
-          {/* End Training Button - Only for ongoing sessions */}
-          {row.original.status === 'ongoing' && onEndTraining && (
-            <DropdownMenuItem 
-              onClick={() => onEndTraining(row.original)}
-              className="text-red-600 focus:text-red-600"
-            >
-              <StopCircle className="h-4 w-4 mr-2" />
-              End Training
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuItem onClick={() => onAttendance(row.original)}>
-            <ClipboardCheck className="h-4 w-4 mr-2" />
-            Mark Attendance
-          </DropdownMenuItem>{" "}
+            Manage Session
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onEdit(row.original)}>
             <Edit className="h-4 w-4 mr-2" />
             Update Session

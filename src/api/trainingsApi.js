@@ -351,3 +351,27 @@ export const getPlayerRadarChartData = async (playerId, dateRange = {}) => {
     api.get('trainings/player-progress/player_radar_chart/', { params })
   );
 };
+
+export const assignMetricsToPlayersInSession = async ({ sessionId, playerIds, metricIds }) => {
+  try {
+    const { data } = await api.post(`trainings/sessions/${sessionId}/assign_metrics_to_players/`, {
+      player_ids: playerIds,
+      metric_ids: metricIds
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignMetricsToSinglePlayer = async ({ sessionId, playerId, metricIds }) => {
+  try {
+    const { data } = await api.post(`trainings/sessions/${sessionId}/assign_metrics_to_single_player/`, {
+      player_id: playerId,
+      metric_ids: metricIds
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
