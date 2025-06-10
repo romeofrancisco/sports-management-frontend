@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useRecordStat } from "@/hooks/useStats";
+import { useRecordStat, useRecordStatFast } from "@/hooks/useStats";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -44,12 +44,20 @@ const backendConfig = mobile
 const StatButtons = ({ statTypes }) => {
   const { playerId, team } = useSelector((state) => state.playerStat);
   const { game_id, current_period } = useSelector((state) => state.game);
-  const { mutate: recordStat, isPending: isCreatingStat } =
-    useRecordStat(game_id);
+  
+  // Use fast recording for better performance
+  const { mutate: recordStatFast, isPending: isCreatingStatFast } =
+    useRecordStatFast(game_id);
+  
+  // // Keep the regular recording as fallback
+  // const { mutate: recordStat, isPending: isCreatingStat } =
+  //   useRecordStat(game_id);
+    
   const dispatch = useDispatch();
 
   const handleStatRecord = (statId, point_value) => {
-    recordStat({
+    // Use fast recording by default for better performance
+    recordStatFast({
       player: playerId,
       game: game_id,
       period: current_period,
@@ -108,12 +116,11 @@ const StatButtons = ({ statTypes }) => {
         );
         gridCells.push(
           <GridCells key={`${x}-${y}`} x={x} y={y} moveButton={moveButton}>
-            {buttonInCell && (
-              <DraggableButton
+            {buttonInCell && (              <DraggableButton
                 button={buttonInCell}
                 position={buttonInCell.position}
                 onRecord={handleStatRecord}
-                isCreatingStat={isCreatingStat}
+                isCreatingStat={isCreatingStatFast}
               />
             )}
           </GridCells>

@@ -33,20 +33,13 @@ import { formatDate, formatTime } from '../../../utils/formatters';
  * @param {Object} props.session - The training session data with status validation flags
  * @param {Function} props.onEdit - Function to call when edit button is clicked
  * @param {Function} props.onDeleted - Optional callback after successful deletion
- * @param {Function} props.onAttendance - Function to call when attendance button is clicked (disabled for upcoming sessions) * @param {Function} props.onConfigureMetrics - Function to call when configure metrics button is clicked (disabled for ongoing/completed sessions)
- * @param {Function} props.onRecord - Function to call when record metrics button is clicked (disabled for upcoming sessions)
- * @param {Function} props.onStartTraining - Function to call when start training button is clicked (only for upcoming sessions)
- * @param {Function} props.onEndTraining - Function to call when end training button is clicked (only for ongoing sessions)
+ * @param {Function} props.onManage - Function to call when manage session button is clicked
  */
 const TrainingSessionCard = ({ 
   session, 
   onEdit, 
   onDeleted, 
-  onAttendance, 
-  onConfigureMetrics, 
-  onRecord,
-  onStartTraining,
-  onEndTraining
+  onManage
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { mutateAsync: deleteSession, isPending: isDeleting } = useDeleteTrainingSession();
@@ -88,12 +81,7 @@ const TrainingSessionCard = ({
       return { status: 'completed', color: 'bg-gray-500', text: 'Completed' };
     }
   };
-
   const sessionStatus = getSessionStatus();
-  // Status validation helpers - use backend validation if available, otherwise fallback
-  const canManageAttendance = session.can_manage_attendance ?? (sessionStatus.status === 'ongoing' || sessionStatus.status === 'completed');
-  const canConfigureMetrics = session.can_configure_metrics ?? (sessionStatus.status === 'upcoming');
-  const canRecordMetrics = session.can_record_metrics ?? (sessionStatus.status === 'ongoing' || sessionStatus.status === 'completed');
   
   return (
     <Card className="group relative overflow-hidden bg-gradient-to-br from-card via-card/95 to-muted/20 border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-primary/20">
@@ -216,101 +204,22 @@ const TrainingSessionCard = ({
               </div>
             </div>
           </CardContent>
-        </TabsContent>
-          <TabsContent value="actions" className="m-0">
+        </TabsContent>        <TabsContent value="actions" className="m-0">
           <CardContent className="pt-6 pb-4">
             <div className="grid grid-cols-1 gap-3">
               <Button
                 variant="outline" 
                 size="sm"
-                className={`w-full justify-start h-12 transition-all duration-200 ${
-                  canManageAttendance 
-                    ? "hover:bg-primary/5 hover:border-primary/20" 
-                    : "opacity-50 cursor-not-allowed"
-                }`}                onClick={canManageAttendance ? onAttendance : undefined}
-                disabled={!canManageAttendance}
-                title={!canManageAttendance ? `Attendance can only be managed for ongoing sessions or within 24 hours of completion (Current: ${sessionStatus.text})` : ""}
+                className="w-full justify-start h-12 transition-all duration-200 hover:bg-primary/5 hover:border-primary/20"
+                onClick={onManage}
               >
-                <UserCheck className="mr-3 h-4 w-4 text-primary" />
+                <Settings className="mr-3 h-4 w-4 text-primary" />
                 <div className="text-left">
-                  <div className="font-medium">Manage Attendance</div>
+                  <div className="font-medium">Manage Session</div>
                   <div className="text-xs text-muted-foreground">
-                    {canManageAttendance ? "Track player attendance" : "Only for ongoing sessions"}
+                    Attendance, metrics, and player records
                   </div>
-                </div>
-              </Button>
-              
-              <Button
-                variant="outline" 
-                size="sm"
-                className={`w-full justify-start h-12 transition-all duration-200 ${
-                  canConfigureMetrics 
-                    ? "hover:bg-secondary/5 hover:border-secondary/20" 
-                    : "opacity-50 cursor-not-allowed"
-                }`}
-                onClick={canConfigureMetrics ? onConfigureMetrics : undefined}
-                disabled={!canConfigureMetrics}
-                title={!canConfigureMetrics ? `Metrics can only be configured for upcoming sessions (Current: ${sessionStatus.text})` : ""}
-              >
-                <Settings className="mr-3 h-4 w-4 text-secondary" />
-                <div className="text-left">
-                  <div className="font-medium">Configure Metrics</div>
-                  <div className="text-xs text-muted-foreground">
-                    {canConfigureMetrics ? "Set up session metrics" : "Only for upcoming sessions"}
-                  </div>
-                </div>
-              </Button>
-                <Button
-                variant="outline" 
-                size="sm"
-                className={`w-full justify-start h-12 transition-all duration-200 ${
-                  canRecordMetrics 
-                    ? "hover:bg-accent/5 hover:border-accent/20" 
-                    : "opacity-50 cursor-not-allowed"
-                }`}
-                onClick={canRecordMetrics ? onRecord : undefined}
-                disabled={!canRecordMetrics}
-                title={!canRecordMetrics ? `Metrics can only be recorded for ongoing and completed sessions (Current: ${sessionStatus.text})` : ""}
-              >
-                <Target className="mr-3 h-4 w-4 text-accent" />
-                <div className="text-left">
-                  <div className="font-medium">Record Metrics</div>
-                  <div className="text-xs text-muted-foreground">
-                    {canRecordMetrics ? "Input player performance" : "Only for ongoing/completed sessions"}
-                  </div>
-                </div>
-              </Button>
-                {/* Start Training Button - Only for upcoming sessions */}
-              {sessionStatus.status === 'upcoming' && onStartTraining && (
-                <Button
-                  variant="outline" 
-                  size="sm"
-                  className="w-full justify-start h-12 transition-all duration-200 hover:bg-green-500/5 hover:border-green-500/20 border-green-500/30"
-                  onClick={onStartTraining}
-                >
-                  <PlayCircle className="mr-3 h-4 w-4 text-green-500" />
-                  <div className="text-left">
-                    <div className="font-medium text-green-600">Start Training</div>
-                    <div className="text-xs text-muted-foreground">Begin the training session</div>
-                  </div>
-                </Button>
-              )}
-              
-              {/* End Training Button - Only for ongoing sessions */}
-              {sessionStatus.status === 'ongoing' && onEndTraining && (
-                <Button
-                  variant="outline" 
-                  size="sm"
-                  className="w-full justify-start h-12 transition-all duration-200 hover:bg-red-500/5 hover:border-red-500/20 border-red-500/30"
-                  onClick={onEndTraining}
-                >
-                  <StopCircle className="mr-3 h-4 w-4 text-red-500" />
-                  <div className="text-left">
-                    <div className="font-medium text-red-600">End Training</div>
-                    <div className="text-xs text-muted-foreground">Complete the training session</div>
-                  </div>
-                </Button>
-              )}
+                </div>              </Button>
               
               <Button
                 variant="outline" 

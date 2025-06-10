@@ -9,6 +9,39 @@ export const createPlayerStat = async (stats) => {
   }
 };
 
+export const createPlayerStatFast = async (stats) => {
+  try {
+    const { data } = await api.post("player-stats/record_fast/", stats);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const bulkCreatePlayerStats = async (statsArray) => {
+  try {
+    const payload = {
+      stats: statsArray
+    };
+    const { data } = await api.post("player-stats/bulk_record/", payload);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const bulkCreatePlayerStatsOptimized = async (statsArray) => {
+  try {
+    const payload = {
+      stats: statsArray
+    };
+    const { data } = await api.post("player-stats/bulk_record_optimized/", payload);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchPlayerStatsSummary = async (gameId, team, forCalculation = false) => {
   try {
     // Add query parameters for optimization

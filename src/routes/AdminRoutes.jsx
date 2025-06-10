@@ -24,6 +24,7 @@ import PlayerProgressTeamSelectionPage from "@/pages/trainings/PlayerProgressTea
 import AttendanceAnalyticsPage from "@/pages/trainings/AttendanceAnalyticsPage";
 import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
+import SessionManagement from "@/components/trainings/sessions/SessionManagement";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 import { Navigate, useParams } from "react-router-dom";
@@ -144,10 +145,13 @@ export const adminRoutes = [
   {
     path: "/trainings",
     element: <TrainingDashboard />,
-  },
-  {
+  },  {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
+  },
+  {
+    path: "/sessions/:sessionId/manage/*",
+    element: <SessionManagement />,
   },
   {
     path: "/trainings/progress",

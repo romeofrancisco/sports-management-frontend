@@ -15,6 +15,7 @@ import AttendanceAnalyticsPage from "@/pages/trainings/AttendanceAnalyticsPage";
 import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
+import SessionManagement from "@/components/trainings/sessions/SessionManagement";
 
 export const coachRoutes = [
   {
@@ -44,10 +45,13 @@ export const coachRoutes = [
   {
     path: "/trainings",
     element: <TrainingDashboard />,
-  },
-  {
+  },  {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
+  },
+  {
+    path: "/sessions/:sessionId/manage/*",
+    element: <SessionManagement />,
   },
   {
     path: "/trainings/progress",

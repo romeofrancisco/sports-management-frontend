@@ -86,13 +86,12 @@ const GameScoring = () => {
 
   return (
     <div className="relative h-full content-center">
-      <div className="flex justify-between items-center px-2 py-1 bg-background/80 backdrop-blur-sm z-20 absolute top-0 left-0 w-full">
-        <div className="flex gap-2">
+      <div className="flex justify-between items-center px-2 py-1 bg-background/80 backdrop-blur-sm z-20 absolute top-0 left-0 w-full">        <div className="flex gap-2">
           <Button 
             variant="ghost" 
             size="icon"
-            onClick={() => navigate('/games')}
-            title="Back to Games"
+            onClick={() => navigate(-1)}
+            title="Go Back"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
