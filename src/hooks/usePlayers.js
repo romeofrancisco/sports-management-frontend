@@ -34,6 +34,14 @@ export const useTeamPlayers = (filter) => {
   });
 };
 
+export const usePlayerDetails = (player, enabled = true) => {
+  return useQuery({
+    queryKey: ["player-details", player],
+    queryFn: () => fetchPlayerDetails(player),
+    enabled: enabled && !!player,
+  });
+};
+
 export const useCreatePlayer = () => {
   return useMutation({
     mutationFn: (playerData) => createPlayer(playerData),

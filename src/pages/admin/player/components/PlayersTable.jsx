@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  Trash, 
-  UserPen, 
-  UserSearch, 
+import {
+  Trash,
+  UserPen,
+  UserSearch,
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight 
+  ChevronsRight,
 } from "lucide-react";
 import {
   Select,
@@ -59,7 +59,10 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
         <div className="flex gap-2 items-center ps-3">
           <Avatar>
             <AvatarImage src={profile} alt={first_name} />
-            <AvatarFallback className="rounded-lg bg-accent">{first_name[0]}{last_name[0]}</AvatarFallback>
+            <AvatarFallback className="rounded-lg bg-accent">
+              {first_name[0]}
+              {last_name[0]}
+            </AvatarFallback>
           </Avatar>
           <span>
             {first_name} {last_name}
@@ -120,9 +123,8 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigate(`/players/${player.slug}`)}
+            <DropdownMenuSeparator />{" "}            <DropdownMenuItem
+              onClick={() => navigate(`/players/${player.id}`)}
             >
               <UserSearch />
               View Player
@@ -155,14 +157,26 @@ export const PlayersTable = () => {
     course: "all",
   });
 
-  const { data, isLoading, isError } = usePlayers(filter, currentPage, pageSize);
-  
+  const { data, isLoading, isError } = usePlayers(
+    filter,
+    currentPage,
+    pageSize
+  );
+
   const players = data?.results || [];
   const totalPlayers = data?.count || 0;
   const totalPages = Math.ceil(totalPlayers / pageSize);
 
-  const { isOpen: isDeleteOpen, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
-  const { isOpen: isUpdateOpen, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
+  const {
+    isOpen: isDeleteOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+  const {
+    isOpen: isUpdateOpen,
+    openModal: openUpdateModal,
+    closeModal: closeUpdateModal,
+  } = useModal();
 
   const navigate = useNavigate();
 
@@ -187,30 +201,30 @@ export const PlayersTable = () => {
 
   return (
     <Card className="border gap-0 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
-      <PlayersFilterBar 
-        filter={filter} 
+      <PlayersFilterBar
+        filter={filter}
         setFilter={(newFilter) => {
           setFilter(newFilter);
           setCurrentPage(1); // Reset to first page when filter changes
         }}
       />
-      <DataTable 
-        columns={columns} 
-        data={players} 
-        loading={isLoading} 
+      <DataTable
+        columns={columns}
+        data={players}
+        loading={isLoading}
         className="text-xs md:text-sm"
         showPagination={false} // Disable built-in pagination
         pageSize={pageSize} // Still pass pageSize for row rendering
       />
-      
+
       {totalPlayers > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
-          <PaginationInfo 
-            currentPage={currentPage} 
-            pageSize={pageSize} 
-            totalItems={totalPlayers} 
+          <PaginationInfo
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={totalPlayers}
           />
-          
+
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Select
               value={String(pageSize)}
@@ -231,7 +245,7 @@ export const PlayersTable = () => {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <div className="flex gap-1">
               <Button
                 variant="outline"
@@ -251,7 +265,7 @@ export const PlayersTable = () => {
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              
+
               <div className="flex items-center gap-1 px-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   // Show range of pages centered around current page
@@ -265,7 +279,7 @@ export const PlayersTable = () => {
                   } else {
                     pageNum = currentPage - 2 + i;
                   }
-                  
+
                   return (
                     <Button
                       key={pageNum}
@@ -280,7 +294,7 @@ export const PlayersTable = () => {
                   );
                 })}
               </div>
-              
+
               <Button
                 variant="outline"
                 size="icon"
@@ -303,8 +317,16 @@ export const PlayersTable = () => {
           </div>
         </div>
       )}
-      <DeletePlayerModal isOpen={isDeleteOpen} onClose={closeDeleteModal} player={selectedPlayer}/>
-      <PlayerModal isOpen={isUpdateOpen} onClose={closeUpdateModal} player={selectedPlayer}/>
+      <DeletePlayerModal
+        isOpen={isDeleteOpen}
+        onClose={closeDeleteModal}
+        player={selectedPlayer}
+      />
+      <PlayerModal
+        isOpen={isUpdateOpen}
+        onClose={closeUpdateModal}
+        player={selectedPlayer}
+      />
     </Card>
   );
 };

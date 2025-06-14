@@ -175,20 +175,7 @@ const TrainingSessionCard = ({
                   <div className="text-xs text-muted-foreground">{session.location}</div>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
-                <div className="p-2 rounded-full bg-accent/10">
-                  <PlayCircle className="h-4 w-4 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Type</div>
-                  <Badge variant="secondary" className="mt-1 text-xs">
-                    {session.training_type === 'team' ? 'Team Training' : 'Individual Training'}
-                  </Badge>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
                 <div className="p-2 rounded-full bg-blue-500/10">
                   <UserCheck className="h-4 w-4 text-blue-500" />
                 </div>
@@ -236,8 +223,7 @@ const TrainingSessionCard = ({
             </div>
           </CardContent>
         </TabsContent></Tabs>
-      
-      <CardFooter className="bg-gradient-to-r from-muted/40 to-muted/20 border-t border-border/30 px-4 py-3">
+        <CardFooter className="bg-gradient-to-r from-muted/40 to-muted/20 border-t border-border/30 px-4 py-3">
         <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
@@ -246,7 +232,7 @@ const TrainingSessionCard = ({
             </div>
             <div className="flex items-center gap-1">
               <Users className="h-3 w-3" />
-              <span className="font-medium">{session.coach_name || 'Unassigned'}</span>
+              <span className="font-medium">Team Session</span>
             </div>
           </div>
           <div className="flex items-center gap-1">

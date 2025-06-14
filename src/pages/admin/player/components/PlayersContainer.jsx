@@ -104,10 +104,9 @@ const PlayersContainer = () => {
                     key={player.id}
                     className="animate-in fade-in-50 duration-500"
                     style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <PlayerCard
+                  >                    <PlayerCard
                       player={player}
-                      onView={() => navigate(`/players/${player.slug}`)}
+                      onView={() => navigate(`/players/${player.id}`)}
                       onEdit={() => {
                         setSelectedPlayer(player);
                         updateModal.openModal();

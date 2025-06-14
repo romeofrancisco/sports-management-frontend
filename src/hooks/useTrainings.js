@@ -539,9 +539,6 @@ export const usePlayerProgressById = (id, filters = {}, enabled = true) => {
     queryKey: ["player-progress-by-id", params],
     queryFn: () => fetchPlayerProgressById(params),
     enabled: enabled && !!id,
-    // Optimize caching - each metric selection is its own cache entry
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 15 * 60 * 1000, // 15 minutes
   });
 };
 
@@ -788,7 +785,5 @@ export const usePlayerRadarChart = (
       return getPlayerRadarChartData(playerId, dateRange);
     },
     enabled: enabled && !!playerId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };

@@ -35,7 +35,7 @@ export const coachRoutes = [
     element: <PlayersList />,
   },
   {
-    path: "/players/:id",
+    path: "/players/:player",
     element: <PlayerDetails />,
   },
   {

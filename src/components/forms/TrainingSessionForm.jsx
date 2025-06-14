@@ -18,21 +18,17 @@ const TrainingSessionForm = ({
   session = null,
   categories,
   teams,
-  coaches,
   onClose,
 }) => {
   const isEdit = Boolean(session);
   // Ensure teams is always an array to prevent "find is not a function" errors
   const safeTeams = Array.isArray(teams) ? teams : teams?.results || [];
-  // Ensure coaches is always an array to prevent "find is not a function" errors  
-  const safeCoaches = Array.isArray(coaches) ? coaches : coaches?.results || [];
   // Ensure categories is always an array to prevent "find is not a function" errors
   const safeCategories = Array.isArray(categories) ? categories : categories?.results || [];
   const { mutate: createSession, isPending: isCreating } =
     useCreateTrainingSession();
   const { mutate: updateSession, isPending: isUpdating } =
     useUpdateTrainingSession();
-
   const {
     control,
     handleSubmit,
@@ -49,14 +45,12 @@ const TrainingSessionForm = ({
       end_time: session?.end_time || "19:00",
       location: session?.location || "",
       team: session?.team || "",
-      coach: session?.coach || "",
-      training_type: session?.training_type || "team",
       categories: session?.categories?.map((cat) => cat.id) || [],
       notes: session?.notes || "",
     },
   });
-
-  const selectedTeamId = watch("team");  // Find the selected team's slug
+  const selectedTeamId = watch("team");
+  // Find the selected team's slug
   const selectedTeamObj = React.useMemo(
     () =>
       safeTeams?.find(
@@ -67,24 +61,9 @@ const TrainingSessionForm = ({
     [safeTeams, selectedTeamId]
   );
 
-
-  const trainingType = watch("training_type");
   const selectedCategories = watch("categories") || [];
 
   const isPending = isCreating || isUpdating;
-
-  const trainingTypeOptions = [
-    { label: "Team Training", value: "team" },
-    { label: "Individual Training", value: "individual" },
-  ];
-
-  // Reset team if training_type changes to 'individual'
-  React.useEffect(() => {
-    if (trainingType === 'individual' && watch('team')) {
-      // Only reset if team is set
-      control.setValue('team', '');
-    }
-  }, [trainingType]);
 
   const onSubmit = (data) => {
     const payload = {
@@ -159,38 +138,21 @@ const TrainingSessionForm = ({
         control={control}
         name="location"
         label="Location"
-        placeholder="Enter training location"
-        rules={{ required: "Location is required" }}
+        placeholder="Enter training location"        rules={{ required: "Location is required" }}
       />
 
-      <ControlledSelect
+      <ControlledCombobox
         control={control}
-        name="training_type"
-        label="Training Type"
-        placeholder="Select training type"
-        options={trainingTypeOptions}
-        rules={{ required: "Training type is required" }}
-      />
-
-      {trainingType === "team" && (        <ControlledCombobox
-          control={control}
-          name="team"
-          label="Team"
-          placeholder="Select team"
-          options={safeTeams}
-          valueKey="id"
-          labelKey="name"
-        />
-      )}      <ControlledCombobox
-        control={control}
-        name="coach"
-        label="Coach"
-        placeholder="Select coach"
-        options={safeCoaches}
-        rules={{ required: "Coach is required" }}
+        name="team"
+        label="Team"
+        placeholder="Select team"
+        options={safeTeams}
         valueKey="id"
-        labelKey="full_name"
-      />      <ControlledMultiSelect
+        labelKey="name"
+        rules={{ required: "Team is required" }}
+      />
+
+      <ControlledMultiSelect
         control={control}
         name="categories"
         label="Training Categories"

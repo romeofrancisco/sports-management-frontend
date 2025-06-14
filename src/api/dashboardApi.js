@@ -17,7 +17,12 @@ export const dashboardService = {
   // Player endpoints
   getPlayerOverview: () => api.get('dashboard/player_overview/'),
   getPlayerProgress: () => api.get('dashboard/player_progress/'),
-    // New Summary Service Endpoints
+
+  // Admin/Coach access to specific player data (for PlayerDetails component)
+  getPlayerOverviewById: (playerId) => api.get(`dashboard/player_overview/?player_id=${playerId}`),
+  getPlayerProgressById: (playerId) => api.get(`dashboard/player_progress/?player_id=${playerId}`),
+
+  // New Summary Service Endpoints
   getDashboardSummary: (days = 30) => api.get(`dashboard/dashboard_summary/?days=${days}`),
   getTrainingSummary: (days = 30, weeks = 8) => api.get(`dashboard/training_summary/?days=${days}&weeks=${weeks}`),
   getLeagueSummary: (days = 30, limit = 10) => api.get(`dashboard/league_summary/?days=${days}&limit=${limit}`),
@@ -141,8 +146,6 @@ export const usePlayerProgress = () => {
       const response = await dashboardService.getPlayerProgress();
       return response.data;
     },
-    staleTime: 3 * 60 * 1000, // 3 minutes
-    retry: 1,
   });
 };
 
@@ -171,6 +174,33 @@ export const useAdminReports = (reportType = 'summary') => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
     enabled: !!reportType, // Only run if reportType is provided
+  });
+};
+
+// Admin/Coach hooks for viewing any player's dashboard data
+export const usePlayerOverviewById = (playerId, enabled = true) => {
+  return useQuery({
+    queryKey: ['player', 'overview', playerId],
+    queryFn: async () => {
+      const response = await dashboardService.getPlayerOverviewById(playerId);
+      return response.data;
+    },
+    enabled: enabled && !!playerId,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+    retry: 1,
+  });
+};
+
+export const usePlayerProgressById = (playerId, enabled = true) => {
+  return useQuery({
+    queryKey: ['player', 'progress', playerId],
+    queryFn: async () => {
+      const response = await dashboardService.getPlayerProgressById(playerId);
+      return response.data;
+    },
+    enabled: enabled && !!playerId,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+    retry: 1,
   });
 };
 

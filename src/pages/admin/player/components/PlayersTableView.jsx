@@ -91,9 +91,8 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigate(`/players/${player.slug}`)}
+            <DropdownMenuSeparator />            <DropdownMenuItem
+              onClick={() => navigate(`/players/${player.id}`)}
             >
               <UserSearch />
               View Player

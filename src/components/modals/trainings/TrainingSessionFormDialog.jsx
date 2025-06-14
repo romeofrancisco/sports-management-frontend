@@ -8,7 +8,6 @@ import {
 import TrainingSessionForm from "@/components/forms/TrainingSessionForm";
 import { useTrainingSession } from "@/hooks/useTrainings";
 import { useSelector } from "react-redux";
-import { useCoaches } from "@/hooks/useCoaches";
 import { useTeams } from "@/hooks/useTeams";
 import { useTrainingCategories } from "@/hooks/useTrainings";
 import ContentLoading from "@/components/common/ContentLoading";
@@ -28,11 +27,7 @@ const TrainingSessionFormDialog = ({
     error,
   } = useTrainingSession(sessionId, open && !!sessionId);
   const { data: categories = [] } =
-    useTrainingCategories(open);
-  // Only fetch coaches and teams if user is not a coach
-  const { data: coaches = [], isLoading: isLoadingCoaches } = useCoaches({
-    enabled: open && !isCoach,
-  });
+    useTrainingCategories(open);  // Only fetch teams if user is not a coach (coaches removed)
   const { data: teamsData = { results: [] }, isLoading: isLoadingTeams } = useTeams({
     enabled: open && !isCoach,
   });
@@ -54,12 +49,9 @@ const TrainingSessionFormDialog = ({
             <div className="p-4 text-red-500 text-sm">
               Failed to load session details.
             </div>
-          ) : (
-            <TrainingSessionForm
+          ) : (            <TrainingSessionForm
               session={sessionId ? session : null}
-              coaches={!isCoach ? coaches : undefined}
               categories={categories}
-              isLoadingCoaches={!isCoach ? isLoadingCoaches : false}
               teams={!isCoach ? teams : undefined}
               isLoadingTeams={!isCoach ? isLoadingTeams : false}
               onClose={() => onOpenChange(false)}
