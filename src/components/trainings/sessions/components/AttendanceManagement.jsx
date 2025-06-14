@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-const AttendanceManagement = ({ session, onSaveSuccess }) => {
+const AttendanceManagement = ({ session, onSaveSuccess, workflowData }) => {
   const { data: trainingSession, isLoading } = useTrainingSession(session?.id);
   const {
     mutate: updatePlayerAttendance,
@@ -34,6 +34,10 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
   const { mutate: startTraining, isPending: isStartingTraining } =
     useStartTrainingSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get attendance step data from workflow
+  const attendanceStep = workflowData?.steps?.find(step => step.id === 'attendance');
+  const canMarkAttendance = attendanceStep?.canMarkAttendance ?? true;
 
   // Get session status to determine if we should show start training button
   const getSessionStatus = () => {
@@ -133,16 +137,15 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
             {
               sessionId: trainingSession?.id,
               playerRecords: validRecords,
-            },            {
-              onSuccess: async () => {
+            },            {              onSuccess: async () => {
                 setIsSubmitting(false);
 
-                // Auto-advance to next step after a small delay
+                // Auto-advance to next step after a small delay to allow data refresh
                 setTimeout(() => {
                   if (onSaveSuccess) {
                     onSaveSuccess();
                   }
-                }, 100);
+                }, 500); // Increased delay to ensure data is refreshed
               },
               onError: (error) => {
                 setIsSubmitting(false);
@@ -162,15 +165,15 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
         {
           sessionId: trainingSession?.id,
           playerRecords: validRecords,
-        },        {
-          onSuccess: async () => {
+        },        {          onSuccess: async () => {
             setIsSubmitting(false);
 
+            // Auto-advance to next step after a small delay to allow data refresh
             setTimeout(() => {
               if (onSaveSuccess) {
                 onSaveSuccess();
               }
-            }, 100);
+            }, 500); // Increased delay to ensure data is refreshed
           },
           onError: (error) => {
             setIsSubmitting(false);
@@ -233,20 +236,37 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
     );
   }
 
-  return (
-    <div className="space-y-6">
+  return (    <div className="space-y-6">
       {/* Header with Instructions */}
       <div>
         <h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
           <Users className="h-6 w-6" />
-          Step 1: Mark Attendance
+          Step 3: Mark Attendance
         </h2>
         <p className="text-muted-foreground">
-          Mark attendance for all players in this training session. This
-          information is required before configuring metrics and recording
-          performance data.
+          Mark attendance for all players in this training session. Players can now see their assigned metrics in advance.
         </p>
       </div>
+
+      {/* Date Warning Card */}
+      {!canMarkAttendance && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+              <div>
+                <h3 className="font-medium text-amber-900">
+                  Attendance Preview Mode
+                </h3>
+                <p className="text-sm text-amber-700 mt-1">
+                  You can view and prepare attendance, but marking attendance is only available on the session date. 
+                  All buttons for marking attendance will be disabled until then.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {/* Attendance Statistics */}
       {
         <Card>
@@ -312,11 +332,11 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
         <CardHeader>
           <CardTitle className="text-lg">Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-3">
+        <CardContent>          <div className="flex flex-wrap gap-3">
             <Button
               variant="outline"
               size="sm"
+              disabled={!canMarkAttendance}
               onClick={() => {
                 const currentRecords = getValues("playerRecords");
                 const updatedRecords = currentRecords.map((record) => ({
@@ -336,6 +356,7 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
             <Button
               variant="outline"
               size="sm"
+              disabled={!canMarkAttendance}
               onClick={() => {
                 const currentRecords = getValues("playerRecords");
                 const updatedRecords = currentRecords.map((record) => ({
@@ -355,6 +376,7 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
             <Button
               variant="outline"
               size="sm"
+              disabled={!canMarkAttendance}
               onClick={() => {
                 const currentRecords = getValues("playerRecords");
                 const updatedRecords = currentRecords.map((record) => ({
@@ -391,15 +413,15 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
                   <Controller
                     control={control}
                     name="playerRecords"
-                    render={({ field }) => {
-                      // Use a memoized version of the attendance columns to prevent re-renders
+                    render={({ field }) => {                      // Use a memoized version of the attendance columns to prevent re-renders
                       const memoizedColumns = React.useMemo(
                         () =>
                           getAttendanceColumns(
                             handleStatusChange,
-                            handleNotesChange
+                            handleNotesChange,
+                            !canMarkAttendance
                           ),
-                        [handleStatusChange, handleNotesChange]
+                        [handleStatusChange, handleNotesChange, canMarkAttendance]
                       );
 
                       return (
@@ -422,10 +444,14 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
         </Card>{" "}
         {/* Submit Section */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex justify-between items-center">
+          <CardContent className="pt-6">            <div className="flex justify-between items-center">
               <div className="text-sm text-muted-foreground">
-                {formAttendanceStats && formAttendanceStats.pending > 0 ? (
+                {!canMarkAttendance ? (
+                  <div className="flex items-center gap-2 text-amber-600">
+                    <AlertCircle className="h-4 w-4" />
+                    Attendance can only be marked on the session date
+                  </div>
+                ) : formAttendanceStats && formAttendanceStats.pending > 0 ? (
                   <div className="flex items-center gap-2 text-amber-600">
                     <AlertCircle className="h-4 w-4" />
                     {formAttendanceStats.pending} player(s) still marked as
@@ -441,6 +467,7 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
               <Button
                 type="submit"
                 disabled={
+                  !canMarkAttendance ||
                   isSubmitting ||
                   (formAttendanceStats && formAttendanceStats.pending > 0)
                 }
@@ -456,6 +483,11 @@ const AttendanceManagement = ({ session, onSaveSuccess }) => {
                     {sessionStatus === "upcoming"
                       ? "Starting Training..."
                       : "Saving..."}
+                  </>
+                ) : !canMarkAttendance ? (
+                  <>
+                    <AlertCircle className="h-4 w-4" />
+                    Not Session Date
                   </>
                 ) : formAttendanceStats && formAttendanceStats.pending > 0 ? (
                   <>

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
-    presentPlayers,
+    allPlayers,
     playerAssignedMetrics,
     selectedPlayerMetrics,
     metricsToRemove,
@@ -39,7 +39,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
   const filteredMetrics = allMetrics || [];  // Navigation handlers
   const handlePreviousPlayer = async () => {
     // Save current player's metrics before navigating (without triggering onSaveSuccess)
-    const currentPlayerId = presentPlayers[currentPlayerIndex]?.player?.id;
+    const currentPlayerId = allPlayers[currentPlayerIndex]?.player?.id;
     if (currentPlayerId && 
         (((selectedPlayerMetrics[currentPlayerId] || []).length > 0) || 
          ((metricsToRemove[currentPlayerId] || []).length > 0))) {
@@ -90,8 +90,8 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
     });
   };  const handleNextPlayer = async () => {
     // Save current player's metrics before navigating
-    const currentPlayerId = presentPlayers[currentPlayerIndex]?.player?.id;
-    const isLastPlayer = currentPlayerIndex === presentPlayers.length - 1;
+    const currentPlayerId = allPlayers[currentPlayerIndex]?.player?.id;
+    const isLastPlayer = currentPlayerIndex === allPlayers.length - 1;
     
     // Check if current player has any metrics (assigned + selected - removed)
     const currentPlayerAssignedMetrics = playerAssignedMetrics.get(currentPlayerId) || [];
@@ -120,21 +120,19 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
       }
       return;
     }
-    
-    // If not the last player, navigate to next player
+      // If not the last player, navigate to next player
     if (!isLastPlayer) {
       setCurrentPlayerIndex((prev) =>
-        Math.min(presentPlayers.length - 1, prev + 1)
+        Math.min(allPlayers.length - 1, prev + 1)
       );
     }
   };
-
   // Calculate progress
   const progressPercentage =
-    presentPlayers.length > 0
-      ? ((currentPlayerIndex + 1) / presentPlayers.length) * 100
+    allPlayers.length > 0
+      ? ((currentPlayerIndex + 1) / allPlayers.length) * 100
       : 0;
-  if (presentPlayers.length === 0) {
+  if (allPlayers.length === 0) {
     return (
       <Card className="h-full flex flex-col">
         <CardHeader>
@@ -146,18 +144,16 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
             Assign specific metrics to individual players. This is useful when
             different players need to track different metrics.
           </p>
-        </CardHeader>
-        <CardContent>
+        </CardHeader>        <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-            <p>No present players found for this session.</p>
-            <p className="text-sm">Complete Step 1 (Mark Attendance) first.</p>
+            <p>No players found for this session.</p>
+            <p className="text-sm">Please check the session configuration.</p>
           </div>
         </CardContent>
       </Card>
     );
-  }
-  const currentRecord = presentPlayers[currentPlayerIndex];
+  }  const currentRecord = allPlayers[currentPlayerIndex];
   const currentPlayer = currentRecord?.player;
   const playerId = currentPlayer?.id;
   const playerMetrics = playerAssignedMetrics.get(playerId) || [];
@@ -182,10 +178,9 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
       </CardHeader>
       <CardContent className="space-y-6 flex flex-col h-full">
         {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className="space-y-2">          <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">
-              Player {currentPlayerIndex + 1} of {presentPlayers.length}
+              Player {currentPlayerIndex + 1} of {allPlayers.length}
             </span>
             <span className="text-muted-foreground">
               {Math.round(progressPercentage)}% Complete
@@ -239,7 +234,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {  const {
                 !canProceed ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {currentPlayerIndex === presentPlayers.length - 1 ? "Complete" : "Next"}
+              {currentPlayerIndex === allPlayers.length - 1 ? "Complete" : "Next"}
               <ChevronRight className="h-4 w-4" />
             </Button>
             {!canProceed && (

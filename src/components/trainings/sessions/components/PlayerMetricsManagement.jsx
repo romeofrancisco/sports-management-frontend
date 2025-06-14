@@ -5,23 +5,21 @@ import { User, AlertCircle, Users, SkipForward } from "lucide-react";
 import PlayerMetricsTab from "./metrics/PlayerMetricsTab";
 
 const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
-  // Get present players count for display
-  const presentPlayers = session?.player_records?.filter(
-    record => 
-      record.attendance_status === "present" || 
-      record.attendance_status === "late"
-  ) || [];  // Check if session metrics are configured (using correct logic)
-  const sessionMetricsConfigured = presentPlayers.length > 0 && presentPlayers.every(record => 
+  // Get all players for the session since we configure metrics before attendance
+  const allPlayers = session?.player_records || [];
+  
+  // Check if session metrics are configured for any player
+  const sessionMetricsConfigured = allPlayers.length > 0 && allPlayers.some(record => 
     record.metric_records && record.metric_records.length > 0
   );
 
-  // Check if any present players have empty metrics
-  const hasPlayersWithEmptyMetrics = presentPlayers.some(record => 
+  // Check if any players have empty metrics
+  const hasPlayersWithEmptyMetrics = allPlayers.some(record => 
     !record.metric_records || record.metric_records.length === 0
   );
 
-  // Only allow skipping if all present players have at least one metric
-  const canSkip = !hasPlayersWithEmptyMetrics;
+  // Allow skipping if at least one player has metrics or if there are no players
+  const canSkip = !hasPlayersWithEmptyMetrics || allPlayers.length === 0;
 
   // Handle skip functionality
   const handleSkip = () => {
@@ -39,9 +37,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
           <h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
             <User className="h-6 w-6" />
             Configure Player-Specific Metrics
-          </h2>
-          <p className="text-muted-foreground">
-            Assign specific metrics to individual players based on their roles or training focus areas. This allows for personalized performance tracking.
+          </h2>          <p className="text-muted-foreground">
+            Assign specific metrics to individual players based on their roles or training focus areas. Configure these before the training session so players can prepare accordingly.
           </p>
           {session.date && (
             <p className="text-sm text-muted-foreground mt-1">
@@ -59,9 +56,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
             >
               <SkipForward className="h-4 w-4" />
               Skip This Step
-            </Button>
-            <p className="text-xs text-muted-foreground max-w-[200px] text-right">
-              Proceed to record metrics with current configuration
+            </Button>            <p className="text-xs text-muted-foreground max-w-[200px] text-right">
+              Proceed to attendance marking with current configuration
             </p>
           </div>
         )}
@@ -75,9 +71,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
                 <span className="text-sm text-amber-700 font-medium">
                   Cannot Skip
                 </span>
-              </div>
-              <p className="text-xs text-amber-600 mt-1">
-                Some players don't have any metrics assigned. Please assign metrics to all players or configure session metrics first.
+              </div>              <p className="text-xs text-amber-600 mt-1">
+                Some players don't have any metrics assigned. Please assign metrics to all players or configure session metrics first to proceed.
               </p>
             </div>
           </div>
@@ -89,13 +84,12 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
-            <div>
-              <h4 className="font-medium text-amber-800">Prerequisites</h4>
+            <div>              <h4 className="font-medium text-amber-800">Configure Before Training</h4>
               <p className="text-sm text-amber-700 mt-1">
-                Make sure you have completed attendance marking and optionally configured session metrics before assigning player-specific metrics.
+                Set up player-specific metrics before the training session. This allows players to see their evaluation criteria in advance and prepare accordingly.
               </p>              {session?.player_records && (
                 <div className="mt-2 text-xs text-amber-600">
-                  Present players: {presentPlayers.length} / {session.player_records.length} total
+                  Total players: {allPlayers.length}
                   {sessionMetricsConfigured && (
                     <span className="ml-3 text-green-600">
                       ✓ Session metrics configured
@@ -103,7 +97,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
                   )}
                   {hasPlayersWithEmptyMetrics && (
                     <div className="mt-1 text-red-600">
-                      ⚠ {presentPlayers.filter(record => !record.metric_records || record.metric_records.length === 0).length} players need metrics
+                      ⚠ {allPlayers.filter(record => !record.metric_records || record.metric_records.length === 0).length} players need metrics
                     </div>
                   )}
                 </div>
@@ -111,9 +105,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
               {!sessionMetricsConfigured && (
                 <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm text-blue-700">
-                      Tip: Configure session metrics first to establish baseline metrics that all players can use, then add player-specific metrics as needed.
+                    <Users className="h-4 w-4 text-blue-600" />                    <span className="text-sm text-blue-700">
+                      Tip: Configure session metrics first to establish baseline metrics that all players can use, then add player-specific metrics for individual training goals.
                     </span>
                   </div>
                 </div>

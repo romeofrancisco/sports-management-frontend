@@ -218,6 +218,26 @@ export const fetchPreviousRecords = async (id) => {
   }
 };
 
+// New function to fetch previous record for a specific metric with improvement calculation
+export const fetchPreviousRecordForMetric = async (playerTrainingId, metricId, currentValue = null) => {
+  try {
+    const params = { metric_id: metricId };
+    
+    // Add current_value parameter if provided for real-time improvement calculation
+    if (currentValue !== null && currentValue !== undefined && currentValue !== '') {
+      params.current_value = currentValue;
+    }
+    
+    const { data } = await api.get(
+      `trainings/player-trainings/${playerTrainingId}/previous_records/`,
+      { params }
+    );
+    return data.previous_record || null;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Player Progress
 export const fetchPlayerProgress = async (params = {}) => {
   try {

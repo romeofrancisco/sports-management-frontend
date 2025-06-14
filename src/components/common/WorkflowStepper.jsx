@@ -51,10 +51,9 @@ const WorkflowStepper = ({
                         : isDisabled
                         ? "bg-muted border-muted-foreground/20 text-muted-foreground"
                         : "bg-background border-muted-foreground/40 text-muted-foreground hover:border-muted-foreground/60"
-                    )}
-                    title={
+                    )}                    title={
                       isDisabled
-                        ? `Complete previous steps first`
+                        ? step.validationMessage || `Complete previous steps first`
                         : `Go to ${step.title}`
                     }
                   >
@@ -80,8 +79,7 @@ const WorkflowStepper = ({
                       )}
                     >
                       {step.title}
-                    </div>
-                    {step.description && (
+                    </div>                    {step.description && (
                       <div
                         className={cn(
                           "text-xs mt-1",
@@ -95,6 +93,12 @@ const WorkflowStepper = ({
                         )}
                       >
                         {step.description}
+                      </div>
+                    )}
+                    {/* Validation message for disabled steps */}
+                    {isDisabled && step.validationMessage && (
+                      <div className="text-xs mt-1 px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-md">
+                        {step.validationMessage}
                       </div>
                     )}
                     {/* Sub-steps indicator - only show for current step */}

@@ -31,6 +31,7 @@ const SessionManagement = () => {
     isError,
     refetch,
   } = useTrainingSession(sessionId);
+  console.log("Session Details:", sessionDetails);
   
   const { mutate: endTraining, isPending: isEndingTraining } =
     useEndTrainingSession();
@@ -88,12 +89,12 @@ const SessionManagement = () => {
             onNext={handleStepNavigation}
             onPrevious={handleStepNavigation}
           />
-          
-          <div className="bg-card rounded-lg shadow-sm border">
+            <div className="bg-card rounded-lg shadow-sm border">
             <MemoizedContentRenderer 
               currentPage={currentPage}
               sessionDetails={sessionDetails}
               onAutoAdvance={handleAutoAdvance}
+              workflowData={memoizedWorkflowData}
             />
           </div>
         </div>

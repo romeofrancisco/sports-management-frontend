@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueries } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
-import api from "@/api";
 import {
   fetchTrainingCategories,
   fetchTrainingCategory,
@@ -29,6 +28,8 @@ import {
   updatePlayerTraining,
   deletePlayerTraining,
   recordPlayerMetrics,
+  fetchPreviousRecords,
+  fetchPreviousRecordForMetric,
   fetchPlayerProgress,
   fetchPlayerProgressById,
   fetchMultiPlayerProgress,
@@ -467,11 +468,8 @@ export const usePreviousPlayerMetrics = (playerTrainingId) => {
         ]);
         if (cachedData) return cachedData;
 
-        // Otherwise fetch from the server via player-training endpoint
-        const { data } = await api.get(
-          `trainings/player-trainings/${playerTrainingId}/previous_records/`
-        );
-        return data.previous_records || [];
+        // Use the dedicated API function instead of direct fetch
+        return await fetchPreviousRecords(playerTrainingId);
       } catch (error) {
         console.error("Error fetching previous records:", error);
         return [];

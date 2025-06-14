@@ -12,7 +12,7 @@ import { ATTENDANCE_STATUS } from "@/constants/trainings";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 
-const getAttendanceColumns = (onStatusChange, onNotesChange) => [
+const getAttendanceColumns = (onStatusChange, onNotesChange, disabled = false) => [
   {
     accessorKey: "player_name",
     header: "Player Name",
@@ -36,8 +36,7 @@ const getAttendanceColumns = (onStatusChange, onNotesChange) => [
         const handleBlur = (e) => {
           onChangeHandler(rowData.id, e.target.value);
         };
-        
-        return (
+          return (
           <div className="w-full max-w-[250px]">
             <Textarea
               className="min-h-[32px] text-xs w-full max-h-[3rem]"
@@ -45,6 +44,7 @@ const getAttendanceColumns = (onStatusChange, onNotesChange) => [
               placeholder="Add notes..."
               onChange={handleChange}
               onBlur={handleBlur}
+              disabled={disabled}
               rows={2}
             />
           </div>
@@ -95,49 +95,52 @@ const getAttendanceColumns = (onStatusChange, onNotesChange) => [
       const currentStyle = statusStyles[status] || statusStyles.pending;
       const label = status.charAt(0).toUpperCase() + status.slice(1);
       
-      return (
-        <div className="w-[100px] flex justify-center">
+      return (        <div className="w-[100px] flex justify-center">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild disabled={disabled}>
               <Button
                 variant="outline"
+                disabled={disabled}
                 className="font-medium transition-colors px-3 py-1.5 text-xs h-auto w-[90px]"
                 style={{
                   backgroundColor: currentStyle.bg,
                   color: currentStyle.color,
                   borderColor: 'transparent',
+                  opacity: disabled ? 0.5 : 1,
                 }}
               >
                 {label}
-                <ChevronDown className="h-3.5 w-3.5 ml-1.5 opacity-100" />
+                {!disabled && <ChevronDown className="h-3.5 w-3.5 ml-1.5 opacity-100" />}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="w-[120px]">
-              <DropdownMenuLabel className="text-xs">Set Status</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {Object.entries(ATTENDANCE_STATUS).map(([key, value]) => {
-                const style = statusStyles[value] || statusStyles.pending;
-                return (
-                  <DropdownMenuItem
-                    key={key}
-                    onClick={() => {
-                      console.log("Status dropdown item clicked:", recordId, value);
-                      onStatusChange && onStatusChange(recordId, value);
-                    }}
-                    className={
-                      value === status
-                        ? "font-medium bg-muted/40"
-                        : ""
-                    }
-                  >
-                    <div style={{ color: style.color }} className="flex items-center w-full">
-                      <span className="h-2 w-2 rounded-full mr-1.5" style={{ backgroundColor: style.color }}></span>
-                      {value.charAt(0).toUpperCase() + value.slice(1)}
-                    </div>
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
+            {!disabled && (
+              <DropdownMenuContent align="center" className="w-[120px]">
+                <DropdownMenuLabel className="text-xs">Set Status</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {Object.entries(ATTENDANCE_STATUS).map(([key, value]) => {
+                  const style = statusStyles[value] || statusStyles.pending;
+                  return (
+                    <DropdownMenuItem
+                      key={key}
+                      onClick={() => {
+                        console.log("Status dropdown item clicked:", recordId, value);
+                        onStatusChange && onStatusChange(recordId, value);
+                      }}
+                      className={
+                        value === status
+                          ? "font-medium bg-muted/40"
+                          : ""
+                      }
+                    >
+                      <div style={{ color: style.color }} className="flex items-center w-full">
+                        <span className="h-2 w-2 rounded-full mr-1.5" style={{ backgroundColor: style.color }}></span>
+                        {value.charAt(0).toUpperCase() + value.slice(1)}
+                      </div>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            )}
           </DropdownMenu>
         </div>
       );

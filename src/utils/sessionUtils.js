@@ -73,11 +73,11 @@ export const canEndSession = (sessionStatus) => {
 
 export const getWorkflowStepRoute = (stepId, sessionId) => {
   const routes = {
-    attendance: `/sessions/${sessionId}/manage/attendance`,
     "session-metrics": `/sessions/${sessionId}/manage/session-metrics`,
     "player-metrics": `/sessions/${sessionId}/manage/player-metrics`,
+    attendance: `/sessions/${sessionId}/manage/attendance`,
     "record-metrics": `/sessions/${sessionId}/manage/record-metrics`,
   };
   
-  return routes[stepId] || routes.attendance;
+  return routes[stepId] || routes["session-metrics"];
 };
