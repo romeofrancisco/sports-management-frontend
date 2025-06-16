@@ -4,26 +4,26 @@ import { WORKFLOW_STEP_IDS, SESSION_ROUTES } from "@/constants/sessionRoutes";
 export const WORKFLOW_CONFIG = {
   steps: [
     {
-      id: WORKFLOW_STEP_IDS.ATTENDANCE,
-      title: "Mark Attendance",
-      description: "Identify which players are present",
-      icon: Users,
-      isOptional: false,
-      order: 1,
-    },
-    {
       id: WORKFLOW_STEP_IDS.SESSION_METRICS,
       title: "Session Metrics",
       description: "Configure metrics for all players",
       icon: Target,
       isOptional: true,
-      order: 2,
+      order: 1,
     },
     {
       id: WORKFLOW_STEP_IDS.PLAYER_METRICS,
       title: "Player-Specific Metrics",
       description: "Assign metrics to individual players",
       icon: User,
+      isOptional: false,
+      order: 2,
+    },
+    {
+      id: WORKFLOW_STEP_IDS.ATTENDANCE,
+      title: "Mark Attendance",
+      description: "Identify which players are present",
+      icon: Users,
       isOptional: false,
       order: 3,
     },

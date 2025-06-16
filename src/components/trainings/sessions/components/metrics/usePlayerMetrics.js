@@ -8,14 +8,9 @@ export const usePlayerMetrics = (session, onSaveSuccess) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [selectedPlayerMetrics, setSelectedPlayerMetrics] = useState({});
   const [metricsToRemove, setMetricsToRemove] = useState({}); // Track metrics marked for removal
-
-  // Get present players
-  const presentPlayers = useMemo(() => {
-    return session?.player_records?.filter(
-      record => 
-        record.attendance_status === "present" || 
-        record.attendance_status === "late"
-    ) || [];
+  // Get all players for the session since we configure metrics before attendance
+  const allPlayers = useMemo(() => {
+    return session?.player_records || [];
   }, [session?.player_records]);
   // Get player-level assigned metrics
   const playerAssignedMetrics = useMemo(() => {
@@ -80,11 +75,10 @@ export const usePlayerMetrics = (session, onSaveSuccess) => {
       }
     });
   }, []);
-
-  // Handle selecting all present players
-  const handleSelectAllPresentPlayers = useCallback(() => {
-    setSelectedPlayers(presentPlayers.map((record) => record.player.id));
-  }, [presentPlayers]);  // Handle toggling metric selection for individual players
+  // Handle selecting all players (since we work with all players now)
+  const handleSelectAllPlayers = useCallback(() => {
+    setSelectedPlayers(allPlayers.map((record) => record.player.id));
+  }, [allPlayers]);// Handle toggling metric selection for individual players
   const handleTogglePlayerMetric = useCallback((playerId, metricId) => {
     const assignedMetrics = playerAssignedMetrics.get(playerId) || [];
     const isAlreadyAssigned = assignedMetrics.some(pm => pm.id === metricId);
@@ -189,16 +183,15 @@ export const usePlayerMetrics = (session, onSaveSuccess) => {
       [playerId]: []
     }));
   }, []);
-
   return {
-    presentPlayers,
+    allPlayers,
     playerAssignedMetrics,
     selectedPlayers,
     selectedPlayerMetrics,
     metricsToRemove,
     handleAssignToPlayers,
     handleTogglePlayer,
-    handleSelectAllPresentPlayers,
+    handleSelectAllPlayers,
     handleTogglePlayerMetric,
     handleAssignPlayerMetrics,
     clearPlayerState,

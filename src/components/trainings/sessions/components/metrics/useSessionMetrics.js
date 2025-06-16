@@ -6,20 +6,17 @@ export const useSessionMetrics = (session, onSaveSuccess) => {
   const [selectedMetrics, setSelectedMetrics] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [initialized, setInitialized] = useState(false);
-
-  // Get session-level assigned metrics (based on what present/late players actually have)
+  // Get session-level assigned metrics (based on what all players actually have)
   const sessionMetrics = useMemo(() => {
     if (!session?.player_records) return [];
     
-    // Get all present and late players
-    const presentPlayers = session.player_records.filter(
-      record => record.attendance_status === "present" || record.attendance_status === "late"
-    );
+    // Get all players (no attendance filtering since metrics are assigned before attendance)
+    const allPlayers = session.player_records;
     
-    if (presentPlayers.length === 0) return [];
+    if (allPlayers.length === 0) return [];
     
-    // Find metrics that ALL present/late players have assigned
-    const allPlayerMetrics = presentPlayers.map(player => {
+    // Find metrics that ALL players have assigned
+    const allPlayerMetrics = allPlayers.map(player => {
       return player.metric_records?.map(record => ({
         id: record.metric,
         name: record.metric_name,
@@ -29,8 +26,7 @@ export const useSessionMetrics = (session, onSaveSuccess) => {
         }
       })) || [];
     });
-    
-    // Find metrics that are common to ALL present/late players
+      // Find metrics that are common to ALL players
     if (allPlayerMetrics.length === 0) return [];
     
     const commonMetrics = allPlayerMetrics[0].filter(metric => 
@@ -48,11 +44,10 @@ export const useSessionMetrics = (session, onSaveSuccess) => {
   }, [session?.player_records]);
   
   const sessionMetricIds = useMemo(() => sessionMetrics.map(m => m.id), [sessionMetrics]);
-
   // Initialize selected metrics ONLY ONCE when session changes
   useEffect(() => {
     if (session?.id && !initialized) {
-      // Use the computed sessionMetricIds based on present/late players
+      // Use the computed sessionMetricIds based on all players
       setSelectedMetrics(sessionMetricIds);
       setInitialized(true);
     }
@@ -69,20 +64,17 @@ export const useSessionMetrics = (session, onSaveSuccess) => {
         return [...prevSelected, metricId];
       }
     });
-  }, []);
-  // Handle saving session-level metrics configuration
+  }, []);  // Handle saving session-level metrics configuration
   const handleSaveSessionMetrics = useCallback(() => {
-    // Get all present and late players
-    const presentPlayers = session?.player_records?.filter(
-      record => record.attendance_status === "present" || record.attendance_status === "late"
-    ) || [];
+    // Get all players (no attendance filtering since metrics are assigned before attendance)
+    const allPlayers = session?.player_records || [];
     
-    if (presentPlayers.length === 0) {
-      console.warn("No present or late players found to assign metrics to");
+    if (allPlayers.length === 0) {
+      console.warn("No players found to assign metrics to");
       return;
     }
     
-    const playerIds = presentPlayers.map(player => player.player?.id).filter(Boolean);
+    const playerIds = allPlayers.map(player => player.player?.id).filter(Boolean);
     
     assignMetricsToPlayers(
       {

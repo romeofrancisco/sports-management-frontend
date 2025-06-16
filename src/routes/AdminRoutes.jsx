@@ -26,6 +26,7 @@ import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
 import SessionManagement from "@/components/trainings/sessions/SessionManagement";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
+import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 import { Navigate, useParams } from "react-router-dom";
 
@@ -148,10 +149,13 @@ export const adminRoutes = [
   },  {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
-  },
-  {
+  },  {
     path: "/sessions/:sessionId/manage/*",
     element: <SessionManagement />,
+  },
+  {
+    path: "/trainings/sessions/:sessionId/summary",
+    element: <TrainingSummaryPage />,
   },
   {
     path: "/trainings/progress",

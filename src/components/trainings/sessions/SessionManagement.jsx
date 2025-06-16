@@ -23,7 +23,7 @@ const MemoizedContentRenderer = React.memo(ContentRenderer);
 
 const SessionManagement = () => {
   const { sessionId } = useParams();
-  
+
   // Data fetching
   const {
     data: sessionDetails,
@@ -31,20 +31,21 @@ const SessionManagement = () => {
     isError,
     refetch,
   } = useTrainingSession(sessionId);
-  
+  console.log("Session Details:", sessionDetails);
+
   const { mutate: endTraining, isPending: isEndingTraining } =
     useEndTrainingSession();
 
   // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   // Custom hooks for business logic - these handle null/undefined sessionDetails gracefully
   const sessionStatus = useSessionStatus(sessionDetails);
-  const { currentPage, workflowData, handleAutoAdvance, handleStepNavigation } = 
+  const { currentPage, workflowData, handleAutoAdvance, handleStepNavigation } =
     useSessionWorkflow(sessionId, sessionDetails);
 
   // Handlers - these also must be defined before early returns
   const handleEndTraining = useCallback(async () => {
     if (!sessionDetails?.id) return;
-    
+
     try {
       await endTraining(sessionDetails.id, {
         onSuccess: () => {
@@ -59,7 +60,7 @@ const SessionManagement = () => {
   }, [endTraining, sessionDetails?.id, refetch]);
 
   const handleError = useCallback((error, errorInfo) => {
-    console.error('Session Management Error:', error, errorInfo);
+    console.error("Session Management Error:", error, errorInfo);
     toast.error("An unexpected error occurred. Please refresh the page.");
   }, []);
 
@@ -73,13 +74,13 @@ const SessionManagement = () => {
   return (
     <SessionErrorBoundary onError={handleError}>
       <div className="min-h-screen bg-background p-4 md:p-6">
-        <SessionHeader 
+        <SessionHeader
           sessionDetails={sessionDetails}
           sessionStatus={sessionStatus}
           onEndTraining={handleEndTraining}
           isEndingTraining={isEndingTraining}
         />
-        
+
         <div className="container mx-auto py-6">
           <MemoizedWorkflowStepper
             steps={memoizedWorkflowData.steps}
@@ -88,14 +89,13 @@ const SessionManagement = () => {
             onNext={handleStepNavigation}
             onPrevious={handleStepNavigation}
           />
-          
-          <div className="bg-card rounded-lg shadow-sm border">
-            <MemoizedContentRenderer 
-              currentPage={currentPage}
-              sessionDetails={sessionDetails}
-              onAutoAdvance={handleAutoAdvance}
-            />
-          </div>
+
+          <MemoizedContentRenderer
+            currentPage={currentPage}
+            sessionDetails={sessionDetails}
+            onAutoAdvance={handleAutoAdvance}
+            workflowData={memoizedWorkflowData}
+          />
         </div>
       </div>
     </SessionErrorBoundary>

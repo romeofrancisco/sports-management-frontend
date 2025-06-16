@@ -296,7 +296,7 @@ const PlayerMetricRecordModal = ({
         name: record.metric_unit_name,
       },
       is_lower_better: record.metric_name.toLowerCase().includes("time"), // Assume time-based metrics are lower-better
-      existing_record_id: record.id,
+      existing_record_id: typeof record.id === 'string' && record.id.startsWith('placeholder_') ? null : record.id,
       current_value: record.value,
     }));
   }, [playerTraining]);
@@ -306,11 +306,12 @@ const PlayerMetricRecordModal = ({
     if (!playerTraining) return;
 
     const initialValues = {};
-    const initialNotes = {}; // Initialize with values from metricsToShow
+    const initialNotes = {};    // Initialize with values from metricsToShow
     metricsToShow.forEach((metric) => {
-      initialValues[metric.id] = metric.current_value
+      // For newly assigned metrics, current_value will be null
+      initialValues[metric.id] = metric.current_value !== null && metric.current_value !== undefined
         ? metric.current_value.toString()
-        : "0";
+        : "";  // Empty string for newly assigned metrics
       initialNotes[metric.id] = metric.notes || "";
     });
 

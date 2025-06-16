@@ -39,7 +39,7 @@ export const fetchPlayers = async (filter) => {
 
 export const fetchPlayerDetails = async (player) => {
   try {
-    const { data } = await api.get(`players/${player}`);
+    const { data } = await api.get(`players/${player}/`);
     return data;
   } catch (error) {
     throw error;

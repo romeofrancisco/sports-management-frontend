@@ -218,6 +218,26 @@ export const fetchPreviousRecords = async (id) => {
   }
 };
 
+// New function to fetch previous record for a specific metric with improvement calculation
+export const fetchPreviousRecordForMetric = async (playerTrainingId, metricId, currentValue = null) => {
+  try {
+    const params = { metric_id: metricId };
+    
+    // Add current_value parameter if provided for real-time improvement calculation
+    if (currentValue !== null && currentValue !== undefined && currentValue !== '') {
+      params.current_value = currentValue;
+    }
+    
+    const { data } = await api.get(
+      `trainings/player-trainings/${playerTrainingId}/previous_records/`,
+      { params }
+    );
+    return data.previous_record || null;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Player Progress
 export const fetchPlayerProgress = async (params = {}) => {
   try {
@@ -372,6 +392,35 @@ export const assignMetricsToSinglePlayer = async ({ sessionId, playerId, metricI
     });
     return data;
   } catch (error) {
+    throw error;
+  }
+};
+
+// New function to fetch training summaries for completed sessions
+export const fetchTrainingSummary = async (id) => {
+  try {
+    const { data } = await api.get(`trainings/sessions/${id}/training_summary/`);
+    
+    // Handle different response formats
+    if (data.training_summary) {
+      return data.training_summary;
+    }
+    
+    // If there's an error detail, throw it
+    if (data.detail) {
+      throw new Error(data.detail);
+    }
+    
+    // Return the data as is if no training_summary wrapper
+    return data;
+  } catch (error) {
+    // Handle specific training summary errors
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data?.detail || "Training summary is only available for completed sessions.");
+    }
+    if (error.response?.status === 403) {
+      throw new Error("You don't have permission to view this training session summary.");
+    }
     throw error;
   }
 };

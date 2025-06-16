@@ -13,7 +13,7 @@ const DefaultContent = () => (
   </div>
 );
 
-const ContentRenderer = ({ currentPage, sessionDetails, onAutoAdvance }) => {
+const ContentRenderer = ({ currentPage, sessionDetails, onAutoAdvance, workflowData }) => {
   const componentMap = {
     [WORKFLOW_STEP_IDS.ATTENDANCE]: AttendanceManagement,
     [WORKFLOW_STEP_IDS.SESSION_METRICS]: SessionMetricsManagement,
@@ -30,7 +30,8 @@ const ContentRenderer = ({ currentPage, sessionDetails, onAutoAdvance }) => {
   return (
     <Component 
       session={sessionDetails} 
-      onSaveSuccess={onAutoAdvance} 
+      onSaveSuccess={onAutoAdvance}
+      workflowData={workflowData}
     />
   );
 };

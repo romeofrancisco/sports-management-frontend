@@ -5,25 +5,30 @@ import { Users, Target, User, BarChart3 } from "lucide-react";
 export const useSessionWorkflow = (sessionId, sessionDetails) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  const getCurrentPage = useCallback(() => {
+    const getCurrentPage = useCallback(() => {
     const path = location.pathname;
-    if (path.includes("/attendance")) return "attendance";
     if (path.includes("/session-metrics")) return "session-metrics";
     if (path.includes("/player-metrics")) return "player-metrics";
+    if (path.includes("/attendance")) return "attendance";
     if (path.includes("/record-metrics")) return "record-metrics";
-    return "attendance";
+    return "session-metrics";
   }, [location.pathname]);
 
-  const currentPage = getCurrentPage();
-
-  const getWorkflowProgress = useCallback(() => {
+  const currentPage = getCurrentPage();  const getWorkflowProgress = useCallback(() => {
     if (!sessionDetails) return { progress: 0, currentStep: 1, steps: [] };
+
+    // Get all players for validation first
+    const allPlayers = sessionDetails.player_records || [];
 
     const attendanceCompleted =
       sessionDetails.player_records?.some(
         (record) => record.attendance_status !== "pending"
       ) || false;
+
+    // Check if ALL players have their attendance marked (no pending players)
+    const allPlayersAttendanceMarked = allPlayers.length > 0 && allPlayers.every(
+      (record) => record.attendance_status !== "pending"
+    );
 
     // Enhanced metrics completion tracking
     const presentPlayers =
@@ -46,46 +51,61 @@ export const useSessionWorkflow = (sessionId, sessionDetails) => {
     
     const metricsConfigured = sessionMetricsConfigured || playerMetricsConfigured;
 
+    // Check if ALL players have at least one metric assigned
+    const allPlayersHaveMetrics = allPlayers.length > 0 && allPlayers.every(
+      (record) => record.metric_records && record.metric_records.length > 0
+    );    // Check if session date is today (using local date, not UTC)
+    const sessionDate = sessionDetails.date;
+    const today = new Date();
+    const localToday = today.getFullYear() + '-' + 
+                     String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                     String(today.getDate()).padStart(2, '0');
+    const isSessionToday = sessionDate === localToday;// Validation for attendance step - only require metrics for navigation
+    const canNavigateToAttendance = allPlayersHaveMetrics;
+    
+    // Separate validation for actually marking attendance
+    const canMarkAttendance = allPlayersHaveMetrics && isSessionToday;    // Validation for record-metrics step - require metrics + all attendance marked
+    const canNavigateToRecordMetrics = metricsConfigured && allPlayersAttendanceMarked;
+
     const metricsRecorded =
       sessionDetails.player_records?.some(
         (record) => record.metric_records && record.metric_records.length > 0
-      ) || false;
-
-    // Define step order for sequential completion
-    const stepOrder = ["attendance", "session-metrics", "player-metrics", "record-metrics"];
+      ) || false;// Define step order for sequential completion
+    const stepOrder = ["session-metrics", "player-metrics", "attendance", "record-metrics"];
     const currentPageIndex = stepOrder.indexOf(currentPage);
     
     const steps = [
       {
-        id: "attendance",
-        title: "Mark Attendance",
-        description: "Identify which players are present",
-        completed: attendanceCompleted && currentPageIndex > 0,
-        current: currentPage === "attendance",
-        icon: Users,
-        path: `/sessions/${sessionId}/manage/attendance`,
-      },
-      {
         id: "session-metrics",
         title: "Session Metrics",
         description: "Configure metrics for all players",
-        completed: currentPageIndex > 1,
+        completed: currentPageIndex > 0,
         current: currentPage === "session-metrics",
         icon: Target,
         path: `/sessions/${sessionId}/manage/session-metrics`,
-        disabled: !attendanceCompleted && currentPage !== "session-metrics",
       },
       {
         id: "player-metrics",
         title: "Player-Specific Metrics",
         description: "Assign metrics to individual players",
-        completed: playerMetricsConfigured && currentPageIndex > 2,
+        completed: playerMetricsConfigured && currentPageIndex > 1,
         current: currentPage === "player-metrics",
         icon: User,
         path: `/sessions/${sessionId}/manage/player-metrics`,
-        disabled: !attendanceCompleted && currentPage !== "player-metrics",
-      },
-      {
+      },      {
+        id: "attendance",
+        title: "Mark Attendance",
+        description: "Identify which players are present",
+        completed: attendanceCompleted && currentPageIndex > 2,
+        current: currentPage === "attendance",
+        icon: Users,
+        path: `/sessions/${sessionId}/manage/attendance`,
+        disabled: !canNavigateToAttendance && currentPage !== "attendance",
+        validationMessage: !canNavigateToAttendance ? 
+          "All players must have metrics assigned before accessing attendance" : 
+          (!isSessionToday ? "Attendance can only be marked on the session date" : undefined),
+        canMarkAttendance: canMarkAttendance, // Additional property for the attendance component
+      },      {
         id: "record-metrics",
         title: "Record Performance",
         description: "Record individual player metrics",
@@ -93,9 +113,10 @@ export const useSessionWorkflow = (sessionId, sessionDetails) => {
         current: currentPage === "record-metrics",
         icon: BarChart3,
         path: `/sessions/${sessionId}/manage/record-metrics`,
-        disabled:
-          (!attendanceCompleted || !metricsConfigured) &&
-          currentPage !== "record-metrics",
+        disabled: !canNavigateToRecordMetrics && currentPage !== "record-metrics",
+        validationMessage: !canNavigateToRecordMetrics ? 
+          (!metricsConfigured ? "Metrics must be configured before recording performance" : 
+           !allPlayersAttendanceMarked ? "All players must have their attendance marked" : undefined) : undefined,
       },
     ];
 
@@ -108,25 +129,42 @@ export const useSessionWorkflow = (sessionId, sessionDetails) => {
       steps,
       allCompleted: completedSteps === steps.length,
     };
-  }, [sessionDetails, currentPage, sessionId]);
-
-  const handleAutoAdvance = useCallback(() => {
-    // For attendance step, navigate to session-metrics
-    if (currentPage === "attendance") {
-      const nextPath = `/sessions/${sessionId}/manage/session-metrics`;
-      navigate(nextPath);
-      return;
-    }
-
+  }, [sessionDetails, currentPage, sessionId]);  const handleAutoAdvance = useCallback(() => {
     // For session-metrics step, navigate to player-metrics
     if (currentPage === "session-metrics") {
       const nextPath = `/sessions/${sessionId}/manage/player-metrics`;
       navigate(nextPath);
       return;
-    }
-
-    // For player-metrics step, navigate to record-metrics
+    }    // For player-metrics step, check validation before proceeding to attendance
     if (currentPage === "player-metrics") {
+      const workflowData = getWorkflowProgress();
+      const attendanceStep = workflowData.steps.find(step => step.id === "attendance");
+      
+      if (attendanceStep && attendanceStep.disabled) {
+        // Don't auto-advance if attendance step is disabled due to validation
+        return;
+      }
+      
+      const nextPath = `/sessions/${sessionId}/manage/attendance`;
+      navigate(nextPath);
+      return;
+    }    // For attendance step, check validation before proceeding to record-metrics
+    if (currentPage === "attendance") {
+      // When auto-advancing from attendance, we can assume attendance was just saved
+      // So we should proceed to record-metrics if metrics are configured
+      const workflowData = getWorkflowProgress();
+      const recordMetricsStep = workflowData.steps.find(step => step.id === "record-metrics");
+      
+      // Check if metrics are configured (the main requirement for record-metrics)
+      const metricsConfigured = sessionDetails?.player_records?.some(
+        (record) => record.metric_records && record.metric_records.length > 0
+      ) || false;
+      
+      if (!metricsConfigured) {
+        // Don't auto-advance if no metrics are configured
+        return;
+      }
+      
       const nextPath = `/sessions/${sessionId}/manage/record-metrics`;
       navigate(nextPath);
       return;

@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueries } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
-import api from "@/api";
 import {
   fetchTrainingCategories,
   fetchTrainingCategory,
@@ -29,6 +28,8 @@ import {
   updatePlayerTraining,
   deletePlayerTraining,
   recordPlayerMetrics,
+  fetchPreviousRecords,
+  fetchPreviousRecordForMetric,
   fetchPlayerProgress,
   fetchPlayerProgressById,
   fetchMultiPlayerProgress,
@@ -467,11 +468,8 @@ export const usePreviousPlayerMetrics = (playerTrainingId) => {
         ]);
         if (cachedData) return cachedData;
 
-        // Otherwise fetch from the server via player-training endpoint
-        const { data } = await api.get(
-          `trainings/player-trainings/${playerTrainingId}/previous_records/`
-        );
-        return data.previous_records || [];
+        // Use the dedicated API function instead of direct fetch
+        return await fetchPreviousRecords(playerTrainingId);
       } catch (error) {
         console.error("Error fetching previous records:", error);
         return [];
@@ -539,9 +537,6 @@ export const usePlayerProgressById = (id, filters = {}, enabled = true) => {
     queryKey: ["player-progress-by-id", params],
     queryFn: () => fetchPlayerProgressById(params),
     enabled: enabled && !!id,
-    // Optimize caching - each metric selection is its own cache entry
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 15 * 60 * 1000, // 15 minutes
   });
 };
 
@@ -788,7 +783,18 @@ export const usePlayerRadarChart = (
       return getPlayerRadarChartData(playerId, dateRange);
     },
     enabled: enabled && !!playerId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// Hook to fetch training summaries for completed sessions
+export const useTrainingSummary = (sessionId, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-summary", sessionId],
+    queryFn: async () => {
+      const { fetchTrainingSummary } = await import("@/api/trainingsApi");
+      return fetchTrainingSummary(sessionId);
+    },
+    enabled: enabled && !!sessionId,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
   });
 };

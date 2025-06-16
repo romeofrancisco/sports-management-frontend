@@ -34,7 +34,7 @@ const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
 
   // Function to handle manage session navigation
   const handleManageSession = (session) => {
-    navigate(`/sessions/${session.id}/manage/attendance`);
+    navigate(`/sessions/${session.id}/manage/session-metrics`);
   };
 
   const handlePageChange = (newPage) => {
