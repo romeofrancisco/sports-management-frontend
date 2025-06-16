@@ -13,12 +13,12 @@ const PlayerProgressBar = ({ currentPlayerIndex, playersWithMetrics }) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <Users className="h-4 w-4 text-blue-600" />
+          <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
+            <Users className="h-4 w-4 text-primary" />
           </div>
-          <h3 className="font-semibold text-gray-900">Recording Progress</h3>
+          <h3 className="font-semibold text-foreground">Recording Progress</h3>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Target className="h-4 w-4" />
           <span className="font-medium">{Math.round(progressPercentage)}% Complete</span>
         </div>
@@ -26,10 +26,10 @@ const PlayerProgressBar = ({ currentPlayerIndex, playersWithMetrics }) => {
       
       {/* Progress Details */}
       <div className="flex justify-between text-sm mb-2">
-        <span className="text-gray-600 font-medium">
+        <span className="text-foreground font-medium">
           Player {currentPlayerIndex + 1} of {playersWithMetrics.length}
         </span>
-        <span className="text-gray-500">
+        <span className="text-muted-foreground">
           {playersWithMetrics.length - currentPlayerIndex - 1} remaining
         </span>
       </div>
@@ -38,7 +38,7 @@ const PlayerProgressBar = ({ currentPlayerIndex, playersWithMetrics }) => {
       <div className="relative">
         <Progress 
           value={progressPercentage} 
-          className="h-3 bg-gray-100 border border-gray-200" 
+          className="h-3 bg-secondary/20 border border-primary/20" 
         />
         {/* Progress indicator dots */}
         <div className="flex justify-between absolute top-0 w-full h-3">
@@ -49,7 +49,7 @@ const PlayerProgressBar = ({ currentPlayerIndex, playersWithMetrics }) => {
               <div
                 key={i}
                 className={`w-1 h-full rounded-full ${
-                  isCompleted ? 'bg-white shadow-sm' : 'bg-gray-300'
+                  isCompleted ? 'bg-card shadow-sm border border-primary/20' : 'bg-muted'
                 }`}
                 style={{ left: `${position}%`, transform: 'translateX(-50%)' }}
               />

@@ -3,7 +3,8 @@ import { Card, CardContent } from "../../../../ui/card";
 import { Button } from "../../../../ui/button";
 import { Badge } from "../../../../ui/badge";
 import SimpleCheckbox from "../../../../ui/simple-checkbox";
-import { User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../ui/avatar";
+import { Trophy, Target, Zap, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -23,26 +24,48 @@ const PlayerMetricsCard = ({
   const playerMetrics = playerAssignedMetrics.get(playerId) || [];
   const metricsToRemoveCount = (metricsToRemove[playerId] || []).length;
   const effectiveMetricsCount = playerMetrics.length - metricsToRemoveCount;
-
-  return (
-    <Card key={playerId} className="p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-primary" />
-          </div>          <div>
-            <h4 className="font-medium">{player?.first_name} {player?.last_name}</h4>
-            <p className="text-xs text-muted-foreground">
-              {effectiveMetricsCount} metrics assigned
-              {metricsToRemoveCount > 0 && (
-                <span className="text-red-600 ml-1">
-                  ({metricsToRemoveCount} pending removal)
-                </span>
-              )}
-            </p>
+  return (    <Card key={playerId} className="p-4 hover:shadow-md transition-shadow border-2 border-primary/10">
+      <div className="flex items-center justify-between mb-4">        {/* Enhanced Player Profile Display */}
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 border-2 border-primary/20">
+              <AvatarImage 
+                src={player?.profile || player?.user?.profile} 
+                alt={`${player?.first_name} ${player?.last_name}`} 
+              />
+              <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm">
+                {player?.jersey_number ? (
+                  <span className="text-xs">#{player.jersey_number}</span>
+                ) : player?.profile ? (
+                  <User className="h-5 w-5" />
+                ) : (
+                  `${player?.first_name?.[0] || ''}${player?.last_name?.[0] || ''}`.toUpperCase()
+                )}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-foreground truncate">
+                  {player?.first_name} {player?.last_name}
+                </h4>
+                {player?.jersey_number && (
+                  <Badge variant="outline" className="text-xs">
+                    #{player.jersey_number}
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>{effectiveMetricsCount} metrics assigned</span>
+                {metricsToRemoveCount > 0 && (
+                  <span className="text-red-600">-{metricsToRemoveCount} removing</span>
+                )}
+                {player?.position && (
+                  <span>• {player.position}</span>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-        <Button
+        </div><Button
           size="sm"
           variant="outline"
           onClick={() => {
@@ -54,8 +77,10 @@ const PlayerMetricsCard = ({
             }
           }}
           disabled={sessionMetricIds.length === 0}
+          className="flex items-center gap-2 hover:bg-primary/5"
         >
-          Assign Session Metrics
+          <Zap className="h-4 w-4" />
+          Quick Assign
         </Button>
       </div>      {/* Player's assigned metrics */}
       {playerMetrics.length > 0 && (

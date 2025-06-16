@@ -14,12 +14,12 @@ export const RealTimeImprovementIndicator = ({
 }) => {  if (loading) {
     return (
       <div className={cn("flex items-center gap-2 text-sm", className)}>
-        <div className="p-2 bg-blue-100 rounded-lg">
-          <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />
+        <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
+          <Loader2 className="h-4 w-4 text-primary animate-spin" />
         </div>
         <div>
-          <div className="font-medium text-gray-700">Calculating...</div>
-          <div className="text-xs text-gray-500">Analyzing performance</div>
+          <div className="font-medium text-foreground">Calculating...</div>
+          <div className="text-xs text-muted-foreground">Analyzing performance</div>
         </div>
       </div>
     );
@@ -27,9 +27,9 @@ export const RealTimeImprovementIndicator = ({
 
   if (!improvementData) {
     return (
-      <div className={cn("flex items-center gap-2 text-sm text-gray-500", className)}>
-        <div className="p-2 bg-gray-100 rounded-lg">
-          <Calendar className="h-4 w-4 text-gray-400" />
+      <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", className)}>
+        <div className="p-2 bg-muted rounded-lg">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
         </div>
         <div>
           <div className="font-medium">No previous data</div>

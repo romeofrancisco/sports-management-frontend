@@ -785,3 +785,16 @@ export const usePlayerRadarChart = (
     enabled: enabled && !!playerId,
   });
 };
+
+// Hook to fetch training summaries for completed sessions
+export const useTrainingSummary = (sessionId, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-summary", sessionId],
+    queryFn: async () => {
+      const { fetchTrainingSummary } = await import("@/api/trainingsApi");
+      return fetchTrainingSummary(sessionId);
+    },
+    enabled: enabled && !!sessionId,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
+};

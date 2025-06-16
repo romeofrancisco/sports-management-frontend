@@ -395,3 +395,32 @@ export const assignMetricsToSinglePlayer = async ({ sessionId, playerId, metricI
     throw error;
   }
 };
+
+// New function to fetch training summaries for completed sessions
+export const fetchTrainingSummary = async (id) => {
+  try {
+    const { data } = await api.get(`trainings/sessions/${id}/training_summary/`);
+    
+    // Handle different response formats
+    if (data.training_summary) {
+      return data.training_summary;
+    }
+    
+    // If there's an error detail, throw it
+    if (data.detail) {
+      throw new Error(data.detail);
+    }
+    
+    // Return the data as is if no training_summary wrapper
+    return data;
+  } catch (error) {
+    // Handle specific training summary errors
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data?.detail || "Training summary is only available for completed sessions.");
+    }
+    if (error.response?.status === 403) {
+      throw new Error("You don't have permission to view this training session summary.");
+    }
+    throw error;
+  }
+};

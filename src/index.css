@@ -149,7 +149,7 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background-color: var(--border);
+  background-color: var(--muted);
   z-index: 25;
   pointer-events: none;
 }

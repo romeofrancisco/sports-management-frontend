@@ -115,7 +115,7 @@ const DataTable = ({
           columnCount={responsiveColumns.length} 
         />
       ) : (
-        <div className="rounded-md border mt-2 relative">
+        <div className="border-y relative">
           <div className="overflow-x-auto">
             <Table className={`${className} text-xs md:text-sm relative`}>
               <TableHeader>
@@ -125,11 +125,10 @@ const DataTable = ({
                       key={header.id}
                       style={{
                         ...(index === 0 ? getFirstColumnStyle(true) : {}),
-                        backgroundColor: index === 0 ? 'var(--background)' : undefined,
                         width: header.column.columnDef.size,
                         minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                       }}
-                      className={`${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 px-3`}
+                      className={`${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
                     >
                       {header.isPlaceholder
                         ? null

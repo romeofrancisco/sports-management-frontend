@@ -8,7 +8,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, Users, ChevronDown, BarChart3 } from "lucide-react";
+import { Target, Users, ChevronDown, BarChart3 } from "lucide-react";
 import TrainingCategoriesList from "@/components/trainings/TrainingCategoriesList";
 import TrainingMetricsList from "../components/trainings/TrainingMetricsList";
 import TrainingSessionsList from "../components/trainings/sessions/TrainingSessionsList";
@@ -112,11 +112,10 @@ const TrainingDashboard = () => {
                     />
                   ) : (
                     <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
-                      <CardContent className="p-8 text-center">
-                        <div className="flex flex-col items-center justify-center space-y-4">
+                      <CardContent className="p-8 text-center">                        <div className="flex flex-col items-center justify-center space-y-4">
                           {/* Icon with background */}
                           <div className="bg-muted/20 p-4 rounded-full">
-                            <User className="h-12 w-12 text-muted-foreground/60" />
+                            <Target className="h-12 w-12 text-muted-foreground/60" />
                           </div>
 
                           {/* Title and description */}
