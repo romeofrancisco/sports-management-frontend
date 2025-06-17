@@ -424,3 +424,15 @@ export const fetchTrainingSummary = async (id) => {
     throw error;
   }
 };
+
+// Get missed metrics from the last completed session for a team
+export const fetchLastSessionMissedMetrics = async (teamId, currentSessionId = null) => {
+  try {
+    const params = currentSessionId ? `?current_session_id=${currentSessionId}` : '';
+    const { data } = await api.get(`trainings/sessions/teams/${teamId}/last-session-missed-metrics/${params}`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching last session missed metrics:", error.response?.data || error.message);
+    throw error;
+  }
+};

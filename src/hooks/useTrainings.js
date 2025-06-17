@@ -40,6 +40,7 @@ import {
   assignMetricsToPlayersInSession,
   getPlayerRadarChartData,
   assignMetricsToSinglePlayer,
+  fetchLastSessionMissedMetrics,
 } from "@/api/trainingsApi";
 
 // Training Categories
@@ -796,5 +797,17 @@ export const useTrainingSummary = (sessionId, enabled = true) => {
     },
     enabled: enabled && !!sessionId,
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
+};
+
+// Hook to fetch last session's missed metrics for a team
+export const useLastSessionMissedMetrics = (teamId, currentSessionId = null) => {
+  return useQuery({
+    queryKey: ["last-session-missed-metrics", teamId, currentSessionId],
+    queryFn: async () => {
+      const { fetchLastSessionMissedMetrics } = await import("@/api/trainingsApi");
+      return fetchLastSessionMissedMetrics(teamId, currentSessionId);
+    },
+    enabled: !!teamId,
   });
 };

@@ -20,6 +20,7 @@ const AttendanceTable = ({
   handleStatusChange,
   handleNotesChange,
   canMarkAttendance,
+  isFormDisabled,
   formAttendanceStats,
   isSubmitting,
   sessionStatus,
@@ -132,14 +133,13 @@ const AttendanceTable = ({
               </div>
               Player Attendance List
             </CardTitle>
-
-            {/* Quick Actions */}
+            {/* Quick Actions */}{" "}
             <div className="flex items-center gap-2">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={!canMarkAttendance}
+                disabled={!canMarkAttendance || isFormDisabled}
                 onClick={handleMarkAllPresent}
                 className="flex items-center gap-2 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
               >
@@ -150,7 +150,7 @@ const AttendanceTable = ({
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={!canMarkAttendance}
+                disabled={!canMarkAttendance || isFormDisabled}
                 onClick={handleResetAll}
                 className="flex items-center gap-2 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
               >
@@ -174,9 +174,14 @@ const AttendanceTable = ({
                       getAttendanceColumns(
                         handleStatusChange,
                         handleNotesChange,
-                        !canMarkAttendance
+                        !canMarkAttendance || isFormDisabled
                       ),
-                    [handleStatusChange, handleNotesChange, canMarkAttendance]
+                    [
+                      handleStatusChange,
+                      handleNotesChange,
+                      canMarkAttendance,
+                      isFormDisabled,
+                    ]
                   );
 
                   return (
@@ -204,12 +209,12 @@ const AttendanceTable = ({
                 >
                   {statusInfo.icon}
                   {statusInfo.message}
-                </div>
-
+                </div>{" "}
                 <Button
                   type="submit"
                   disabled={
                     !canMarkAttendance ||
+                    isFormDisabled ||
                     isSubmitting ||
                     (formAttendanceStats && formAttendanceStats.pending > 0)
                   }

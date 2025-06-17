@@ -31,7 +31,6 @@ const SessionManagement = () => {
     isError,
     refetch,
   } = useTrainingSession(sessionId);
-  console.log("Session Details:", sessionDetails);
 
   const { mutate: endTraining, isPending: isEndingTraining } =
     useEndTrainingSession();

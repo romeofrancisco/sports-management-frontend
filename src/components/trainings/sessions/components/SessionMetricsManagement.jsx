@@ -14,9 +14,13 @@ import {
 } from "lucide-react";
 import SessionMetricsTab from "./metrics/SessionMetricsTab";
 
-const SessionMetricsManagement = ({ session, onSaveSuccess }) => {
+const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
   // Get all players for the session (no attendance filtering needed at this step)
   const allPlayers = session?.player_records || [];
+
+  // Get form disabled state from workflow
+  const sessionMetricsStep = workflowData?.steps?.find(step => step.id === 'session-metrics');
+  const isFormDisabled = sessionMetricsStep?.isFormDisabled ?? false;
 
   // Check if session metrics are currently configured
   const hasSessionMetrics =
@@ -49,9 +53,7 @@ const SessionMetricsManagement = ({ session, onSaveSuccess }) => {
                 Step 1 of training session setup
               </p>
             </div>
-          </CardTitle>
-
-          <Button variant="outline" onClick={handleSkip}>
+          </CardTitle>          <Button variant="outline" onClick={handleSkip} disabled={isFormDisabled}>
             <SkipForward className="size-4" />
             Skip Step
           </Button>
@@ -66,9 +68,12 @@ const SessionMetricsManagement = ({ session, onSaveSuccess }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
-        {/* Session Metrics Configuration */}
-        <div className="animate-in fade-in-50 duration-500 delay-200 flex-1 h-full">
-          <SessionMetricsTab session={session} onSaveSuccess={onSaveSuccess} />
+        {/* Session Metrics Configuration */}        <div className="animate-in fade-in-50 duration-500 delay-200 flex-1 h-full">
+          <SessionMetricsTab 
+            session={session} 
+            onSaveSuccess={onSaveSuccess} 
+            isFormDisabled={isFormDisabled}
+          />
         </div>
       </CardContent>
     </Card>

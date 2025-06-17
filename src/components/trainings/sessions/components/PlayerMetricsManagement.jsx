@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
+import { Badge } from "../../../ui/badge";
 import {
   Target,
   AlertCircle,
@@ -9,23 +10,34 @@ import {
   TargetIcon,
   User,
   BadgeInfo,
+  Clock,
+  TrendingUp,
 } from "lucide-react";
 import PlayerMetricsTab from "./metrics/PlayerMetricsTab";
+import { useLastSessionMissedMetrics } from "@/hooks/useTrainings";
 
-const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
+const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
   // Get all players for the session since we configure metrics before attendance
   const allPlayers = session?.player_records || [];
 
+  // Get form disabled state from workflow
+  const playerMetricsStep = workflowData?.steps?.find(
+    (step) => step.id === "player-metrics"
+  );
+  const isFormDisabled = playerMetricsStep?.isFormDisabled ?? false;
+  // Fetch missed metrics from the last session if we have a team
+  const { data: lastSessionMissedMetrics, isLoading: isLoadingMissedMetrics } =
+    useLastSessionMissedMetrics(session?.team, session?.id);
   // Check if session metrics are configured for any player
   const sessionMetricsConfigured =
     allPlayers.length > 0 &&
     allPlayers.some(
-      (record) => record.metric_records && record.metric_records.length > 0
+      (record) => record.assigned_metrics && record.assigned_metrics.length > 0
     );
 
-  // Check if any players have empty metrics
+  // Check if any players have empty assigned metrics
   const hasPlayersWithEmptyMetrics = allPlayers.some(
-    (record) => !record.metric_records || record.metric_records.length === 0
+    (record) => !record.assigned_metrics || record.assigned_metrics.length === 0
   );
 
   // Allow skipping if at least one player has metrics or if there are no players
@@ -59,10 +71,10 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
                 </p>
               </div>
             </CardTitle>
-
             <Button
               variant="outline"
               onClick={handleSkip}
+              disabled={isFormDisabled}
               className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 backdrop-blur-sm"
             >
               <SkipForward className="h-4 w-4 mr-2" />
@@ -95,9 +107,12 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
               </p>
             </div>
           </CardTitle>
-
           {canSkip && (
-            <Button variant="outline" onClick={handleSkip}>
+            <Button
+              variant="outline"
+              onClick={handleSkip}
+              disabled={isFormDisabled}
+            >
               <SkipForward className="h-4 w-4" />
               Skip Step
             </Button>
@@ -124,9 +139,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
                 <div className="flex-1">
                   <h4 className="font-semibold text-amber-800">
                     Configuration Required
-                  </h4>
-                  <p className="text-sm text-amber-700 mt-1">
-                    Some players don't have any metrics assigned. Please assign
+                  </h4>                  <p className="text-sm text-amber-700 mt-1">
+                    Some players don't have any assigned metrics. Please assign
                     metrics to all players or configure session metrics first to
                     proceed.
                   </p>
@@ -135,10 +149,14 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess }) => {
             </div>
           )}
         </div>
-
         {/* Player Metrics Configuration Component */}
         <div className="animate-in fade-in-50 duration-500 delay-300 flex-1">
-          <PlayerMetricsTab session={session} onSaveSuccess={onSaveSuccess} />
+          <PlayerMetricsTab
+            session={session}
+            onSaveSuccess={onSaveSuccess}
+            lastSessionMissedMetrics={lastSessionMissedMetrics}
+            isFormDisabled={isFormDisabled}
+          />
         </div>
       </CardContent>
     </Card>

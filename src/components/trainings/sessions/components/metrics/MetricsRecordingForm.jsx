@@ -20,7 +20,8 @@ const MetricsRecordingForm = ({
   onNextPlayer,
   session,
   onShowCompletionModal,
-}) => {  const completedMetrics = metricsToShow.filter((metric) => {
+  isFormDisabled = false,
+}) => {const completedMetrics = metricsToShow.filter((metric) => {
     const value = metricValues[metric.id] || "";
     return value !== "" && !isNaN(parseFloat(value));
   }).length;
@@ -88,8 +89,7 @@ const MetricsRecordingForm = ({
             <div key={`${playerTrainingId}-${metric.id}`} className="relative">
               {index > 0 && (
                 <div className="absolute -top-3 left-1/2 w-px h-6 bg-border transform -translate-x-1/2" />
-              )}
-              <MetricInputField
+              )}              <MetricInputField
                 key={`${playerTrainingId}-${metric.id}-input`}
                 metric={metric}
                 value={metricValues[metric.id] || ""}
@@ -101,6 +101,7 @@ const MetricsRecordingForm = ({
                 playerTrainingId={playerTrainingId}
                 fetchImprovement={fetchImprovement}
                 getImprovementData={getImprovementData}
+                isFormDisabled={isFormDisabled}
               />
             </div>
           ))}
@@ -133,8 +134,7 @@ const MetricsRecordingForm = ({
 
                 {/* Navigation Buttons */}
                 {playersWithMetrics && currentPlayerIndex !== undefined && (
-                  <div className="flex items-center justify-center gap-3 mt-6">
-                    <Button
+                  <div className="flex items-center justify-center gap-3 mt-6">                    <Button
                       variant="outline"
                       size="sm"
                       onClick={onPreviousPlayer}
@@ -160,7 +160,7 @@ const MetricsRecordingForm = ({
                         }
                       }}
                       disabled={
-                        currentPlayerIndex === playersWithMetrics.length - 1 && !isSessionCompleted
+                        (currentPlayerIndex === playersWithMetrics.length - 1 && !isSessionCompleted)
                       }
                       className="flex items-center gap-2"
                     >

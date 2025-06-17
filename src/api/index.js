@@ -113,3 +113,4 @@ api.interceptors.response.use(
 export default api;
 
 export { default as leaderApi } from "./leaderApi";
+export * as trainingsApi from "./trainingsApi";
