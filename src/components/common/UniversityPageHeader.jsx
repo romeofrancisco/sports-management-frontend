@@ -41,7 +41,9 @@ const UniversityPageHeader = ({
       <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
           {/* University Logo with enhanced styling */}
-          <div className="flex-shrink-0 relative">            {/* Back Button above logo with proper z-index and enhanced interactivity */}
+          <div className="flex-shrink-0 relative">
+            {" "}
+            {/* Back Button above logo with proper z-index and enhanced interactivity */}
             {showBackButton && (
               <button
                 onClick={handleBackClick}
@@ -52,7 +54,8 @@ const UniversityPageHeader = ({
                 <ArrowLeft className="h-3 w-3 group-hover:translate-x-[-2px] transition-transform duration-200" />
                 <span className="font-medium">{backButtonText}</span>
               </button>
-            )}            {teamLogo ? (
+            )}{" "}
+            {teamLogo ? (
               // Team logo without background and border, larger size
               <img
                 src={teamLogo}

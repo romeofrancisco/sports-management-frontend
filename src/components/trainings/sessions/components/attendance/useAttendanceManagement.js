@@ -21,6 +21,7 @@ const useAttendanceManagement = (session, onSaveSuccess, workflowData) => {
   // Get attendance step data from workflow
   const attendanceStep = workflowData?.steps?.find(step => step.id === 'attendance');
   const canMarkAttendance = attendanceStep?.canMarkAttendance ?? true;
+  const isFormDisabled = attendanceStep?.isFormDisabled ?? false;
 
   // Get session status to determine if we should show start training button
   const getSessionStatus = () => {
@@ -203,7 +204,6 @@ const useAttendanceManagement = (session, onSaveSuccess, workflowData) => {
   };
 
   const attendanceStats = getAttendanceStats();
-
   return {
     // Data
     trainingSession,
@@ -213,6 +213,7 @@ const useAttendanceManagement = (session, onSaveSuccess, workflowData) => {
     isLoading,
     isSubmitting,
     canMarkAttendance,
+    isFormDisabled,
     
     // Form methods
     control,

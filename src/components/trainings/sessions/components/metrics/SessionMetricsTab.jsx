@@ -12,7 +12,7 @@ import {
   useTrainingCategories,
 } from "@/hooks/useTrainings";
 
-const SessionMetricsTab = ({ session, onSaveSuccess }) => {
+const SessionMetricsTab = ({ session, onSaveSuccess, isFormDisabled = false }) => {
   const {
     sessionMetrics,
     sessionMetricIds,
@@ -202,11 +202,12 @@ const SessionMetricsTab = ({ session, onSaveSuccess }) => {
                   metric.id
                 );
 
-                return (
-                  <div
+                return (                  <div
                     key={metric.id}
                     className={cn(
-                      "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-md",
+                      "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200",
+                      !isFormDisabled && "cursor-pointer hover:shadow-md",
+                      isFormDisabled && "cursor-not-allowed opacity-60",
                       isAssignedToAllPlayers &&
                         "bg-primary/10 border-primary/30 shadow-sm",
                       !isAssignedToAllPlayers &&
@@ -216,23 +217,25 @@ const SessionMetricsTab = ({ session, onSaveSuccess }) => {
                         !isMetricSelected &&
                         "bg-gradient-to-r from-card to-card/80 border-border hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10"
                     )}
-                    onClick={() => handleToggleSessionMetric(metric.id)}
+                    {...(!isFormDisabled && {
+                      onClick: () => handleToggleSessionMetric(metric.id)
+                    })}
                   >
                     {/* Background hover effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    <SimpleCheckbox
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>                    <SimpleCheckbox
                       id={`metric-${metric.id}`}
                       checked={isMetricSelected}
-                      onChange={() => handleToggleSessionMetric(metric.id)}
+                      onChange={!isFormDisabled ? () => handleToggleSessionMetric(metric.id) : undefined}
+                      disabled={isFormDisabled}
                       className="relative z-10"
                     />
 
-                    <div className="flex-1 relative z-10">
-                      <Label
+                    <div className="flex-1 relative z-10">                      <Label
                         htmlFor={`metric-${metric.id}`}
                         className={cn(
-                          "text-sm font-semibold leading-none cursor-pointer flex items-center gap-2",
+                          "text-sm font-semibold leading-none flex items-center gap-2",
+                          !isFormDisabled && "cursor-pointer",
+                          isFormDisabled && "cursor-not-allowed",
                           isAssignedToAllPlayers && "text-primary",
                           !isAssignedToAllPlayers &&
                             isMetricSelected &&
@@ -306,11 +309,9 @@ const SessionMetricsTab = ({ session, onSaveSuccess }) => {
                   )}
                 </div>
               )}
-            </div>
-
-            <Button
+            </div>            <Button
               onClick={handleSaveSessionMetrics}
-              disabled={getButtonInfo().disabled}
+              disabled={getButtonInfo().disabled || isFormDisabled}
               variant={
                 changesInfo.removing > 0 && changesInfo.adding === 0
                   ? "destructive"
@@ -319,6 +320,7 @@ const SessionMetricsTab = ({ session, onSaveSuccess }) => {
               className={cn(
                 "transition-all duration-200 shadow-lg hover:shadow-xl",
                 !getButtonInfo().disabled &&
+                  !isFormDisabled &&
                   changesInfo.adding > 0 &&
                   "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
               )}

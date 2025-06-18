@@ -12,7 +12,7 @@ import {
   RecentMetricsSection,
   PersonalProgressSection,
   ProgressSummarySection,
-} from "./components";
+} from "./components/dashboard";
 import { ChartsSection } from "./charts";
 
 const PlayerDashboard = () => {
@@ -28,8 +28,6 @@ const PlayerDashboard = () => {
     isLoading: progressLoading,
     error: progressError,
   } = usePlayerProgress();
-
-  console.log(progress);
 
   if (overviewLoading || progressLoading) {
     return <DashboardSkeleton />;

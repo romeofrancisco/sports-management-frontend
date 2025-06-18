@@ -18,11 +18,14 @@ import MetricsRecordingForm from "./metrics/MetricsRecordingForm";
 import EmptyPlayersState from "./metrics/EmptyPlayersState";
 import TrainingCompletionModal from "../../../modals/trainings/TrainingCompletionModal";
 
-
-const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
+const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
   const navigate = useNavigate();
   const [showSuccessAnimation, setShowSuccessAnimation] = React.useState(false);
   const [showCompletionModal, setShowCompletionModal] = React.useState(false);
+  
+  // Get form disabled state from workflow
+  const recordMetricsStep = workflowData?.steps?.find(step => step.id === 'record-metrics');
+  const isFormDisabled = recordMetricsStep?.isFormDisabled ?? false;
   const {
     currentPlayerIndex,
     currentPlayer,
@@ -67,12 +70,18 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
   }, [savePlayerMetrics, isLastPlayer, hasValidMetrics, onSaveSuccess]);  // Enhanced next player handler
   const handleEnhancedNextPlayer = React.useCallback(async () => {
     // Check if session is already completed
-    if (session?.status === 'completed' && isLastPlayer) {
+    if (session?.status === "completed" && isLastPlayer) {
       // Navigate to training summary page for completed sessions
       navigate(`/trainings/sessions/${session.id}/summary`);
       return;
     }
-    
+
+    // If form is disabled (non-admin on completed session), just navigate without saving
+    if (isFormDisabled) {
+      await handleNextPlayer(); // Just navigate, don't save
+      return;
+    }
+
     if (isLastPlayer && hasValidMetrics()) {
       await handleSaveAndCheckCompletion();
     } else {
@@ -86,6 +95,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
     session?.status,
     session?.id,
     navigate,
+    isFormDisabled,
   ]);
 
   // Calculate progress
@@ -124,7 +134,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
             track improvements in real-time.
           </p>
         </div>
-      </CardHeader>{" "}
+      </CardHeader>
       <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
         {/* Enhanced Player Navigation & Statistics Dashboard */}
         <div className="animate-in fade-in-50 duration-500 delay-100">
@@ -172,7 +182,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
                 </Avatar>
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">
-                    {currentPlayer?.player?.first_name}{" "}
+                    {currentPlayer?.player?.first_name}
                     {currentPlayer?.player?.last_name}
                   </h3>
                   <div className="flex items-center gap-3 text-sm">
@@ -216,7 +226,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
                           record.metric_records &&
                           record.metric_records.length > 0
                       ).length
-                    }{" "}
+                    }
                     Done
                   </span>
                 </div>
@@ -229,7 +239,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
                           !record.metric_records ||
                           record.metric_records.length === 0
                       ).length
-                    }{" "}
+                    }
                     Pending
                   </span>
                 </div>
@@ -239,8 +249,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
             {/* Progress Bar with Navigation */}
             <div className="space-y-3">
               {/* Integrated Navigation Controls */}
-              <div className="flex items-center justify-between">
-                <Button
+              <div className="flex items-center justify-between">                <Button
                   variant="outline"
                   size="sm"
                   onClick={handlePreviousPlayer}
@@ -266,8 +275,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
                       Ready to proceed
                     </Badge>
                   )}
-                </div>{" "}
-                <Button
+                </div>                <Button
                   variant={canProceed ? "default" : "outline"}
                   size="sm"
                   onClick={handleEnhancedNextPlayer}
@@ -277,9 +285,12 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
                       ? "bg-primary hover:bg-primary/90"
                       : "border-red-300 text-red-600 hover:bg-red-50"
                   }`}
-                >                  <span className="text-xs">
+                >
+                  <span className="text-xs">
                     {currentPlayerIndex === playersWithMetrics.length - 1
-                      ? (session?.status === 'completed' ? "View Training Summary" : "Complete")
+                      ? session?.status === "completed"
+                        ? "View Training Summary"
+                        : "Complete"
                       : "Next"}
                   </span>
                   <ChevronRight className="h-3 w-3" />
@@ -287,11 +298,10 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
               </div>
             </div>
           </div>
-        </div>{" "}
+        </div>
         {/* Metrics Recording Form */}
         <div className="animate-in fade-in-50 duration-500 delay-200 flex-1">
-          <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden">
-            {" "}            <MetricsRecordingForm
+          <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden">            <MetricsRecordingForm
               metricsToShow={metricsToShow}
               metricValues={metricValues}
               notes={notes}
@@ -306,10 +316,12 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
               onNextPlayer={handleEnhancedNextPlayer}
               session={session}
               onShowCompletionModal={() => setShowCompletionModal(true)}
+              isFormDisabled={isFormDisabled}
             />
-          </div>{" "}
+          </div>
         </div>
-      </CardContent>{" "}      {/* Training Completion Modal */}
+      </CardContent>
+      {/* Training Completion Modal */}
       <TrainingCompletionModal
         isOpen={showCompletionModal}
         onClose={() => setShowCompletionModal(false)}
@@ -321,7 +333,8 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess }) => {
           if (onSaveSuccess) {
             onSaveSuccess();
           }
-        }}      />
+        }}
+      />
     </Card>
   );
 };

@@ -11,23 +11,24 @@ export const usePlayerMetrics = (session, onSaveSuccess) => {
   // Get all players for the session since we configure metrics before attendance
   const allPlayers = useMemo(() => {
     return session?.player_records || [];
-  }, [session?.player_records]);
-  // Get player-level assigned metrics
+  }, [session?.player_records]);  // Get player-level assigned metrics
   const playerAssignedMetrics = useMemo(() => {
     const playerMetrics = new Map();
     session?.player_records?.forEach(record => {
       const playerId = record.player?.id;
-      // Extract assigned metrics from metric_records
-      const assignedMetrics = record.metric_records?.map(metricRecord => ({
-        id: metricRecord.metric,
-        name: metricRecord.metric_name,
+      // Extract assigned metrics from assigned_metrics field (not metric_records)
+      // metric_records is empty for absent/excused players, but assigned_metrics contains the actual assignments
+      const assignedMetrics = record.assigned_metrics?.map(metric => ({
+        id: metric.id,
+        name: metric.name,
         metric_unit: {
-          code: metricRecord.metric_unit_code,
-          name: metricRecord.metric_unit_name
+          code: metric.metric_unit_data.code,
+          name: metric.metric_unit_data.name
         },
-        value: metricRecord.value,
-        recorded_at: metricRecord.recorded_at,
-        notes: metricRecord.notes
+        category_name: metric.category_name,
+        is_lower_better: metric.is_lower_better,
+        weight: metric.weight,
+        description: metric.description
       })) || [];
       
       if (playerId) {

@@ -3,14 +3,25 @@
  */
 
 /**
- * Format time string (HH:MM) for display
+ * Format time string (HH:MM) for display in 12-hour format
  * @param {string} timeString - Time string in format "HH:MM"
- * @returns {string} Formatted time string
+ * @returns {string} Formatted time string in 12-hour format with AM/PM
  */
 export const formatTime = (timeString) => {
   if (!timeString) return '';
+  
   const [hours, minutes] = timeString.split(':');
-  return `${hours}:${minutes}`;
+  const hour24 = parseInt(hours, 10);
+  const minute = parseInt(minutes, 10);
+  
+  // Convert to 12-hour format
+  const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+  const ampm = hour24 >= 12 ? 'PM' : 'AM';
+  
+  // Format minutes with leading zero if needed
+  const formattedMinutes = minute.toString().padStart(2, '0');
+  
+  return `${hour12}:${formattedMinutes} ${ampm}`;
 };
 
 /**

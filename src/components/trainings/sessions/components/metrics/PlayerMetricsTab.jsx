@@ -10,8 +10,7 @@ import {
   ChevronRight,
   Check,
   User,
-  Users,
-  AlertCircle,
+  Clock,
   CheckCircle,
 } from "lucide-react";
 import { usePlayerMetrics } from "./usePlayerMetrics";
@@ -22,7 +21,12 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
+const PlayerMetricsTab = ({
+  session,
+  onSaveSuccess,
+  lastSessionMissedMetrics,
+  isFormDisabled = false,
+}) => {
   const {
     allPlayers,
     playerAssignedMetrics,
@@ -111,8 +115,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
         }
       );
     });
-  };
-  const handleNextPlayer = async () => {
+  };  const handleNextPlayer = async () => {
     // Save current player's metrics before navigating
     const currentPlayerId = allPlayers[currentPlayerIndex]?.player?.id;
     const isLastPlayer = currentPlayerIndex === allPlayers.length - 1;
@@ -129,6 +132,16 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
       currentPlayerAssignedMetrics.length -
       currentPlayerRemovingMetrics.length +
       currentPlayerSelectedMetrics.length;
+
+    // If form is disabled, only allow navigation without saving
+    if (isFormDisabled) {
+      if (!isLastPlayer) {
+        setCurrentPlayerIndex((prev) =>
+          Math.min(allPlayers.length - 1, prev + 1)
+        );
+      }
+      return;
+    }
 
     // Prevent navigation if player has no metrics
     if (effectiveMetricsCount === 0) {
@@ -197,6 +210,31 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
   const selectedMetricsCount = (selectedPlayerMetrics[playerId] || []).length;
   const effectiveMetricsCount =
     playerMetrics.length - metricsToRemoveCount + selectedMetricsCount;
+
+  // Find missed metrics for the current player from the last session
+  const currentPlayerMissedMetrics = useMemo(() => {
+    if (
+      !lastSessionMissedMetrics?.players_with_missed_metrics ||
+      !currentPlayer
+    ) {
+      return [];
+    }
+
+    // Find the current player in the missed metrics data
+    // Match by player name since we might not have consistent IDs
+    const playerName = `${currentPlayer.first_name} ${currentPlayer.last_name}`;
+    const missedPlayerData =
+      lastSessionMissedMetrics.players_with_missed_metrics.find(
+        (p) => p.player_name === playerName
+      );
+
+    return missedPlayerData?.missed_metrics || [];
+  }, [lastSessionMissedMetrics, currentPlayer]);
+
+  // Create a set of missed metric IDs for quick lookup
+  const missedMetricIds = useMemo(() => {
+    return new Set(currentPlayerMissedMetrics.map((m) => m.metric_id));
+  }, [currentPlayerMissedMetrics]);
 
   // Check if player can proceed (has at least one metric)
   const canProceed = effectiveMetricsCount > 0;
@@ -273,14 +311,13 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
               <span className="text-sm font-medium text-gray-700">
                 {allPlayers.length} Total
               </span>
-            </div>
-            <div className="flex items-center gap-2">
+            </div>            <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <span className="text-sm font-medium text-gray-700">
                 {
                   allPlayers.filter(
                     (record) =>
-                      record.metric_records && record.metric_records.length > 0
+                      record.assigned_metrics && record.assigned_metrics.length > 0
                   ).length
                 }{" "}
                 Done
@@ -292,8 +329,8 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
                 {
                   allPlayers.filter(
                     (record) =>
-                      !record.metric_records ||
-                      record.metric_records.length === 0
+                      !record.assigned_metrics ||
+                      record.assigned_metrics.length === 0
                   ).length
                 }{" "}
                 Pending
@@ -304,8 +341,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
         {/* Progress Bar with Navigation */}
         <div className="space-y-3">
           {/* Integrated Navigation Controls */}
-          <div className="flex items-center justify-between">
-            <Button
+          <div className="flex items-center justify-between">            <Button
               variant="outline"
               size="sm"
               onClick={handlePreviousPlayer}
@@ -331,8 +367,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
                   Ready to proceed
                 </Badge>
               )}
-            </div>
-            <Button
+            </div>            <Button
               variant={canProceed ? "default" : "outline"}
               size="sm"
               onClick={handleNextPlayer}
@@ -351,8 +386,114 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
               <ChevronRight className="h-3 w-3" />
             </Button>
           </div>
+        </div>{" "}
+      </div>{" "}
+      {/* Missed Metrics from Last Session */}
+      {currentPlayerMissedMetrics.length > 0 && (
+        <div className="rounded-xl p-4 border-2 border-amber-200 bg-amber-50/80 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-amber-600" />
+              Missed Metrics from Last Session
+              <Badge
+                variant="outline"
+                className="text-xs bg-amber-100 text-amber-700 border-amber-300"
+              >
+                {currentPlayerMissedMetrics.length} missed
+              </Badge>
+            </h4>            <Button
+              variant="outline"
+              size="sm"
+              disabled={isFormDisabled}
+              onClick={() => {
+                // Get all missed metric IDs that are not already assigned
+                const missedMetricIds = currentPlayerMissedMetrics
+                  .filter(
+                    (missedMetric) =>
+                      !playerMetrics.some(
+                        (pm) => pm.id === missedMetric.metric_id
+                      ) &&
+                      !(selectedPlayerMetrics[playerId] || []).includes(
+                        missedMetric.metric_id
+                      )
+                  )
+                  .map((missedMetric) => missedMetric.metric_id);
+
+                // Add all missed metrics to selection
+                missedMetricIds.forEach((metricId) => {
+                  handleTogglePlayerMetric(playerId, metricId);
+                });
+              }}
+              className="text-xs px-3 py-1 bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 hover:border-amber-400"
+            >
+              <Target className="h-3 w-3 mr-1" />
+              Assign All Missed
+            </Button>
+          </div>
+          <p className="text-xs text-amber-700 mb-3">
+            These metrics were assigned but not recorded in the previous
+            session. Click to select or use the button above:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {currentPlayerMissedMetrics.map((missedMetric) => {
+              const isAlreadyAssigned = playerMetrics.some(
+                (pm) => pm.id === missedMetric.metric_id
+              );
+              const isSelected = (
+                selectedPlayerMetrics[playerId] || []
+              ).includes(missedMetric.metric_id);              const isClickable = !isAlreadyAssigned && !isFormDisabled;
+
+              return (
+                <Badge
+                  key={missedMetric.metric_id}
+                  variant="outline"
+                  className={`text-sm px-3 py-1.5 font-medium transition-all duration-200 ${
+                    isAlreadyAssigned
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : isSelected
+                      ? "bg-secondary/10 text-secondary border-secondary/20 ring-2 ring-secondary/30"
+                      : isFormDisabled
+                      ? "bg-amber-100 text-amber-800 border-amber-300 opacity-60 cursor-not-allowed"
+                      : "bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 cursor-pointer"
+                  }`}
+                  onClick={() => {
+                    if (isClickable) {
+                      handleTogglePlayerMetric(
+                        playerId,
+                        missedMetric.metric_id
+                      );
+                    }
+                  }}
+                >
+                  {isAlreadyAssigned ? (
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                  ) : isSelected ? (
+                    <Target className="h-3 w-3 mr-1" />
+                  ) : (
+                    <Clock className="h-3 w-3 mr-1" />
+                  )}
+                  {missedMetric.metric_name}
+                  {missedMetric.metric_unit && (
+                    <span className="ml-1 text-amber-600">
+                      ({missedMetric.metric_unit})
+                    </span>
+                  )}{" "}
+                  {isAlreadyAssigned && (
+                    <span className="ml-1 text-primary text-xs">
+                      ✓ Already assigned
+                    </span>
+                  )}
+                  {isSelected && !isAlreadyAssigned && (
+                    <span className="ml-1 text-secondary text-xs">
+                      Selected
+                    </span>
+                  )}
+                </Badge>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
       {/* Enhanced Player's Assigned Metrics */}
       {playerMetrics.length > 0 && (
         <div className="rounded-xl p-4 border-2 border-primary/20 shadow-sm">
@@ -386,6 +527,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
       )}
       {/* Enhanced Metric Selection */}
       <div className="space-y-4 flex-1 flex flex-col">
+        {" "}
         <div className="flex items-center gap-2">
           <h4 className="text-sm font-semibold text-foreground">
             Select Metrics to Assign:
@@ -393,6 +535,15 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
           <Badge variant="outline" className="text-xs">
             {filteredMetrics.length} available
           </Badge>
+          {currentPlayerMissedMetrics.length > 0 && (
+            <Badge
+              variant="outline"
+              className="text-xs bg-amber-100 text-amber-800 border-amber-300"
+            >
+              <Clock className="h-3 w-3 mr-1" />
+              {currentPlayerMissedMetrics.length} from last session
+            </Badge>
+          )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
           {filteredMetrics.map((metric) => {
@@ -406,15 +557,18 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
               metricsToRemove[playerId] || []
             ).includes(metric.id);
 
+            // Check if this metric was missed in the last session
+            const wasMissedInLastSession = missedMetricIds.has(metric.id);
+
             const isChecked = isAlreadyAssigned
               ? !isMarkedForRemoval
               : isSelected;
 
-            return (
-              <div
+            return (              <div
                 key={metric.id}
                 className={cn(
-                  "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-md",
+                  "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-md",
+                  // Keep original styling regardless of missed status
                   isAlreadyAssigned &&
                     !isMarkedForRemoval &&
                     "bg-primary/10 border-primary/20 shadow-sm",
@@ -426,23 +580,26 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
                   !isAlreadyAssigned &&
                     !isSelected &&
                     !isMarkedForRemoval &&
-                    "bg-gradient-to-r from-card to-card/80 border-border hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10"
+                    "bg-gradient-to-r from-card to-card/80 border-border hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10",
+                  // Add cursor pointer only when not disabled
+                  !isFormDisabled && "cursor-pointer",
+                  isFormDisabled && "cursor-not-allowed opacity-60"
                 )}
-                onClick={() => handleTogglePlayerMetric(playerId, metric.id)}
+                onClick={!isFormDisabled ? () => handleTogglePlayerMetric(playerId, metric.id) : undefined}
               >
                 {/* Background hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <SimpleCheckbox
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>                <SimpleCheckbox
                   checked={isChecked}
-                  onChange={() => handleTogglePlayerMetric(playerId, metric.id)}
+                  onChange={!isFormDisabled ? () => handleTogglePlayerMetric(playerId, metric.id) : undefined}
+                  disabled={isFormDisabled}
                   className="relative z-10"
                 />
-
                 <div className="flex-1 relative z-10">
+                  {" "}
                   <span
                     className={cn(
                       "font-semibold text-sm block",
+                      // Keep original text colors regardless of missed status
                       isAlreadyAssigned &&
                         !isMarkedForRemoval &&
                         "text-primary",
@@ -454,46 +611,87 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
                         "text-foreground"
                     )}
                   >
-                    {metric.name}
+                    <div className="flex items-center gap-1">
+                      {wasMissedInLastSession && (
+                        <Clock className="h-3 w-3 text-amber-600" />
+                      )}
+                      {metric.name}
+                    </div>
                   </span>
                   {metric.description && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                       {metric.description}
                     </p>
                   )}
-                </div>
+                </div>{" "}
                 <div className="relative z-10">
-                  {isAlreadyAssigned && !isMarkedForRemoval && (
-                    <Badge
-                      variant="outline"
-                      className="text-primary bg-primary/10 border-primary/20"
-                    >
-                      <Check className="h-3 w-3 mr-1" />
-                      Assigned
-                    </Badge>
-                  )}
+                  {isAlreadyAssigned &&
+                    !isMarkedForRemoval &&
+                    wasMissedInLastSession && (
+                      <Badge
+                        variant="outline"
+                        className="text-primary bg-primary/10 border-primary/20"
+                      >
+                        <Check className="h-3 w-3 mr-1" />
+                        Assigned (Missed)
+                      </Badge>
+                    )}
+                  {isAlreadyAssigned &&
+                    !isMarkedForRemoval &&
+                    !wasMissedInLastSession && (
+                      <Badge
+                        variant="outline"
+                        className="text-primary bg-primary/10 border-primary/20"
+                      >
+                        <Check className="h-3 w-3 mr-1" />
+                        Assigned
+                      </Badge>
+                    )}
                   {isMarkedForRemoval && (
                     <Badge variant="destructive" className="text-xs">
                       Removing
                     </Badge>
                   )}
-                  {isSelected && !isAlreadyAssigned && (
-                    <Badge
-                      variant="outline"
-                      className="text-secondary bg-secondary/10 border-secondary/20"
-                    >
-                      <Target className="h-3 w-3 mr-1" />
-                      Selected
-                    </Badge>
-                  )}
+                  {wasMissedInLastSession &&
+                    !isAlreadyAssigned &&
+                    !isSelected && (
+                      <Badge
+                        variant="outline"
+                        className="text-muted-foreground bg-muted border-border"
+                      >
+                        <Clock className="h-3 w-3 mr-1" />
+                        Missed
+                      </Badge>
+                    )}
+                  {wasMissedInLastSession &&
+                    isSelected &&
+                    !isAlreadyAssigned && (
+                      <Badge
+                        variant="outline"
+                        className="text-secondary bg-secondary/10 border-secondary/20"
+                      >
+                        <Target className="h-3 w-3 mr-1" />
+                        Selected (Missed)
+                      </Badge>
+                    )}
+                  {!wasMissedInLastSession &&
+                    isSelected &&
+                    !isAlreadyAssigned && (
+                      <Badge
+                        variant="outline"
+                        className="text-secondary bg-secondary/10 border-secondary/20"
+                      >
+                        <Target className="h-3 w-3 mr-1" />
+                        Selected
+                      </Badge>
+                    )}
                 </div>
               </div>
             );
           })}
         </div>
         {/* Bottom Navigation for Better UX */}
-        <div className="flex items-center rounded-xl shadow-sm justify-between p-4 border-2 border-primary/20">
-          <Button
+        <div className="flex items-center rounded-xl shadow-sm justify-between p-4 border-2 border-primary/20">          <Button
             variant="outline"
             size="default"
             onClick={handlePreviousPlayer}
@@ -521,8 +719,7 @@ const PlayerMetricsTab = ({ session, onSaveSuccess }) => {
                 Ready to proceed
               </Badge>
             )}
-          </div>
-          <Button
+          </div>          <Button
             variant={canProceed ? "default" : "destructive"}
             size="default"
             onClick={handleNextPlayer}

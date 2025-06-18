@@ -14,7 +14,6 @@ import { ChartHeader } from "@/components/charts/PlayerProgressChart/ChartHeader
 const ProgressChartCard = ({ 
   playerId, 
   dateRange, 
-  openModal, 
   className = "" 
 }) => {
   const {

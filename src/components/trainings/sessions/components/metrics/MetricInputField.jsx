@@ -14,6 +14,7 @@ const MetricInputField = ({
   playerTrainingId,
   fetchImprovement,
   getImprovementData,
+  isFormDisabled = false,
 }) => {
   const hasValue = value !== "" && !isNaN(parseFloat(value));
 
@@ -78,8 +79,7 @@ const MetricInputField = ({
       {/* Enhanced Input Controls */}
       <div className="space-y-3">
         <div className="flex items-center">
-          <div className="flex-1 relative">
-            <Input
+          <div className="flex-1 relative">            <Input
               id={`metric-${metric.id}`}
               type="number"
               value={value}
@@ -87,6 +87,7 @@ const MetricInputField = ({
               step="0.1"
               min={metric.is_lower_better ? undefined : 0}
               placeholder="Enter value..."
+              disabled={isFormDisabled}
               className={cn(
                 "text-lg font-medium h-12 rounded-lg border-2 transition-all duration-200",
                 hasValue
@@ -129,13 +130,13 @@ const MetricInputField = ({
           <span className="text-xs text-muted-foreground font-normal">
             (optional)
           </span>
-        </Label>
-        <Textarea
+        </Label>        <Textarea
           id={`notes-${metric.id}`}
           placeholder={`Add observations about ${metric.name} performance, technique, or any relevant details...`}
           rows={3}
           value={notes || ""}
           onChange={(e) => onNotesChange(e.target.value)}
+          disabled={isFormDisabled}
           className={cn(
             "resize-none transition-all duration-200 rounded-lg",
             "border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/20",

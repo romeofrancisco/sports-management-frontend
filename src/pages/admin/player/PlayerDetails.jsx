@@ -16,9 +16,8 @@ import {
   RecentMetricsSection,
   PersonalProgressSection,
   ProgressSummarySection,
-} from "@/pages/player/components";
+} from "@/pages/player/components/dashboard";
 import { ChartsSection } from "@/pages/player/charts";
-
 // Import training dashboard components for detailed analysis
 import PlayerProgressStats from "@/components/trainings/players/PlayerProgressStats";
 import {
