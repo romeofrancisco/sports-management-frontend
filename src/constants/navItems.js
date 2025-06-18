@@ -109,8 +109,8 @@ export const playerNavigation = () => {
       icon: CalendarCog,
     },
     {
-      title: "Trainings",
-      href: "/trainings",
+      title: "Training Progress",
+      href: "/trainings/progress",
       icon: Dumbbell,
     },
   ];
@@ -269,10 +269,10 @@ export const playerGroupedNavigation = () => {
           description: "View upcoming games",
         },
         {
-          title: "Trainings",
-          href: "/trainings",
+          title: "Training Progress",
+          href: "/trainings/progress",
           icon: Dumbbell,
-          description: "View scheduled training sessions",
+          description: "View your training progress and performance",
         },
       ],
     },

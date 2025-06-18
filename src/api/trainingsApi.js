@@ -436,3 +436,27 @@ export const fetchLastSessionMissedMetrics = async (teamId, currentSessionId = n
     throw error;
   }
 };
+
+// Assigned Metrics for Players
+export const fetchAssignedMetrics = async (params = {}) => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/assigned_metrics/", {
+      params: cleanParams(params),
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Assigned Metrics Detail for Players (metric-focused view)
+export const fetchAssignedMetricsDetail = async (params = {}) => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/assigned_metrics_detail/", {
+      params: cleanParams(params),
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

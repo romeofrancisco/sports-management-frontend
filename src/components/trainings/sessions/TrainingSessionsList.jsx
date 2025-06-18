@@ -14,7 +14,7 @@ import DeleteTrainingSessionModal from "@/components/modals/trainings/DeleteTrai
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const TrainingSessionsList = ({ coachId, onNewSession, onEditSession }) => {
+const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
   const navigate = useNavigate();
   const [selectedSession, setSelectedSession] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
