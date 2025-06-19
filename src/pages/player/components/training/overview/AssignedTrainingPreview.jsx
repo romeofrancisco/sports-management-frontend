@@ -1,34 +1,52 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ClipboardCheck, ChevronRight, Clock } from "lucide-react";
 import { SessionCard } from "../assigned";
 import { transformSessionData } from "../utils/sessionDataTransform";
 
-const AssignedTrainingPreview = ({ assignedData, isAssignedLoading, showAllAssigned, setShowAllAssigned, hideShowAllButton, type = "assigned" }) => {
+const AssignedTrainingPreview = ({
+  assignedData,
+  isAssignedLoading,
+  showAllAssigned,
+  setShowAllAssigned,
+  hideShowAllButton,
+  type = "assigned",
+}) => {
   const navigate = useNavigate();
   if (!assignedData?.results || assignedData.results.length === 0) return null;
 
   // Dynamic title, icon, and description based on type
-  const config = type === "recent"
-    ? {
-        title: "Recent Sessions",
-        icon: <Clock className="size-5 text-primary-foreground" />,
-        description: "Your most recent training sessions",
-      }
-    : {
-        title: "Assigned Training Metrics",
-        icon: <ClipboardCheck className="size-5 text-secondary-foreground" />,
-        description: "Recent assignments requiring your attention",
-      };
+  const config =
+    type === "recent"
+      ? {
+          title: "Recent Sessions",
+          icon: <Clock className="size-5 text-primary-foreground" />,
+          description: "Your most recent training sessions",
+        }
+      : {
+          title: "Assigned Training Metrics",
+          icon: <ClipboardCheck className="size-5 text-secondary-foreground" />,
+          description: "Recent assignments requiring your attention",
+        };
 
   return (
     <Card className="bg-card shadow-lg border-2 border-primary/10">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`p-3 rounded-lg ${type === "recent" ? "bg-primary" : "bg-secondary"} shadow-lg`}>
+            <div
+              className={`p-3 rounded-lg ${
+                type === "recent" ? "bg-primary" : "bg-secondary"
+              } shadow-lg`}
+            >
               {config.icon}
             </div>
             <div>

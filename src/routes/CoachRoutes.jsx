@@ -17,6 +17,9 @@ import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
 import SessionManagement from "@/components/trainings/sessions/SessionManagement";
+import LeaguesList from "@/pages/admin/league/LeaguesList";
+import LeagueDetails from "@/pages/admin/league/LeagueDetails";
+import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 
 export const coachRoutes = [
   {
@@ -46,10 +49,12 @@ export const coachRoutes = [
   {
     path: "/trainings",
     element: <TrainingDashboard />,
-  },  {
+  },
+  {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
-  },  {
+  },
+  {
     path: "/sessions/:sessionId/manage/*",
     element: <SessionManagement />,
   },
@@ -92,5 +97,45 @@ export const coachRoutes = [
   {
     path: "/trainings/units",
     element: <TrainingUnitsPage />,
+  },
+  {
+    path: "/leagues",
+    element: <LeaguesList />,
+  },
+  {
+    path: "/leagues/:league",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/leaderboard",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/teams",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons",
+    element: <LeagueDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/standings",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/games",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/teams",
+    element: <SeasonDetails />,
+  },
+  {
+    path: "/leagues/:league/seasons/:season/bracket",
+    element: <SeasonDetails />,
   },
 ];

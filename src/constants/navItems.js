@@ -10,111 +10,7 @@ import {
   Dumbbell,
   BarChart3,
 } from "lucide-react";
-
-export const coachNavigation = () => {
-  return [
-    {
-      title: "Dashboard",
-      href: "/",
-      icon: Gauge,
-    },
-    {
-      title: "My Teams",
-      href: "/teams",
-      icon: Users,
-    },
-    {
-      title: "Players",
-      href: "/players",
-      icon: User,
-    },
-    {
-      title: "Game Schedules",
-      href: "/games",
-      icon: CalendarCog,
-    },
-    {
-      title: "Trainings",
-      href: "/trainings",
-      icon: Dumbbell,
-    },
-  ];
-};
-
-export const adminNavigation = () => {
-  return [
-    {
-      title: "Dashboard",
-      href: "/",
-      icon: Gauge,
-    },
-    {
-      title: "Sports",
-      href: "/sports",
-      icon: Volleyball,
-    },
-    {
-      title: "Teams",
-      href: "/teams",
-      icon: Users,
-    },
-    {
-      title: "Players",
-      href: "/players",
-      icon: User,
-    },
-    {
-      title: "Coaches",
-      href: "/coaches",
-      icon: ClipboardList,
-    },
-    {
-      title: "Leagues",
-      href: "/leagues",
-      icon: Trophy,
-    },
-    {
-      title: "Tournaments",
-      href: "/tournaments",
-      icon: Medal,
-    },
-    {
-      title: "Game Schedules",
-      href: "/games",
-      icon: CalendarCog,
-    },
-    {
-      title: "Trainings",
-      href: "/trainings",
-      icon: Dumbbell,
-    },
-  ];
-};
-
-export const playerNavigation = () => {
-  return [
-    {
-      title: "Dashboard",
-      href: "/",
-      icon: Gauge,
-    },
-    {
-      title: "My Teams",
-      href: "/teams",
-      icon: Users,
-    },
-    {
-      title: "Game Schedules",
-      href: "/games",
-      icon: CalendarCog,
-    },
-    {
-      title: "Training Progress",
-      href: "/trainings/progress",
-      icon: Dumbbell,
-    },
-  ];
-};
+import { useSelector } from "react-redux";
 
 // Grouped navigation for better responsive design
 export const adminGroupedNavigation = () => {
@@ -155,22 +51,10 @@ export const adminGroupedNavigation = () => {
       ],
     },
     {
-      title: "Competitions",
+      title: "Leagues",
+      href: "/leagues",
       icon: Trophy,
-      items: [
-        {
-          title: "Leagues",
-          href: "/leagues",
-          icon: Trophy,
-          description: "Manage league structures and seasons",
-        },
-        {
-          title: "Tournaments",
-          href: "/tournaments",
-          icon: Medal,
-          description: "Organize tournament brackets and events",
-        },
-      ],
+      description: "Manage league structures and seasons",
     },
     {
       title: "Scheduling",
@@ -219,6 +103,12 @@ export const coachGroupedNavigation = () => {
       ],
     },
     {
+      title: "Leagues",
+      href: "/leagues",
+      icon: Trophy,
+      description: "View league structures and seasons",
+    },
+    {
       title: "Activities",
       icon: CalendarCog,
       items: [
@@ -240,6 +130,8 @@ export const coachGroupedNavigation = () => {
 };
 
 export const playerGroupedNavigation = () => {
+  const { team_slug } = useSelector((state) => state.auth.user);
+  
   return [
     {
       title: "Dashboard",
@@ -247,16 +139,16 @@ export const playerGroupedNavigation = () => {
       icon: Gauge,
     },
     {
-      title: "My Teams",
+      title: "My Team",
+      href: `/teams/${team_slug}`,
       icon: Users,
-      items: [
-        {
-          title: "My Teams",
-          href: "/teams",
-          icon: Users,
-          description: "View your team details",
-        },
-      ],
+      description: "View your team details",
+    },
+    {
+      title: "Leagues",
+      href: "/leagues",
+      icon: Trophy,
+      description: "View league structures and seasons",
     },
     {
       title: "Activities",
@@ -270,7 +162,7 @@ export const playerGroupedNavigation = () => {
         },
         {
           title: "Training Progress",
-          href: "/trainings/progress",
+          href: "/trainings/",
           icon: Dumbbell,
           description: "View your training progress and performance",
         },

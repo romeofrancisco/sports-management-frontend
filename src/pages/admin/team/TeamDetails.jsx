@@ -2,9 +2,10 @@ import React, { useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 
 // Hooks
-import { useTeamDetails } from "@/hooks/useTeams";
+import { useTeamDetails, useTeamScoringAnalytics } from "@/hooks/useTeams";
 import { useTeamAnalyticsData } from "@/hooks/useTeamAnalyticsData";
 import { useMultiPlayerProgress } from "@/hooks/useMultiPlayerProgress";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import {
   TeamStatsBreakdownChart,
   TeamPerformanceTrendsChart,
   TrainingAnalyticsChart,
+  TeamScoringBarChart,
 } from "@/components/charts/TeamAnalyticsCharts";
 import { PlayerProgressSection } from "@/pages/coach/components";
 
@@ -31,6 +33,9 @@ import {
   processStatsBreakdown,
   processPerformanceData,
   processTrainingData,
+  processTrainingMetricsData,
+  processGameScoringData,
+  processPlayerAvailabilityData,
 } from "@/utils/teamAnalyticsHelpers";
 
 // Icons
@@ -72,15 +77,18 @@ const transformPlayerProgress = (teamPlayerProgress) => {
 const filterGamesByDate = (games, todayString) => {
   const gamesArray = games?.results || games || [];
 
+  const today = new Date(todayString);
+
   const upcoming = gamesArray.filter(
     (game) =>
-      game.date >= todayString &&
+      new Date(game.date) >= today &&
       ["scheduled", "upcoming"].includes(game.status)
   );
 
   const recent = gamesArray.filter(
     (game) =>
-      game.date < todayString && ["completed", "finished"].includes(game.status)
+      new Date(game.date) < today &&
+      ["completed", "finished"].includes(game.status)
   );
 
   return { upcoming, recent };
@@ -99,8 +107,6 @@ const filterTrainingsByDate = (trainings, todayString) => {
 
   return { upcoming, recent };
 };
-
-
 
 // Error boundary component
 const TeamNotFound = ({ onBack }) => (
@@ -122,41 +128,51 @@ const TeamNotFound = ({ onBack }) => (
 
 // Main analytics section component
 const TeamAnalyticsSection = ({
-  performance,
   statistics,
   trainingEffectiveness,
   teamTrainings,
   attendanceTrends,
   analytics,
   transformedPlayerProgress,
-}) => (
-  <div className="space-y-6">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="col-span-2">
-        <TeamPerformanceTrendsChart
-          data={processPerformanceData(performance)}
-          title="Detailed Performance Analysis"
+  scoringAnalytics,
+}) => {
+  const { hasRole } = useRolePermissions();
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Player Availability Chart */}
+        <div className="col-span-2">
+          <TrainingAnalyticsChart
+            data={processTrainingData(
+              trainingEffectiveness,
+              teamTrainings,
+              attendanceTrends,
+              analytics
+            )}
+            title="Training Session Analysis"
+          />
+        </div>
+        <TeamStatsBreakdownChart
+          data={processStatsBreakdown(statistics)}
+          title="Win/Loss Distribution"
+        />
+      </div>{" "}
+      {/* New Training Metrics Chart */}
+      <div>
+        <TeamScoringBarChart
+          data={processGameScoringData(scoringAnalytics)}
+          title="Scoring Performance Analysis"
+          subtitle="Points scored vs conceded by period"
         />
       </div>
-      <TeamStatsBreakdownChart
-        data={processStatsBreakdown(statistics)}
-        title="Win/Loss Distribution"
-      />
-    </div>
-
-    <TrainingAnalyticsChart
-      data={processTrainingData(
-        trainingEffectiveness,
-        teamTrainings,
-        attendanceTrends,
-        analytics
+      {/* Hide PlayerProgressSection if user is player */}
+      {!hasRole("Player") && (
+        <PlayerProgressSection playerProgress={transformedPlayerProgress} />
       )}
-      title="Training Session Analysis"
-    />
-
-    <PlayerProgressSection playerProgress={transformedPlayerProgress} />
-  </div>
-);
+    </div>
+  );
+};
 
 // Sidebar component
 const TeamSidebar = ({
@@ -165,19 +181,24 @@ const TeamSidebar = ({
   recentGames,
   upcomingTrainings,
   recentTrainings,
-}) => (
-  <div className="xl:col-span-1 space-y-6">
-    <QuickActions team={teamSlug} />
-    <TeamUpcomingGamesSection games={upcomingGames} />
-    <TeamRecentGamesSection games={recentGames} />
-    <TeamUpcomingTrainingSection trainings={upcomingTrainings} />
-    <TeamRecentTrainingSection trainings={recentTrainings} />
-  </div>
-);
+}) => {
+  const { hasRole } = useRolePermissions();
+  return (
+    <div className="xl:col-span-1 space-y-6">
+      {/* Hide QuickActions if user is player */}
+      {!hasRole("Player") && <QuickActions team={teamSlug} />}
+      <TeamUpcomingGamesSection games={upcomingGames} />
+      <TeamRecentGamesSection games={recentGames} />
+      <TeamUpcomingTrainingSection trainings={upcomingTrainings} />
+      <TeamRecentTrainingSection trainings={recentTrainings} />
+    </div>
+  );
+};
 
 const TeamDetails = () => {
   const { team } = useParams();
   const navigate = useNavigate();
+  const { hasRole } = useRolePermissions();
 
   // Use the existing comprehensive analytics hook
   const {
@@ -192,7 +213,6 @@ const TeamDetails = () => {
     quickStats,
     isLoading: analyticsLoading,
   } = useTeamAnalyticsData(team, ANALYTICS_PERIOD);
-
   // Fetch team player progress separately
   const { data: teamPlayerProgress, isLoading: progressLoading } =
     useMultiPlayerProgress({
@@ -204,7 +224,11 @@ const TeamDetails = () => {
       enabled: !!team,
     });
 
-  const isLoading = analyticsLoading || progressLoading;
+  // Fetch team scoring analytics from backend
+  const { data: scoringAnalytics, isLoading: scoringLoading } =
+    useTeamScoringAnalytics(team, { days: ANALYTICS_PERIOD }, !!team);
+
+  const isLoading = analyticsLoading || progressLoading || scoringLoading;
 
   // Memoized computations
   const { games, trainings, transformedPlayerProgress } = useMemo(() => {
@@ -242,6 +266,8 @@ const TeamDetails = () => {
           showUniversityColors
           teamLogo={teamDetails.logo}
           teamName={teamDetails.name}
+          // Hide Edit Team button if user is player
+          {...(hasRole("Player") && { buttonText: undefined, buttonIcon: undefined, onButtonClick: undefined })}
         />
       </section>
 
@@ -255,16 +281,15 @@ const TeamDetails = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Primary Content */}
           <div className="xl:col-span-2 space-y-6">
-            <TeamKeyMetrics data={teamDetails} />
-
+            <TeamKeyMetrics data={teamDetails} />{" "}
             <TeamAnalyticsSection
-              performance={performance}
               statistics={statistics}
               trainingEffectiveness={trainingEffectiveness}
               teamTrainings={teamTrainings}
               attendanceTrends={attendanceTrends}
               analytics={analytics}
               transformedPlayerProgress={transformedPlayerProgress}
+              scoringAnalytics={scoringAnalytics}
             />
           </div>
 

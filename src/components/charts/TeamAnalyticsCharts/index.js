@@ -32,6 +32,7 @@ export { TeamPerformanceTrendsChart } from './TeamPerformanceTrendsChart';
 export { TeamStatsBreakdownChart } from './TeamStatsBreakdownChart';
 export { TrainingAnalyticsChart } from './TrainingAnalyticsChart';
 export { TeamOverviewMetrics } from './TeamOverviewMetrics';
+export { TeamScoringBarChart } from './TeamScoringBarChart';
 
 // Export utilities and constants
 export * from './constants';
@@ -42,6 +43,7 @@ import { TeamPerformanceTrendsChart } from './TeamPerformanceTrendsChart';
 import { TeamStatsBreakdownChart } from './TeamStatsBreakdownChart';
 import { TrainingAnalyticsChart } from './TrainingAnalyticsChart';
 import { TeamOverviewMetrics } from './TeamOverviewMetrics';
+import { TeamScoringBarChart } from './TeamScoringBarChart';
 
 // Default export for convenience
 export default {
@@ -49,4 +51,5 @@ export default {
   TeamStatsBreakdownChart,
   TrainingAnalyticsChart,
   TeamOverviewMetrics,
+  TeamScoringBarChart,
 };

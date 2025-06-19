@@ -18,6 +18,9 @@ export const useRolePermissions = () => {
   // Check if user is a coach
   const isCoach = () => hasRole("Coach");
 
+  // Check if user is a player
+  const isPlayer = () => hasRole("Player");
+
   // Check if user can create metric units
   const canCreateMetricUnits = () => {
     return isAdmin() || isCoach();
@@ -216,6 +219,7 @@ export const useRolePermissions = () => {
     user,
     isAdmin,
     isCoach,
+    isPlayer,
     hasRole,
     permissions,
     
