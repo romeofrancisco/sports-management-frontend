@@ -41,6 +41,7 @@ import {
   getPlayerRadarChartData,
   assignMetricsToSinglePlayer,
   fetchLastSessionMissedMetrics,
+  fetchTrainingOverview,
 } from "@/api/trainingsApi";
 
 // Training Categories
@@ -809,5 +810,48 @@ export const useLastSessionMissedMetrics = (teamId, currentSessionId = null) => 
       return fetchLastSessionMissedMetrics(teamId, currentSessionId);
     },
     enabled: !!teamId,
+  });
+};
+
+// Hook to fetch training overview statistics for the current player
+export const useTrainingOverview = (enabled = true) => {
+  return useQuery({
+    queryKey: ["training-overview"],
+    queryFn: fetchTrainingOverview,
+    enabled,
+    staleTime: 2 * 60 * 1000, // Consider data fresh for 2 minutes
+  });
+};
+
+// Hook to fetch assigned metrics detail for the current player
+export const useAssignedMetricsDetail = (params = {}, enabled = true) => {
+  const queryParams = useMemo(() => ({
+    page: 1,
+    page_size: 10,
+    ...params,
+  }), [params]);
+
+  return useQuery({
+    queryKey: ["assigned-metrics-detail", queryParams],
+    queryFn: async () => {
+      const { fetchAssignedMetricsDetail } = await import("@/api/trainingsApi");
+      return fetchAssignedMetricsDetail(queryParams);
+    },
+    enabled,
+    keepPreviousData: true,
+    staleTime: 1 * 60 * 1000, // Consider data fresh for 1 minute
+  });
+};
+
+// Hook to fetch assigned metrics overview summary
+export const useAssignedMetricsOverview = (enabled = true) => {
+  return useQuery({
+    queryKey: ["assigned-metrics-overview"],
+    queryFn: async () => {
+      const { fetchAssignedMetricsOverview } = await import("@/api/trainingsApi");
+      return fetchAssignedMetricsOverview();
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes since overview changes less frequently
   });
 };

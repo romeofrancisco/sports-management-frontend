@@ -1,19 +1,21 @@
-
-
 import React from "react";
-import { 
-  Target, XCircle, Clock, CheckCircle
-} from "lucide-react";
+import { Target, XCircle, Clock, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const SummaryStats = ({ summary, filteredSummary = null, isFiltered = false }) => {
+const SummaryStats = ({
+  summary,
+  filteredSummary = null,
+  isFiltered = false,
+}) => {
   const cards = [
     {
       title: "Completed/Total",
       value: (
         <>
           <span className="text-green-600">{summary.completed}</span>
-          <span className="text-muted-foreground">/{summary.total_metrics}</span>
+          <span className="text-muted-foreground">
+            /{summary.total_metrics}
+          </span>
           {isFiltered && filteredSummary && (
             <div className="text-sm text-muted-foreground mt-1">
               ({filteredSummary.completed}/{filteredSummary.total_metrics})
@@ -28,7 +30,8 @@ const SummaryStats = ({ summary, filteredSummary = null, isFiltered = false }) =
       borderColor: "border-primary/30",
       iconBg: "bg-primary",
       textAccent: "text-primary",
-    },    {
+    },
+    {
       title: "In Progress",
       value: (
         <>
@@ -59,7 +62,8 @@ const SummaryStats = ({ summary, filteredSummary = null, isFiltered = false }) =
             </span>
           )}
         </>
-      ),      description: "Metrics awaiting completion",
+      ),
+      description: "Metrics awaiting completion",
       icon: <CheckCircle className="h-5 w-5 text-white" />,
       color: "from-orange-500 via-orange-500/90 to-orange-500/80",
       bgColor: "bg-orange-500/8",
@@ -114,7 +118,8 @@ const SummaryStats = ({ summary, filteredSummary = null, isFiltered = false }) =
               {card.value}
             </div>
             <p className="text-xs text-muted-foreground">{card.description}</p>
-          </CardContent>        </Card>
+          </CardContent>{" "}
+        </Card>
       ))}
     </div>
   );

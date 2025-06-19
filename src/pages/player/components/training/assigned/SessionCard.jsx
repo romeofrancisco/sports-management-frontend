@@ -93,17 +93,17 @@ const SessionCard = ({ sessionGroup }) => {
         className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`}
       />
       <CardHeader className="pb-2 pt-3">
-        <div className="flex items-center justify-between">
+        <div className="flex gap-3 flex-row sm:items-center sm:justify-between">
           {/* Left side - Session info */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-1 items-center gap-3 min-w-0">
             <div className={`p-1.5 rounded-full ${statusInfo.bgColor}`}>
-              <StatusIcon className={`h-4 w-4 ${statusInfo.textColor}`} />
+              <StatusIcon className={`h-4 w-4 sm:h-4 sm:w-4 text-xs sm:text-base ${statusInfo.textColor}`} />
             </div>
-            <div>
-              <CardTitle className="text-lg font-semibold text-foreground leading-tight">
+            <div className="min-w-0">
+              <CardTitle className="text-sm sm:text-lg font-semibold text-foreground leading-tight truncate">
                 {session.title}
               </CardTitle>{" "}
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex flex-wrap items-center gap-2 mt-1">
                 <Badge
                   variant={
                     attendance_status?.toLowerCase() === "absent" ||
@@ -114,7 +114,7 @@ const SessionCard = ({ sessionGroup }) => {
                       ? "default"
                       : "secondary"
                   }
-                  className={`text-xs font-medium border-0 px-2 py-0.5 relative ${
+                  className={`text-[10px] sm:text-xs font-medium border-0 px-2 py-0.5 relative ${
                     attendance_status?.toLowerCase() === "present" ||
                     attendance_status?.toLowerCase() === "late"
                       ? "bg-primary/10 text-primary"
@@ -132,24 +132,21 @@ const SessionCard = ({ sessionGroup }) => {
                     <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                   )}
                 </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {format(new Date(session.date), "MMM dd, yyyy")} •{" "}
-                  {session.start_time}
+                <span className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                  {format(new Date(session.date), "MMM dd, yyyy")} • {session.start_time}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Right side - Completion stats */}
-          <div className="text-right">
-            <div className="text-xl font-bold text-foreground leading-tight">
+          <div className="text-right flex-shrink-0 mt-2 sm:mt-0">
+            <div className="text-base sm:text-xl font-bold text-foreground leading-tight">
               {completedCount}
-              <span className="text-sm text-muted-foreground">
-                /{totalCount}
-              </span>
+              <span className="text-xs sm:text-sm text-muted-foreground">/{totalCount}</span>
             </div>
-            <div className="text-xs text-muted-foreground">completed</div>
-            <div className="w-16 mt-1">
+            <div className="text-[10px] sm:text-xs text-muted-foreground">completed</div>
+            <div className="w-16 mt-1 mx-auto sm:mx-0">
               <Progress value={completionPercentage} className="h-1.5" />
             </div>
           </div>
@@ -157,15 +154,15 @@ const SessionCard = ({ sessionGroup }) => {
       </CardHeader>{" "}
       <CardContent className="space-y-3 pt-0">
         {/* Metrics Section Header */}
-        <div className="flex items-center justify-between py-2 border-b border-border">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 border-b border-border gap-2">
           <div className="flex items-center gap-2">
             <Target className="h-4 w-4 text-primary" />
-            <span className="font-medium text-foreground text-sm">
+            <span className="font-medium text-[13px] sm:text-sm text-foreground">
               Metrics ({sessionMetrics.length})
             </span>
           </div>
           {session.location && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground">
               <MapPin className="h-3 w-3" />
               <span>{session.location}</span>
             </div>
@@ -235,25 +232,25 @@ const SessionCard = ({ sessionGroup }) => {
                 className={`flex p-2 rounded border items-start min-h-[60px] ${metricStatusInfo.bgClass}`}
               >
                 {/* Metric Info - Fixed minimum width */}
-                <div className="w-48 flex-shrink-0 pr-3">
+                <div className="w-32 md:w-40 flex-shrink-0 pr-3">
                   <div className="flex items-center gap-2 mb-1">
                     <Target className="h-3 w-3 text-primary flex-shrink-0" />
-                    <span className="font-medium text-sm line-clamp-1">
+                    <span className="font-medium text-[13px] sm:text-sm line-clamp-1">
                       {metric.metric_name}
                     </span>
                   </div>{" "}
-                  <div className="text-xs text-muted-foreground ml-5 line-clamp-1">
+                  <div className="text-[10px] sm:text-xs text-muted-foreground ml-5 line-clamp-1">
                     {metric.metric_category} • {metric.metric_unit?.name}
                   </div>
                 </div>
 
                 {/* Metric Data - Flexible width */}
                 <div className="flex-1 px-3">
-                  {metric.is_recorded ? (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs flex-wrap">
+                  {metric.is_recorded && (
+                    <div className="hidden sm:block  space-y-1">
+                      <div className="flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
                         <span
-                          className={`text-xs font-medium whitespace-nowrap ${metricStatusInfo.valueClass}`}
+                          className={`text-[11px] sm:text-xs font-medium whitespace-nowrap ${metricStatusInfo.valueClass}`}
                         >
                           {metric.recorded_value} {metric.metric_unit?.code}
                         </span>
@@ -276,7 +273,7 @@ const SessionCard = ({ sessionGroup }) => {
                             </span>
 
                             {metric.is_lower_better && (
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-[10px] sm:text-xs text-muted-foreground">
                                 Lower is better
                               </span>
                             )}
@@ -284,7 +281,7 @@ const SessionCard = ({ sessionGroup }) => {
                         )}
                       </div>
                       {metric.improvement_from_last !== null && (
-                        <div className="text-xs text-muted-foreground line-clamp-2">
+                        <div className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">
                           <span className="font-medium">Change: </span>
                           {metric.improvement_percentage >= 0 ? (
                             <span className="text-green-600">
@@ -312,10 +309,6 @@ const SessionCard = ({ sessionGroup }) => {
                         </div>
                       )}
                     </div>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">
-                      Not recorded
-                    </span>
                   )}
                 </div>
 
@@ -323,7 +316,7 @@ const SessionCard = ({ sessionGroup }) => {
                 <div className="w-24 flex-shrink-0 flex justify-end">
                   <Badge
                     variant={metricStatusInfo.badgeVariant}
-                    className={`text-xs font-medium border ${metricStatusInfo.badgeClass}`}
+                    className={`text-[10px] sm:text-xs font-medium border ${metricStatusInfo.badgeClass}`}
                   >
                     {metric.status?.replace("_", " ").toUpperCase()}
                   </Badge>

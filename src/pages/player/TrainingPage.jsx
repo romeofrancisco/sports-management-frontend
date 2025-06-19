@@ -58,7 +58,7 @@ const TrainingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="p-0 py-4 sm:p-4 md:p-6 space-y-8">
+      <div className="p-0 py-4 sm:p-4 space-y-8">
         <UniversityPageHeader
           title="Training"
           subtitle="Training Management"

@@ -16,29 +16,30 @@ import { usePlayerRadarChart } from "@/hooks/useTrainings";
 /**
  * Charts section for player dashboard - 3 months summary only
  */
-const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range - memoized to prevent infinite re-renders
+const ChartsSection = ({ user, overview }) => {
+  // Get last 3 months date range - memoized to prevent infinite re-renders
   const dateRange = useMemo(() => {
     const now = new Date();
     const threeMonthsAgo = new Date(now);
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    
+
     return {
-      from: threeMonthsAgo.toISOString().split('T')[0], // Use ISO date strings
-      to: now.toISOString().split('T')[0]
+      from: threeMonthsAgo.toISOString().split("T")[0], // Use ISO date strings
+      to: now.toISOString().split("T")[0],
     };
   }, []); // Empty dependency array since we want a fixed 3-month range
 
   // Fetch player metrics for progress chart
-  const { 
-    selectedMetricData, 
-    isLoading: metricsLoading 
-  } = usePlayerMetrics(user?.id, dateRange);
+  const { selectedMetricData, isLoading: metricsLoading } = usePlayerMetrics(
+    user?.id,
+    dateRange
+  );
 
   // Fetch radar chart data
-  const { 
-    data: radarData, 
-    isLoading: radarLoading 
-  } = usePlayerRadarChart(user?.id, dateRange);
+  const { data: radarData, isLoading: radarLoading } = usePlayerRadarChart(
+    user?.id,
+    dateRange
+  );
 
   return (
     <div className="space-y-6">
@@ -49,15 +50,19 @@ const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range
           <Card className="relative overflow-hidden col-span-3">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent" />
             <CardHeader className="relative z-10">
-              <CardTitle className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-primary shadow-lg">
-                  <Activity className="h-4 w-4 text-primary-foreground" />
+              <div className="flex items-center gap-2">
+                <div className="p-3 rounded-lg bg-primary shadow-lg">
+                  <Activity className="size-5 text-primary-foreground" />
                 </div>
-                Progress Chart
-              </CardTitle>
-              <CardDescription>
-                Your performance trends (Last 3 months)
-              </CardDescription>
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    Progress Chart
+                  </CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    Your performance trends (Last 3 months)
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="relative z-10">
               <div className="h-80">
@@ -76,21 +81,24 @@ const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range
             </CardContent>
           </Card>
         )}
-        
+
         {/* Radar Chart */}
         {user?.id && (
           <Card className="relative overflow-hidden col-span-2">
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-secondary/3 to-transparent" />
             <CardHeader className="relative z-10">
-              <CardTitle className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-secondary shadow-lg">
-                  <Radar className="h-4 w-4 text-secondary-foreground" />
+              <div className="flex items-center gap-2">
+                <div className="p-3 rounded-lg bg-primary shadow-lg">
+                  <Radar className="size-5 text-primary-foreground" />
                 </div>
-                Skills Radar
-              </CardTitle>
-              <CardDescription>
-                Performance metrics overview (Last 3 months)
-              </CardDescription>
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    Skills Radar
+                  </CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    Your performance by metric category (Last 3 months)
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="relative z-10">
               <div className="h-80">
@@ -99,7 +107,10 @@ const ChartsSection = ({ user, overview }) => {  // Get last 3 months date range
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
                   </div>
                 ) : radarData ? (
-                  <PlayerRadarChart radarData={radarData} showControls={false} />
+                  <PlayerRadarChart
+                    radarData={radarData}
+                    showControls={false}
+                  />
                 ) : (
                   <div className="flex items-center justify-center h-full text-muted-foreground">
                     No radar data available

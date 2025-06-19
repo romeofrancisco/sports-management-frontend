@@ -470,3 +470,13 @@ export const fetchAssignedMetricsOverview = async () => {
     throw error;
   }
 };
+
+// Training Overview - Get training overview statistics for the current player
+export const fetchTrainingOverview = async () => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/training_overview/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
