@@ -138,9 +138,8 @@ export const getAssignedMetricsTableColumns = () => [
                 {row.original.improvement_percentage.toFixed(1)}%
               </span>
             </div>{" "}
-            {row.original.improvement_from_last !== null && (
-              <div className="text-xs text-muted-foreground">
-                <span className="font-medium">Change from last: </span>
+            {row.original.improvement_from_last !== null && (              <div className="text-xs text-muted-foreground">
+                <span className="font-medium">Change: </span>
                 {row.original.improvement_percentage >= 0 ? (
                   <span className="text-green-600">
                     Improved by{" "}
@@ -268,7 +267,7 @@ export const getSessionTableColumns = () => [
           {" "}          {sessionGroup.metrics.map((metric, index) => (
             <div
               key={index}
-              className="flex p-2 bg-gray-50 rounded border items-start min-h-[60px]"
+              className="flex p-2 bg-muted rounded border items-start min-h-[60px]"
             >
               {/* Metric Info - Fixed minimum width */}
               <div className="w-48 flex-shrink-0 pr-3">

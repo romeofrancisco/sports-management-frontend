@@ -460,3 +460,13 @@ export const fetchAssignedMetricsDetail = async (params = {}) => {
     throw error;
   }
 };
+
+// Assigned Metrics Overview - Get overall summary without filters
+export const fetchAssignedMetricsOverview = async () => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/assigned_metrics_overview/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

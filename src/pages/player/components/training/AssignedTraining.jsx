@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
-import { fetchAssignedMetricsDetail } from "@/api/trainingsApi";
+import { fetchAssignedMetricsDetail, fetchAssignedMetricsOverview } from "@/api/trainingsApi";
 import {
   SessionCard,
   FilterControls,
@@ -10,25 +10,40 @@ import {
   EmptyState,
   getSessionTableColumns
 } from "./assigned";
+import { Badge } from "@/components/ui/badge";
+import SessionCardSkeleton from "./assigned/SessionCardSkeleton";
+import TableSkeleton from "./assigned/TableSkeleton";
 
 const AssignedTraining = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
   const [statusFilter, setStatusFilter] = useState("assigned"); // Set assigned as default
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [dateRange, setDateRange] = useState({ from: null, to: null });
+  const [search, setSearch] = useState("");
 
   // Fetch assigned metrics using React Query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["assigned-metrics-detail", currentPage, pageSize, statusFilter, categoryFilter],
+    queryKey: ["assigned-metrics-detail", currentPage, pageSize, statusFilter, dateRange, search],
     queryFn: () => fetchAssignedMetricsDetail({
       page: currentPage,
       page_size: pageSize,
       status: statusFilter === "all" ? undefined : statusFilter,
-      category: categoryFilter === "all" ? undefined : categoryFilter,
+      date_from: dateRange?.from ? dateRange.from.toISOString().split("T")[0] : undefined,
+      date_to: dateRange?.to ? dateRange.to.toISOString().split("T")[0] : undefined,
+      search: search || undefined,
     }),
     keepPreviousData: true,
-  });  const sessions = data?.results || [];
+  });
+
+  // Fetch overall metrics overview (unfiltered summary for display)
+  const { data: overviewData, isLoading: isOverviewLoading } = useQuery({
+    queryKey: ["assigned-metrics-overview"],
+    queryFn: fetchAssignedMetricsOverview,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes since overview changes less frequently
+  });
+
+  const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
   
   // Transform sessions data and create a session-based view
@@ -88,20 +103,23 @@ const AssignedTraining = () => {
     completion_status: sessionData.metrics_completion_status,
     can_record_metrics: sessionData.can_record_metrics,
   }));
+  // Flatten metrics for individual metric view (for categories extraction)
+  const metrics = sessionsWithMetrics.flatMap(sessionGroup => sessionGroup.metrics);
 
-  // Flatten metrics for individual metric view and summary calculation
-  const metrics = sessionsWithMetrics.flatMap(sessionGroup => sessionGroup.metrics);  // Calculate summary from processed metrics
-  const summary = {
-    total_metrics: metrics.length,
-    completed: metrics.filter(m => m.status === "completed").length,
-    in_progress: metrics.filter(m => m.status === "in_progress").length,
-    assigned: metrics.filter(m => m.status === "assigned").length,
-    missed: metrics.filter(m => m.status === "missed").length,
-    completion_rate: metrics.length > 0 ? Math.round((metrics.filter(m => m.status === "completed").length / metrics.length) * 100) : 0
+  // Use the overall unfiltered summary for display, fall back to filtered summary
+  const summary = overviewData || {
+    total_metrics: 0,
+    completed: 0,
+    in_progress: 0,
+    assigned: 0,
+    missed: 0,
+    completion_rate: 0
   };
 
-  // Get unique categories for filtering
-  const categories = [...new Set(metrics.map(m => m.metric_category).filter(Boolean))];
+  // Optionally show filtered summary info when filters are active
+  const isFiltered = statusFilter !== "all";
+  const filteredSummary = isFiltered ? data?.summary : null;
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo(0, 0);
@@ -118,14 +136,6 @@ const AssignedTraining = () => {
   };
 
   // Handle loading and error states
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-lg">Loading assigned metrics...</div>
-      </div>
-    );
-  }
-
   if (isError) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -147,42 +157,51 @@ const AssignedTraining = () => {
       {/* Filters and Controls */}
       <FilterControls
         statusFilter={statusFilter}
-        categoryFilter={categoryFilter}
-        categories={categories}
         viewMode={viewMode}
         onStatusFilterChange={handleStatusFilter}
-        onCategoryFilterChange={setCategoryFilter}
         onViewModeChange={setViewMode}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        search={search}
+        onSearchChange={setSearch}
       />
 
       {/* Content */}
       {viewMode === "table" ? (
         <div className="space-y-4">
           <div className="overflow-x-auto">
-            <DataTable
-              columns={getSessionTableColumns()}
-              data={sessionsWithMetrics}
-              loading={isLoading}
-              className="text-xs sm:text-sm"
-              showPagination={false}
-              pageSize={pageSize}
-            />
+            {isLoading ? (
+              <TableSkeleton rows={pageSize} columns={6} />
+            ) : (
+              <DataTable
+                columns={getSessionTableColumns()}
+                data={sessionsWithMetrics}
+                loading={isLoading}
+                className="text-xs sm:text-sm"
+                showPagination={false}
+                pageSize={pageSize}
+              />
+            )}
           </div>
         </div>
       ) : (
         <div className="space-y-4">
-          {sessionsWithMetrics.length === 0 && !isLoading ? (
-            <EmptyState statusFilter={statusFilter} />
-          ) : isLoading ? (
-            <div className="text-center py-16">
-              <div className="text-muted-foreground">Loading training sessions...</div>
+          {isLoading ? (
+            <div className="columns-1 xl:columns-2 gap-6">
+              {[...Array(pageSize)].map((_, i) => (
+                <div key={i} className="mb-6 break-inside-avoid">
+                  <SessionCardSkeleton />
+                </div>
+              ))}
             </div>
+          ) : sessionsWithMetrics.length === 0 ? (
+            <EmptyState statusFilter={statusFilter} />
           ) : (
-            <div className="grid grid-cols-1 gap-6">
+            <div className="columns-1 xl:columns-2 gap-6">
               {sessionsWithMetrics.map((sessionGroup, index) => (
                 <div
                   key={`session-${sessionGroup.session.id}`}
-                  className="animate-in fade-in-50 duration-500"
+                  className="animate-in fade-in-50 duration-500 mb-6 break-inside-avoid"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <SessionCard sessionGroup={sessionGroup} />
