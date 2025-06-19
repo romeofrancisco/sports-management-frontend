@@ -35,7 +35,7 @@ const TeamRecentTrainingSection = ({ trainings }) => {
       <CardContent>
         {trainings?.length > 0 ? (
           <div className="space-y-4">
-            {trainings.slice(0, 4).map((training, index) => {
+            {trainings.slice(0, 3).map((training, index) => {
               const attendanceRate = training.attendance_count && training.total_players
                 ? (training.attendance_count / training.total_players) * 100
                 : 0;

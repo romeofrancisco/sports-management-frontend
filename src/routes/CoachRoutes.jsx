@@ -3,6 +3,8 @@ import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import PlayersList from "@/pages/admin/player/PlayersList";
 import GameSchedule from "@/pages/admin/game/GameSchedule";
+import GameResult from "@/pages/admin/game/GameResult";
+import GameScoring from "@/pages/admin/game/GameScoring";
 import PlayerDetails from "@/pages/admin/player/PlayerDetails";
 import TrainingDashboard from "@/components/trainings/dashboard/TrainingDashboard";
 import TrainingSessionsPage from "@/pages/trainings/TrainingSessionsPage";
@@ -45,6 +47,14 @@ export const coachRoutes = [
   {
     path: "/games",
     element: <GameSchedule />,
+  },
+  {
+    path: "/games/:gameId/game-result",
+    element: <GameResult />,
+  },
+  {
+    path: "/games/:gameId",
+    element: <GameScoring />,
   },
   {
     path: "/trainings",

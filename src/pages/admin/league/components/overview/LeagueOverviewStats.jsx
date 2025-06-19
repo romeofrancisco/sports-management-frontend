@@ -48,9 +48,7 @@ const LeagueOverviewStats = ({ statistics }) => {
         ? current_season.name || current_season.year
         : "None",
       icon: Calendar,
-      description: current_season
-        ? current_season.status
-        : "No active season",
+      description: current_season ? current_season.status : "No active season",
       color: "from-secondary/80 via-secondary/70 to-secondary/60",
       iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
       iconColor: "text-secondary",
@@ -97,20 +95,6 @@ const LeagueOverviewStats = ({ statistics }) => {
                 <p className="text-xs text-muted-foreground mt-3 font-medium tracking-wide">
                   {stat.description}
                 </p>
-                {stat.title === "Current Season" && current_season && (
-                  <div className="mt-2">
-                    <Badge
-                      variant="outline"
-                      className={`text-xs ${
-                        current_season.status === "ongoing"
-                          ? "bg-green-50 text-green-700 border-green-200"
-                          : "bg-amber-50 text-amber-700 border-amber-200"
-                      }`}
-                    >
-                      {current_season.status}
-                    </Badge>
-                  </div>
-                )}
               </CardContent>
             </Card>
           );

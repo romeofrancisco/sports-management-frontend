@@ -159,6 +159,17 @@ export const GameCard = ({ game, onEditGame }) => {
                   {game.season.name} {game.season.year}
                 </span>
               </div>
+              {/* Show assigned coaches for league games */}
+              {game.assigned_coaches && game.assigned_coaches.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-foreground">Coaches:</span>
+                  <span>
+                    {game.assigned_coaches
+                      .map((coach) => coach.name)
+                      .join(", ")}
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>

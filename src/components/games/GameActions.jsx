@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FileTextIcon, Users, Play, EditIcon } from "lucide-react";
+import { FileTextIcon, Users, Play, EditIcon, UserCog } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
+import CoachAssignmentModal from "@/components/modals/CoachAssignmentModal";
 
 export const GameActions = ({
   game,
@@ -15,46 +18,67 @@ export const GameActions = ({
   onEditGame,
 }) => {
   const navigate = useNavigate();
+  const { isAdmin } = useRolePermissions();
+  const { requirePermissionForAction } = useCoachPermissions();
   const [selectedGame, setSelectedGame] = useState(null);
   const [showStartGameConfirmation, setShowStartGameConfirmation] =
     useState(false);
   const startingLineupModal = useModal();
+  const coachAssignmentModal = useModal();
+
+  const isLeagueGame = game?.type === "league";
 
   const handleResultClick = () => {
     navigate(`/games/${game.id}/game-result`);
   };
-
   const handleLineupClick = () => {
+    if (!requirePermissionForAction(game, "lineup")) {
+      return; // Permission check will show the error toast
+    }
     setSelectedGame(game);
     startingLineupModal.openModal();
+  };
+
+  const handleCoachAssignmentClick = () => {
+    setSelectedGame(game);
+    coachAssignmentModal.openModal();
   };
 
   const handleStartGame = () => {
     setShowStartGameConfirmation(true);
   };
-
   const handleResumeGame = () => {
+    if (!requirePermissionForAction(game, "resume")) {
+      return; // Permission check will show the error toast
+    }
     navigate(`/games/${game.id}`);
   };
 
   const handleEditGame = () => {
+    if (!requirePermissionForAction(game, "edit")) {
+      return; // Permission check will show the error toast
+    }
     if (onEditGame) {
       onEditGame(game);
     }
-  };
-  // Clear selectedGame when modal is fully closed
+  }; // Clear selectedGame when modal is fully closed
   useEffect(() => {
-    if (!startingLineupModal.isOpen && selectedGame) {
+    if (
+      !startingLineupModal.isOpen &&
+      !coachAssignmentModal.isOpen &&
+      selectedGame
+    ) {
       const timer = setTimeout(() => {
         setSelectedGame(null);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [startingLineupModal.isOpen, selectedGame]);
+  }, [startingLineupModal.isOpen, coachAssignmentModal.isOpen, selectedGame]);
   return (
     <>
       {" "}
       <div className="flex flex-wrap gap-2 items-center justify-end">
+        {" "}
         {/* Edit button available only for live and scheduled games, not completed */}
         {!isCompleted && (
           <Button
@@ -67,30 +91,31 @@ export const GameActions = ({
             Update
           </Button>
         )}
-
+        {/* Coach Assignment for League Games - Admin Only */}
+        {isAdmin() && isLeagueGame && (
+          <Button
+            onClick={handleCoachAssignmentClick}
+            variant="outline"
+            size="sm"
+            className="border-amber-500/50 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+          >
+            <UserCog className="mr-1.5 h-3.5 w-3.5" />
+            Assign Coach
+          </Button>
+        )}
         {/* Live Game Actions */}
         {isLive && (
-          <>
-            <div className="flex items-center gap-2 px-2.5 py-1.5 bg-red-50 border border-red-200 rounded-md text-red-600 mr-2">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="font-semibold text-xs uppercase tracking-wide">
-                Live
-              </span>
-            </div>
-            <Button
-              onClick={handleResumeGame}
-              size="sm"
-              className="bg-red-500 hover:bg-red-600 text-white border-red-300"
-            >
-              <Play className="mr-1.5 h-3.5 w-3.5" />
-              Resume
-            </Button>
-          </>
+          <Button
+            onClick={handleResumeGame}
+            size="sm"
+            className="bg-red-500 hover:bg-red-600 text-white border-red-300"
+          >
+            <Play className="mr-1.5 h-3.5 w-3.5" />
+            Resume
+          </Button>
         )}
-
         {/* Completed Game Actions */}
         {/* Note: View Result button moved to appear after score summary in GameCard */}
-
         {/* Scheduled Game Actions */}
         {isScheduled && (
           <>
@@ -127,6 +152,14 @@ export const GameActions = ({
         isOpen={showStartGameConfirmation}
         onClose={() => setShowStartGameConfirmation(false)}
         game={game}
+      />
+      {/* Coach Assignment Modal */}
+      <CoachAssignmentModal
+        isOpen={coachAssignmentModal.isOpen}
+        onClose={() => {
+          coachAssignmentModal.closeModal();
+        }}
+        game={selectedGame}
       />
     </>
   );

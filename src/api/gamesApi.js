@@ -132,3 +132,53 @@ export const fetchTeamLeaders = async (gameId, limit = 2) => {
     throw error;
   }
 };
+
+// Coach assignment functions for league games
+export const fetchGameCoachAssignments = async (gameId) => {
+  try {
+    const { data } = await api.get(`games/${gameId}/coach_assignments/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignCoachToGame = async (gameId, coachId) => {
+  try {
+    const { data } = await api.post(`games/${gameId}/coach_assignments/`, {
+      coach_id: coachId,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeCoachFromGame = async (gameId, coachId) => {
+  try {
+    const { data } = await api.delete(`games/${gameId}/coach_assignments/`, {
+      data: { coach_id: coachId },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAvailableCoaches = async () => {
+  try {
+    const { data } = await api.get(`games/available_coaches/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const checkCoachPermission = async (gameId) => {
+  try {
+    const { data } = await api.get(`games/${gameId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

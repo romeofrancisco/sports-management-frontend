@@ -8,6 +8,7 @@ import TeamSide from "./components/scoring/TeamSide";
 import StatButtons from "./components/scoring/StatButtons/StatButtons";
 import { useRecordableStats, useSportDetails } from "@/hooks/useSports";
 import { useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
+import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import { setGameDetails } from "@/store/slices/gameSlice";
 import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
@@ -20,6 +21,7 @@ const GameScoring = () => {
   const { gameId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { checkGamePermission } = useCoachPermissions();
   const [isPortrait, setIsPortrait] = useState(false);
 
   // Data fetching
@@ -31,6 +33,14 @@ const GameScoring = () => {
   // Unified loading/error states
   const isLoading = isGameLoading ||isStatTypesLoading || isCurrentPlayersLoading || isSportLoading
   const isError = isGameError || isStatTypesError || isCurrentPlayersError || isSportError;
+
+  // Check permissions when game data is loaded
+  useEffect(() => {
+    if (game && !checkGamePermission(game)) {
+      navigate('/games', { replace: true });
+      return;
+    }
+  }, [game, checkGamePermission, navigate]);
 
   // Store game in Redux on load
   useEffect(() => {

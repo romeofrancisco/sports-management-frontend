@@ -188,9 +188,10 @@ const TeamSidebar = ({
       {/* Hide QuickActions if user is player */}
       {!hasRole("Player") && <QuickActions team={teamSlug} />}
       <TeamUpcomingGamesSection games={upcomingGames} />
-      <TeamRecentGamesSection games={recentGames} />
+      {/* Recent Games section moved to main content */}
+      {/* <TeamRecentGamesSection games={recentGames} /> */}
       <TeamUpcomingTrainingSection trainings={upcomingTrainings} />
-      <TeamRecentTrainingSection trainings={recentTrainings} />
+      {/* <TeamRecentTrainingSection trainings={recentTrainings} /> */}
     </div>
   );
 };
@@ -267,7 +268,11 @@ const TeamDetails = () => {
           teamLogo={teamDetails.logo}
           teamName={teamDetails.name}
           // Hide Edit Team button if user is player
-          {...(hasRole("Player") && { buttonText: undefined, buttonIcon: undefined, onButtonClick: undefined })}
+          {...(hasRole("Player") && {
+            buttonText: undefined,
+            buttonIcon: undefined,
+            onButtonClick: undefined,
+          })}
         />
       </section>
 
@@ -291,15 +296,19 @@ const TeamDetails = () => {
               transformedPlayerProgress={transformedPlayerProgress}
               scoringAnalytics={scoringAnalytics}
             />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TeamRecentGamesSection games={games.recent} />
+              <TeamRecentTrainingSection trainings={trainings.recent} />
+            </div>
           </div>
 
           {/* Sidebar */}
           <TeamSidebar
             teamSlug={team}
             upcomingGames={games.upcoming}
-            recentGames={games.recent}
+            recentGames={[]} // Hide recent games in sidebar
             upcomingTrainings={trainings.upcoming}
-            recentTrainings={trainings.recent}
+            recentTrainings={[]} // Hide recent trainings in sidebar
           />
         </div>
       </section>

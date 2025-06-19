@@ -35,7 +35,7 @@ const TeamRecentGamesSection = ({ games }) => {
       <CardContent>
         {games?.length > 0 ? (
           <div className="space-y-4">
-            {games.slice(0, 4).map((game, index) => {
+            {games.slice(0, 3).map((game, index) => {
               const isWin = game.result === 'win';
               const isLoss = game.result === 'loss';
               const isDraw = game.result === 'draw';

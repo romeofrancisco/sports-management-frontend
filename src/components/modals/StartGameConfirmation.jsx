@@ -10,14 +10,21 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useManageGame } from "@/hooks/useGames";
+import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import { GAME_ACTIONS } from "@/constants/game";
 import { useNavigate } from "react-router";
 
 const StartGameConfirmation = ({ isOpen, onClose, game }) => {
   const { mutate: startGame } = useManageGame(game?.id);
+  const { requirePermissionForAction } = useCoachPermissions();
   const navigate = useNavigate()
 
   const handleStartGame = () => {
+    if (!requirePermissionForAction(game, 'start')) {
+      onClose(); // Close the modal
+      return;
+    }
+    
     startGame(GAME_ACTIONS.START,{
         onSuccess: () => {
             navigate(`/games/${game.id}`)
