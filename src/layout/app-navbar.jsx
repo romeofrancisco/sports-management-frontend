@@ -28,6 +28,7 @@ import {
 import { Menu, ChevronDown, ChevronRight } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavbarNavUser } from "./navbar-nav-user";
+import { NavbarMessages } from "@/components/chat";
 import { useNavigate } from "react-router-dom";
 import logo from "/perpetual_logo.png";
 
@@ -338,10 +339,11 @@ const AppNavbar = ({ navItems = [] }) => {
           <NavigationMenuList className="gap-2">
             {navItems.map(renderDesktopNavItem)}
           </NavigationMenuList>
-        </NavigationMenu>
-
-        {/* Right side - User menu */}
+        </NavigationMenu>        {/* Right side - Messages and User menu */}
         <div className="flex items-center gap-4">
+          {/* Messages dropdown */}
+          <NavbarMessages />
+          
           {/* Welcome message for larger screens */}
           <div className="hidden xl:block text-sm text-muted-foreground">
             <span className="font-medium text-foreground">

@@ -22,6 +22,7 @@ import SessionManagement from "@/components/trainings/sessions/SessionManagement
 import LeaguesList from "@/pages/admin/league/LeaguesList";
 import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
+import { ChatPage } from "@/pages/chat";
 
 export const coachRoutes = [
   {
@@ -143,9 +144,12 @@ export const coachRoutes = [
   {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
-  },
-  {
+  },  {
     path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
+  },
+  {
+    path: "/chat/team/:teamId",
+    element: <ChatPage />,
   },
 ];

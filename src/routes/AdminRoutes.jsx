@@ -28,6 +28,7 @@ import SessionManagement from "@/components/trainings/sessions/SessionManagement
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
+import { ChatPage } from "@/pages/chat";
 import { Navigate, useParams } from "react-router-dom";
 
 // Component to redirect to stats section
@@ -192,9 +193,12 @@ export const adminRoutes = [
   {
     path: "/trainings/units",
     element: <TrainingUnitsPage />,
-  },
-  {
+  },  {
     path: "/settings",
     element: <SystemSettingsPage />,
+  },
+  {
+    path: "/chat/team/:teamId",
+    element: <ChatPage />,
   },
 ];

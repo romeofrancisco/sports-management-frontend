@@ -9,6 +9,7 @@ import {
   Medal,
   Dumbbell,
   BarChart3,
+  MessageCircle,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -103,12 +104,6 @@ export const coachGroupedNavigation = () => {
       ],
     },
     {
-      title: "Leagues",
-      href: "/leagues",
-      icon: Trophy,
-      description: "View league structures and seasons",
-    },
-    {
       title: "Activities",
       icon: CalendarCog,
       items: [
@@ -124,6 +119,12 @@ export const coachGroupedNavigation = () => {
           icon: Dumbbell,
           description: "Schedule and conduct training sessions",
         },
+        {
+          title: "Leagues",
+          href: "/leagues",
+          icon: Trophy,
+          description: "View league structures and seasons",
+        },
       ],
     },
   ];
@@ -131,7 +132,7 @@ export const coachGroupedNavigation = () => {
 
 export const playerGroupedNavigation = () => {
   const { team_slug } = useSelector((state) => state.auth.user);
-  
+
   return [
     {
       title: "Dashboard",
@@ -143,12 +144,6 @@ export const playerGroupedNavigation = () => {
       href: `/teams/${team_slug}`,
       icon: Users,
       description: "View your team details",
-    },
-    {
-      title: "Leagues",
-      href: "/leagues",
-      icon: Trophy,
-      description: "View league structures and seasons",
     },
     {
       title: "Activities",
@@ -165,6 +160,12 @@ export const playerGroupedNavigation = () => {
           href: "/trainings/",
           icon: Dumbbell,
           description: "View your training progress and performance",
+        },
+        {
+          title: "Leagues",
+          href: "/leagues",
+          icon: Trophy,
+          description: "View league structures and seasons",
         },
       ],
     },

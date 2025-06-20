@@ -30,9 +30,9 @@ const NavbarProvider = () => {
   const userNavItems = getUserNavItems();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background">
       <AppNavbar navItems={userNavItems} />
-      <main className="container mx-auto px-4">
+      <main>
         <Outlet />
       </main>
     </div>

@@ -7,6 +7,7 @@ import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
+import { ChatPage } from "@/pages/chat";
 
 export const playerRoutes = [
   {
@@ -80,9 +81,12 @@ export const playerRoutes = [
   {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
-  },
-  {
+  },  {
     path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
+  },
+  {
+    path: "/chat/team/:teamId",
+    element: <ChatPage />,
   },
 ];
