@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { chatKeys } from "./useChat";
 
-export const useChatWebSocket = (teamId, onMessage) => {
+export const useChatWebSocket = (teamId, onMessage, currentUserId) => {
   const websocketRef = useRef(null);
   const queryClient = useQueryClient();
   const onMessageRef = useRef(onMessage);
@@ -71,27 +71,12 @@ export const useChatWebSocket = (teamId, onMessage) => {
               return oldMessages;
             }
             return [...oldMessages, newMessage];
-          }
-        );
+          }        );
 
-        // Update team chats cache for latest message (only set data, don't invalidate)
-        queryClient.setQueryData(chatKeys.teamChats(), (oldChats) => {
-          if (!oldChats) return oldChats;
-          return oldChats.map((chat) => {
-            if (chat.team_id === teamId) {
-              return {
-                ...chat,
-                latest_message: {
-                  sender_name: data.sender_name,
-                  message: data.message,
-                  timestamp: data.timestamp,
-                },
-                unread_count: chat.unread_count + 1,
-              };
-            }
-            return chat;
-          });
-        }); // Call custom onMessage callback if provided
+        // Note: Team chats cache updates are handled by global WebSocket to avoid conflicts
+        // This WebSocket only handles team-specific message cache updates
+
+        // Call custom onMessage callback if provided
         if (onMessageRef.current) {
           onMessageRef.current(newMessage);
         }
@@ -125,7 +110,7 @@ export const useChatWebSocket = (teamId, onMessage) => {
     };
 
     websocketRef.current = ws;
-  }, [teamId, queryClient]); // Removed onMessage from dependencies
+  }, [teamId, queryClient, currentUserId]); // Added currentUserId to dependencies
   const sendMessage = useCallback((message) => {
     if (
       websocketRef.current &&

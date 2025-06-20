@@ -70,7 +70,6 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
             className="w-8 h-8 rounded-full object-cover"
           />
         )}
-        <Users className="h-5 w-5 text-primary" />
         <div className="flex-1">
           <h2 className="font-semibold text-lg">{selectedChat.team_name}</h2>
           <p className="text-sm text-muted-foreground">Team Chat</p>

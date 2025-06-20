@@ -60,7 +60,7 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
   return (
     <div className="flex flex-col h-[calc(100vh-4.5rem)] bg-background">
       {/* Chat Header */}
-      <div className="flex items-center gap-3 p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex items-center gap-3 px-4 py-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         {selectedChat.logo && (
           <img
             src={selectedChat.logo}
@@ -70,7 +70,7 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
         )}
         <div className="flex-1">
           <h2 className="font-semibold text-lg">{selectedChat.team_name}</h2>
-          <p className="text-sm text-muted-foreground">Team Chat</p>
+          <p className="text-xs text-muted-foreground">Team Chat</p>
         </div>
       </div>
 
