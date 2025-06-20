@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
 /**
  * Custom hook for role-based permissions in the application
@@ -17,6 +18,9 @@ export const useRolePermissions = () => {
 
   // Check if user is a coach
   const isCoach = () => hasRole("Coach");
+
+  // Check if user is a player
+  const isPlayer = () => hasRole("Player");
 
   // Check if user can create metric units
   const canCreateMetricUnits = () => {
@@ -71,10 +75,10 @@ export const useRolePermissions = () => {
     }
 
     const actionText = action === "edit" ? "edit" : "delete";
-    return `You can only ${actionText} units you created`;
-  };
-  // Check general permissions for different features
-  const permissions = {
+    return `You can only ${actionText} units you created`;  };
+  
+  // Memoize permissions to prevent infinite re-renders
+  const permissions = useMemo(() => ({
     // Metric Units
     metricUnits: {
       create: canCreateMetricUnits(),
@@ -190,6 +194,51 @@ export const useRolePermissions = () => {
       viewReports: isAdmin() || isCoach(),
     },
 
+    // Chat functionality
+    chat: {
+      // Admin can access all team chats
+      accessAllTeams: isAdmin(),
+      
+      // Get teams the user can chat in
+      getAccessibleTeams: (teams = []) => {
+        if (isAdmin()) return teams; // Admin sees all teams
+        
+        if (isCoach()) {
+          // Coach sees teams they coach
+          return teams.filter(team => team.coach_id === user?.id);
+        }
+        
+        if (isPlayer()) {
+          // Player sees only their team
+          return teams.filter(team => team.id === user?.team_id);
+        }
+        
+        return [];
+      },
+      
+      // Check if user can access a specific team chat
+      canAccessTeamChat: (teamId) => {
+        if (isAdmin()) return true;
+        
+        if (isCoach()) {
+          // This would need team data to check if coach coaches this team
+          // For now, assuming the API will handle this validation
+          return true;
+        }
+        
+        if (isPlayer()) {
+          return user?.team_id === teamId;
+        }
+        
+        return false;
+      },
+      
+      // Send messages permission
+      canSendMessages: (teamId) => {
+        return permissions.chat.canAccessTeamChat(teamId);
+      },
+    },
+
     // User management
     users: {
       create: isAdmin(),
@@ -202,20 +251,20 @@ export const useRolePermissions = () => {
       delete: (targetUser) => {
         if (!targetUser) return false;
         // Only admins can delete users, but not themselves
-        return isAdmin() && targetUser?.id !== user?.id;
-      },
+        return isAdmin() && targetUser?.id !== user?.id;      },
       changeRole: (targetUser) => {
         if (!targetUser) return false;
         // Only admins can change roles, but not their own
         return isAdmin() && targetUser?.id !== user?.id;
       },
     },
-  };
+  }), [user?.id, user?.role, user?.team_id]); // Dependencies for memoization
 
   return {
     user,
     isAdmin,
     isCoach,
+    isPlayer,
     hasRole,
     permissions,
     

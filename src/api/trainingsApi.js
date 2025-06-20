@@ -460,3 +460,23 @@ export const fetchAssignedMetricsDetail = async (params = {}) => {
     throw error;
   }
 };
+
+// Assigned Metrics Overview - Get overall summary without filters
+export const fetchAssignedMetricsOverview = async () => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/assigned_metrics_overview/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Training Overview - Get training overview statistics for the current player
+export const fetchTrainingOverview = async () => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/training_overview/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -12,19 +12,19 @@ import {
 import { Calendar as CalendarIcon, RotateCcw, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
-const PlayerRadarChartContainer = ({ 
-  playerId, 
-  playerName, 
+const PlayerRadarChartContainer = ({
+  playerId,
+  playerName,
   className = "",
   dateRange = null,
-  showDateControls = true 
+  showDateControls = true,
 }) => {
   // Only use internal date state if no external dateRange is provided
   const [internalDateRange, setInternalDateRange] = useState({
     from: "",
-    to: ""
+    to: "",
   });
-  
+
   const [tempDateRange, setTempDateRange] = useState(internalDateRange);
   const [showDateControlsPopover, setShowDateControlsPopover] = useState(false);
 
@@ -34,7 +34,7 @@ const PlayerRadarChartContainer = ({
     data: radarData,
     isLoading,
     error,
-    refetch
+    refetch,
   } = usePlayerRadarChart(playerId, effectiveDateRange, !!playerId);
 
   const handleDateRangeApply = () => {
@@ -50,7 +50,7 @@ const PlayerRadarChartContainer = ({
     const resetRange = { from: "", to: "" };
     setTempDateRange(resetRange);
     if (dateRange) {
-      // External dateRange is controlled by parent, do nothing  
+      // External dateRange is controlled by parent, do nothing
       return;
     }
     setInternalDateRange(resetRange);
@@ -63,7 +63,9 @@ const PlayerRadarChartContainer = ({
   };
   if (isLoading) {
     return (
-      <div className={`w-full ${className} flex items-center justify-center py-12`}>
+      <div
+        className={`w-full ${className} flex items-center justify-center py-12`}
+      >
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
           <div>
@@ -78,7 +80,9 @@ const PlayerRadarChartContainer = ({
   }
   if (error) {
     return (
-      <div className={`w-full ${className} flex items-center justify-center py-12`}>
+      <div
+        className={`w-full ${className} flex items-center justify-center py-12`}
+      >
         <div className="text-center space-y-4">
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto">
             <span className="text-2xl">⚠️</span>
@@ -88,7 +92,9 @@ const PlayerRadarChartContainer = ({
               Failed to Load Data
             </p>
             <p className="text-sm text-muted-foreground">
-              {error.response?.data?.detail || error.message || "An error occurred while loading the radar chart data"}
+              {error.response?.data?.detail ||
+                error.message ||
+                "An error occurred while loading the radar chart data"}
             </p>
             <Button
               onClick={() => refetch()}
@@ -102,8 +108,13 @@ const PlayerRadarChartContainer = ({
         </div>
       </div>
     );
-  }  return (
-    <div className={`bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl shadow-xl border border-border/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:border-secondary/20 ${className}`}>      <div className="p-6">
+  }
+  return (
+    <div
+      className={`bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl shadow-xl border border-border/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:border-secondary/20 ${className}`}
+    >
+      {" "}
+      <div className="p-6">
         {/* Radar Chart */}
         <div>
           <PlayerRadarChart

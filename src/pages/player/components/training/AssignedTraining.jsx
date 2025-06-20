@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
-import { fetchAssignedMetricsDetail } from "@/api/trainingsApi";
+import { useAssignedMetricsDetail, useAssignedMetricsOverview } from "@/hooks/useTrainings";
+import { transformSessionsData } from "./utils/sessionDataTransform";
 import {
   SessionCard,
   FilterControls,
@@ -10,98 +10,49 @@ import {
   EmptyState,
   getSessionTableColumns
 } from "./assigned";
+import { Badge } from "@/components/ui/badge";
+import SessionCardSkeleton from "./assigned/SessionCardSkeleton";
+import TableSkeleton from "./assigned/TableSkeleton";
 
 const AssignedTraining = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
   const [statusFilter, setStatusFilter] = useState("assigned"); // Set assigned as default
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [dateRange, setDateRange] = useState({ from: null, to: null });
+  const [search, setSearch] = useState("");
+  // Fetch assigned metrics using the reusable hook
+  const { data, isLoading, isError, error } = useAssignedMetricsDetail({
+    page: currentPage,
+    page_size: pageSize,
+    status: statusFilter === "all" ? undefined : statusFilter,
+    date_from: dateRange?.from ? dateRange.from.toISOString().split("T")[0] : undefined,
+    date_to: dateRange?.to ? dateRange.to.toISOString().split("T")[0] : undefined,
+    search: search || undefined,
+  });
 
-  // Fetch assigned metrics using React Query
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["assigned-metrics-detail", currentPage, pageSize, statusFilter, categoryFilter],
-    queryFn: () => fetchAssignedMetricsDetail({
-      page: currentPage,
-      page_size: pageSize,
-      status: statusFilter === "all" ? undefined : statusFilter,
-      category: categoryFilter === "all" ? undefined : categoryFilter,
-    }),
-    keepPreviousData: true,
-  });  const sessions = data?.results || [];
+  // Fetch overall metrics overview using the reusable hook
+  const { data: overviewData, isLoading: isOverviewLoading } = useAssignedMetricsOverview();
+  const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
   
-  // Transform sessions data and create a session-based view
-  const sessionsWithMetrics = sessions.map(sessionData => ({
-    // Session info
-    session: {
-      id: sessionData.session,
-      title: sessionData.session_title,
-      date: sessionData.session_date,
-      start_time: sessionData.session_start_time,
-      end_time: sessionData.session_end_time,
-      location: sessionData.session_location,
-      status: sessionData.session_status,
-      description: sessionData.session_description,
-    },    // Transform assigned metrics with their records
-    metrics: sessionData.assigned_metrics?.map(assignedMetric => {
-      // Find the corresponding metric record
-      const metricRecord = sessionData.metric_records?.find(
-        record => record.metric === assignedMetric.id
-      );
-      
-      return {
-        id: assignedMetric.id,
-        metric_name: assignedMetric.name,
-        metric_description: assignedMetric.description,
-        metric_category: assignedMetric.category_name,
-        metric_unit: {
-          code: metricRecord?.metric_unit_code || assignedMetric.metric_unit_data?.code,
-          name: metricRecord?.metric_unit_name || assignedMetric.metric_unit_data?.name,
-        },
-        is_lower_better: assignedMetric.is_lower_better,
-        weight: assignedMetric.weight,
-        // Status based on recording and session status
-        status: metricRecord?.value !== null && metricRecord?.value !== undefined ? "completed" : 
-               sessionData.session_status === "completed" ? "missed" :
-               sessionData.session_status === "in_progress" ? "in_progress" : "assigned",
-        is_recorded: metricRecord?.value !== null && metricRecord?.value !== undefined,
-        recorded_value: metricRecord?.value,
-        recorded_at: metricRecord?.recorded_at,
-        recorded_by: metricRecord?.recorded_by,
-        notes: metricRecord?.notes || "",
-        // Improvement data from the new backend calculation
-        improvement_from_last: metricRecord?.improvement_from_last,
-        improvement_percentage: metricRecord?.improvement_percentage,
-        // Include session info for individual metric cards
-        session_title: sessionData.session_title,
-        session_date: sessionData.session_date,
-        session_start_time: sessionData.session_start_time,
-        session_end_time: sessionData.session_end_time,
-        session_location: sessionData.session_location,
-        session_status: sessionData.session_status,
-        attendance_status: sessionData.attendance_status,
-      };
-    }) || [],
-    // Session metadata
-    attendance_status: sessionData.attendance_status,
-    completion_status: sessionData.metrics_completion_status,
-    can_record_metrics: sessionData.can_record_metrics,
-  }));
+  // Transform sessions data using the utility function
+  const sessionsWithMetrics = transformSessionsData(sessions);
 
-  // Flatten metrics for individual metric view and summary calculation
-  const metrics = sessionsWithMetrics.flatMap(sessionGroup => sessionGroup.metrics);  // Calculate summary from processed metrics
-  const summary = {
-    total_metrics: metrics.length,
-    completed: metrics.filter(m => m.status === "completed").length,
-    in_progress: metrics.filter(m => m.status === "in_progress").length,
-    assigned: metrics.filter(m => m.status === "assigned").length,
-    missed: metrics.filter(m => m.status === "missed").length,
-    completion_rate: metrics.length > 0 ? Math.round((metrics.filter(m => m.status === "completed").length / metrics.length) * 100) : 0
+
+  // Use the overall unfiltered summary for display, fall back to filtered summary
+  const summary = overviewData || {
+    total_metrics: 0,
+    completed: 0,
+    in_progress: 0,
+    assigned: 0,
+    missed: 0,
+    completion_rate: 0
   };
 
-  // Get unique categories for filtering
-  const categories = [...new Set(metrics.map(m => m.metric_category).filter(Boolean))];
+  // Optionally show filtered summary info when filters are active
+  const isFiltered = statusFilter !== "all";
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo(0, 0);
@@ -118,14 +69,6 @@ const AssignedTraining = () => {
   };
 
   // Handle loading and error states
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-lg">Loading assigned metrics...</div>
-      </div>
-    );
-  }
-
   if (isError) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -147,42 +90,51 @@ const AssignedTraining = () => {
       {/* Filters and Controls */}
       <FilterControls
         statusFilter={statusFilter}
-        categoryFilter={categoryFilter}
-        categories={categories}
         viewMode={viewMode}
         onStatusFilterChange={handleStatusFilter}
-        onCategoryFilterChange={setCategoryFilter}
         onViewModeChange={setViewMode}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        search={search}
+        onSearchChange={setSearch}
       />
 
       {/* Content */}
       {viewMode === "table" ? (
         <div className="space-y-4">
           <div className="overflow-x-auto">
-            <DataTable
-              columns={getSessionTableColumns()}
-              data={sessionsWithMetrics}
-              loading={isLoading}
-              className="text-xs sm:text-sm"
-              showPagination={false}
-              pageSize={pageSize}
-            />
+            {isLoading ? (
+              <TableSkeleton rows={pageSize} columns={6} />
+            ) : (
+              <DataTable
+                columns={getSessionTableColumns()}
+                data={sessionsWithMetrics}
+                loading={isLoading}
+                className="text-xs sm:text-sm"
+                showPagination={false}
+                pageSize={pageSize}
+              />
+            )}
           </div>
         </div>
       ) : (
         <div className="space-y-4">
-          {sessionsWithMetrics.length === 0 && !isLoading ? (
-            <EmptyState statusFilter={statusFilter} />
-          ) : isLoading ? (
-            <div className="text-center py-16">
-              <div className="text-muted-foreground">Loading training sessions...</div>
+          {isLoading ? (
+            <div className="columns-1 xl:columns-2 gap-6">
+              {[...Array(pageSize)].map((_, i) => (
+                <div key={i} className="mb-6 break-inside-avoid">
+                  <SessionCardSkeleton />
+                </div>
+              ))}
             </div>
+          ) : sessionsWithMetrics.length === 0 ? (
+            <EmptyState statusFilter={statusFilter} />
           ) : (
-            <div className="grid grid-cols-1 gap-6">
+            <div className="columns-1 xl:columns-2 gap-6">
               {sessionsWithMetrics.map((sessionGroup, index) => (
                 <div
                   key={`session-${sessionGroup.session.id}`}
-                  className="animate-in fade-in-50 duration-500"
+                  className="animate-in fade-in-50 duration-500 mb-6 break-inside-avoid"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <SessionCard sessionGroup={sessionGroup} />

@@ -187,11 +187,153 @@ export const processPlayerActivityData = (analytics, attendanceOverview, attenda
     // Create 4 weeks of synthetic data showing recent activity
     return Array.from({ length: 4 }, (_, index) => ({
       period: `Week ${index + 1}`,
-      active_players: Math.max(1, Math.round(totalPlayers * (0.8 + Math.random() * 0.2))), // 80-100% of total players
-      avg_participation: Math.max(0, overallRate + (Math.random() - 0.5) * 10), // ±5% variation
+      active_players: Math.max(1, totalPlayers - index),
+      avg_participation: Math.max(20, overallRate - index * 5),
     }));
   }
 
   // Return empty array if no data available
   return [];
+};
+
+// New function for processing training metrics improvement trends
+export const processTrainingMetricsData = (teamPlayerProgress, timeRange = 30) => {
+  if (!teamPlayerProgress?.results) return [];
+
+  const weeklyMetricsData = {};
+  const players = Object.values(teamPlayerProgress.results);
+
+  // Group metrics by week and calculate improvements
+  players.forEach(player => {
+    if (player.recent_improvement && player.last_training_date) {
+      const trainingDate = new Date(player.last_training_date);
+      const weekKey = `Week of ${trainingDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })}`;
+
+      if (!weeklyMetricsData[weekKey]) {
+        weeklyMetricsData[weekKey] = {
+          total_improvement: 0,
+          player_count: 0,
+          metrics_recorded: 0,
+          attendance_rate: 0,
+        };
+      }
+
+      weeklyMetricsData[weekKey].total_improvement += player.recent_improvement || 0;
+      weeklyMetricsData[weekKey].player_count += 1;
+      weeklyMetricsData[weekKey].metrics_recorded += player.recent_metrics_count || 0;
+      weeklyMetricsData[weekKey].attendance_rate += player.attendance_rate || 0;
+    }
+  });
+
+  // Convert to chart format with averages
+  return Object.entries(weeklyMetricsData)
+    .map(([week, data]) => ({
+      period: week,
+      avg_improvement: data.player_count > 0 
+        ? Math.round((data.total_improvement / data.player_count) * 100) / 100 
+        : 0,
+      metrics_per_player: data.player_count > 0 
+        ? Math.round(data.metrics_recorded / data.player_count) 
+        : 0,
+      avg_attendance: data.player_count > 0 
+        ? Math.round(data.attendance_rate / data.player_count) 
+        : 0,
+      active_players: data.player_count,
+    }))
+    .sort((a, b) => new Date(a.period.replace("Week of ", "")) - new Date(b.period.replace("Week of ", "")))
+    .slice(-8); // Show last 8 weeks
+};
+
+// New function for processing game scoring trends (simplified - now backend does the heavy lifting)
+export const processGameScoringData = (scoringAnalytics) => {
+  // If we have backend scoring analytics data, use it directly
+  if (scoringAnalytics?.scoring_data) {
+    return scoringAnalytics.scoring_data;
+  }
+
+  // Fallback: process raw games data (original implementation for backward compatibility)
+  const games = scoringAnalytics;
+  if (!games?.results && !Array.isArray(games)) return [];
+
+  const gamesList = games?.results || games || [];
+  const completedGames = gamesList.filter(game => 
+    game.status === 'completed' || game.status === 'finished'
+  );
+
+  if (completedGames.length === 0) return [];
+
+  // Group games by week
+  const weeklyScoring = {};
+
+  completedGames.forEach(game => {
+    const gameDate = new Date(game.date);
+    const weekKey = `Week of ${gameDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })}`;
+
+    if (!weeklyScoring[weekKey]) {
+      weeklyScoring[weekKey] = {
+        total_points_scored: 0,
+        total_points_conceded: 0,
+        games_count: 0,
+        wins: 0,
+      };
+    }
+
+    // Determine if this is a home or away game and extract relevant scores
+    const isHomeGame = game.home_team_name || game.is_home;
+    const pointsScored = isHomeGame ? game.home_team_score : game.away_team_score;
+    const pointsConceded = isHomeGame ? game.away_team_score : game.home_team_score;
+
+    weeklyScoring[weekKey].total_points_scored += pointsScored || 0;
+    weeklyScoring[weekKey].total_points_conceded += pointsConceded || 0;
+    weeklyScoring[weekKey].games_count += 1;
+    
+    if (game.result === 'win') {
+      weeklyScoring[weekKey].wins += 1;
+    }
+  });
+
+  // Convert to chart format
+  return Object.entries(weeklyScoring)
+    .map(([week, data]) => ({
+      period: week,
+      avg_points_scored: data.games_count > 0 
+        ? Math.round((data.total_points_scored / data.games_count) * 10) / 10 
+        : 0,
+      avg_points_conceded: data.games_count > 0 
+        ? Math.round((data.total_points_conceded / data.games_count) * 10) / 10 
+        : 0,
+      point_differential: data.games_count > 0 
+        ? Math.round(((data.total_points_scored - data.total_points_conceded) / data.games_count) * 10) / 10 
+        : 0,
+      win_rate: data.games_count > 0 
+        ? Math.round((data.wins / data.games_count) * 100) 
+        : 0,
+      games_played: data.games_count,
+    }))
+    .sort((a, b) => new Date(a.period.replace("Week of ", "")) - new Date(b.period.replace("Week of ", "")))
+    .slice(-8); // Show last 8 weeks
+};
+
+// New function for processing player availability trends
+export const processPlayerAvailabilityData = (analytics, attendanceTrends, teamDetails) => {
+  if (!attendanceTrends || !Array.isArray(attendanceTrends)) return [];
+
+  return attendanceTrends
+    .slice(-8) // Last 8 data points
+    .map((trend, index) => ({
+      period: `Week ${index + 1}`,
+      total_players: trend.total_players || teamDetails?.total_players || 0,
+      active_players: Math.round((trend.attendance_rate / 100) * (trend.total_players || 0)),
+      attendance_rate: Math.round(trend.attendance_rate || 0),
+      availability_score: Math.round(
+        ((trend.attendance_rate || 0) * 0.7) + 
+        (((trend.total_players || 0) / (teamDetails?.total_players || 1)) * 30)
+      ), // Weighted score combining attendance and player availability
+    }));
 };

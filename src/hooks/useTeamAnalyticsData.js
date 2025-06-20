@@ -37,7 +37,8 @@ export const useTeamAnalyticsData = (teamSlug, timeRange = 30) => {
     data: analytics,
     isLoading: analyticsLoading,
     refetch: refetchAnalytics,
-  } = useTeamAnalytics(teamSlug, timeRange);  const { data: performance, isLoading: performanceLoading } =
+  } = useTeamAnalytics(teamSlug, timeRange);
+  const { data: performance, isLoading: performanceLoading } =
     useTeamPerformance(teamSlug);
   const { data: games, isLoading: gamesLoading } = useAllTeamGames(teamSlug);
   const { data: trainings, isLoading: trainingsLoading } =

@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import TrainingOverview from "./components/training/TrainingOverview";
 import TrainingProgress from "./components/training/TrainingProgress";
-import PlayerTrainingSessions from "./components/training/PlayerTrainingSessions";
 import AssignedTraining from "./components/training/AssignedTraining";
 import { cn } from "@/lib/utils";
 import { Trophy, TrendingUp, Calendar, Target } from "lucide-react";
@@ -37,13 +36,6 @@ const TrainingPage = () => {
       icon: Target,
     },
     {
-      key: "sessions",
-      label: "Sessions",
-      path: "/trainings/sessions",
-      description: "View training sessions",
-      icon: Calendar,
-    },
-    {
       key: "progress",
       label: "My Progress",
       path: "/trainings/progress",
@@ -57,8 +49,6 @@ const TrainingPage = () => {
         return <TrainingOverview />;
       case "assigned":
         return <AssignedTraining />;
-      case "sessions":
-        return <PlayerTrainingSessions />;
       case "progress":
         return <TrainingProgress />;
       default:
@@ -68,7 +58,7 @@ const TrainingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="p-4 md:p-6 space-y-8">
+      <div className="p-0 py-4 sm:p-4 space-y-8">
         <UniversityPageHeader
           title="Training"
           subtitle="Training Management"

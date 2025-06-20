@@ -5,7 +5,8 @@ export {
   TeamPerformanceTrendsChart,
   TeamStatsBreakdownChart,
   TrainingAnalyticsChart,
-  TeamOverviewMetrics
+  TeamOverviewMetrics,
+  TeamScoringBarChart
 } from './TeamAnalyticsCharts/index.js';
 
 // Default export for backward compatibility

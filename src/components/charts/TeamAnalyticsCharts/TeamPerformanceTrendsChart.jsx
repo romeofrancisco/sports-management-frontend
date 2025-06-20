@@ -6,7 +6,14 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { COLORS } from './constants';
 import { getDefaultChartOptions, getChartTheme } from './utils';
 
-export const TeamPerformanceTrendsChart = ({ data, title = "Performance Trends" }) => {
+export const TeamPerformanceTrendsChart = ({ 
+  data, 
+  title = "Performance Trends", 
+  subtitle = "Track team performance over time",
+  dataKeys = ['win_rate', 'games_played'],
+  colors = [COLORS.primary, COLORS.secondary]
+}) => {
+  console.log("Rendering TeamPerformanceTrendsChart with data:", data);
   if (!data || data.length === 0) {
     return (
       <Card>
@@ -15,7 +22,7 @@ export const TeamPerformanceTrendsChart = ({ data, title = "Performance Trends" 
             <TrendingUp className="h-5 w-5 text-primary" />
             {title}
           </CardTitle>
-          <CardDescription>Track team performance over time</CardDescription>
+          <CardDescription>{subtitle}</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
           <p className="text-muted-foreground">No performance data available</p>
@@ -23,13 +30,13 @@ export const TeamPerformanceTrendsChart = ({ data, title = "Performance Trends" 
       </Card>
     );
   }
-
-  // Calculate trend
+  // Calculate trend for the first data key (primary metric)
   const calculateTrend = () => {
     if (data.length < 2) return { direction: 'neutral', percentage: 0 };
     
-    const recent = data.slice(-3).reduce((sum, item) => sum + (item.win_rate || 0), 0) / 3;
-    const previous = data.slice(-6, -3).reduce((sum, item) => sum + (item.win_rate || 0), 0) / 3;
+    const primaryKey = dataKeys[0];
+    const recent = data.slice(-3).reduce((sum, item) => sum + (item[primaryKey] || 0), 0) / 3;
+    const previous = data.slice(-6, -3).reduce((sum, item) => sum + (item[primaryKey] || 0), 0) / 3;
     
     if (previous === 0) return { direction: 'neutral', percentage: 0 };
     
@@ -44,71 +51,105 @@ export const TeamPerformanceTrendsChart = ({ data, title = "Performance Trends" 
                    trend.direction === 'down' ? TrendingDown : Minus;
   const trendColor = trend.direction === 'up' ? 'text-green-500' : 
                      trend.direction === 'down' ? 'text-red-500' : 'text-gray-500';
-
   const chartData = {
     labels: data.map(item => item.period),
-    datasets: [
-      {
-        label: 'Win Rate %',
-        data: data.map(item => item.win_rate || 0),
-        borderColor: COLORS.primary,
-        backgroundColor: `${COLORS.primary}20`,
-        fill: true,
+    datasets: dataKeys.map((key, index) => {
+      const color = colors[index] || COLORS.primary;
+      const isSecondary = index > 0;
+      
+      // Get human-readable label for the key
+      const getLabelForKey = (key) => {
+        const labels = {
+          'win_rate': 'Win Rate %',
+          'games_played': 'Games Played',
+          'avg_improvement': 'Avg Improvement %',
+          'metrics_per_player': 'Metrics per Player',
+          'active_players': 'Active Players',
+          'avg_points_scored': 'Avg Points Scored',
+          'avg_points_conceded': 'Avg Points Conceded',
+          'point_differential': 'Point Differential',
+          'attendance_rate': 'Attendance Rate %',
+          'availability_score': 'Availability Score',
+        };
+        return labels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      };
+
+      return {
+        label: getLabelForKey(key),
+        data: data.map(item => item[key] || 0),
+        borderColor: color,
+        backgroundColor: `${color}20`,
+        fill: index === 0, // Only fill the first dataset
         tension: 0.4,
-        pointBackgroundColor: COLORS.primary,
+        pointBackgroundColor: color,
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
-        pointRadius: 6,
-      },
-      {
-        label: 'Games Played',
-        data: data.map(item => item.games_played || 0),
-        borderColor: COLORS.secondary,
-        backgroundColor: `${COLORS.secondary}20`,
-        fill: false,
-        tension: 0.4,
-        pointBackgroundColor: COLORS.secondary,
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        yAxisID: 'y1',
+        pointRadius: isSecondary ? 4 : 6,
+        yAxisID: isSecondary ? 'y1' : 'y',
+      };
+    })
+  };
+  // Dynamic chart options based on data
+  const getScaleConfig = () => {
+    const primaryKey = dataKeys[0];
+    const hasSecondaryAxis = dataKeys.length > 1;
+    
+    // Determine appropriate scale for primary axis
+    const getYAxisConfig = (key) => {
+      if (key.includes('rate') || key.includes('percentage')) {
+        return { min: 0, max: 100, title: 'Percentage (%)' };
+      } else if (key.includes('improvement')) {
+        return { title: 'Improvement (%)' };
+      } else if (key.includes('score') || key.includes('points')) {
+        return { min: 0, title: 'Points' };
+      } else {
+        return { min: 0, title: 'Count' };
       }
-    ]
+    };
+
+    const primaryConfig = getYAxisConfig(primaryKey);
+    const secondaryConfig = hasSecondaryAxis ? getYAxisConfig(dataKeys[1]) : null;
+
+    return {
+      y: {
+        ...getDefaultChartOptions().scales.y,
+        type: 'linear',
+        display: true,
+        position: 'left',
+        ...primaryConfig,
+        title: {
+          display: true,
+          text: primaryConfig.title,
+          color: getChartTheme().textColor,
+        },
+      },
+      ...(hasSecondaryAxis && {
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: {
+            display: true,
+            text: secondaryConfig.title,
+            color: getChartTheme().textColor,
+          },
+          grid: {
+            drawOnChartArea: false,
+          },
+          ticks: {
+            color: getChartTheme().textColor,
+          },
+          ...secondaryConfig,
+        }
+      })
+    };
   };
 
   const chartOptions = {
     ...getDefaultChartOptions(),
     scales: {
       ...getDefaultChartOptions().scales,
-      y: {
-        ...getDefaultChartOptions().scales.y,
-        type: 'linear',
-        display: true,
-        position: 'left',
-        min: 0,
-        max: 100,
-        title: {
-          display: true,
-          text: 'Win Rate (%)',
-          color: getChartTheme().textColor,
-        },
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        title: {
-          display: true,
-          text: 'Games Played',
-          color: getChartTheme().textColor,
-        },
-        grid: {
-          drawOnChartArea: false,
-        },
-        ticks: {
-          color: getChartTheme().textColor,
-        },
-      },
+      ...getScaleConfig(),
     },
     plugins: {
       ...getDefaultChartOptions().plugins,
@@ -133,7 +174,7 @@ export const TeamPerformanceTrendsChart = ({ data, title = "Performance Trends" 
               <TrendingUp className="h-5 w-5 text-primary" />
               {title}
             </CardTitle>
-            <CardDescription>Win rate and performance metrics over time</CardDescription>
+          <CardDescription>{subtitle}</CardDescription>
           </div>
           {trend.direction !== 'neutral' && (
             <Badge variant="outline" className={`${trendColor} border-current`}>

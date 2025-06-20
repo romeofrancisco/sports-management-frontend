@@ -28,6 +28,7 @@ import SessionManagement from "@/components/trainings/sessions/SessionManagement
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
+import { ChatPage } from "@/pages/chat";
 import { Navigate, useParams } from "react-router-dom";
 
 // Component to redirect to stats section
@@ -44,7 +45,8 @@ export const adminRoutes = [
   {
     path: "/sports",
     element: <SportsList />,
-  },  {
+  },
+  {
     path: "/sports/:sport",
     element: <SportRedirect />,
   },
@@ -107,7 +109,8 @@ export const adminRoutes = [
   {
     path: "/leagues/:league/seasons",
     element: <LeagueDetails />,
-  },  {
+  },
+  {
     path: "/leagues/:league/seasons/:season",
     element: <SeasonDetails />,
   },
@@ -146,10 +149,12 @@ export const adminRoutes = [
   {
     path: "/trainings",
     element: <TrainingDashboard />,
-  },  {
+  },
+  {
     path: "/trainings/sessions",
     element: <TrainingSessionsPage />,
-  },  {
+  },
+  {
     path: "/sessions/:sessionId/manage/*",
     element: <SessionManagement />,
   },
@@ -196,5 +201,13 @@ export const adminRoutes = [
   {
     path: "/settings",
     element: <SystemSettingsPage />,
+  },
+  {
+    path: "/chat/team",
+    element: <ChatPage />,
+  },
+  {
+    path: "/chat/team/:teamId",
+    element: <ChatPage />,
   },
 ];

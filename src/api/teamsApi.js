@@ -147,3 +147,14 @@ export const fetchTeamStatistics = async (teamSlug, period = 'season') => {
   }
 };
 
+export const fetchTeamScoringAnalytics = async (teamSlug, filters = {}) => {
+  try {
+    const { data } = await api.get(`teams/${teamSlug}/scoring_analytics/`, { 
+      params: filters 
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+

@@ -2,7 +2,7 @@ import { useRoutes } from "react-router-dom";
 import { USER_ROLES } from "@/constants/roles";
 import { adminRoutes } from "./AdminRoutes";
 import { coachRoutes } from "./CoachRoutes";
-import { playerRoutes } from "./playerRoutes";
+import { playerRoutes } from "./PlayerRoutes";
 import PageNotFound from "@/pages/PageNotFound";
 import { useSelector } from "react-redux";
 

@@ -7,6 +7,7 @@ import { TeamsDisplay } from "./TeamsDisplay";
 import { GameActions } from "./GameActions";
 import { ScoreSummary } from "./ScoreSummary";
 import { ViewResultButton } from "./ViewResultButton";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export const GameCard = ({ game, onEditGame }) => {
   const homeTeam = game.home_team || {};
@@ -99,6 +100,12 @@ export const GameCard = ({ game, onEditGame }) => {
     };
   };
   const statusConfig = getStatusConfig();
+  const { isAdmin, isCoach } = useRolePermissions();
+
+  // Determine if we are on the /games page
+  const isGamesPage =
+    typeof window !== "undefined" && window.location.pathname === "/games";
+  const isLeagueGame = game.type === "league" && game.league && game.season;
 
   return (
     <Card
@@ -120,27 +127,54 @@ export const GameCard = ({ game, onEditGame }) => {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/60 to-secondary"></div>
       )}
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-primary/70" />
-              <span className="font-semibold text-foreground whitespace-nowrap">
-                {formatDate(game.date)}
-              </span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm">
+                <Calendar className="h-4 w-4 text-primary/70" />
+                <span className="font-semibold text-foreground whitespace-nowrap">
+                  {formatDate(game.date)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <ClockIcon className="h-4 w-4 text-secondary/70" />
+                <span className="font-medium whitespace-nowrap">
+                  {formatTime(game.date)}
+                </span>
+              </div>
             </div>
-
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <ClockIcon className="h-4 w-4 text-secondary/70" />
-              <span className="font-medium whitespace-nowrap">
-                {formatTime(game.date)}
-              </span>
-            </div>
+            {/* Status Badge */}
+            <div className="flex items-center gap-2">{statusConfig.badge}</div>
           </div>
-          {/* Status Badge */}
-          <div className="flex items-center gap-2">{statusConfig.badge}</div>
+          {/* League & Season Details for League Games on /games */}
+          {isGamesPage && isLeagueGame && (
+            <div className="flex flex-wrap items-center gap-4 mt-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-foreground">League:</span>
+                <span>{game.league.name}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-foreground">Season:</span>
+                <span>
+                  {game.season.name} {game.season.year}
+                </span>
+              </div>
+              {/* Show assigned coaches for league games */}
+              {game.assigned_coaches && game.assigned_coaches.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-foreground">Coaches:</span>
+                  <span>
+                    {game.assigned_coaches
+                      .map((coach) => coach.name)
+                      .join(", ")}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         {/* Second Row: Location and Duration */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPinIcon className="h-4 w-4 text-primary/50" />
@@ -181,17 +215,18 @@ export const GameCard = ({ game, onEditGame }) => {
         {/* Game Actions and Score Summary Section */}
         <div className="pt-3 border-t border-primary/10 space-y-4">
           {/* Game Actions */}
-          <div className="flex items-center justify-end">
-            <GameActions
-              game={game}
-              isCompleted={isCompleted}
-              isLive={isLive}
-              isScheduled={isScheduled}
-              bothReady={bothReady}
-              onEditGame={onEditGame}
-            />
-          </div>
-
+          {(isAdmin() || isCoach()) && (
+            <div className="flex items-center justify-end">
+              <GameActions
+                game={game}
+                isCompleted={isCompleted}
+                isLive={isLive}
+                isScheduled={isScheduled}
+                bothReady={bothReady}
+                onEditGame={onEditGame}
+              />
+            </div>
+          )}
           {/* Score Summary and View Result for Completed Games */}
           {isCompleted && game.score_summary?.periods && (
             <div className="space-y-4">

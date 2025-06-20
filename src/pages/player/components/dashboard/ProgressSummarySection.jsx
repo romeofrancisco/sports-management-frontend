@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
-    import { usePlayerRadarChart } from "@/hooks/useTrainings";
+import { usePlayerRadarChart } from "@/hooks/useTrainings";
 
 /**
  * Enhanced Progress summary section for player dashboard
@@ -28,10 +28,11 @@ const ProgressSummarySection = ({ progress, playerId }) => {
   const dateRange = getDefaultDateRange();
 
   // Fetch radar chart data for best category calculation
-  const {
-    data: radarData,
-    isLoading: isRadarLoading,
-  } = usePlayerRadarChart(playerId, dateRange, !!playerId);
+  const { data: radarData, isLoading: isRadarLoading } = usePlayerRadarChart(
+    playerId,
+    dateRange,
+    !!playerId
+  );
 
   // Helper function to find the best category from radar chart data
   const getBestCategory = () => {
@@ -59,7 +60,8 @@ const ProgressSummarySection = ({ progress, playerId }) => {
     return bestCategory;
   };
 
-  const bestCategory = getBestCategory();  const summaryCards = [
+  const bestCategory = getBestCategory();
+  const summaryCards = [
     {
       title: "Metrics Tracked",
       value: progress?.progress_summary?.total_metrics || 0,
@@ -68,9 +70,12 @@ const ProgressSummarySection = ({ progress, playerId }) => {
       bgColor: "bg-primary/10",
       borderColor: "border-primary/30",
       iconBg: "bg-primary",
-    },    {
+    },
+    {
       title: "Recent Improvement",
-      value: `${progress?.progress_summary?.recent_improvement?.toFixed(1) || 0}%`,
+      value: `${
+        progress?.progress_summary?.recent_improvement?.toFixed(1) || 0
+      }%`,
       description: "Last 90 days progress",
       color: "text-primary",
       bgColor: "bg-primary/10",
@@ -83,7 +88,8 @@ const ProgressSummarySection = ({ progress, playerId }) => {
     return null;
   }
 
-  return (    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
+  return (
+    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-secondary shadow-lg">
@@ -99,7 +105,9 @@ const ProgressSummarySection = ({ progress, playerId }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent>        <div className="grid gap-4 md:grid-cols-2">
+      <CardContent>
+        {" "}
+        <div className="grid gap-4 md:grid-cols-2">
           {summaryCards.map((card, index) => (
             <div
               key={index}

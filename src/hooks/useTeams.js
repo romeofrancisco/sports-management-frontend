@@ -15,6 +15,7 @@ import {
   fetchAllTeamGames,
   fetchTeamTrainingSessions,
   fetchTeamStatistics,
+  fetchTeamScoringAnalytics,
 } from "@/api/teamsApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -172,5 +173,14 @@ export const useTeamStatistics = (teamSlug, period = "season") => {
     queryKey: ["team-statistics", teamSlug, period],
     queryFn: () => fetchTeamStatistics(teamSlug, period),
     enabled: !!teamSlug,
+  });
+};
+
+export const useTeamScoringAnalytics = (teamSlug, filters = {}, enabled = true) => {
+  return useQuery({
+    queryKey: ["team", teamSlug, "scoring-analytics", filters],
+    queryFn: () => fetchTeamScoringAnalytics(teamSlug, filters),
+    enabled: enabled && !!teamSlug,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };

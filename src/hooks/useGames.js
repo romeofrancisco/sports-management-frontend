@@ -4,10 +4,14 @@ import {
   createGame,
   deleteGame,
   updateGame,
-  fetchGamePlayers,
   fetchGameDetails,
   manageGame,
+  fetchGamePlayers,
   fetchCurrentPlayers,
+  assignCoachToGame,
+  removeCoachFromGame,
+  fetchAvailableCoaches,
+  fetchGameCoachAssignments,
 } from "@/api/gamesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -123,6 +127,57 @@ export const useManageGame = (gameId) => {
           : `Cannot Advance to Next ${period}`;
 
       toast.info(errorTitle, {
+        description: error?.response?.data?.error || "Something went wrong.",
+        richColors: true,
+      });
+    },
+  });
+};
+
+// Coach assignment hooks
+export const useAvailableCoaches = (enabled = true) => {
+  return useQuery({
+    queryKey: ["available-coaches"],
+    queryFn: fetchAvailableCoaches,
+    enabled,
+  });
+};
+
+export const useGameCoachAssignments = (gameId, enabled = true) => {
+  return useQuery({
+    queryKey: ["game-coach-assignments", gameId],
+    queryFn: () => fetchGameCoachAssignments(gameId),
+    enabled: enabled && !!gameId,
+  });
+};
+
+export const useAssignCoachToGame = () => {
+  return useMutation({
+    mutationFn: ({ gameId, coachId }) => assignCoachToGame(gameId, coachId),
+    onSuccess: (_, { gameId }) => {
+      queryClient.invalidateQueries(["game-coach-assignments", gameId]);
+      queryClient.invalidateQueries(["games"]);
+      toast.success("Coach assigned successfully!", { richColors: true });
+    },
+    onError: (error) => {
+      toast.error("Failed to assign coach", {
+        description: error?.response?.data?.error || "Something went wrong.",
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useRemoveCoachFromGame = () => {
+  return useMutation({
+    mutationFn: ({ gameId, coachId }) => removeCoachFromGame(gameId, coachId),
+    onSuccess: (_, { gameId }) => {
+      queryClient.invalidateQueries(["game-coach-assignments", gameId]);
+      queryClient.invalidateQueries(["games"]);
+      toast.success("Coach removed successfully!", { richColors: true });
+    },
+    onError: (error) => {
+      toast.error("Failed to remove coach", {
         description: error?.response?.data?.error || "Something went wrong.",
         richColors: true,
       });
