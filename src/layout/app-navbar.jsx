@@ -308,7 +308,7 @@ const AppNavbar = ({ navItems = [] }) => {
   );
 
   return (
-    <header className="sticky top-0 px-4 md:px-6  z-50 w-full border-b-2 border-border/50 bg-gradient-to-r from-background/95 via-background/98 to-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky h-16 top-0 px-4 md:px-6 z-50 w-full border-b-2 border-primary/20 bg-gradient-to-r from-background/95 via-background/98 to-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
       {/* Enhanced background effects */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-50"></div>
       <div className="absolute top-0 left-1/4 w-32 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>

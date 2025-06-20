@@ -144,9 +144,14 @@ export const coachRoutes = [
   {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
-  },  {
+  },
+  {
     path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
+  },
+  {
+    path: "/chat/team",
+    element: <ChatPage />,
   },
   {
     path: "/chat/team/:teamId",

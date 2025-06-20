@@ -1,63 +1,80 @@
-import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import React, { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { formatTime } from "@/utils/formatDate";
+import { formatDateLabel } from "./utils";
 
-const ChatMessage = ({ message, currentUser, showDate, dateLabel }) => {
+const ChatMessage = ({
+  message,
+  currentUser,
+  showDate,
+  dateLabel,
+  activeTimeId,
+  setActiveTimeId,
+}) => {
   const isCurrentUser = message.sender_id === currentUser?.id;
 
-  const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  // Provide fallback for setActiveTimeId to avoid errors if not passed
+  const handleShowTime = () => {
+    if (activeTimeId === message.id) {
+      setActiveTimeId(null);
+    } else {
+      setActiveTimeId(message.id);
+    }
   };
-
   return (
     <div>
-      {showDate && (
+      {" "}
+      {(showDate || activeTimeId === message.id) && (
         <div className="flex items-center justify-center my-4">
-          <Badge variant="secondary" className="px-3 py-1">
-            {dateLabel}
-          </Badge>
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            {showDate ? dateLabel : formatDateLabel(message.timestamp)}
+          </span>
         </div>
       )}
-      <div className={cn(
-        "flex gap-2 items-end",
-        isCurrentUser ? "justify-end" : "justify-start"
-      )}>
+      <div
+        className={cn(
+          "flex gap-2 items-end",
+          isCurrentUser ? "justify-end" : "justify-start"
+        )}
+      >
         {/* Avatar for other users */}
         {!isCurrentUser && (
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={message.profile} />
+          <Avatar className="size-9">
+            <AvatarImage
+              src={message.sender_profile}
+              alt={`${message.sender_name}'s profile picture`}
+            />
             <AvatarFallback className="text-xs">
-              {message.sender_name?.charAt(0) || 'U'}
+              {message.sender_name?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
         )}
-        <div className={cn(
-          "relative max-w-[70%] px-4 py-2 rounded-2xl shadow-sm",
-          isCurrentUser
-            ? "bg-primary text-primary-foreground rounded-br-md ml-auto border border-primary/30"
-            : "bg-muted rounded-bl-md border border-muted-foreground/10"
-        )}>
+        <div>
           {/* Sender name for others */}
           {!isCurrentUser && (
-            <p className="text-xs font-semibold mb-1 text-muted-foreground flex items-center gap-1">
+            <p className="text-sm font-semibold mb-1 text-muted-foreground flex items-center gap-0.5">
               {message.sender_name}
-              <Badge variant="outline" className="ml-1 text-xs">
-                {message.sender_role}
-              </Badge>
+              {message.sender_role !== "Player" && (
+                <span className="text-sm text-primary/80">
+                  ({message.sender_role})
+                </span>
+              )}
             </p>
           )}
-          <p className="text-sm break-words whitespace-pre-line">{message.message}</p>
-          <div className={cn(
-            "flex w-full mt-1",
-            isCurrentUser ? "justify-end" : "justify-start"
-          )}>
-            <span className="text-[11px] opacity-60">
-              {formatTime(message.timestamp)}
-            </span>
+          <div
+            onClick={handleShowTime}
+            className={cn(
+              "relative max-w-[70%] px-4 py-2 rounded-2xl shadow-sm cursor-pointer select-text",
+              isCurrentUser
+                ? "bg-primary/90 text-primary-foreground rounded-br-md ml-auto border border-primary/30"
+                : "bg-muted rounded-bl-md border border-muted-foreground/10"
+            )}
+          >
+            <p className="text-sm break-words whitespace-pre-line">
+              {message.message}
+            </p>
           </div>
         </div>
       </div>

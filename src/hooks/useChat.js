@@ -1,11 +1,21 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getTeamChats, getTeamMessages, sendMessage, markMessagesAsRead } from '@/api/chatApi';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
+import {
+  getTeamChats,
+  getTeamMessages,
+  sendMessage,
+  markMessagesAsRead,
+} from "@/api/chatApi";
 
 // Query keys for chat
 export const chatKeys = {
-  all: ['chat'],
-  teamChats: () => [...chatKeys.all, 'teams'],
-  teamMessages: (teamId) => [...chatKeys.all, 'messages', teamId],
+  all: ["chat"],
+  teamChats: () => [...chatKeys.all, "teams"],
+  teamMessages: (teamId) => [...chatKeys.all, "messages", teamId],
 };
 
 // Hook to get all team chats
@@ -15,15 +25,14 @@ export const useTeamChats = () => {
     queryFn: async () => {
       const response = await getTeamChats();
       return response.data || [];
-    },
-    staleTime: 1000 * 60 * 2, // 2 minutes
-    gcTime: 1000 * 60 * 10, // 10 minutes
-    refetchOnWindowFocus: true, // Enable refetch on window focus
-    refetchOnMount: true, // Allow initial fetch on mount
+    },    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     refetchOnReconnect: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
-    notifyOnChangeProps: 'all', // Notify on all prop changes
+    notifyOnChangeProps: "all",
   });
 };
 
@@ -34,12 +43,11 @@ export const useTeamMessages = (teamId, enabled = true) => {
     queryFn: async () => {
       const response = await getTeamMessages(teamId);
       return response.data?.results || [];
-    },
-    enabled: enabled && !!teamId,
-    staleTime: 1000 * 60 * 5, // 5 minutes stale time
-    gcTime: 1000 * 60 * 15, // 15 minutes
+    },    enabled: enabled && !!teamId,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 15,
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Allow initial fetch on mount
+    refetchOnMount: true,
     refetchOnReconnect: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
@@ -54,51 +62,89 @@ export const useSendMessage = () => {
     mutationFn: async ({ teamId, message }) => {
       const response = await sendMessage(teamId, { message });
       return response.data;
-    },
-    onMutate: async ({ teamId, message }) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: chatKeys.teamMessages(teamId) });
+    },    onMutate: async ({ teamId, message }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: chatKeys.teamMessages(teamId),
+      });
 
-      // Snapshot the previous value
-      const previousMessages = queryClient.getQueryData(chatKeys.teamMessages(teamId));
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData(
+        chatKeys.teamMessages(teamId)
+      );
 
-      // Optimistically update to the new value
+      // Optimistic update
       const optimisticMessage = {
-        id: `temp-${Date.now()}`, // Temporary ID
+        id: `temp-${Date.now()}`,
         message,
-        sender_name: 'You', // Will be updated when real response comes
-        sender_id: null, // Will be updated
-        sender_role: null, // Will be updated
+        sender_name: "You",
+        sender_id: null,
+        sender_role: null,
         profile: {},
         timestamp: new Date().toISOString(),
         is_read: true,
       };
 
-      queryClient.setQueryData(chatKeys.teamMessages(teamId), (old) => {
-        return old ? [...old, optimisticMessage] : [optimisticMessage];
+      queryClient.setQueryData(chatKeys.teamMessages(teamId), (oldData) => {
+        if (!oldData || !oldData.pages) {
+          return {
+            pages: [
+              {
+                results: [optimisticMessage],
+                next: null,
+                previous: null,
+                count: 1,
+              },
+            ],
+            pageParams: [1],
+          };
+        }
+        
+        // Add new message to the first page
+        const updatedPages = [...oldData.pages];
+        if (updatedPages[0]) {
+          updatedPages[0] = {
+            ...updatedPages[0],
+            results: [optimisticMessage, ...(updatedPages[0].results || [])],
+            count: (updatedPages[0].count || 0) + 1,
+          };
+        }
+
+        return {
+          ...oldData,
+          pages: updatedPages,
+        };
       });
 
-      // Return a context object with the snapshotted value
-      return { previousMessages, optimisticMessage, teamId };
-    },
-    onError: (err, variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
-      if (context?.previousMessages) {
-        queryClient.setQueryData(chatKeys.teamMessages(context.teamId), context.previousMessages);
+      return { previousData, optimisticMessage, teamId };
+    },    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          chatKeys.teamMessages(context.teamId),
+          context.previousData
+        );
       }
-      console.error('Failed to send message:', err);
     },
     onSuccess: (data, variables, context) => {
-      // Replace the optimistic message with the real one
-      queryClient.setQueryData(chatKeys.teamMessages(variables.teamId), (old) => {
-        if (!old) return [data];
-        
-        // Find and replace the optimistic message
-        return old.map(msg => 
-          msg.id === context?.optimisticMessage?.id ? data : msg
-        );
-      });
-      console.log('Message sent successfully via API');
+      // Replace optimistic message with real one
+      queryClient.setQueryData(
+        chatKeys.teamMessages(variables.teamId),
+        (oldData) => {
+          if (!oldData || !oldData.pages) return oldData;
+
+          const updatedPages = oldData.pages.map((page) => ({
+            ...page,
+            results:
+              page.results?.map((msg) =>
+                msg.id === context?.optimisticMessage?.id ? data : msg
+              ) || [],
+          }));return {
+            ...oldData,
+            pages: updatedPages,
+          };
+        }
+      );
     },
   });
 };
@@ -108,30 +154,25 @@ export const useMarkMessagesAsRead = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ['markMessagesAsRead'], // Add mutation key for deduplication
+    mutationKey: ["markMessagesAsRead"],
     mutationFn: async (teamId) => {
       const response = await markMessagesAsRead(teamId);
-      return response.data;
-    },    onSuccess: (data, teamId) => {
-      console.log(`✅ Messages marked as read for team ${teamId}`);
-      
-      // Update cache with new unread count and force notification
+      return response.data;    },
+    onSuccess: (data, teamId) => {
+      // Update cache with new unread count
       const updateTeamChats = (oldChats) => {
         if (!oldChats) return oldChats;
-        return oldChats.map(chat => {
+        return oldChats.map((chat) => {
           if (chat.team_id === teamId) {
-            const updatedChat = {
+            return {
               ...chat,
-              unread_count: 0, // Reset unread count
+              unread_count: 0,
             };
-            console.log(`📊 Reset unread count for team ${teamId}:`, updatedChat);
-            return updatedChat;
           }
           return chat;
         });
       };
 
-      // Update the data and ensure all observers are notified
       queryClient.setQueryData(chatKeys.teamChats(), updateTeamChats);
       queryClient.setQueriesData(
         { queryKey: chatKeys.teamChats() },
@@ -139,10 +180,45 @@ export const useMarkMessagesAsRead = () => {
       );
     },
     onError: (error, teamId) => {
-      console.error('Failed to mark messages as read:', error);
+      // Handle error silently or with user-friendly notification
+    },    retry: false,
+    gcTime: 0,
+  });
+};
+
+// Hook to get messages for a specific team with infinite scroll
+export const useInfiniteTeamMessages = (teamId, enabled = true) => {
+  return useInfiniteQuery({
+    queryKey: chatKeys.teamMessages(teamId),    queryFn: async ({ pageParam = 1 }) => {
+      const response = await getTeamMessages(teamId, { page: pageParam });
+      return response.data;
     },
-    // Prevent duplicate mutations
-    retry: false,
-    gcTime: 0, // Don't cache mutation results
+    enabled: enabled && !!teamId,
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.next) {
+        try {
+          // Handle both absolute and relative URLs
+          let nextUrl;
+          if (lastPage.next.startsWith("http")) {
+            nextUrl = new URL(lastPage.next);
+          } else {
+            nextUrl = new URL(lastPage.next, window.location.origin);
+          }
+          const nextPage = nextUrl.searchParams.get("page");
+          return parseInt(nextPage, 10);
+        } catch (error) {
+          return undefined;
+        }
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 15,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
   });
 };

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { MessageCircle, ChevronDown } from "lucide-react";
+import { MessageCircleMore, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
@@ -19,11 +19,14 @@ import { cn } from "@/lib/utils";
 
 const NavbarMessages = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
-  const { permissions, isPlayer } = useRolePermissions();
-  const { data: teamChats = [], isLoading: loading } = useTeamChats();  // Calculate total unread messages
+  const { isPlayer } = useRolePermissions();
+  const { data: teamChats = [], isLoading: loading } = useTeamChats();
+  // Calculate total unread messages
   const unreadCount = useMemo(() => {
-    const total = teamChats.reduce((sum, chat) => sum + (chat.unread_count || 0), 0);
+    const total = teamChats.reduce(
+      (sum, chat) => sum + (chat.unread_count || 0),
+      0
+    );
     return total;
   }, [teamChats]);
 
@@ -49,7 +52,7 @@ const NavbarMessages = () => {
         className="relative h-10 w-10 rounded-xl bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30 transition-all duration-300"
         disabled={loading || teamChats.length === 0}
       >
-        <MessageCircle className="h-5 w-5" />
+        <MessageCircleMore className="h-5 w-5" />
         {unreadCount > 0 && (
           <Badge
             variant="destructive"
@@ -71,7 +74,7 @@ const NavbarMessages = () => {
           size="icon"
           className="relative h-10 w-10 rounded-xl bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30 transition-all duration-300"
         >
-          <MessageCircle className="h-5 w-5" />
+          <MessageCircleMore className="h-5 w-5" />
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
@@ -98,7 +101,7 @@ const NavbarMessages = () => {
           </div>
         ) : teamChats.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <MessageCircleMore className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No team chats available</p>
           </div>
         ) : (
@@ -171,10 +174,11 @@ const NavbarMessages = () => {
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => navigate("/chat")}
+          onClick={() => navigate("/chat/team")}
           className="p-3 cursor-pointer hover:bg-primary/10 transition-all duration-300 text-center font-medium text-primary"
         >
-          View All Chats        </DropdownMenuItem>
+          View All Chats
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

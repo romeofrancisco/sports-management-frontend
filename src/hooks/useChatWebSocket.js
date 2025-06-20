@@ -58,20 +58,46 @@ export const useChatWebSocket = (teamId, onMessage, currentUserId) => {
           profile: data.profile || {},
           timestamp: data.timestamp,
           is_read: false,
-        };
-
-        // Update React Query cache (only add to cache, don't invalidate)
+        };        // Update React Query cache for infinite query structure
         queryClient.setQueryData(
           chatKeys.teamMessages(teamId),
-          (oldMessages) => {
-            if (!oldMessages) return [newMessage];
-            // Check if message already exists to prevent duplicates
-            const exists = oldMessages.some((msg) => msg.id === newMessage.id);
-            if (exists) {
-              return oldMessages;
+          (oldData) => {
+            if (!oldData || !oldData.pages) {
+              // If no data exists, create initial structure
+              return {
+                pages: [{
+                  results: [newMessage],
+                  next: null,
+                  previous: null,
+                  count: 1
+                }],
+                pageParams: [1]
+              };
             }
-            return [...oldMessages, newMessage];
-          }        );
+
+            // Check if message already exists to prevent duplicates
+            const existsInAnyPage = oldData.pages.some(page => 
+              page.results?.some(msg => msg.id === newMessage.id)
+            );
+            
+            if (existsInAnyPage) {
+              return oldData;
+            }            // Add new message to the FIRST page (newest messages) since backend sends newest first
+            const updatedPages = [...oldData.pages];
+            if (updatedPages[0]) {
+              updatedPages[0] = {
+                ...updatedPages[0],
+                results: [newMessage, ...(updatedPages[0].results || [])],
+                count: (updatedPages[0].count || 0) + 1
+              };
+            }
+
+            return {
+              ...oldData,
+              pages: updatedPages
+            };
+          }
+        );
 
         // Note: Team chats cache updates are handled by global WebSocket to avoid conflicts
         // This WebSocket only handles team-specific message cache updates
