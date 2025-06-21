@@ -78,17 +78,11 @@ export const useRecordStat = (gameId) => {
   });
 };
 
-export const usePlayerStatsSummary = (gameId, team, options = {}) => {
-  const { forCalculation = false } = options;
-  
+export const usePlayerStatsSummary = (gameId, team) => {  
   return useQuery({
-    queryKey: ["player-summary-stats", team, gameId, { forCalculation }],
-    queryFn: () => fetchPlayerStatsSummary(gameId, team, forCalculation),
+    queryKey: ["player-summary-stats", team, gameId],
+    queryFn: () => fetchPlayerStatsSummary(gameId, team),
     enabled: Boolean(gameId) && Boolean(team),
-    // Keep cached data fresh for 2 minutes when not visible to prevent excessive refetching
-    staleTime: forCalculation ? 5 * 60 * 1000 : 2 * 60 * 1000, // 5 mins for calculation, 2 mins for display
-    // Use less frequent retry for calculation data since it's for background processing
-    retry: forCalculation ? 1 : 3,
   });
 };
 

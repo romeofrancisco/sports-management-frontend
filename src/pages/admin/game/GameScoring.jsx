@@ -9,6 +9,7 @@ import StatButtons from "./components/scoring/StatButtons/StatButtons";
 import { useRecordableStats, useSportDetails } from "@/hooks/useSports";
 import { useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
+import { useGameScoreWebSocket } from "@/hooks/useGameScoreWebSocket";
 import { setGameDetails } from "@/store/slices/gameSlice";
 import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
@@ -29,10 +30,27 @@ const GameScoring = () => {
   const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(gameId);
   const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(gameId);
   const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
-
   // Unified loading/error states
   const isLoading = isGameLoading ||isStatTypesLoading || isCurrentPlayersLoading || isSportLoading
   const isError = isGameError || isStatTypesError || isCurrentPlayersError || isSportError;
+
+  // WebSocket connection for real-time score updates
+  const { isConnected } = useGameScoreWebSocket(
+    gameId,
+    (scoreData) => {
+      // Handle real-time score updates
+      console.log('Real-time score update:', scoreData);
+    },
+    (statusData) => {
+      // Handle real-time status updates
+      console.log('Real-time status update:', statusData);
+      
+      // Redirect if game is completed
+      if (statusData.status === GAME_STATUS_VALUES.COMPLETED) {
+        navigate(`/games/${gameId}/game-result`, { replace: true });
+      }
+    }
+  );
 
   // Check permissions when game data is loaded
   useEffect(() => {
@@ -93,7 +111,6 @@ const GameScoring = () => {
   if (isPortrait) return <RequireLandscape />;
 
   const { home_players, away_players } = currentPlayers;
-
   return (
     <div className="relative h-full content-center">
       <div className="flex justify-between items-center px-2 py-1 bg-background/80 backdrop-blur-sm z-20 absolute top-0 left-0 w-full">        <div className="flex gap-2">
@@ -114,7 +131,18 @@ const GameScoring = () => {
             <Home className="h-5 w-5" />
           </Button>
         </div>
-        <GameSettings />
+        <div className="flex items-center gap-2">
+          {/* WebSocket connection status */}
+          {game?.status === GAME_STATUS_VALUES.IN_PROGRESS && (
+            <div className="flex items-center gap-1 text-xs">
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+              <span className="text-muted-foreground">
+                {isConnected ? 'LIVE' : 'OFFLINE'}
+              </span>
+            </div>
+          )}
+          <GameSettings />
+        </div>
       </div>
       <div className="pt-12"> {/* Add padding-top to account for the fixed navigation bar */}
         <ScoreBoard />

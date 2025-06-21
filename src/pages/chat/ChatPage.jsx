@@ -19,9 +19,9 @@ const ChatPage = () => {
   // For players, show simplified single chat view
   if (isPlayer()) {
     return (
-      <div className="bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
         {/* Chat Window */}
-        <div className="flex-1 bg-background/95 backdrop-blur-sm">
+        <div className="flex-1">
           <PlayerChatWindow selectedChat={selectedChat} currentUser={user} />
         </div>
       </div>
@@ -29,9 +29,9 @@ const ChatPage = () => {
   }
   // For admin/coach, show full chat interface with team list
   return (
-    <div className="bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <>
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
         <div className="grid grid-cols-[auto_1fr] lg:grid-cols-4">
           {/* Team List */}
           <div className="lg:col-span-1">
@@ -46,13 +46,13 @@ const ChatPage = () => {
 
           {/* Chat Window */}
           <div className="lg:col-span-3">
-            <div className="h-[calc(100vh-4rem)] rounded-xl bg-card/50 backdrop-blur-sm overflow-hidden">
+            <div className="h-[calc(100vh-4rem)] overflow-hidden">
               <ChatWindow selectedChat={selectedChat} currentUser={user} />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

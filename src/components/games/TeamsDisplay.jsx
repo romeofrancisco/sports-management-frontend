@@ -2,6 +2,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { TrophyIcon } from "lucide-react";
 import { TeamLogo } from "./TeamLogo.jsx";
+import { AnimatedScore } from "./AnimatedScore.jsx";
 
 export const TeamsDisplay = ({
   homeTeam,
@@ -48,25 +49,23 @@ export const TeamsDisplay = ({
         {isCompleted ? (
           <div className="text-center">
             <div className="flex items-center gap-2 text-2xl font-bold">
-              <span
+              <AnimatedScore
+                value={homeScore}
                 className={
                   winnerTeamId === homeTeam.id
                     ? "text-primary"
                     : "text-muted-foreground"
                 }
-              >
-                {homeScore}
-              </span>
+              />
               <span className="text-muted-foreground text-lg">-</span>
-              <span
+              <AnimatedScore
+                value={awayScore}
                 className={
                   winnerTeamId === awayTeam.id
                     ? "text-primary"
                     : "text-muted-foreground"
                 }
-              >
-                {awayScore}
-              </span>
+              />
             </div>
             <Badge
               variant="outline"
@@ -78,9 +77,15 @@ export const TeamsDisplay = ({
         ) : isLive ? (
           <div className="text-center">
             <div className="flex items-center gap-2 text-2xl font-bold">
-              <span className="text-primary">{game.home_team_score || 0}</span>
+              <AnimatedScore
+                value={game.home_team_score || 0}
+                className="text-primary"
+              />
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-primary">{game.away_team_score || 0}</span>
+              <AnimatedScore
+                value={game.away_team_score || 0}
+                className="text-primary"
+              />
             </div>
             <Badge variant="destructive" className="text-xs animate-pulse mt-1">
               Live

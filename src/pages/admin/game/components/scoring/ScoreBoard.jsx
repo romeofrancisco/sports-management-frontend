@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import formatPeriod from "@/utils/formatPeriod"
+import formatPeriod from "@/utils/formatPeriod";
 import { getPeriodLabel } from "@/constants/sport";
+import AnimatedScore from "@/components/games/AnimatedScore";
 
 const ScoreBoard = () => {
   // Destructure state values from Redux store
@@ -32,24 +33,23 @@ const ScoreBoard = () => {
       <div className="flex justify-center items-center gap-3 md:gap-8 lg:gap-20">
         {/* Home Team Score */}
         <div>
-          <div className="md:text-2xl lg:text-4xl border-2 text-center content-center w-14 h-8 md:h-10 md:w-20 lg:h-16  lg:w-30">
-            {home_team_score}
-          </div>
-        </div>
+          <AnimatedScore value={home_team_score} />
 
+        </div>
         {/* Period Info */}
         <div>
           <div className="flex flex-col h-full justify-center text-center">
-            <p className="text-sm md:text-lg lg:text-xl">{getPeriodLabel(scoring_type)}</p>
-            <span className="md:text-xl">{formatPeriod(current_period, max_period)}</span>
+            <p className="text-sm md:text-lg lg:text-xl">
+              {getPeriodLabel(scoring_type)}
+            </p>
+            <span className="md:text-xl">
+              {formatPeriod(current_period, max_period)}
+            </span>
           </div>
         </div>
-
         {/* Away Team Score */}
         <div>
-          <div className="md:text-2xl lg:text-4xl border-2 text-center content-center w-14 h-8 md:h-10 md:w-20 lg:h-16 lg:w-30">
-            {away_team_score}
-          </div>
+          <AnimatedScore value={away_team_score} />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 export function filterAndSortTeamChats(teamChats, search) {
-  const lower = search.trim().toLowerCase();
+  const lower = search?.trim().toLowerCase();
   const filtered = lower
     ? teamChats.filter(
         (chat) =>
