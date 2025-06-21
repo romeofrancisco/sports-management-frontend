@@ -10,7 +10,7 @@ const RollingDigit = ({ digit }) => {
   }, [digit]);
 
   return (
-    <div className="h-6 w-4 overflow-hidden relative">
+    <div className="h-6 w-3 overflow-hidden relative">
       <div
         className={`transition-transform duration-300 ease-in-out flex flex-col`}
         style={{ transform: `translateY(-${digit * 1.5}rem)` }}
@@ -42,7 +42,7 @@ export const AnimatedScore = ({ value = 0, className = '' }) => {
     <div className={`flex ${className}`}>
       {digits.map((digit, idx) =>
         isNaN(digit) ? (
-          <span key={idx} className="font-bold text-secondary">
+          <span key={idx} className="font-bold">
             {digit}
           </span>
         ) : (

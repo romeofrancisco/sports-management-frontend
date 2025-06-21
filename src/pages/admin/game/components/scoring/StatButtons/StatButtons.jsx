@@ -11,12 +11,13 @@ import GridCells from "./GridCells";
 import { reset } from "@/store/slices/playerStatSlice";
 import { useDispatch } from "react-redux";
 
-// Mobile detection
+// Mobile detection (treat iPad Pro landscape as mobile for grid)
 const isMobile = () => {
   if (typeof window === "undefined") return false;
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
+  const ua = navigator.userAgent;
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  const isSmallScreen = window.innerWidth <= 1366; // iPad Pro landscape or smaller
+  return isMobileUA || isSmallScreen;
 };
 
 const mobile = isMobile();
@@ -69,7 +70,7 @@ const StatButtons = ({ statTypes }) => {
   };
 
   const [buttons, setButtons] = useState([]);
-  const columns = 4;
+  const columns = mobile ? 4 : 5; // Adjust columns based on device type
   const minimumRows = 4;
   const rows = Math.max(minimumRows, Math.ceil((statTypes?.length || 0) / columns));
 
@@ -143,9 +144,9 @@ const StatButtons = ({ statTypes }) => {
 
   return (
     <DndProvider backend={MultiBackend} options={backendConfig}>
-      <div className="flex justify-center">
+      <div className="flex justify-center border-2 border-primary/20 p-2">
         <div
-          className="grid grid-cols-4 gap-2 bg-background rounded-lg"
+          className={`grid ${mobile ? "grid-cols-4" : "grid-cols-5"} gap-2 bg-background rounded-lg`}
           style={{
             height: `calc(var(--vh, 1vh) * ${mobile ? 75 : 80})`,
             gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
