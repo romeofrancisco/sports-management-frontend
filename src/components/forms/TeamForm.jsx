@@ -13,8 +13,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   const isEdit = Boolean(team);
   const [logoPreview, setLogoPreview] = useState(team?.logo || null);
   const { mutate: createTeam, isPending: isCreating } = useCreateTeam();
-  const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();
-  const {
+  const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();  const {
     control,
     handleSubmit,
     formState: { errors },
@@ -27,7 +26,8 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       color: team?.color || "#000000",
       sport: team?.sport || "",
       division: team?.division || "",
-      coach: team?.coach || "",
+      head_coach: team?.head_coach || "",
+      assistant_coach: team?.assistant_coach || "",
       logo: null,
     },
   });
@@ -144,15 +144,27 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         placeholder="Select Team Division"
         options={DIVISIONS}
         errors={errors}
+      />      {/* Head Coach */}
+      <ControlledCombobox
+        name="head_coach"
+        control={control}
+        label="Head Coach"
+        options={coaches}
+        placeholder="Select Head Coach"
+        help_text="Primary coach responsible for the team"
+        errors={errors}
+        valueKey="id"
+        labelKey="full_name"
       />
 
-      {/* Coach */}
+      {/* Assistant Coach */}
       <ControlledCombobox
-        name="coach"
+        name="assistant_coach"
         control={control}
-        label="Coach"
+        label="Assistant Coach"
         options={coaches}
-        placeholder="Select Team Coach"
+        placeholder="Select Assistant Coach"
+        help_text="Secondary coach to support the team (optional)"
         errors={errors}
         valueKey="id"
         labelKey="full_name"

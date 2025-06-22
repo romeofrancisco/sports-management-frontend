@@ -8,9 +8,10 @@ import { Users, Trophy, Target, User } from "lucide-react";
 
 const TeamCard = ({ team, onView, onEdit, onDelete }) => {  // Get team color for styling
   const teamColor = team.color;
-  
-  // Check if team has a coach
-  const hasCoach = team.coach_name || team.coach?.full_name;
+    // Check if team has coaches
+  const hasHeadCoach = team.head_coach_name || team.head_coach?.full_name;
+  const hasAssistantCoach = team.assistant_coach_name || team.assistant_coach?.full_name;
+  const hasAnyCoach = hasHeadCoach || hasAssistantCoach;
   
   return (
     <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30">
@@ -31,10 +32,9 @@ const TeamCard = ({ team, onView, onEdit, onDelete }) => {  // Get team color fo
                 <AvatarImage src={team.logo} alt={team.name} />
                 <AvatarFallback className="font-bold text-white bg-primary">
                   {team.name[0]}
-                </AvatarFallback>              </Avatar>
-              {/* Team status indicator */}
+                </AvatarFallback>              </Avatar>              {/* Team status indicator */}
               <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
-                hasCoach 
+                hasAnyCoach 
                   ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
                   : 'bg-gradient-to-r from-amber-400 to-amber-500'
               }`}></div>
@@ -66,24 +66,30 @@ const TeamCard = ({ team, onView, onEdit, onDelete }) => {  // Get team color fo
                   </div>
                 )}
               </div>              {/* Coach information - improved layout */}
-              <div className="flex items-center justify-between mt-1 text-xs">
-                <div className={`flex items-center gap-1 flex-1 min-w-0 ${
-                  hasCoach 
-                    ? 'text-muted-foreground' 
-                    : 'text-amber-600 dark:text-amber-400'
-                }`}>
-                  <User className="h-3 w-3 flex-shrink-0" />
-                  <span className="font-medium truncate">
-                    {hasCoach 
-                      ? `Coach: ${team.coach_name || team.coach?.full_name}`
-                      : "No coach"
-                    }
-                  </span>
-                </div>
-                {!hasCoach && (
-                  <Badge variant="outline" className="ml-2 text-xs px-1.5 py-0.5 bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800 flex-shrink-0">
-                    Needs Coach
-                  </Badge>
+              <div className="flex flex-col gap-1 mt-1 text-xs">
+                {hasHeadCoach && (
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <User className="h-3 w-3 flex-shrink-0" />
+                    <span className="font-medium truncate">
+                      Head Coach: {team.head_coach_name || team.head_coach?.full_name}
+                    </span>
+                  </div>
+                )}
+                {hasAssistantCoach && (
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <User className="h-3 w-3 flex-shrink-0" />
+                    <span className="font-medium truncate">
+                      Assistant Coach: {team.assistant_coach_name || team.assistant_coach?.full_name}
+                    </span>
+                  </div>
+                )}
+                {!hasAnyCoach && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                      <User className="h-3 w-3 flex-shrink-0" />
+                      <span className="font-medium">No coaches assigned</span>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

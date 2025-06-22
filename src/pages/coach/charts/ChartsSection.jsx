@@ -26,12 +26,14 @@ const ChartsSection = ({ overview, playerProgress }) => {
 
   // Generate chart options
   const teamOverviewChartOptions = createTeamOverviewChartOptions(overview);
-  const playerDevelopmentChartOptions = createPlayerDevelopmentChartOptions(playerProgress);
+  const playerDevelopmentChartOptions =
+    createPlayerDevelopmentChartOptions(playerProgress);
   return (
     <div className="space-y-6">
       {/* Charts Section */}
-      <div className="grid gap-6 md:grid-cols-2">        {/* Team Overview Chart */}
-        <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Team Overview Chart */}
+        <div className="bg-card col-span-2 rounded-xl shadow-sm border border-border">
           <ChartCard
             title="Team Performance & Activity"
             hasData={overview?.team_attendance?.length > 0}
@@ -40,11 +42,15 @@ const ChartsSection = ({ overview, playerProgress }) => {
           >
             <Bar data={teamOverviewData} options={teamOverviewChartOptions} />
           </ChartCard>
-        </div>        {/* Games & Activities Overview */}
+        </div>
+        {/* Games & Activities Overview */}
         <div className="bg-card rounded-xl shadow-sm border border-border">
           <ChartCard
             title="Coaching Activity Overview"
-            hasData={overview?.upcoming_games?.length > 0 || overview?.recent_training_sessions?.length > 0}
+            hasData={
+              overview?.upcoming_games?.length > 0 ||
+              overview?.recent_training_sessions?.length > 0
+            }
             emptyMessage="No coaching activities data available"
             height={300}
           >
@@ -54,7 +60,8 @@ const ChartsSection = ({ overview, playerProgress }) => {
       </div>
 
       {/* Additional Charts Section */}
-      <div className="grid gap-6 md:grid-cols-2">        {/* Training Progress Trend */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Training Progress Trend */}
         <div className="bg-card rounded-xl shadow-sm border border-border">
           <ChartCard
             title="Training Session Engagement"
@@ -64,7 +71,8 @@ const ChartsSection = ({ overview, playerProgress }) => {
           >
             <Line data={trainingProgressData} options={lineChartOptions} />
           </ChartCard>
-        </div>        {/* Player Development Overview */}
+        </div>
+        {/* Player Development Overview */}
         <div className="bg-card rounded-xl shadow-sm border border-border">
           <ChartCard
             title="Player Development Analytics"
@@ -72,7 +80,10 @@ const ChartsSection = ({ overview, playerProgress }) => {
             emptyMessage="No player development data available"
             height={300}
           >
-            <Bar data={playerDevelopmentData} options={playerDevelopmentChartOptions} />
+            <Bar
+              data={playerDevelopmentData}
+              options={playerDevelopmentChartOptions}
+            />
           </ChartCard>
         </div>
       </div>

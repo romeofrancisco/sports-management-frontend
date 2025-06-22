@@ -60,7 +60,7 @@ const AssignedTrainingPreview = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate("/player/training/assigned")}
+              onClick={() => navigate("/trainings/assigned")}
               className="flex items-center gap-1"
             >
               View All{assignedData.count ? ` (${assignedData.count})` : ""}
@@ -92,7 +92,7 @@ const AssignedTrainingPreview = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate("/player/training/assigned")}
+                  onClick={() => navigate("/trainings/assigned")}
                   className="text-muted-foreground hover:text-foreground"
                 >
                   View all assigned sessions

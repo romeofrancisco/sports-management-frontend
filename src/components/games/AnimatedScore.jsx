@@ -10,7 +10,7 @@ const RollingDigit = ({ digit }) => {
   }, [digit]);
 
   return (
-    <div className="h-6 w-3 overflow-hidden relative">
+    <div className="h-6 w-3.5 overflow-hidden relative">
       <div
         className={`transition-transform duration-300 ease-in-out flex flex-col`}
         style={{ transform: `translateY(-${digit * 1.5}rem)` }}

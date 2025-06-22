@@ -71,11 +71,11 @@ export const useRolePermissions = () => {
     // User cannot modify the unit - provide specific reason
     if (unit.is_default && !isAdmin()) {
       const actionText = action === "edit" ? "edit" : "delete";
-      return `Cannot ${actionText} system units (Admin access required)`;
-    }
+      return `Cannot ${actionText} system units (Admin access required)`;    }
 
     const actionText = action === "edit" ? "edit" : "delete";
-    return `You can only ${actionText} units you created`;  };
+    return `You can only ${actionText} units you created`;
+  };
   
   // Memoize permissions to prevent infinite re-renders
   const permissions = useMemo(() => ({
@@ -94,25 +94,24 @@ export const useRolePermissions = () => {
       view: true, // Everyone can view teams
       edit: (team) => {
         if (!team) return false;
-        return isAdmin() || (isCoach() && team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (team?.head_coach_id === user?.id || team?.assistant_coach_id === user?.id));
       },
       delete: (team) => isAdmin(), // Only admins can delete teams
       manageRoster: (team) => {
         if (!team) return false;
-        return isAdmin() || (isCoach() && team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (team?.head_coach_id === user?.id || team?.assistant_coach_id === user?.id));
       },
-    },    // Games management
+    },// Games management
     games: {
       create: isAdmin() || isCoach(),
       view: true, // Everyone can view games
       edit: (game) => {
         if (!game) return false;
         // Admins can edit any game
-        if (isAdmin()) return true;
-          // Coaches can only edit practice games (normal type) for their teams
+        if (isAdmin()) return true;        // Coaches can only edit practice games (normal type) for their teams
         if (isCoach()) {
-          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
-                             game?.away_team?.coach_id === user?.id;
+          const isCoachTeam = (game?.home_team?.head_coach_id === user?.id || game?.home_team?.assistant_coach_id === user?.id) || 
+                             (game?.away_team?.head_coach_id === user?.id || game?.away_team?.assistant_coach_id === user?.id);
           const isPracticeGame = game?.type === "practice";
           return isCoachTeam && isPracticeGame;
         }
@@ -123,11 +122,10 @@ export const useRolePermissions = () => {
       start: (game) => {
         if (!game) return false;
         // Admins can start any game
-        if (isAdmin()) return true;
-          // Coaches can only start practice games for their teams
+        if (isAdmin()) return true;        // Coaches can only start practice games for their teams
         if (isCoach()) {
-          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
-                             game?.away_team?.coach_id === user?.id;
+          const isCoachTeam = (game?.home_team?.head_coach_id === user?.id || game?.home_team?.assistant_coach_id === user?.id) || 
+                             (game?.away_team?.head_coach_id === user?.id || game?.away_team?.assistant_coach_id === user?.id);
           const isPracticeGame = game?.type === "practice";
           return isCoachTeam && isPracticeGame;
         }
@@ -137,11 +135,10 @@ export const useRolePermissions = () => {
       recordScores: (game) => {
         if (!game) return false;
         // Admins can record scores for any game
-        if (isAdmin()) return true;
-          // Coaches can only record scores for practice games involving their teams
+        if (isAdmin()) return true;        // Coaches can only record scores for practice games involving their teams
         if (isCoach()) {
-          const isCoachTeam = game?.home_team?.coach_id === user?.id || 
-                             game?.away_team?.coach_id === user?.id;
+          const isCoachTeam = (game?.home_team?.head_coach_id === user?.id || game?.home_team?.assistant_coach_id === user?.id) || 
+                             (game?.away_team?.head_coach_id === user?.id || game?.away_team?.assistant_coach_id === user?.id);
           const isPracticeGame = game?.type === "practice";
           return isCoachTeam && isPracticeGame;
         }
@@ -150,8 +147,7 @@ export const useRolePermissions = () => {
       },
       recordStats: (game) => {
         if (!game) return false;
-        // Use same logic as recordScores
-        return permissions.games.recordScores(game);
+        // Use same logic as recordScores        return permissions.games.recordScores(game);
       },
       manage: (game) => {
         if (!game) return false;
@@ -168,19 +164,19 @@ export const useRolePermissions = () => {
       view: (training) => {
         if (!training) return true; // Can view list
         // Can view training if it's for their team or if admin
-        return isAdmin() || (isCoach() && training?.team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (training?.team?.head_coach_id === user?.id || training?.team?.assistant_coach_id === user?.id));
       },
       edit: (training) => {
         if (!training) return false;
-        return isAdmin() || (isCoach() && training?.team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (training?.team?.head_coach_id === user?.id || training?.team?.assistant_coach_id === user?.id));
       },
       delete: (training) => {
         if (!training) return false;
-        return isAdmin() || (isCoach() && training?.team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (training?.team?.head_coach_id === user?.id || training?.team?.assistant_coach_id === user?.id));
       },
       recordMetrics: (training) => {
         if (!training) return false;
-        return isAdmin() || (isCoach() && training?.team?.coach_id === user?.id);
+        return isAdmin() || (isCoach() && (training?.team?.head_coach_id === user?.id || training?.team?.assistant_coach_id === user?.id));
       },
     },
 
@@ -202,10 +198,11 @@ export const useRolePermissions = () => {
       // Get teams the user can chat in
       getAccessibleTeams: (teams = []) => {
         if (isAdmin()) return teams; // Admin sees all teams
-        
-        if (isCoach()) {
-          // Coach sees teams they coach
-          return teams.filter(team => team.coach_id === user?.id);
+          if (isCoach()) {
+          // Coach sees teams they coach (either as head coach or assistant coach)
+          return teams.filter(team => 
+            team.head_coach_id === user?.id || team.assistant_coach_id === user?.id
+          );
         }
         
         if (isPlayer()) {
@@ -247,11 +244,11 @@ export const useRolePermissions = () => {
         if (!targetUser) return false;
         // Users can edit themselves, admins can edit anyone
         return isAdmin() || targetUser?.id === user?.id;
-      },
-      delete: (targetUser) => {
+      },      delete: (targetUser) => {
         if (!targetUser) return false;
         // Only admins can delete users, but not themselves
-        return isAdmin() && targetUser?.id !== user?.id;      },
+        return isAdmin() && targetUser?.id !== user?.id;
+      },
       changeRole: (targetUser) => {
         if (!targetUser) return false;
         // Only admins can change roles, but not their own

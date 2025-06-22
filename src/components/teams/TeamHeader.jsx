@@ -63,16 +63,22 @@ const TeamHeader = ({ data, team, teamColor }) => {
             </div>
             <p className="text-foreground mt-1 md:mt-2 text-sm sm:text-base md:text-lg font-semibold">
               {data.sport_name} Team
-            </p>
-            <div className="flex items-center gap-3 mt-1">
+            </p>            <div className="flex items-center gap-3 mt-1">
               <Badge variant="secondary" className="text-xs">
                 {getDivisionLabel(data.division)}
               </Badge>
-              {data.coach_name && (
-                <span className="text-muted-foreground text-xs sm:text-sm font-medium">
-                  Coach: {data.coach_name}
-                </span>
-              )}
+              <div className="flex flex-col gap-1">
+                {data.head_coach_name && (
+                  <span className="text-muted-foreground text-xs sm:text-sm font-medium">
+                    Head Coach: {data.head_coach_name}
+                  </span>
+                )}
+                {data.assistant_coach_name && (
+                  <span className="text-muted-foreground text-xs sm:text-sm font-medium">
+                    Assistant Coach: {data.assistant_coach_name}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -85,9 +91,8 @@ const TeamHeader = ({ data, team, teamColor }) => {
           >
             <Edit className="mr-2 h-4 w-4" />
             Edit Team
-          </Button>
-            {/* Team Status Indicator - dynamically determined from backend data */}
-          {data.total_players > 0 && data.coach_name && (
+          </Button>            {/* Team Status Indicator - dynamically determined from backend data */}
+          {data.total_players > 0 && (data.head_coach_name || data.assistant_coach_name) && (
             <div className="flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
               <div className="h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 animate-pulse shadow-sm"></div>
               <span className="text-xs md:text-sm font-semibold text-foreground whitespace-nowrap">
@@ -95,7 +100,7 @@ const TeamHeader = ({ data, team, teamColor }) => {
               </span>
             </div>
           )}
-          {(!data.coach_name || !data.total_players) && (
+          {(!data.head_coach_name && !data.assistant_coach_name) || !data.total_players && (
             <div className="flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-amber-300/30 shadow-lg">
               <div className="h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 animate-pulse shadow-sm"></div>
               <span className="text-xs md:text-sm font-semibold text-foreground whitespace-nowrap">

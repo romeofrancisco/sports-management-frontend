@@ -134,9 +134,7 @@ const CoachForm = ({ onClose, coach = null }) => {
         type="email"
         control={control}
         errors={errors}
-      />
-
-      {/* Sports */}
+      />      {/* Sports */}
       <ControlledMultiSelect
         name="sport_ids"
         control={control}
@@ -148,6 +146,50 @@ const CoachForm = ({ onClose, coach = null }) => {
         labelKey="name"
         errors={errors}
       />
+
+      {/* Display current team assignments if editing */}
+      {isEdit && coach && (
+        <div className="space-y-2">
+          {coach.head_coached_teams && coach.head_coached_teams.length > 0 && (
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Head Coach of:
+              </label>
+              <div className="mt-1 space-y-1">
+                {coach.head_coached_teams.map((team) => (
+                  <div key={team.id} className="flex items-center text-sm text-gray-600">
+                    <span className="font-medium">{team.name}</span>
+                    <span className="ml-2 text-gray-500">({team.sport_name})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {coach.assistant_coached_teams && coach.assistant_coached_teams.length > 0 && (
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Assistant Coach of:
+              </label>
+              <div className="mt-1 space-y-1">
+                {coach.assistant_coached_teams.map((team) => (
+                  <div key={team.id} className="flex items-center text-sm text-gray-600">
+                    <span className="font-medium">{team.name}</span>
+                    <span className="ml-2 text-gray-500">({team.sport_name})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {(!coach.head_coached_teams || coach.head_coached_teams.length === 0) && 
+           (!coach.assistant_coached_teams || coach.assistant_coached_teams.length === 0) && (
+            <div className="text-sm text-gray-500">
+              This coach is not currently assigned to any teams.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Password */}
       {!isEdit && (

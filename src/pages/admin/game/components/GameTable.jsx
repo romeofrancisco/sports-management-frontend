@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Table2, LayoutGrid, Calendar, Filter } from "lucide-react";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
-
 import GameFilterBar from "./GameFilterBar";
 import getGameTableColumns from "./GameTableColumns";
 import { GameCard, StatusSection } from "@/components/games";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const GameTable = () => {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const GameTable = () => {
   const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const { isAdmin } = useRolePermissions();
   const [filter, setFilter] = useState({
     search: "",
     team_name: "",
@@ -41,12 +42,21 @@ const GameTable = () => {
   });
 
   // Create filter for API based on mode
-  const apiFilter = filterMode === "date" 
-    ? { ...filter, start_date: format(selectedDate, "yyyy-MM-dd"), end_date: format(selectedDate, "yyyy-MM-dd") }
-    : filter;
+  const apiFilter =
+    filterMode === "date"
+      ? {
+          ...filter,
+          start_date: format(selectedDate, "yyyy-MM-dd"),
+          end_date: format(selectedDate, "yyyy-MM-dd"),
+        }
+      : filter;
 
-  const { isLoading, isError, data } = useGames(apiFilter, currentPage, pageSize);
-  
+  const { isLoading, isError, data } = useGames(
+    apiFilter,
+    currentPage,
+    pageSize
+  );
+
   // Also fetch all games for date navigation
   const { data: allGamesData } = useGames({}, 1, 1000); // Get all games for date navigation
   const allGames = allGamesData?.results || [];
@@ -137,40 +147,47 @@ const GameTable = () => {
 
   // Separate games by status
   const separateGamesByStatus = (games) => {
-    const liveGames = games.filter(game => game.status === "in_progress");
-    const scheduledGames = games.filter(game => game.status === "scheduled");
-    const completedGames = games.filter(game => game.status === "completed");
-    const otherGames = games.filter(game => !["in_progress", "scheduled", "completed"].includes(game.status));
-    
+    const liveGames = games.filter((game) => game.status === "in_progress");
+    const scheduledGames = games.filter((game) => game.status === "scheduled");
+    const completedGames = games.filter((game) => game.status === "completed");
+    const otherGames = games.filter(
+      (game) => !["in_progress", "scheduled", "completed"].includes(game.status)
+    );
+
     return { liveGames, scheduledGames, completedGames, otherGames };
   };
-  const { liveGames, scheduledGames, completedGames, otherGames } = separateGamesByStatus(games);return (
+  const { liveGames, scheduledGames, completedGames, otherGames } =
+    separateGamesByStatus(games);
+  return (
     <div className="space-y-6">
       {/* Filter Mode Toggle and Filter/Date Bar */}
       <div className="space-y-4">
         {/* Mode Toggle */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button
-              variant={filterMode === "date" ? "default" : "outline"}
-              size="sm"
-              onClick={handleFilterModeToggle}
-              className="flex items-center gap-2"
-            >
-              <Calendar className="h-4 w-4" />
-              Date View
-            </Button>
-            <Button
-              variant={filterMode === "filter" ? "default" : "outline"}
-              size="sm"
-              onClick={handleFilterModeToggle}
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              Filter View
-            </Button>
+        {isAdmin() && (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                variant={filterMode === "date" ? "default" : "outline"}
+                size="sm"
+                onClick={handleFilterModeToggle}
+                className="flex items-center gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                Date View
+              </Button>
+
+              <Button
+                variant={filterMode === "filter" ? "default" : "outline"}
+                size="sm"
+                onClick={handleFilterModeToggle}
+                className="flex items-center gap-2"
+              >
+                <Filter className="h-4 w-4" />
+                Filter View
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Conditional Filter/Date Bar */}
         {filterMode === "filter" ? (
@@ -247,11 +264,12 @@ const GameTable = () => {
               className="text-xs md:text-sm"
               showPagination={false} // Disable built-in pagination
               pageSize={pageSize} // Still pass pageSize for row rendering
-            />          ) : (
+            />
+          ) : (
             <div className="space-y-8">
               {/* Live Games */}
-              <StatusSection 
-                status="in_progress" 
+              <StatusSection
+                status="in_progress"
                 games={liveGames}
                 variant="default"
               >
@@ -262,18 +280,15 @@ const GameTable = () => {
                       className="animate-in fade-in-50 duration-500"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <GameCard
-                        game={game}
-                        onEditGame={handleEditGame}
-                      />
+                      <GameCard game={game} onEditGame={handleEditGame} />
                     </div>
                   ))}
                 </div>
               </StatusSection>
-              
+
               {/* Scheduled Games */}
-              <StatusSection 
-                status="scheduled" 
+              <StatusSection
+                status="scheduled"
                 games={scheduledGames}
                 variant="default"
               >
@@ -284,18 +299,15 @@ const GameTable = () => {
                       className="animate-in fade-in-50 duration-500"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <GameCard
-                        game={game}
-                        onEditGame={handleEditGame}
-                      />
+                      <GameCard game={game} onEditGame={handleEditGame} />
                     </div>
                   ))}
                 </div>
               </StatusSection>
-              
+
               {/* Completed Games */}
-              <StatusSection 
-                status="completed" 
+              <StatusSection
+                status="completed"
                 games={completedGames}
                 variant="default"
               >
@@ -306,18 +318,15 @@ const GameTable = () => {
                       className="animate-in fade-in-50 duration-500"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <GameCard
-                        game={game}
-                        onEditGame={handleEditGame}
-                      />
+                      <GameCard game={game} onEditGame={handleEditGame} />
                     </div>
                   ))}
                 </div>
               </StatusSection>
-              
+
               {/* Other Status Games */}
-              <StatusSection 
-                status="other" 
+              <StatusSection
+                status="other"
                 games={otherGames}
                 variant="default"
               >
@@ -328,20 +337,19 @@ const GameTable = () => {
                       className="animate-in fade-in-50 duration-500"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <GameCard
-                        game={game}
-                        onEditGame={handleEditGame}
-                      />
+                      <GameCard game={game} onEditGame={handleEditGame} />
                     </div>
                   ))}
                 </div>
               </StatusSection>
-              
+
               {/* No games message */}
               {games.length === 0 && !isLoading && (
                 <div className="text-center py-8 text-muted-foreground">
                   <p className="text-lg font-medium">No games found</p>
-                  <p className="text-sm">Try adjusting your filters or create a new game.</p>
+                  <p className="text-sm">
+                    Try adjusting your filters or create a new game.
+                  </p>
                 </div>
               )}
             </div>
