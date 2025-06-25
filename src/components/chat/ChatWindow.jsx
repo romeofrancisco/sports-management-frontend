@@ -9,21 +9,13 @@ import MessageInput from "./MessageInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ChatWindow = ({ selectedChat, currentUser }) => {
-  const { 
-    data, 
-    isLoading, 
-    hasNextPage, 
-    fetchNextPage, 
-    isFetchingNextPage 
-  } = useInfiniteTeamMessages(
-    selectedChat?.team_id,
-    !!selectedChat
-  );
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteTeamMessages(selectedChat?.team_id, !!selectedChat);
 
   // Flatten all pages of messages
   const messages = React.useMemo(() => {
     if (!data?.pages) return [];
-    return data.pages.flatMap(page => page.results || []);
+    return data.pages.flatMap((page) => page.results || []);
   }, [data]);
 
   const sendMessageMutation = useSendMessage();
@@ -58,7 +50,7 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
   );
   if (!selectedChat) {
     return (
-      <div className="lg:col-span-3 flex items-center justify-center h-full min-h-[400px] bg-background rounded-lg border">
+      <div className="lg:col-span-3 flex items-center justify-center h-full min-h-[400px] rounded-lg border">
         <div className="text-center">
           <MessageCircleMore className="size-12 mx-auto mb-4 opacity-50" />
           <p className="text-lg font-medium">Select a team to start chatting</p>
@@ -97,10 +89,11 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
                 Loading messages...
               </p>
             </div>
-          </div>        ) : (
-          <MessagesList 
+          </div>
+        ) : (
+          <MessagesList
             key={selectedChat?.team_id} // Reset component when switching chats
-            messages={messages} 
+            messages={messages}
             currentUser={currentUser}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
@@ -110,7 +103,7 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
       </div>
 
       {/* Message Input */}
-      <div className="border-t-2 border-primary/20 bg-background">
+      <div className="border-t-2 border-primary/20">
         <MessageInput
           onSendMessage={handleSendMessage}
           disabled={sendMessageMutation.isPending}

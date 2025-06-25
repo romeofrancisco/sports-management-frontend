@@ -9,8 +9,7 @@ import {
 import { UserCheck, Star, Activity, Info } from "lucide-react";
 import { getDivisionLabel } from "@/constants/team";
 
-const TeamKeyMetrics = ({ data }) => {
-  const teamMetrics = [
+const TeamKeyMetrics = ({ data }) => {  const teamMetrics = [
     {
       label: "Sport",
       value: data.sport_name || "Not Specified",
@@ -24,14 +23,25 @@ const TeamKeyMetrics = ({ data }) => {
     },
     {
       label: "Head Coach",
-      value: data.coach_name || "No Coach Assigned",
+      value: data.head_coach_name || "No Head Coach Assigned",
       color: "text-secondary",
       bgColor: "bg-secondary/8",
       borderColor: "border-secondary/30",
       icon: <UserCheck className="h-5 w-5 text-secondary-foreground" />,
       iconBg: "bg-secondary",
       gradient: "from-secondary via-secondary/90 to-secondary/80",
-      description: "Team leadership",
+      description: "Primary team leadership",
+    },
+    {
+      label: "Assistant Coach",
+      value: data.assistant_coach_name || "No Assistant Coach Assigned",
+      color: "text-muted-foreground",
+      bgColor: "bg-muted/8",
+      borderColor: "border-muted/30",
+      icon: <UserCheck className="h-5 w-5 text-muted-foreground" />,
+      iconBg: "bg-muted",
+      gradient: "from-muted via-muted/90 to-muted/80",
+      description: "Supporting team leadership",
     },
     {
       label: "Division",

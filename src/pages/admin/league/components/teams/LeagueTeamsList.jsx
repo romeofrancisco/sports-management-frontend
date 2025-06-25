@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -22,7 +21,6 @@ const LeagueTeamsList = ({
   showEmptyState = true,
   skeletonCount = 3
 }) => {
-  const navigate = useNavigate();
 
   // Limit teams if maxTeams is specified
   const displayTeams = maxTeams ? teams.slice(0, maxTeams) : teams;
@@ -96,7 +94,6 @@ const LeagueTeamsList = ({
           team={team}
           formData={formData[team.team_id] || []}
           position={index + 1}
-          onClick={() => navigate(`/teams/${team.team_slug}`)}
         />
       ))}
     </div>
@@ -176,7 +173,7 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
 
   return (
     <Card
-      className={`overflow-hidden border-2 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer group bg-gradient-to-r ${positionStyle.bgClass} ${positionStyle.darkBgClass}`}
+      className={`overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r ${positionStyle.bgClass} ${positionStyle.darkBgClass}`}
       onClick={onClick}
     >
       <CardContent className="p-4">

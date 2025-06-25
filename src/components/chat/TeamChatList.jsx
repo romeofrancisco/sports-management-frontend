@@ -45,7 +45,7 @@ const TeamChatList = ({ teamChats, selectedChat, loading }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="overflow-hidden">
         <ScrollArea className="h-full">
           {loading ? (
             <div className="flex items-center justify-center py-12">
@@ -75,7 +75,7 @@ const TeamChatList = ({ teamChats, selectedChat, loading }) => {
                   key={chat.id}
                   onClick={() => navigate(`/chat/team/${chat.team_id}`)}
                   className={cn(
-                    "w-full text-left p-2 lg:px-4 lg:py-2.5 rounded-lg transition-all duration-500 group relative",
+                    "text-left py-2  lg:px-4 lg:py-2.5 rounded-lg transition-all duration-500 group relative",
                     selectedChat?.id === chat.id
                       ? "bg-gradient-to-r from-primary/20 to-primary/15 shadow-sm"
                       : "hover:bg-gradient-to-r hover:from-secondary/10 hover:to-secondary/5"
@@ -83,7 +83,7 @@ const TeamChatList = ({ teamChats, selectedChat, loading }) => {
                 >
                   <div className="flex items-center justify-between relative">
                     <div className="flex items-center justify-center lg:justify-start gap-3 flex-1 min-w-0">
-                      <Avatar className="size-9 md:size-12 ring-2 ring-primary/20">
+                      <Avatar className="size-8 sm:size-9 md:size-12 ring-2 ring-primary/20">
                         <AvatarImage
                           src={chat.logo}
                           alt={`${chat.team_name} logo`}

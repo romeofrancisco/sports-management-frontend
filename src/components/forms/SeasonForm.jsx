@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info, Calendar, Users2 } from "lucide-react";
 
 import { Button } from "../ui/button";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 
@@ -40,7 +40,6 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
             to: season.end_date ? new Date(season.end_date) : null,
           }
         : null,
-      is_recorded: season?.is_recorded ?? true,
       teams: season?.teams_list?.map((t) => t.id) || [],
     },
   });
@@ -59,9 +58,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
         : selectedTeams.filter((teamId) => teamId !== id)
     );
   };
-
   const onSubmit = (data) => {
-    // Create a JSON object instead of FormData
     const jsonData = {
       ...data,
       start_date: data.dateRange?.from
@@ -76,19 +73,22 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
     delete jsonData.dateRange;
 
     if (season) {
-      updateSeason({ id: season.id, data: jsonData }, {
-        onSuccess: () => {
-          onClose();
-        },
-        onError: (err) => {
-          const errorData = err.response?.data;
-          if (errorData) {
-            Object.entries(errorData).forEach(([field, message]) => {
-              setError(field, { type: "server", message });
-            });
-          }
+      updateSeason(
+        { id: season.id, data: jsonData },
+        {
+          onSuccess: () => {
+            onClose();
+          },
+          onError: (err) => {
+            const errorData = err.response?.data;
+            if (errorData) {
+              Object.entries(errorData).forEach(([field, message]) => {
+                setError(field, { type: "server", message });
+              });
+            }
+          },
         }
-      });
+      );
     } else {
       createSeason(jsonData, {
         onSuccess: () => {
@@ -101,65 +101,66 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
               setError(field, { type: "server", message });
             });
           }
-        }
+        },
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      {/* Season Name */}
-      <ControlledInput
-        name="name"
-        control={control}
-        label="Season Name"
-        placeholder="Enter season name"
-        errors={errors}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-1">
+      {/* Basic Information Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Info className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">
+            Basic Information
+          </h3>
+        </div>
+        <ControlledInput
+          name="name"
+          control={control}
+          label="Season Name"
+          placeholder="Enter season name"
+          errors={errors}
+        />
+        <ControlledDateRangePicker
+          name="dateRange"
+          control={control}
+          label="Date Range"
+          placeholder="Select date range"
+          errors={errors}
+          helpText="Select both dates, or only start date to auto-set end date after bracket generation."
+          numberOfMonths={useIsMobile() ? 1 : 2}
+        />
+      </div>
 
-      {/* Year */}
-      <ControlledInput
-        name="year"
-        control={control}
-        label="Year"
-        placeholder="Enter year"
-        errors={errors}
-      />
-
-      {/* Date Range */}
-      <ControlledDateRangePicker
-        name="dateRange"
-        control={control}
-        label="Date Range"
-        placeholder="Select date range"
-        errors={errors}
-        helpText="Select start and end dates for the season"
-        numberOfMonths={useIsMobile() ? 1 : 2}
-      />
-
-      {/* Is Stats Recorded */}
-      <ControlledCheckbox
-        name="is_recorded"
-        control={control}
-        label="Record stats for this season"
-        errors={errors}
-        className="mt-2"
-      />
-
-      {/* Team Selection */}
-      <div className="mt-2">
-        <Label className="text-sm text-left">Teams</Label>
+      {/* Team Selection Section */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 mb-2">
+          <Users2 className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Teams</h3>
+        </div>
         <TeamSelection
           sportTeams={teams}
           selectedTeams={selectedTeams}
           handleToggleAllTeams={onToggleAllTeams}
           handleToggleTeam={onToggleTeam}
           error={errors.teams}
+          disabled={season?.has_bracket}
         />
+        {season?.has_bracket && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Teams cannot be changed after a bracket has been generated.
+          </p>
+        )}
       </div>
 
       {/* Submit Button */}
-      <Button type="submit" className="mt-4" disabled={isPending}>
+      <Button
+        type="submit"
+        className="mt-4 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
+        disabled={isPending}
+      >
         {isPending ? (
           <>
             <Loader2 className="animate-spin mr-2 h-4 w-4" />
@@ -182,31 +183,61 @@ const TeamSelection = ({
   handleToggleAllTeams,
   handleToggleTeam,
   error,
+  disabled = false,
 }) => (
-  <div className="border-y py-2 mt-2">
-    <div className="flex items-center gap-2 mb-2 border-b py-1">
+  <div className="rounded-xl border bg-card/70 p-4 mt-2">
+    <div className="flex items-center gap-2 mb-3 border-b pb-2">
       <Checkbox
         checked={
           sportTeams.length > 0 && selectedTeams.length === sportTeams.length
         }
         onCheckedChange={handleToggleAllTeams}
+        disabled={disabled}
       />
-      <Label className="text-sm">Select All Teams</Label>
-      {error && <p className="text-xs text-destructive">{error.message}</p>}
+      <Label className="text-sm font-semibold">Select All Teams</Label>
+      {error && (
+        <p className="text-xs text-destructive ml-2">{error.message}</p>
+      )}
     </div>
-    <div className="grid grid-cols-2 gap-3">
-      {sportTeams.map((team) => (
-        <div key={team.id} className="flex items-center gap-2">
-          <Checkbox
-            checked={selectedTeams.includes(team.id)}
-            onCheckedChange={(checked) => handleToggleTeam(checked, team.id)}
-          />
-          <Avatar>
-            <AvatarImage src={team.logo} alt={team.name} />
-          </Avatar>
-          <span className="text-sm">{team.name}</span>
-        </div>
-      ))}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      {sportTeams.map((team) => {
+        const isSelected = selectedTeams.includes(team.id);
+        return (
+          <div
+            key={team.id}
+            className={`flex items-center gap-3 p-2 rounded-lg transition-all border hover:border-primary/40 bg-background/60 ${
+              isSelected ? "border-primary/60 bg-primary/5" : "border-border"
+            } ${
+              disabled
+                ? "opacity-60 cursor-not-allowed pointer-events-none"
+                : "cursor-pointer"
+            }`}
+            aria-disabled={disabled}
+            onClick={(e) => {
+              if (disabled) return;
+              // Prevent double toggle if checkbox is clicked
+              if (e.target.closest('button,input[type="checkbox"]')) return;
+              handleToggleTeam(!isSelected, team.id);
+            }}
+          >
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={(checked) => handleToggleTeam(checked, team.id)}
+              disabled={disabled}
+              tabIndex={disabled ? -1 : 0}
+            />
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={team.logo} alt={team.name} />
+              <AvatarFallback className="bg-muted text-muted-foreground">
+                {team.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-medium truncate max-w-[120px]">
+              {team.name}
+            </span>
+          </div>
+        );
+      })}
     </div>
   </div>
 );

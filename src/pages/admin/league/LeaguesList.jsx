@@ -4,9 +4,11 @@ import { Plus } from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import LeaguesContainer from "@/components/leagues/LeaguesContainer";
 import LeagueModal from "@/components/modals/LeagueModal";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const LeaguesList = () => {
   const { isOpen, closeModal, openModal } = useModal();
+  const { isAdmin } = useRolePermissions();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
@@ -16,10 +18,12 @@ const LeaguesList = () => {
           <UniversityPageHeader
             title="League Management"
             description="Create and manage sports leagues and competitions"
-            buttonText="Create League"
-            buttonIcon={Plus}
-            onButtonClick={openModal}
             showUniversityColors={true}
+            {...(isAdmin() && {
+              buttonText: "Create League",
+              buttonIcon: Plus,
+              onButtonClick: openModal,
+            })}
           />
         </div>
 
@@ -29,7 +33,7 @@ const LeaguesList = () => {
         </div>
       </div>
 
-      <LeagueModal isOpen={isOpen} onClose={closeModal} />
+      {isAdmin && <LeagueModal isOpen={isOpen} onClose={closeModal} />}
     </div>
   );
 };

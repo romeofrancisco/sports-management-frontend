@@ -71,9 +71,9 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4.5rem)] bg-background">
+    <div className="flex flex-col h-[calc(100vh-4.5rem)]">
       {/* Chat Header */}
-      <div className="flex items-center gap-3 px-4 py-2 border-b-2 border-primary/20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex items-center gap-3 px-4 py-2 border-b-2 border-primary/20">
         {selectedChat.logo && (
           <img
             src={selectedChat.logo}
@@ -110,7 +110,7 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
       </div>
 
       {/* Message Input */}
-      <div className="border-t-2 border-primary/20 bg-background">
+      <div className="border-t-2 border-primary/20">
         <MessageInput
           onSendMessage={handleSendMessage}
           disabled={sendMessageMutation.isPending}

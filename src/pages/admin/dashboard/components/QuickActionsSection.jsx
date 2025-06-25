@@ -47,14 +47,14 @@ const QuickActionsSection = ({ overview }) => {
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "games/create",
     },
-    {
-      title: "System Settings",
-      description: "Configure system",
-      icon: <Settings className="h-4 w-4" />,
-      color:
-        "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/25",
-      action: "settings",
-    },
+    // {
+    //   title: "System Settings",
+    //   description: "Configure system",
+    //   icon: <Settings className="h-4 w-4" />,
+    //   color:
+    //     "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/25",
+    //   action: "settings",
+    // },
   ];
 
   const handleQuickAction = (action) => {
@@ -90,7 +90,7 @@ const QuickActionsSection = ({ overview }) => {
         <CardDescription>Common administrative tasks</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-1 gap-4">
           {quickActions.map((action, index) => (
             <Button
               key={action.title}

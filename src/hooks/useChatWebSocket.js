@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { chatKeys } from "./useChat";
 
-export const useChatWebSocket = (teamId, onMessage, currentUserId) => {
+export const useChatWebSocket = (teamId, currentUserId, onMessage = null) => {
   const websocketRef = useRef(null);
   const queryClient = useQueryClient();
   const onMessageRef = useRef(onMessage);
@@ -100,10 +100,8 @@ export const useChatWebSocket = (teamId, onMessage, currentUserId) => {
         );
 
         // Note: Team chats cache updates are handled by global WebSocket to avoid conflicts
-        // This WebSocket only handles team-specific message cache updates
-
-        // Call custom onMessage callback if provided
-        if (onMessageRef.current) {
+        // This WebSocket only handles team-specific message cache updates        // Call custom onMessage callback if provided
+        if (onMessageRef.current && typeof onMessageRef.current === 'function') {
           onMessageRef.current(newMessage);
         }
       }

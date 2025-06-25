@@ -29,8 +29,8 @@ const MetricsSummarySection = ({ metricsSummary }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="p-6 space-y-6 relative">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <CardContent className="space-y-6 relative">
+          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-2 gap-4">
             <div className="bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg p-4 border border-primary/20">
               <p className="text-sm text-muted-foreground font-medium mb-1">
                 Total Records
@@ -72,7 +72,7 @@ const MetricsSummarySection = ({ metricsSummary }) => {
                   <Target className="h-5 w-5 text-primary" />
                   Metrics Breakdown
                 </h4>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-6">
                   {metricsSummary.metrics_breakdown.map((metric, index) => (
                     <div
                       key={index}

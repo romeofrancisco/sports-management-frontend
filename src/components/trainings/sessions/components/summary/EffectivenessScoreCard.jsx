@@ -24,7 +24,7 @@ const EffectivenessScoreCard = ({ effectivenessScore }) => {
           </div>
         </CardHeader>
         
-        <CardContent className="p-4 relative">
+        <CardContent className="relative">
           <div className="text-center mb-4">
             <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               {effectivenessScore.score}%

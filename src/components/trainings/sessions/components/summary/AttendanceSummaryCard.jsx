@@ -29,7 +29,7 @@ const AttendanceSummaryCard = ({ attendanceSummary }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="p-4 space-y-4 relative">          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardContent className="space-y-4 relative">          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Present Card */}
             <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/50">
               <div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg shadow-sm">

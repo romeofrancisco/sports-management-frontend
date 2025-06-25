@@ -51,7 +51,7 @@ const DraggableButton = ({ button, position, onRecord, isCreatingStat }) => {
     >
       <Button
         onClick={handleClick}
-        className={`w-full h-full p-1 text-[0.6rem] lg:text-[0.9rem] lg:p-3 transition-transform duration-150 active:scale-95 break-words whitespace-normal
+        className={`w-full h-full p-1 text-[0.5rem] lg:text-xs lg:p-3 transition-transform duration-150 active:scale-95 break-words whitespace-normal
           ${
             button.button_type === "made"
               ? "bg-green-900 hover:bg-green-800"

@@ -14,16 +14,17 @@ import BracketDisplay from "@/components/brackets/BracketDisplay";
 import { Trophy, Users, BarChart, Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const BracketView = ({ season, leagueId }) => {
   const { isOpen, openModal, closeModal } = useModal();
-  
+  const { isAdmin } = useRolePermissions();
+
   // Only fetch bracket data if the season has a bracket
-  const { data: bracket, isLoading } = useBracket(
-    leagueId, 
-    season.id,  
-    { enabled: season.has_bracket }  );
-  
+  const { data: bracket, isLoading } = useBracket(leagueId, season.id, {
+    enabled: season.has_bracket,
+  });
+
   if (isLoading) {
     return (
       <div className="animate-in fade-in-50 duration-500">
@@ -72,27 +73,33 @@ const BracketView = ({ season, leagueId }) => {
                       <Skeleton className="h-4 w-16 mx-auto" />
                       <div className="space-y-3">
                         {[1, 2, 3, 4].map((i) => (
-                          <div key={i} className="border rounded-lg p-3 space-y-2">
+                          <div
+                            key={i}
+                            className="border rounded-lg p-3 space-y-2"
+                          >
                             <Skeleton className="h-4 w-full" />
                             <Skeleton className="h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* Round 2 */}
                     <div className="space-y-4">
                       <Skeleton className="h-4 w-20 mx-auto" />
                       <div className="space-y-6">
                         {[1, 2].map((i) => (
-                          <div key={i} className="border rounded-lg p-3 space-y-2">
+                          <div
+                            key={i}
+                            className="border rounded-lg p-3 space-y-2"
+                          >
                             <Skeleton className="h-4 w-full" />
                             <Skeleton className="h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* Final */}
                     <div className="space-y-4">
                       <Skeleton className="h-4 w-12 mx-auto" />
@@ -139,14 +146,19 @@ const BracketView = ({ season, leagueId }) => {
           <CardContent className="relative p-6">
             <div className="text-center p-8 border rounded-lg bg-muted/20">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Tournament Bracket</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Tournament Bracket
+              </h3>
               <p className="text-muted-foreground mb-4">
-                This season doesn't have a tournament bracket yet. Generate one to start the tournament format.
+                This season doesn't have a tournament bracket yet. Generate one
+                to start the tournament format.
               </p>
-              <Button onClick={openModal} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Generate Bracket
-              </Button>
+              {isAdmin() && (
+                <Button onClick={openModal} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Generate Bracket
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>

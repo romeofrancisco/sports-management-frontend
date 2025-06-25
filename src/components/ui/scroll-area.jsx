@@ -33,13 +33,13 @@ const ScrollBar = React.forwardRef(({
       data-slot="scroll-bar"
       orientation={orientation}
       className={cn(
-        "bg-border flex touch-none select-none rounded-full p-0.5 transition-all duration-150 ease-out data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2 data-[orientation=horizontal]:flex-col",
+        "flex touch-none select-none rounded-full p-0.5 transition-all duration-150 ease-out data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2 data-[orientation=horizontal]:flex-col bg-muted/30 hover:bg-muted/50",
         className
       )}
       {...props}>
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-thumb"
-        className="bg-accent relative flex-1 rounded-full" />
+        className="relative flex-1 rounded-full bg-muted-foreground/50 hover:bg-muted-foreground/70 transition-colors" />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>)
   );
 });

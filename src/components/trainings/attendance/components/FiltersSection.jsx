@@ -20,12 +20,12 @@ const FiltersSection = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* Team Filter */}
-      <div className="space-y-2">
-        <Label htmlFor="team-select" className="text-sm font-medium">
+      <div className="ml-auto">
+        <Label htmlFor="team-select" className="text-xs text-muted-foreground font-medium">
           Team Selection
         </Label>
         <Select value={selectedTeam} onValueChange={onTeamChange} disabled={teamsLoading}>
-          <SelectTrigger id="team-select">
+          <SelectTrigger className="min-w-[150px]" id="team-select">
             <SelectValue placeholder="All Teams" />
           </SelectTrigger>
           <SelectContent>
@@ -46,8 +46,8 @@ const FiltersSection = ({
       </div>
 
       {/* Date Range Filter */}
-      <div className="space-y-2">
-        <Label htmlFor="date-range" className="text-sm font-medium">
+      <div>
+        <Label htmlFor="date-range" className="text-xs text-muted-foreground font-medium">
           Date Range
         </Label>
         <DateRangePickerWithPresets

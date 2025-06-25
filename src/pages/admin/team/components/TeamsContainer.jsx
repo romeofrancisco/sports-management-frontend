@@ -96,24 +96,19 @@ const TeamsContainer = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {teams.map((team, index) => (
-                  <div
-                    key={team.id}
-                    className="animate-in fade-in-50 duration-500"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <TeamCard
-                      team={team}
-                      onView={() => navigate(`/teams/${team.slug}`)}
-                      onEdit={() => {
-                        setSelectedTeam(team);
-                        updateModal.openModal();
-                      }}
-                      onDelete={() => {
-                        setSelectedTeam(team);
-                        deleteModal.openModal();
-                      }}
-                    />
-                  </div>
+                  <TeamCard
+                    key={team.id || index}
+                    team={team}
+                    onView={() => navigate(`/teams/${team.slug}`)}
+                    onEdit={() => {
+                      setSelectedTeam(team);
+                      updateModal.openModal();
+                    }}
+                    onDelete={() => {
+                      setSelectedTeam(team);
+                      deleteModal.openModal();
+                    }}
+                  />
                 ))}
               </div>
 

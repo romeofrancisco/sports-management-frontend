@@ -22,11 +22,10 @@ const GameResult = () => {
           title="Game Result Analysis"
           subtitle="Sports Management"
           description="Detailed game statistics, performance metrics, and team comparison"
-          showOnlineStatus={true}
           showUniversityColors={true}
           showBackButton={true}
           backButtonText="Back to Games"
-          backButtonPath="/games"
+          onBack={() => navigate(-1)}
         />
 
         <div className="animate-in fade-in-50 duration-500 delay-100">

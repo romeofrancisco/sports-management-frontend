@@ -37,7 +37,7 @@ const UniversityPageHeader = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-card via-secondary/8 to-primary/8 rounded-xl p-3 md:p-4 lg:p-6 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-xl p-3 md:p-4 lg:p-6 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 relative overflow-hidden">
       <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
           {/* University Logo with enhanced styling */}

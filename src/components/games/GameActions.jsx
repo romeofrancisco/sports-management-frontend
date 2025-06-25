@@ -92,7 +92,7 @@ export const GameActions = ({
           </Button>
         )}
         {/* Coach Assignment for League Games - Admin Only */}
-        {isAdmin() && isLeagueGame && (
+        {isAdmin() && isLeagueGame && !isCompleted && (
           <Button
             onClick={handleCoachAssignmentClick}
             variant="outline"

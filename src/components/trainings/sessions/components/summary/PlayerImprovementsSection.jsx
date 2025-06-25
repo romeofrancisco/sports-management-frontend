@@ -43,10 +43,8 @@ const PlayerImprovementsSection = ({
     );
   };
   return (
-    <div className="animate-in fade-in-50 duration-500 delay-500">
       <Card className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl gap-0 shadow-xl border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/8 to-transparent rounded-full blur-3xl opacity-60"></div>
-
         <CardHeader className="pb-4">
           <div className="flex items-start gap-3">
             <div className="p-3 rounded-xl bg-primary shadow-sm">
@@ -60,15 +58,14 @@ const PlayerImprovementsSection = ({
               </CardDescription>
             </div>
           </div>
-        </CardHeader>
-
-        <CardContent className="p-6 relative">
+        </CardHeader>{" "}
+        <CardContent className="relative">
           {playerImprovements && playerImprovements.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="columns-1 lg:columns-2 gap-4 space-y-4">
               {playerImprovements.map((player, index) => (
                 <Card
                   key={index}
-                  className="bg-gradient-to-br from-card via-card/95 to-card/90 border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden"
+                  className="bg-gradient-to-br from-card via-card/95 to-card/90 border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden break-inside-avoid mb-4"
                 >
                   <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-xl opacity-60"></div>
                   <CardContent className="p-4 relative">
@@ -471,7 +468,6 @@ const PlayerImprovementsSection = ({
           )}
         </CardContent>
       </Card>
-    </div>
   );
 };
 

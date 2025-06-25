@@ -4,5 +4,4 @@ export { default as SystemOverviewCards } from './SystemOverviewCards';
 export { default as SystemHealthSection } from './SystemHealthSection';
 export { default as DistributionSection } from './DistributionSection';
 export { default as InsightsSection } from './InsightsSection';
-export { default as ReportsSection } from './ReportsSection';
 export { default as QuickActionsSection } from './QuickActionsSection';

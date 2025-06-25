@@ -9,6 +9,7 @@ import StatButtons from "./components/scoring/StatButtons/StatButtons";
 import { useRecordableStats, useSportDetails } from "@/hooks/useSports";
 import { useGameDetails, useCurrentGamePlayers } from "@/hooks/useGames";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
+import { useGameScoreWebSocket } from "@/hooks/useGameScoreWebSocket";
 import { setGameDetails } from "@/store/slices/gameSlice";
 import { setSport } from "@/store/slices/sportSlice";
 import GameSettings from "./components/GameSettings";
@@ -25,19 +26,57 @@ const GameScoring = () => {
   const [isPortrait, setIsPortrait] = useState(false);
 
   // Data fetching
-  const { data: game, isLoading: isGameLoading, isError: isGameError } = useGameDetails(gameId);
-  const { data: statTypes, isLoading: isStatTypesLoading, isError: isStatTypesError } = useRecordableStats(gameId);
-  const { data: currentPlayers, isLoading: isCurrentPlayersLoading, isError: isCurrentPlayersError } = useCurrentGamePlayers(gameId);
-  const { data: sport, isLoading: isSportLoading, isError: isSportError } = useSportDetails(game?.sport_slug)
-
+  const {
+    data: game,
+    isLoading: isGameLoading,
+    isError: isGameError,
+  } = useGameDetails(gameId);
+  const {
+    data: statTypes,
+    isLoading: isStatTypesLoading,
+    isError: isStatTypesError,
+  } = useRecordableStats(gameId);
+  const {
+    data: currentPlayers,
+    isLoading: isCurrentPlayersLoading,
+    isError: isCurrentPlayersError,
+  } = useCurrentGamePlayers(gameId);
+  const {
+    data: sport,
+    isLoading: isSportLoading,
+    isError: isSportError,
+  } = useSportDetails(game?.sport_slug);
   // Unified loading/error states
-  const isLoading = isGameLoading ||isStatTypesLoading || isCurrentPlayersLoading || isSportLoading
-  const isError = isGameError || isStatTypesError || isCurrentPlayersError || isSportError;
+  const isLoading =
+    isGameLoading ||
+    isStatTypesLoading ||
+    isCurrentPlayersLoading ||
+    isSportLoading;
+  const isError =
+    isGameError || isStatTypesError || isCurrentPlayersError || isSportError;
+
+  // WebSocket connection for real-time score updates
+  const { isConnected } = useGameScoreWebSocket(
+    gameId,
+    (scoreData) => {
+      // Handle real-time score updates
+      console.log("Real-time score update:", scoreData);
+    },
+    (statusData) => {
+      // Handle real-time status updates
+      console.log("Real-time status update:", statusData);
+
+      // Redirect if game is completed
+      if (statusData.status === GAME_STATUS_VALUES.COMPLETED) {
+        navigate(`/games/${gameId}/game-result`, { replace: true });
+      }
+    }
+  );
 
   // Check permissions when game data is loaded
   useEffect(() => {
     if (game && !checkGamePermission(game)) {
-      navigate('/games', { replace: true });
+      navigate("/games", { replace: true });
       return;
     }
   }, [game, checkGamePermission, navigate]);
@@ -45,7 +84,7 @@ const GameScoring = () => {
   // Store game in Redux on load
   useEffect(() => {
     if (game && game.status === GAME_STATUS_VALUES.COMPLETED) {
-      return navigate(`/games/${gameId}/game-result`, { replace: true })
+      return navigate(`/games/${gameId}/game-result`, { replace: true });
     }
     if (game) {
       dispatch(setGameDetails(game));
@@ -54,9 +93,9 @@ const GameScoring = () => {
 
   useEffect(() => {
     if (sport) {
-      dispatch(setSport(sport))
+      dispatch(setSport(sport));
     }
-  }, [sport, dispatch])
+  }, [sport, dispatch]);
 
   // Orientation detection
   useEffect(() => {
@@ -73,13 +112,13 @@ const GameScoring = () => {
   // Hide sidebar trigger when this component mounts
   useEffect(() => {
     // Get the header with the sidebar trigger
-    const header = document.querySelector('header');
+    const header = document.querySelector("header");
     if (header) {
       // Store original display style to restore later
       const originalDisplay = header.style.display;
       // Hide the header
-      header.style.display = 'none';
-      
+      header.style.display = "none";
+
       // Restore on unmount
       return () => {
         header.style.display = originalDisplay;
@@ -93,34 +132,56 @@ const GameScoring = () => {
   if (isPortrait) return <RequireLandscape />;
 
   const { home_players, away_players } = currentPlayers;
-
   return (
     <div className="relative h-full content-center">
-      <div className="flex justify-between items-center px-2 py-1 bg-background/80 backdrop-blur-sm z-20 absolute top-0 left-0 w-full">        <div className="flex gap-2">
-          <Button 
-            variant="ghost" 
+      <div className="flex justify-between items-center px-2 bg-background/80 backdrop-blur-sm z-20 w-full">
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
             title="Go Back"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             title="Home"
           >
             <Home className="h-5 w-5" />
           </Button>
         </div>
-        <GameSettings />
+        <div className="flex items-center gap-2">
+          {/* WebSocket connection status */}
+          {game?.status === GAME_STATUS_VALUES.IN_PROGRESS && (
+            <div className="flex items-center gap-1 text-xs">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  isConnected ? "bg-green-500 animate-pulse" : "bg-red-500"
+                }`}
+              ></div>
+              <span className="text-muted-foreground">
+                {isConnected ? "LIVE" : "OFFLINE"}
+              </span>
+            </div>
+          )}
+          <GameSettings />
+        </div>
       </div>
-      <div className="pt-12"> {/* Add padding-top to account for the fixed navigation bar */}
-        <ScoreBoard />
-        <div className="grid gap-2 md:gap-5 grid-cols-[1fr_auto_1fr]">
+      <div>
+        {/* Removed pt-12 since header is no longer absolute */}
+        <div className="grid grid-cols-[1fr_auto_1fr]">
           <TeamSide players={home_players} />
-          <StatButtons statTypes={statTypes} />
+          <div className="flex flex-col items-center">
+            <ScoreBoard />
+            <StatButtons
+              statTypes={statTypes}
+              gameId={gameId}
+              sportSlug={game?.sport_slug}
+            />
+          </div>
           <TeamSide players={away_players} />
         </div>
       </div>

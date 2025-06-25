@@ -1,8 +1,8 @@
 import React from "react";
 
-const JerseyNumber = ({ number, ...props }) => (
+const JerseyNumber = ({ number, selected, ...props }) => (
   <svg
-    fill="#000000"
+    fill={selected ? "gold" : "grey"}
     width="64px"
     height="64px"
     viewBox="-49.6 -49.6 595.20 595.20"
@@ -28,7 +28,7 @@ const JerseyNumber = ({ number, ...props }) => (
       textAnchor="middle"
       dominantBaseline="middle"
       fontWeight="bold"
-      fill="red"
+      fill={selected ? "gold" : "grey"}
       className="text-[9rem] font-bold"
     >
       {number}

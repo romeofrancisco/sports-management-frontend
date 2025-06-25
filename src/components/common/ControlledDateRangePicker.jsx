@@ -54,7 +54,7 @@ export const ControlledDateRangePicker = ({
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {field.value?.from ? (
-                  field.value.to ? (
+                  field.value.to && field.value.to.getTime() !== field.value.from.getTime() ? (
                     <>
                       {format(field.value.from, "MMM dd, yyyy")} -{" "}
                       {format(field.value.to, "MMM dd, yyyy")}
@@ -66,14 +66,21 @@ export const ControlledDateRangePicker = ({
                   <span>{placeholder}</span>
                 )}
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            </PopoverTrigger>            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 initialFocus
                 mode="range"
                 defaultMonth={field.value?.from}
                 selected={field.value}
-                onSelect={field.onChange}
+                onSelect={(dateRange) => {
+                  if (dateRange?.from && dateRange?.to && 
+                      dateRange.from.getTime() === dateRange.to.getTime()) {
+                    // If both dates are the same, only keep the 'from' date
+                    field.onChange({ from: dateRange.from, to: null });
+                  } else {
+                    field.onChange(dateRange);
+                  }
+                }}
                 numberOfMonths={numberOfMonths}
                 disabled={disabled}
               />

@@ -18,14 +18,18 @@ const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Create New Season</DialogTitle>
+          <DialogTitle>
+            {season ? "Edit Season" : "Create New Season"}
+          </DialogTitle>
           <DialogDescription>
-            <span className="sr-only">Season Description</span>
+            {season
+              ? "Update the season details below."
+              : "Fill in the details to create a new season."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[75vh]">
+        <ScrollArea className="max-h-[75vh] pr-3">
           <SeasonForm teams={data} onClose={onClose} season={season} />
         </ScrollArea>
       </DialogContent>

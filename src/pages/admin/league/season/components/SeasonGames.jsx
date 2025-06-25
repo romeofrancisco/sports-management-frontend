@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSeasonGames } from "@/hooks/useSeasons";
 import { useModal } from "@/hooks/useModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import GameModal from "@/components/modals/GameModal";
 export const SeasonGames = ({ seasonId, leagueId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [editingGame, setEditingGame] = useState(null);
+  const [isDateInitialized, setIsDateInitialized] = useState(false);
 
   // Use the useModal hook instead of manual state management
   const {
@@ -34,10 +35,9 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
 
   // Also fetch all games to support the date navigation bar
   const { data: allGames = [] } = useSeasonGames(leagueId, seasonId);
-
   // Initialize to today or first available game date when data loads
   useEffect(() => {
-    if (allGames && allGames.length > 0) {
+    if (allGames && allGames.length > 0 && !isDateInitialized) {
       // Start with today
       let initialDate = new Date();
       const todayGames = allGames.filter((game) =>
@@ -50,21 +50,28 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
       }
 
       setSelectedDate(initialDate);
+      setIsDateInitialized(true);
     }
-  }, [allGames]);
-  // Get games count for a specific date (used by the DateNavigationBar)
-  const getGamesCountForDate = (date) => {
-    if (!allGames || allGames.length === 0) return 0;
-    return allGames.filter((game) => {
-      const gameDate = parseISO(game.date);
-      return isSameDay(gameDate, date);
-    }).length;
-  };
+  }, [allGames, isDateInitialized]); // Get games count for a specific date (used by the DateNavigationBar)
+  const getGamesCountForDate = useCallback(
+    (date) => {
+      if (!allGames || allGames.length === 0) return 0;
+      return allGames.filter((game) => {
+        const gameDate = parseISO(game.date);
+        return isSameDay(gameDate, date);
+      }).length;
+    },
+    [allGames]
+  );
+
   // Handle edit game modal
-  const handleEditGame = (game) => {
-    setEditingGame(game);
-    openEditModal();
-  };
+  const handleEditGame = useCallback(
+    (game) => {
+      setEditingGame(game);
+      openEditModal();
+    },
+    [openEditModal]
+  );
 
   return (
     <div className="animate-in fade-in-50 duration-500">
@@ -110,7 +117,9 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
               ))}
             </div>
           ) : filteredGames.length > 0 ? (
-            <div className="space-y-6">              {/* Live Games Section */}
+            <div className="space-y-6">
+              {" "}
+              {/* Live Games Section */}
               <StatusSection
                 status="in_progress"
                 games={filteredGames.filter(
@@ -129,7 +138,8 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                       />
                     ))}
                 </div>
-              </StatusSection>              {/* Scheduled Games Section */}
+              </StatusSection>{" "}
+              {/* Scheduled Games Section */}
               <StatusSection
                 status="scheduled"
                 games={filteredGames.filter(
@@ -148,7 +158,8 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                       />
                     ))}
                 </div>
-              </StatusSection>              {/* Completed Games Section */}
+              </StatusSection>{" "}
+              {/* Completed Games Section */}
               <StatusSection
                 status="completed"
                 games={filteredGames.filter(

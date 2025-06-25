@@ -32,7 +32,7 @@ const UpcomingGamesSection = ({ overview }) => {
       <CardContent>
         {overview?.upcoming_games?.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-            {overview.upcoming_games.slice(0, 6).map((game, index) => (
+            {overview.upcoming_games.slice(0, 4).map((game, index) => (
               <div
                 key={index}
                 className="relative overflow-hidden border-2 border-secondary/20 rounded-xl p-4 bg-gradient-to-r from-secondary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"

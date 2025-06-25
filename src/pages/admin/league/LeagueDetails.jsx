@@ -4,7 +4,7 @@ import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
 import PageError from "@/pages/PageError";
 import Loading from "@/components/common/FullLoading";
 import { useParams, Link, useLocation } from "react-router-dom";
-import LeagueSeasonsTable from "./components/LeagueSeasonsTable";
+import LeagueSeasons from "./components/seasons/LeagueSeasons";
 import LeagueStandings from "./components/standings/LeagueStandings";
 import { useSeasons } from "@/hooks/useSeasons";
 import LeagueTeamsGrid from "./components/teams/LeagueTeamsGrid";
@@ -91,7 +91,7 @@ const LeagueDetails = () => {
       case "teams":
         return <LeagueTeamsGrid />;
       case "seasons":
-        return <LeagueSeasonsTable seasons={seasons} sport={sport} />;
+        return <LeagueSeasons seasons={seasons} sport={sport} />;
       default:
         return <LeagueOverview league={league} sport={sport} />;
     }
