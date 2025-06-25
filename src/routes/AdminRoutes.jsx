@@ -187,6 +187,10 @@ export const adminRoutes = [
     element: <AttendanceAnalyticsPage />,
   },
   {
+    path: "/trainings/attendance/players",
+    element: <AttendanceAnalyticsPage />,
+  },
+  {
     path: "/trainings/categories",
     element: <TrainingCategoriesPage />,
   },

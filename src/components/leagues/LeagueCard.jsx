@@ -1,20 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import {
-  Calendar,
-  Users,
-  Target,
-  Trophy,
-  TrendingUp,
-} from "lucide-react";
+import { Calendar, Users, Target, Trophy, TrendingUp } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import LeagueActions from "./LeagueActions";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const LeagueCard = ({ league, index, viewMode }) => {
   const navigate = useNavigate();
+  const { isAdmin } = useRolePermissions();
 
   const handleCardClick = () => {
     navigate(`/leagues/${league.id}`);
@@ -25,19 +25,16 @@ const LeagueCard = ({ league, index, viewMode }) => {
 
   if (viewMode === "list") {
     return (
-      <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
-        style={{
-          animationDelay: `${index * 50}ms`,
-          animationDuration: "500ms",
-        }}
+      <Card
+        className="relative overflow-hidden border-2 rounded-xl hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50 cursor-pointer"
         onClick={handleCardClick}
       >
         {/* League color indicator */}
         <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
-        
+
         {/* Hover effects */}
         <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-        
+
         <CardHeader className="relative p-5 space-y-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3 flex-1">
@@ -50,23 +47,24 @@ const LeagueCard = ({ league, index, viewMode }) => {
                   </AvatarFallback>
                 </Avatar>
                 {/* League status indicator */}
-                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
-                  isActive 
-                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
-                    : 'bg-gradient-to-r from-amber-400 to-amber-500'
-                }`}></div>
+                <div
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
+                    isActive
+                      ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                      : "bg-gradient-to-r from-amber-400 to-amber-500"
+                  }`}
+                ></div>
               </div>
 
               <div className="flex-1 min-w-0">
                 <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                   {league.name}
                 </CardTitle>
-                
                 {/* Sport and status badges */}
                 <div className="flex items-center gap-2 mt-1">
                   {league.sport?.name && (
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
                     >
                       {league.sport.name}
@@ -82,19 +80,22 @@ const LeagueCard = ({ league, index, viewMode }) => {
                   >
                     {league.status || "Active"}
                   </Badge>
-                </div>                {/* League details */}
-                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">                  <Tooltip>
+                </div>
+                {/* League details */}
+                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                  <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1 cursor-help">
                         <Users className="h-3 w-3" />
-                        <span className="font-medium">{league.teams_count || 0} teams</span>
+                        <span className="font-medium">
+                          {league.teams_count || 0} teams
+                        </span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
                       Total number of teams across all seasons
                     </TooltipContent>
                   </Tooltip>
-                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1 cursor-help">
@@ -106,7 +107,6 @@ const LeagueCard = ({ league, index, viewMode }) => {
                       Total number of games played across all seasons
                     </TooltipContent>
                   </Tooltip>
-                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1 cursor-help">
@@ -118,7 +118,6 @@ const LeagueCard = ({ league, index, viewMode }) => {
                       Total number of seasons for this league
                     </TooltipContent>
                   </Tooltip>
-                  
                   {league.season && (
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -135,10 +134,7 @@ const LeagueCard = ({ league, index, viewMode }) => {
                 </div>
               </div>
             </div>
-            
-            <div className="ml-2">
-              <LeagueActions league={league} />
-            </div>
+            {isAdmin() && <LeagueActions league={league} className="ml-4" />}
           </div>
         </CardHeader>
       </Card>
@@ -147,19 +143,16 @@ const LeagueCard = ({ league, index, viewMode }) => {
 
   // Grid view (card view)
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer animate-in fade-in-50"
-      style={{
-        animationDelay: `${index * 100}ms`,
-        animationDuration: "500ms",
-      }}
+    <Card
+      className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50 cursor-pointer"
       onClick={handleCardClick}
     >
       {/* League color indicator */}
       <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
-      
+
       {/* Hover effects */}
       <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-      
+
       <CardHeader className="relative p-5 space-y-4">
         {/* Status Badge and Actions */}
         <div className="flex items-start justify-between">
@@ -173,7 +166,7 @@ const LeagueCard = ({ league, index, viewMode }) => {
           >
             {league.status || "Active"}
           </Badge>
-          <LeagueActions league={league} />
+          {isAdmin() && <LeagueActions league={league} />}
         </div>
 
         {/* Logo Section */}
@@ -186,11 +179,13 @@ const LeagueCard = ({ league, index, viewMode }) => {
               </AvatarFallback>
             </Avatar>
             {/* League status indicator */}
-            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card shadow-sm ${
-              isActive 
-                ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
-                : 'bg-gradient-to-r from-amber-400 to-amber-500'
-            }`}></div>
+            <div
+              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card shadow-sm ${
+                isActive
+                  ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                  : "bg-gradient-to-r from-amber-400 to-amber-500"
+              }`}
+            ></div>
           </div>
         </div>
 
@@ -199,18 +194,18 @@ const LeagueCard = ({ league, index, viewMode }) => {
           <CardTitle className="text-sm font-bold text-foreground group-hover:text-primary transition-colors duration-300 truncate">
             {league.name}
           </CardTitle>
-
           {/* Sport badge */}
           {league.sport?.name && (
             <div className="flex justify-center">
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
               >
                 {league.sport.name}
               </Badge>
             </div>
-          )}          {/* Statistics */}
+          )}
+          {/* Statistics */}
           <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -223,9 +218,9 @@ const LeagueCard = ({ league, index, viewMode }) => {
                 <p>Total teams across all seasons</p>
               </TooltipContent>
             </Tooltip>
-            
+
             <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
-            
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 cursor-help">
@@ -237,21 +232,23 @@ const LeagueCard = ({ league, index, viewMode }) => {
                 <p>Total games played</p>
               </TooltipContent>
             </Tooltip>
-            
+
             <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
-            
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 cursor-help">
                   <TrendingUp className="h-3 w-3" />
-                  <span className="font-medium">{league.seasons_count || 0}</span>
+                  <span className="font-medium">
+                    {league.seasons_count || 0}
+                  </span>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Number of seasons</p>
               </TooltipContent>
             </Tooltip>
-            
+
             {league.season && (
               <>
                 <div className="w-1 h-1 rounded-full bg-muted-foreground/50"></div>
@@ -259,7 +256,9 @@ const LeagueCard = ({ league, index, viewMode }) => {
                   <TooltipTrigger asChild>
                     <div className="flex items-center gap-1 cursor-help">
                       <Trophy className="h-3 w-3" />
-                      <span className="font-medium truncate max-w-16">{league.season}</span>
+                      <span className="font-medium truncate max-w-16">
+                        {league.season}
+                      </span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

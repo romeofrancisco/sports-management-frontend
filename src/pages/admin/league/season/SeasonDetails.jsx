@@ -18,10 +18,13 @@ import Loading from "@/components/common/FullLoading";
 import { cn } from "@/lib/utils";
 import { Trophy, Users, Calendar, BarChart3, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { getSeasonYear } from "../utils";
 
 const SeasonDetails = () => {
   const { league, season } = useParams();
   const location = useLocation();
+  const { isAdmin } = useRolePermissions();
   // Get current page from URL path
   const currentPath = location.pathname;
 
@@ -135,7 +138,16 @@ const SeasonDetails = () => {
 
   const titleWithBadge = (
     <div className="flex items-center gap-3">
-      <span>{seasonDetails?.name || "Season"}</span>
+      <span>
+        {seasonDetails?.name || "Season"}
+        {seasonDetails?.start_date && (
+          <span className="ml-2 text-lg md:text-xl lg:text-2xl text-muted-foreground font-normal">
+            (
+            {getSeasonYear(seasonDetails.start_date, seasonDetails.end_date)}
+            )
+          </span>
+        )}
+      </span>
       {seasonDetails?.status && (
         <Badge
           variant="outline"
@@ -151,14 +163,15 @@ const SeasonDetails = () => {
     <div className="md:p-6">
       <UniversityPageHeader
         title={titleWithBadge}
-        subtitle={`${sport?.name} League - ${seasonDetails?.year || ""}`}
+        subtitle={`${sport?.name} League`}
         description="Manage season details, games, and statistics"
         showBackButton={true}
         backButtonText="Back to League"
-        backButtonPath={`/leagues/${league}`}
+        backButtonPath={`/leagues/${league}/seasons`}
       >
-        {/* Season Management Actions */}
-        <SeasonActions season={seasonDetails} />
+        {isAdmin() && seasonDetails.status !== "completed" && (
+          <SeasonActions season={seasonDetails} />
+        )}
       </UniversityPageHeader>
 
       {/* Navigation Links */}

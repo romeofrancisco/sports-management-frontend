@@ -17,6 +17,17 @@ export const TeamsDisplay = ({
   awayReady,
   game,
 }) => {
+  // Helper function to get the correct period label based on sport scoring type
+  const getPeriodLabel = (currentPeriod, sportScoringType) => {
+    if (!currentPeriod) return "";
+    
+    if (sportScoringType === "sets") {
+      return `Set ${currentPeriod}`;
+    } else {
+      return `Quarter ${currentPeriod}`;
+    }
+  };
+
   return (
     <div className="flex items-center justify-between w-full gap-4">
       {/* Home Team */}
@@ -73,9 +84,13 @@ export const TeamsDisplay = ({
             >
               Final
             </Badge>
-          </div>
-        ) : isLive ? (
+          </div>        ) : isLive ? (
           <div className="text-center">
+            {game.current_period && (
+              <div className="text-xs text-muted-foreground mb-1 font-medium">
+                {getPeriodLabel(game.current_period, game.sport_scoring_type)}
+              </div>
+            )}
             <div className="flex items-center gap-2 text-2xl font-bold">
               <AnimatedScore
                 value={game.home_team_score || 0}

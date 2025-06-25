@@ -33,7 +33,7 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="relative p-6">
+        <CardContent className="relative">
           {/* Stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <Card>

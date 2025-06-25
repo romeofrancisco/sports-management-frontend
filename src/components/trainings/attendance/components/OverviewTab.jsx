@@ -1,100 +1,274 @@
-import React from 'react';
+import React, { useState } from "react";
+import FiltersSection from "./FiltersSection";
+import { useTeams } from "@/hooks/useTeams";
+import {
+  useAttendanceOverview,
+  useAttendanceTrends,
+} from "@/hooks/useAttendanceAnalytics";
+import { format, subDays, parseISO } from "date-fns";
+import { Doughnut, Line } from "react-chartjs-2";
+import OverviewCards from "./OverviewCards";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Doughnut, Line } from 'react-chartjs-2';
-import { format, parseISO } from 'date-fns';
-import { StatCard } from './StatCard';
-import { 
+  CardDescription,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
   createAttendanceDistributionChart,
   distributionChartOptions,
   createTrendsChart,
-  trendsChartOptions 
-} from './chartConfigs';
-import { CalendarDays, Users, TrendingUp, BarChart3 } from 'lucide-react';
+  trendsChartOptions,
+} from "./chartConfigs";
+import {
+  CalendarDays,
+  Users,
+  TrendingUp,
+  BarChart3,
+  AlertCircle,
+  Activity,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const OverviewTab = ({ overviewData, trendsData }) => {
-  if (!overviewData || !overviewData.attendance_distribution) return null;
+const OverviewTab = () => {
+  // Local filter state
+  const [selectedTeam, setSelectedTeam] = useState("all");
+  const [dateRange, setDateRange] = useState({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+  const [trendPeriod] = useState("daily");
 
-  const attendanceDistribution = createAttendanceDistributionChart(overviewData.attendance_distribution);
-  const trendsChartData = createTrendsChart(trendsData, (date) => format(parseISO(date), 'MMM dd'));
+  // Fetch teams
+  const { data: teamsResponse = {}, isLoading: teamsLoading } = useTeams();
+  const teams = teamsResponse.results || [];
+
+  // Build filters
+  const filters = {
+    team_id: selectedTeam === "all" ? undefined : selectedTeam,
+    start_date: dateRange.from
+      ? format(dateRange.from, "yyyy-MM-dd")
+      : undefined,
+    end_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+  };
+  const trendsFilters = { ...filters, period: trendPeriod };
+
+  // Fetch analytics
+  const {
+    data: overviewData,
+    isLoading: overviewLoading,
+    error: overviewError,
+  } = useAttendanceOverview(filters);
+  const {
+    data: trendsData,
+    isLoading: trendsLoading,
+    error: trendsError,
+  } = useAttendanceTrends(trendsFilters);
+  if (overviewLoading || trendsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 space-y-6">
+        <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="text-center space-y-2">
+          <p className="text-slate-600 dark:text-slate-400 font-medium">
+            Loading attendance data...
+          </p>
+          <p className="text-slate-500 dark:text-slate-500 text-sm">
+            Please wait while we process your analytics
+          </p>
+        </div>
+      </div>
+    );
+  }
+  if (overviewError || trendsError) {
+    return (
+      <Alert className="border-red-200 bg-red-50/80 dark:bg-red-950/50">
+        <AlertCircle className="h-4 w-4 text-red-600" />
+        <AlertDescription className="text-red-800 dark:text-red-200">
+          {overviewError?.message ||
+            trendsError?.message ||
+            "Failed to load attendance analytics data"}
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  if (!overviewData || !overviewData.attendance_distribution) {
+    return (
+      <Alert className="border-amber-200 bg-amber-50/80 dark:bg-amber-950/50">
+        <AlertCircle className="h-4 w-4 text-amber-600" />
+        <AlertDescription className="text-amber-800 dark:text-amber-200">
+          No attendance data available for the selected filters.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  const attendanceDistribution = createAttendanceDistributionChart(
+    overviewData.attendance_distribution
+  );
+  const trendsChartData = createTrendsChart(trendsData, (date) =>
+    format(parseISO(date), "MMM dd")
+  );
+
+  // Overview stats cards data (styled like PlayerDetailDashboard)
+  const overviewStats = [
+    {
+      title: "Total Sessions",
+      value: overviewData.total_sessions || 0,
+      description: "Training sessions recorded",
+      icon: <CalendarDays className="h-5 w-5 text-primary-foreground" />,
+      color: "from-primary via-primary/90 to-primary/80",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+      textAccent: "text-primary",
+    },
+    {
+      title: "Total Players",
+      value: overviewData.total_players || 0,
+      description: "Unique participants",
+      icon: <Users className="h-5 w-5 text-secondary-foreground" />,
+      color: "from-secondary via-secondary/90 to-secondary/80",
+      bgColor: "bg-secondary/8",
+      borderColor: "border-secondary/30",
+      iconBg: "bg-secondary",
+      textAccent: "text-secondary",
+    },
+    {
+      title: "Attendance Rate",
+      value: `${overviewData.overall_attendance_rate || 0}%`,
+      description: "Overall performance",
+      icon: <BarChart3 className="h-5 w-5 text-primary-foreground" />,
+      color: "from-green-500 via-green-500/90 to-green-500/80",
+      bgColor: "bg-green-500/8",
+      borderColor: "border-green-500/30",
+      iconBg: "bg-green-500",
+      textAccent: "text-green-600",
+    },
+    {
+      title: "Avg Per Session",
+      value: (overviewData.average_attendance_per_session || 0).toFixed(1),
+      description: "Players per session",
+      icon: <TrendingUp className="h-5 w-5 text-primary-foreground" />,
+      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
+      bgColor: "bg-orange-500/8",
+      borderColor: "border-orange-500/30",
+      iconBg: "bg-orange-500",
+      textAccent: "text-orange-600",
+    },
+  ];
   return (
-    <div className="space-y-8">
-      {/* Stats Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-        <div>
-          <StatCard
-            title="Total Sessions"
-            value={overviewData.total_sessions || 0}
-            subtitle="Training sessions recorded"
-            icon={<CalendarDays className="h-5 w-5" />}
-          />
-        </div>        <div>
-          <StatCard
-            title="Total Players"
-            value={overviewData.total_players || 0}
-            subtitle="Unique participants"
-            icon={<Users className="h-5 w-5" />}
-          />
-        </div>
-        <div>
-          <StatCard
-            title="Attendance Rate"
-            value={`${overviewData.overall_attendance_rate || 0}%`}
-            subtitle="Overall performance"
-            icon={<BarChart3 className="h-5 w-5" />}
-          />
-        </div>
-        <div>
-          <StatCard
-            title="Avg Per Session"
-            value={(overviewData.average_attendance_per_session || 0).toFixed(1)}
-            subtitle="Players per session"
-            icon={<TrendingUp className="h-5 w-5" />}
-          />
-        </div>
-      </div>      {/* Charts Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-[30%_1fr] gap-6 lg:gap-8">
-        {/* Attendance Distribution Chart */}
-        <div className="border rounded-lg bg-card p-6">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              📊 Attendance Distribution
-            </h3>
-            <p className="text-sm text-muted-foreground">Overall attendance patterns</p>
+    <div className="space-y-6 sm:space-y-8">
+      {/* Header Section */}
+      <div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl">
+          <div className="flex items-center gap-4 flex-1">
+            <div className="relative">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
+                <Activity className="h-6 w-6 sm:h-7 sm:w-7 text-primary-foreground" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
+                Attendance Overview
+              </h3>
+              <p className="text-sm text-muted-foreground font-medium">
+                Analyze training attendance patterns and player stats
+              </p>
+            </div>
           </div>
-          <div className="h-72 lg:h-80 xl:h-72 flex items-center justify-center">
-            <Doughnut data={attendanceDistribution} options={distributionChartOptions} />
+          <div className="sm:ml-auto">
+            <FiltersSection
+              selectedTeam={selectedTeam}
+              onTeamChange={setSelectedTeam}
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+              teams={teams}
+              teamsLoading={teamsLoading}
+            />
           </div>
         </div>
+      </div>
 
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {overviewStats.map((stat, index) => (
+          <OverviewCards key={index} {...stat} />
+        ))}
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid gap-6 lg:grid-cols-5">
+        {/* Attendance Distribution Chart */}
+        <Card className="relative overflow-hidden col-span-2">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent" />
+          <CardHeader className="relative z-10">
+            <div className="flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-primary shadow-lg">
+                <BarChart3 className="size-5 text-primary-foreground" />
+              </div>
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  Attendance Distribution
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">
+                  Overall attendance patterns
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="h-80">
+              <Doughnut
+                data={attendanceDistribution}
+                options={distributionChartOptions}
+              />
+            </div>
+          </CardContent>
+        </Card>
         {/* Trends Chart */}
-        <div className="border rounded-lg bg-card p-6">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              📈 Attendance Trends
-            </h3>
-            <p className="text-sm text-muted-foreground">Performance over time</p>
-          </div>
-          {trendsChartData ? (
-            <div className="h-72 lg:h-80 xl:h-72">
-              <Line className='h-full w-full' data={trendsChartData} options={trendsChartOptions} />
-            </div>
-          ) : (
-            <div className="h-72 lg:h-80 xl:h-72 flex flex-col items-center justify-center space-y-4">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                <BarChart3 className="h-8 w-8 text-muted-foreground" />
+        <Card className="relative overflow-hidden col-span-3">
+          <CardHeader className="relative z-10">
+            <div className="flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-primary shadow-lg">
+                <Activity className="size-5 text-primary-foreground" />
               </div>
-              <div className="text-center space-y-1">
-                <p className="text-muted-foreground font-medium">No trends data available</p>
-                <p className="text-xs text-muted-foreground">Check back once more attendance data is recorded</p>
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  Attendance Trends
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">
+                  Performance over time
+                </CardDescription>
               </div>
             </div>
-          )}
-        </div>
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="h-80">
+              {trendsChartData ? (
+                <Line
+                  className="h-full w-full"
+                  data={trendsChartData}
+                  options={trendsChartOptions}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full space-y-4">
+                  <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                    <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">
+                      No trends data available
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      Check back once more attendance data is recorded
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

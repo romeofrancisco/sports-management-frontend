@@ -1,86 +1,88 @@
 import React from "react";
 import { Users, CheckCircle, Target, TrendingUp } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const QuickStatsOverview = ({ attendanceSummary, metricsSummary, playerImprovements }) => {
+  const cards = [
+    {
+      title: "Total Players",
+      value: attendanceSummary.total_players,
+      description: "Total players in the training session",
+      icon: <Users className="h-5 w-5 text-primary-foreground" />,
+      color: "from-primary via-primary/90 to-primary/80",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+      textAccent: "text-primary",
+    },
+    {
+      title: "Attendance Rate",
+      value: `${attendanceSummary.attendance_rate}%`,
+      description: "Percentage of players who attended",
+      icon: <CheckCircle className="h-5 w-5 text-secondary-foreground" />,
+      color: "from-secondary via-secondary/90 to-secondary/80",
+      bgColor: "bg-secondary/8",
+      borderColor: "border-secondary/30",
+      iconBg: "bg-secondary",
+      textAccent: "text-secondary",
+    },
+    {
+      title: "Metrics Recorded",
+      value: metricsSummary.total_metrics_recorded,
+      description: "Total performance metrics captured",
+      icon: <Target className="h-5 w-5 text-white" />,
+      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
+      bgColor: "bg-orange-500/8",
+      borderColor: "border-orange-500/30",
+      iconBg: "bg-orange-500",
+      textAccent: "text-orange-600",
+    },
+    {
+      title: "Players Improved",
+      value: playerImprovements
+        ? playerImprovements.filter(
+            (p) => p.overall_improvement_percentage > 0
+          ).length
+        : 0,
+      description: "Players showing performance improvement",
+      icon: <TrendingUp className="h-5 w-5 text-white" />,
+      color: "from-green-500 via-green-500/90 to-green-500/80",
+      bgColor: "bg-green-500/8",
+      borderColor: "border-green-500/30",
+      iconBg: "bg-green-500",
+      textAccent: "text-green-600",
+    },
+  ];
+
   return (
     <div className="animate-in fade-in-50 duration-500 delay-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-card via-card/95 to-primary/5">
-          <CardContent className="p-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-lg">
-                <Users className="h-5 w-5 text-primary-foreground" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card, index) => (
+          <Card
+            key={index}
+            className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 ${card.bgColor} ${card.borderColor} border`}
+          >
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-5`}
+            />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {card.title}
+              </CardTitle>
+              <div
+                className={`p-2 rounded-lg ${card.iconBg} shadow-lg transition-transform duration-300 hover:scale-110`}
+              >
+                {card.icon}
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Total Players
-                </p>
-                <p className="text-2xl font-bold text-primary">
-                  {attendanceSummary.total_players}
-                </p>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className={`text-2xl font-bold ${card.textAccent} mb-1`}>
+                {card.value}
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-2 border-secondary/20 bg-gradient-to-br from-card via-card/95 to-secondary/5">
-          <CardContent className="p-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg shadow-lg">
-                <CheckCircle className="h-5 w-5 text-secondary-foreground" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Attendance Rate
-                </p>
-                <p className="text-2xl font-bold text-secondary">
-                  {attendanceSummary.attendance_rate}%
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-card via-card/95 to-primary/5">
-          <CardContent className="p-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-lg">
-                <Target className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Metrics Recorded
-                </p>
-                <p className="text-2xl font-bold text-primary">
-                  {metricsSummary.total_metrics_recorded}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-2 border-secondary/20 bg-gradient-to-br from-card via-card/95 to-secondary/5">
-          <CardContent className="p-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg shadow-lg">
-                <TrendingUp className="h-5 w-5 text-secondary-foreground" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Players Improved
-                </p>
-                <p className="text-2xl font-bold text-secondary">
-                  {playerImprovements
-                    ? playerImprovements.filter(
-                        (p) => p.overall_improvement_percentage > 0
-                      ).length
-                    : 0}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <p className="text-xs text-muted-foreground">{card.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );

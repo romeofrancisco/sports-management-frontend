@@ -45,8 +45,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       
-      if (data.type === "score_update") {
-        // Update React Query cache for game details
+      if (data.type === "score_update") {        // Update React Query cache for game details
         queryClient.setQueryData(
           ['game', gameId.toString()],
           (oldData) => {
@@ -58,23 +57,22 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
               away_team_score: data.away_team_score,
               status: data.status,
               current_period: data.current_period,
+              sport_scoring_type: data.sport_scoring_type || oldData.sport_scoring_type,
             };
           }
-        );
-
-        // Update Redux store if available - merge with existing data
+        );        // Update Redux store if available - merge with existing data
         dispatch(updateGameScores({
           home_team_score: data.home_team_score,
           away_team_score: data.away_team_score,
           status: data.status,
           current_period: data.current_period,
+          sport_scoring_type: data.sport_scoring_type,
         }));
 
         // Update all season-games cache entries that contain this game WITHOUT invalidating
         const queryCache = queryClient.getQueryCache();
         const seasonGameQueries = queryCache.findAll({ queryKey: ['season-games'] });
-        
-        seasonGameQueries.forEach((query) => {
+          seasonGameQueries.forEach((query) => {
           if (query.state.data && Array.isArray(query.state.data)) {
             const updatedData = query.state.data.map(game => {
               if (game.id === parseInt(gameId)) {
@@ -84,6 +82,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
                   away_team_score: data.away_team_score,
                   status: data.status,
                   current_period: data.current_period,
+                  sport_scoring_type: data.sport_scoring_type || game.sport_scoring_type,
                 };
               }
               return game;
@@ -91,9 +90,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
             
             queryClient.setQueryData(query.queryKey, updatedData);
           }
-        });
-
-        // Update general games cache entries WITHOUT invalidating
+        });        // Update general games cache entries WITHOUT invalidating
         const gameQueries = queryCache.findAll({ queryKey: ['games'] });
         gameQueries.forEach((query) => {
           if (query.state.data && Array.isArray(query.state.data)) {
@@ -105,6 +102,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
                   away_team_score: data.away_team_score,
                   status: data.status,
                   current_period: data.current_period,
+                  sport_scoring_type: data.sport_scoring_type || game.sport_scoring_type,
                 };
               }
               return game;
@@ -112,9 +110,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
             
             queryClient.setQueryData(query.queryKey, updatedData);
           }
-        });
-
-        // Call custom onScoreUpdate callback if provided
+        });        // Call custom onScoreUpdate callback if provided
         if (onScoreUpdateRef.current && typeof onScoreUpdateRef.current === 'function') {
           onScoreUpdateRef.current({
             gameId: data.game_id,
@@ -126,6 +122,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
             awayTeamName: data.away_team_name,
             status: data.status,
             currentPeriod: data.current_period,
+            sportScoringType: data.sport_scoring_type,
             timestamp: data.timestamp
           });
         }

@@ -20,6 +20,96 @@ import {
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
+// Helper function to extract error message from Django REST Framework response
+const extractErrorMessage = (response, defaultMessage = "An error occurred") => {
+  if (!response?.data) return defaultMessage;
+  
+  const data = response.data;
+  
+  // Check for direct string error
+  if (typeof data === 'string') {
+    // Handle string representation of ErrorDetail array like "[ErrorDetail(string='...', code='invalid')]"
+    if (data.includes('ErrorDetail(string=')) {
+      const match = data.match(/ErrorDetail\(string='([^']+)'/);
+      if (match) {
+        return match[1];
+      }
+    }
+    return data;
+  }
+  
+  // Check for error field (string)
+  if (typeof data.error === 'string') {
+    // Handle case where error is a string representation of ErrorDetail array
+    if (data.error.includes('ErrorDetail(string=')) {
+      const match = data.error.match(/ErrorDetail\(string='([^']+)'/);
+      if (match) {
+        return match[1];
+      }
+    }
+    return data.error;
+  }
+  
+  // Check for detail field
+  if (data.detail) {
+    // Handle detail field that might be an ErrorDetail object or string representation
+    if (typeof data.detail === 'string' && data.detail.includes('ErrorDetail(string=')) {
+      const match = data.detail.match(/ErrorDetail\(string='([^']+)'/);
+      if (match) {
+        return match[1];
+      }
+    }
+    // Handle ErrorDetail object
+    if (typeof data.detail === 'object' && data.detail.string) {
+      return data.detail.string;
+    }
+    return data.detail;
+  }
+  
+  // Check for message field
+  if (data.message) {
+    return data.message;
+  }
+  
+  // Handle non_field_errors array (common Django format)
+  if (Array.isArray(data.non_field_errors) && data.non_field_errors.length > 0) {
+    const firstError = data.non_field_errors[0];
+    // Handle ErrorDetail objects
+    if (typeof firstError === 'object' && firstError.string) {
+      return firstError.string;
+    } else if (typeof firstError === 'string') {
+      // Handle string representation of ErrorDetail
+      if (firstError.includes('ErrorDetail(string=')) {
+        const match = firstError.match(/ErrorDetail\(string='([^']+)'/);
+        if (match) {
+          return match[1];
+        }
+      }
+      return firstError;
+    }
+  }
+  
+  // Handle direct array of ErrorDetail objects (when ValidationError is raised with string)
+  if (Array.isArray(data) && data.length > 0) {
+    const firstError = data[0];
+    // Handle ErrorDetail objects
+    if (typeof firstError === 'object' && firstError.string) {
+      return firstError.string;
+    } else if (typeof firstError === 'string') {
+      // Handle string representation of ErrorDetail
+      if (firstError.includes('ErrorDetail(string=')) {
+        const match = firstError.match(/ErrorDetail\(string='([^']+)'/);
+        if (match) {
+          return match[1];
+        }
+      }
+      return firstError;
+    }
+  }
+  
+  return defaultMessage;
+};
+
 export const useRecordStat = (gameId) => {
   const queryClient = useQueryClient();
 
@@ -52,9 +142,7 @@ export const useRecordStat = (gameId) => {
           home_team_score: newHomeScore,
           away_team_score: newAwayScore,
         };
-      });
-
-      return { previousGame }; // for rollback if needed
+      });      return { previousGame }; // for rollback if needed
     },
 
     onError: ({ response }, newStat, context) => {
@@ -64,12 +152,11 @@ export const useRecordStat = (gameId) => {
           context.previousGame
         );
       }
-      if (response.data.error) {
-        toast.info("Cannot Record Stat", {
-          description: response.data.error,
-          richColors: true,
-        });
-      }
+      const errorMessage = extractErrorMessage(response, "Cannot record stat");
+      toast.info("Cannot Record Stat", {
+        description: errorMessage,
+        richColors: true,
+      });
     },
 
     onSettled: () => {
@@ -256,10 +343,10 @@ export const useRecordStatFast = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }
-      if (response.data.error) {
+      }      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(response, "Cannot record stat");
         toast.info("Cannot Record Stat", {
-          description: response.data.error,
+          description: errorMessage,
           richColors: true,
         });
       }
@@ -330,10 +417,10 @@ export const useBulkRecordStats = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }
-      if (response?.data?.error) {
+      }      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(response, "Bulk recording failed");
         toast.error("Bulk Recording Failed", {
-          description: response.data.error,
+          description: errorMessage,
           richColors: true,
         });
       }
@@ -404,10 +491,10 @@ export const useBulkRecordStatsOptimized = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }
-      if (response?.data?.error) {
+      }      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(response, "Optimized bulk recording failed");
         toast.error("Optimized Bulk Recording Failed", {
-          description: response.data.error,
+          description: errorMessage,
           richColors: true,
         });
       }

@@ -10,7 +10,8 @@ import { ViewResultButton } from "./ViewResultButton";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { useGameScoreWebSocket } from "@/hooks/useGameScoreWebSocket";
 
-export const GameCard = React.memo(  ({ game, onEditGame }) => {
+export const GameCard = React.memo(
+  ({ game, onEditGame }) => {
     // Local state for real-time updates
     const [liveGameData, setLiveGameData] = useState(game);
     const [showScoreNotification, setShowScoreNotification] = useState(false);
@@ -40,12 +41,14 @@ export const GameCard = React.memo(  ({ game, onEditGame }) => {
           away_team_score: scoreData.awayScore,
           status: scoreData.status,
           current_period: scoreData.currentPeriod,
+          sport_scoring_type: scoreData.sportScoringType || prev.sport_scoring_type,
         }));
 
         // Show score update notification
         setShowScoreNotification(true);
         setTimeout(() => setShowScoreNotification(false), 3000);
-      },      (statusData) => {
+      },
+      (statusData) => {
         // Update local game data with real-time status changes
         setLiveGameData((prev) => ({
           ...prev,
@@ -70,15 +73,19 @@ export const GameCard = React.memo(  ({ game, onEditGame }) => {
     const awayReady = lineupStatus.away_ready;
     const bothReady = homeReady && awayReady;
 
-    const formatTime = (dateString) => {
-      if (!dateString) return "";
-      const date = new Date(dateString);
+    const formatTime = (timeString) => {
+      if (!timeString) return "TBA";
+      // timeString is expected to be in 'HH:mm:ss' or 'HH:mm' format
+      const [hours, minutes] = timeString.split(":");
+      const date = new Date();
+      date.setHours(Number(hours), Number(minutes), 0, 0);
       return format(date, "h:mm a");
     };
 
     const formatDate = (dateString) => {
-      if (!dateString) return "";
-      const date = new Date(dateString);
+      if (!dateString) return "TBA";
+      // dateString is expected to be in 'YYYY-MM-DD' format
+      const date = new Date(dateString + "T00:00:00");
       return format(date, "MMM d, yyyy");
     };
 
@@ -87,8 +94,7 @@ export const GameCard = React.memo(  ({ game, onEditGame }) => {
       const parts = duration.split(":");
       return `${parts[0]}h ${parts[1]}m`;
     }; // Status configuration
-    const getStatusConfig = () => {
-      if (isLive) {
+    const getStatusConfig = () => {      if (isLive) {
         return {
           badge: (
             <div className="flex items-center gap-2">
@@ -183,7 +189,7 @@ export const GameCard = React.memo(  ({ game, onEditGame }) => {
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ClockIcon className="h-4 w-4 text-secondary/70" />
                   <span className="font-medium whitespace-nowrap">
-                    {formatTime(liveGameData.date)}
+                    {formatTime(liveGameData.time)}
                   </span>
                 </div>
               </div>
@@ -250,7 +256,8 @@ export const GameCard = React.memo(  ({ game, onEditGame }) => {
         <CardContent className="pt-4 border-t border-secondary/10 space-y-4">
           {/* Teams Display */}
           <div className="relative">
-            {" "}            <TeamsDisplay
+            {" "}
+            <TeamsDisplay
               homeTeam={homeTeam}
               awayTeam={awayTeam}
               isCompleted={isCompleted}

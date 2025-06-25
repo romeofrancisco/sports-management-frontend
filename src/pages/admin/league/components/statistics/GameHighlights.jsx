@@ -9,9 +9,11 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { formatShortDate } from "@/utils/formatDate";
+import { getSeasonYear } from "../../utils";
 
 const GameHighlights = ({ comprehensiveStats }) => {
   const navigate = useNavigate();
+  console.log("GameHighlights", comprehensiveStats);
 
   if (!comprehensiveStats) {
     return null;
@@ -72,7 +74,7 @@ const GameHighlights = ({ comprehensiveStats }) => {
                               </div>
                               <span className="text-xs font-medium text-muted-foreground truncate">
                                 Set {set.set_number} - {set.season} (
-                                {set.season_year})
+                                {getSeasonYear(set.start_date, set.end_date)})
                               </span>
                             </div>
                             <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
@@ -141,7 +143,7 @@ const GameHighlights = ({ comprehensiveStats }) => {
                                 </div>
                                 <span className="text-xs font-medium text-muted-foreground truncate">
                                   Set {set.set_number} - {set.season} (
-                                  {set.season_year})
+                                  {getSeasonYear(set.start_date, set.end_date)})
                                 </span>
                               </div>
                               <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
@@ -241,7 +243,7 @@ const GameHighlights = ({ comprehensiveStats }) => {
                               {index + 1}
                             </div>
                             <span className="text-xs font-medium text-muted-foreground truncate">
-                              {game.season} ({game.season_year})
+                              {game.season} ({getSeasonYear(game.start_date, game.end_date)})
                             </span>
                           </div>
                           <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
@@ -304,7 +306,7 @@ const GameHighlights = ({ comprehensiveStats }) => {
                                 {index + 1}
                               </div>
                               <span className="text-xs font-medium text-muted-foreground truncate">
-                                {game.season} ({game.season_year})
+                                {game.season} ({getSeasonYear(game.start_date, game.end_date)})
                               </span>
                             </div>
                             <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">

@@ -29,7 +29,7 @@ const SessionInfoCard = ({ sessionInfo, formatDate }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="p-4 space-y-4 relative">
+        <CardContent className="space-y-4 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sessionInfo.date && (
               <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-primary/8 to-primary/4 border border-primary/20">

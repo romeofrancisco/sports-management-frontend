@@ -44,7 +44,7 @@ const SeasonStandings = ({ standings, sport }) => {
           </div>
         </CardHeader>
 
-        <CardContent className="relative p-6">
+        <CardContent className="relative">
           <DataTable
             columns={columns}
             data={standings}

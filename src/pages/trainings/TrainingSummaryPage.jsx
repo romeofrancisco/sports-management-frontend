@@ -202,41 +202,38 @@ const TrainingSummaryPage = () => {
         />
 
         {/* Main Content Grid - 3 Column Layout */}
-        <div className="animate-in fade-in-50 duration-500 delay-200">
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            {/* Left Column - Primary Content */}
-            <div className="xl:col-span-2 space-y-6">
-              {/* Metrics Section */}
-              <MetricsSummarySection metricsSummary={safeMetricsSummary} />
-              {/* Player Improvements Section */}
-              <PlayerImprovementsSection
-                playerImprovements={safePlayerImprovements}
-                metricsSummary={safeMetricsSummary}
-                getImprovementVariant={getImprovementVariant}
-                getPlayerInitials={getPlayerInitials}
-              />
-            </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Left Column - Primary Content */}
+          <div className="xl:col-span-2 space-y-6">
+            {/* Player Improvements Section */}
+            <PlayerImprovementsSection
+              playerImprovements={safePlayerImprovements}
+              metricsSummary={safeMetricsSummary}
+              getImprovementVariant={getImprovementVariant}
+              getPlayerInitials={getPlayerInitials}
+            />
+          </div>
 
-            {/* Right Sidebar - Session Info & Recommendations */}
-            <div className="xl:col-span-1 space-y-6">
-              {/* Session Details */}
-              <SessionInfoCard
-                sessionInfo={safeSessionInfo}
-                formatDate={formatDate}
-              />
-              {/* Attendance Summary */}
-              <AttendanceSummaryCard
-                attendanceSummary={safeAttendanceSummary}
-              />
+          {/* Right Sidebar - Session Info & Recommendations */}
+          <div className="xl:col-span-1 space-y-6">
+            {/* Session Details */}
+            <SessionInfoCard
+              sessionInfo={safeSessionInfo}
+              formatDate={formatDate}
+            />
+            {/* Attendance Summary */}
+            <AttendanceSummaryCard attendanceSummary={safeAttendanceSummary} />
 
-              {/* Effectiveness Score */}
-              <EffectivenessScoreCard
-                effectivenessScore={safeEffectivenessScore}
-              />
+            {/* Metrics Section */}
+            <MetricsSummarySection metricsSummary={safeMetricsSummary} />
 
-              {/* Training Recommendations */}
-              <RecommendationsCard recommendations={safeRecommendations} />
-            </div>
+            {/* Effectiveness Score */}
+            <EffectivenessScoreCard
+              effectivenessScore={safeEffectivenessScore}
+            />
+
+            {/* Training Recommendations
+            <RecommendationsCard recommendations={safeRecommendations} /> */}
           </div>
         </div>
       </div>
