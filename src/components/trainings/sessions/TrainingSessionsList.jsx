@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { PlusIcon, Table2, LayoutGrid, Target } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  useTrainingSessions,
-} from "@/hooks/useTrainings";
+import { useTrainingSessions } from "@/hooks/useTrainings";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
 import getTrainingSessionTableColumns from "../../table_columns/TrainingSessionTableColumns";
@@ -21,15 +19,16 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
   const [filter, setFilter] = useState({ search: "", team: "", date: "" });
-  
+
   const modals = {
     delete: useModal(),
   };
-    const { data, isLoading, isError, refetch } = useTrainingSessions(
+  const { data, isLoading, isError, refetch } = useTrainingSessions(
     filter,
     currentPage,
     pageSize
-  );  const sessions = data?.results || [];
+  );
+  const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
 
   // Function to handle manage session navigation
@@ -54,21 +53,21 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
           <div className="text-red-500">Error loading training sessions.</div>
         </TabContent>
       </TabLayout>
-    );  const columns = getTrainingSessionTableColumns({
+    );
+  const columns = getTrainingSessionTableColumns({
     onEdit: (session) => onEditSession?.(session),
     onDelete: (session) => {
       setSelectedSession(session);
       modals.delete.openModal();
     },
     onManage: handleManageSession,
-  });return (
+  });
+  return (
     <>
       {/* Enhanced Header with View Toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 p-4 md:p-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold text-foreground">
-            Sessions
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Sessions</h2>
           <div className="px-2 py-2 bg-primary/10 rounded-full flex">
             <span className="text-xs font-medium text-primary">
               {totalSessions} session{totalSessions !== 1 ? "s" : ""}
@@ -97,14 +96,11 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
           </Button>
         </div>
       </div>
-
       <div className="px-4 md:px-6 pb-4 md:pb-6">
         {/* Loading and Error States */}
         {isError ? (
           <div className="text-center py-16">
-            <div className="text-red-500">
-              Error loading training sessions.
-            </div>
+            <div className="text-red-500">Error loading training sessions.</div>
           </div>
         ) : (
           <>
@@ -157,20 +153,17 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    {sessions.map((session, index) => (
-                      <div
+                    {sessions.map((session) => (
+                      <TrainingSessionCard
                         key={session.id}
-                        className="animate-in fade-in-50 duration-500"
-                        style={{ animationDelay: `${index * 50}ms` }}
-                      >                        <TrainingSessionCard
-                          session={session}
-                          onEdit={() => onEditSession?.(session)}
-                          onDeleted={() => {
-                            setCurrentPage(1);
-                          }}
-                          onManage={() => handleManageSession(session)}
-                        />
-                      </div>
+                        session={session}
+                        onEdit={() => onEditSession?.(session)}
+                        onDelete={(session) => {
+                          setSelectedSession(session);
+                          modals.delete.openModal();
+                        }}
+                        onManage={() => handleManageSession(session)}
+                      />
                     ))}
                   </div>
                 )}
@@ -194,7 +187,8 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
             )}
           </>
         )}
-      </div>      {/* Modals */}
+      </div>{" "}
+      {/* Modals */}
       <DeleteTrainingSessionModal
         isOpen={modals.delete.isOpen}
         onClose={modals.delete.closeModal}

@@ -188,10 +188,9 @@ const TeamSidebar = ({
       {/* Hide QuickActions if user is player */}
       {!hasRole("Player") && <QuickActions team={teamSlug} />}
       <TeamUpcomingGamesSection games={upcomingGames} />
-      {/* Recent Games section moved to main content */}
-      {/* <TeamRecentGamesSection games={recentGames} /> */}
       <TeamUpcomingTrainingSection trainings={upcomingTrainings} />
-      {/* <TeamRecentTrainingSection trainings={recentTrainings} /> */}
+      <TeamRecentTrainingSection trainings={recentTrainings} />
+      <TeamRecentGamesSection games={recentGames} />
     </div>
   );
 };
@@ -286,7 +285,7 @@ const TeamDetails = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Primary Content */}
           <div className="xl:col-span-2 space-y-6">
-            <TeamKeyMetrics data={teamDetails} />{" "}
+            <TeamKeyMetrics data={teamDetails} />
             <TeamAnalyticsSection
               statistics={statistics}
               trainingEffectiveness={trainingEffectiveness}
@@ -296,19 +295,16 @@ const TeamDetails = () => {
               transformedPlayerProgress={transformedPlayerProgress}
               scoringAnalytics={scoringAnalytics}
             />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <TeamRecentGamesSection games={games.recent} />
-              <TeamRecentTrainingSection trainings={trainings.recent} />
-            </div>
+            {/* Removed recent games and trainings from main content */}
           </div>
 
           {/* Sidebar */}
           <TeamSidebar
             teamSlug={team}
             upcomingGames={games.upcoming}
-            recentGames={[]} // Hide recent games in sidebar
+            recentGames={games.recent}
             upcomingTrainings={trainings.upcoming}
-            recentTrainings={[]} // Hide recent trainings in sidebar
+            recentTrainings={trainings.recent}
           />
         </div>
       </section>

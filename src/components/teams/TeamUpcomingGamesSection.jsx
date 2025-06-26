@@ -31,7 +31,7 @@ const TeamUpcomingGamesSection = ({ games }) => {
       <CardContent>
         {games?.length > 0 ? (
           <div className="space-y-4">
-            {games.slice(0, 4).map((game, index) => (
+            {games.slice(0, 3).map((game, index) => (
               <div
                 key={game.id || index}
                 className="relative overflow-hidden border-2 border-secondary/20 rounded-xl p-4 bg-gradient-to-r from-secondary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
