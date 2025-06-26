@@ -17,6 +17,7 @@ const PlayerProgressMultiView = ({
   players = [],
   teamSlug = null,
   dateRange = null,
+  setDateRange = null,
   dateRangeParams = null,
   onDateChange,
 }) => {
@@ -36,7 +37,7 @@ const PlayerProgressMultiView = ({
     teamSlug,
     selectedMetric,
     dateRange: dateRange || dateRangeParams,
-  });// Enhanced No data message
+  }); // Enhanced No data message
   if (!isLoading && !metricsLoading && (!metrics || metrics.length === 0)) {
     return (
       <Card className="w-full border-0 bg-gradient-to-br from-muted/20 to-muted/5 shadow-lg">
@@ -88,75 +89,78 @@ const PlayerProgressMultiView = ({
           </div>
         </CardHeader>
       </Card>
-    );  }
+    );
+  }
   return (
-    <Card className="border shadow-sm overflow-hidden card-hover-effect">
-      <CardHeader className="bg-muted/30 pb-3 border-b">
-        <div className="flex items-baseline justify-between">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-primary/70" />
-            Team Comparison
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <CardDescription>
-              Compare performance metrics across multiple players
-            </CardDescription>
-            {players.length > 0 && (
-              <Badge variant="outline" className="bg-primary/10">
-                {players.length} Players
-              </Badge>
-            )}
+    <Card className="border pt-0 shadow-sm overflow-hidden">
+      <CardHeader className="bg-muted/30 p-6 border-b">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-primary shadow-lg">
+            <BarChart3 className="h-5 w-5 text-primary-foreground" />
           </div>
+          <div>
+            <CardTitle className="text-lg font-semibold text-foreground">
+              Player Progress Comparison
+            </CardTitle>
+            <CardDescription
+              className="text-sm text-muted-foreground truncate max-w-xs xl:max-w-md "
+              title="Compare performance metrics across multiple players in your team"
+            >
+              Compare performance metrics across multiple players in your team
+            </CardDescription>
+          </div>
+          <MultiChartHeader
+            metrics={metrics}
+            selectedMetric={selectedMetric}
+            setSelectedMetric={setSelectedMetric}
+            dateRange={dateRange}
+            onDateChange={setDateRange}
+          />
         </div>
-        <MultiChartHeader
-          metrics={metrics}
-          selectedMetric={selectedMetric}
-          setSelectedMetric={setSelectedMetric}
-          dateRange={dateRange}
-          onDateChange={onDateChange}
-        />
       </CardHeader>
-      <CardContent className="p-6">
-          {isLoading ? (
-            <div className="h-[500px] flex flex-col items-center justify-center space-y-6">
-              <div className="relative">
-                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-secondary/30 rounded-full animate-pulse"></div>
-              </div>
-              <div className="text-center space-y-2">
-                <p className="text-xl font-semibold text-foreground">
-                  Loading player data...
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Analyzing performance metrics and generating insights
-                </p>
-              </div>
-            </div>          ) : (
-            <div className="space-y-8">
-              {/* Chart Section */}
-              <div className="bg-gradient-to-br from-card/50 to-muted/20 rounded-lg p-6">
-                <PlayerProgressMultiChart
-                  chartData={chartData}
-                  playerColors={playerColors}
+      <CardContent>
+        {isLoading ? (
+          <div className="h-[500px] flex flex-col items-center justify-center space-y-6">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-secondary/30 rounded-full animate-pulse"></div>
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-xl font-semibold text-foreground">
+                Loading player data...
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Analyzing performance metrics and generating insights
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Chart Section */}
+            <div className="bg-gradient-to-br from-card/50 to-muted/20 rounded-lg">
+              <PlayerProgressMultiChart
+                chartData={chartData}
+                playerColors={playerColors}
+                multiPlayerData={multiPlayerData}
+                selectedMetricDetails={selectedMetricDetails}
+              />
+            </div>
+
+            {/* Improvements Section */}
+            {chartData.length > 0 && (
+              <div className="bg-gradient-to-br from-secondary/5 to-background rounded-lg p-6">
+                <PlayerImprovements
                   multiPlayerData={multiPlayerData}
+                  selectedMetric={selectedMetric}
                   selectedMetricDetails={selectedMetricDetails}
+                  playerColors={playerColors}
+                  isLoading={isLoading}
                 />
               </div>
-
-              {/* Improvements Section */}
-              {chartData.length > 0 && (
-                <div className="bg-gradient-to-br from-secondary/5 to-background rounded-lg p-6">
-                  <PlayerImprovements
-                    multiPlayerData={multiPlayerData}
-                    selectedMetric={selectedMetric}
-                    selectedMetricDetails={selectedMetricDetails}
-                    playerColors={playerColors}
-                    isLoading={isLoading}
-                  />
-                </div>
-              )}
-            </div>
-          )}</CardContent>
+            )}
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };

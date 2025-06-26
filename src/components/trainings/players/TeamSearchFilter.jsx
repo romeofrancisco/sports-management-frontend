@@ -18,7 +18,8 @@ const TeamSearchFilter = ({ sports, filters, onFilterChange }) => {
     if (onFilterChange) {
       onFilterChange(key, value);
     }
-  };  return (
+  };
+  return (
     <div className="space-y-4">
       {/* Search Input - Full width on mobile */}
       <div className="relative">

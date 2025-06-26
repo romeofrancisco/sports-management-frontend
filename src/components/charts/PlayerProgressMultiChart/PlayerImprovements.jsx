@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TrendingUp, TrendingDown, Minus, User, BarChart3 } from "lucide-react";
 
 /**
@@ -31,14 +32,23 @@ const PlayerImprovements = ({
   return (
     <div className="space-y-6">
       {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary/10 rounded-lg">
-          <BarChart3 className="h-5 w-5 text-primary" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm">
+            <BarChart3 className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+              {title}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Individual performance changes over time
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-muted-foreground">Individual performance changes over time</p>
-        </div>
+        <Badge variant="outline" className="bg-muted/50">
+          {Object.keys(multiPlayerData.results).length} Players
+        </Badge>
       </div>
 
       {/* Player Cards Grid */}
@@ -55,17 +65,24 @@ const PlayerImprovements = ({
             // Loading state with enhanced styling
             if (isLoading) {
               return (
-                <Card key={playerId} className="overflow-hidden">
-                  <CardHeader className="pb-3 bg-gradient-to-r from-muted/30 to-muted/10">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
-                      <div className="h-4 bg-muted rounded animate-pulse flex-1" />
+                <Card
+                  key={playerId}
+                  className="overflow-hidden border-0 shadow-md"
+                >
+                  <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-muted/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-muted rounded animate-pulse w-3/4" />
+                        <div className="h-3 bg-muted rounded animate-pulse w-1/2" />
+                      </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-4 text-center">
-                    <div className="space-y-2">
-                      <div className="h-3 bg-muted rounded animate-pulse mx-auto w-16" />
-                      <div className="h-2 bg-muted rounded animate-pulse mx-auto w-24" />
+                  <CardContent className="pt-4">
+                    <div className="space-y-3">
+                      <div className="h-3 bg-muted rounded animate-pulse" />
+                      <div className="h-8 bg-muted rounded animate-pulse" />
+                      <div className="h-3 bg-muted rounded animate-pulse w-2/3 mx-auto" />
                     </div>
                   </CardContent>
                 </Card>
@@ -75,25 +92,48 @@ const PlayerImprovements = ({
             // Insufficient data state with enhanced styling
             if (playerRecords.length < 2) {
               return (
-                <Card key={playerId} className="overflow-hidden border-dashed">
-                  <CardHeader className="pb-3 bg-gradient-to-r from-muted/20 to-muted/5">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-muted/30 rounded-full">
-                        <User className="h-4 w-4 text-muted-foreground" />
+                <Card
+                  key={playerId}
+                  className="overflow-hidden border-dashed border-muted shadow-sm"
+                >
+                  <CardHeader className="bg-gradient-to-r from-muted/30 to-muted/10">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
+                        <AvatarImage
+                          src={playerData.profile}
+                          alt={playerData.player_name}
+                        />
+                        <AvatarFallback className="bg-muted text-muted-foreground">
+                          {playerData.player_name
+                            ?.split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm truncate">
+                          {playerData.player_name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {playerData.team_name}
+                        </p>
                       </div>
-                      <h4 className="font-medium text-sm truncate">
-                        {playerData.player_name}
-                      </h4>
                     </div>
                   </CardHeader>
                   <CardContent className="pt-4 text-center">
-                    <div className="space-y-2">
-                      <div className="p-2 bg-muted/20 rounded-lg inline-flex">
-                        <Minus className="h-4 w-4 text-muted-foreground" />
+                    <div className="space-y-3">
+                      <div className="p-3 bg-muted/20 rounded-xl inline-flex">
+                        <Minus className="h-5 w-5 text-muted-foreground" />
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Insufficient data for analysis
-                      </p>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          No Data Available
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Need at least 2 records for analysis
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -120,26 +160,57 @@ const PlayerImprovements = ({
             const Icon = improvementIcon;
 
             return (
-              <Card key={playerId} className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">                <CardHeader className={`pb-3 bg-gradient-to-r ${
-                  isImproved 
-                    ? 'from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/50' 
-                    : 'from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/50'
-                }`}>
+              <Card
+                key={playerId}
+                className="overflow-hidden pt-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md group"
+              >
+                <CardHeader
+                  className={`py-3 bg-gradient-to-r ${
+                    isImproved
+                      ? "from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30"
+                      : "from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30"
+                  } group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300`}
+                >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div
-                        className="w-3 h-3 rounded-full shadow-sm"
-                        style={{
-                          backgroundColor: playerColors[playerId] || "#8884d8",
-                        }}
-                      />
-                      <h4 className="font-medium text-sm truncate">
-                        {playerData.player_name}
-                      </h4>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="relative">
+                        <Avatar className="h-10 w-10 border-2 border-white shadow-sm ring-2 ring-primary/10">
+                          <AvatarImage
+                            src={playerData.profile_picture}
+                            alt={playerData.player_name}
+                          />
+                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold">
+                            {playerData.player_name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div
+                          className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                          style={{
+                            backgroundColor:
+                              playerColors[playerId] || "#8884d8",
+                          }}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm truncate text-foreground">
+                          {playerData.player_name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {playerData.team_name}
+                        </p>
+                      </div>
                     </div>
-                    <Badge 
+                    <Badge
                       variant={isImproved ? "default" : "destructive"}
-                      className="text-xs"
+                      className={`text-xs font-semibold shadow-sm ${
+                        isImproved
+                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-100"
+                          : "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-100"
+                      }`}
                     >
                       <Icon className="h-3 w-3 mr-1" />
                       {improvementPercentage > 0 ? "+" : ""}
@@ -147,36 +218,60 @@ const PlayerImprovements = ({
                     </Badge>
                   </div>
                 </CardHeader>
-                
-                <CardContent className="pt-4">
-                  <div className="space-y-3">
+                <CardContent className="pt-4 pb-5">
+                  <div className="space-y-4">
                     {/* Performance Range */}
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <div className="grid grid-cols-2 gap-3 text-center">
-                        <div>
-                          <p className="text-xs text-muted-foreground font-medium">From</p>
-                          <p className="text-sm font-semibold">
+                    <div className="bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl p-4 border border-muted/20">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-1 mb-1">
+                            <div className="w-2 h-2 rounded-full bg-muted-foreground/40"></div>
+                            <p className="text-xs text-muted-foreground font-medium">
+                              Initial
+                            </p>
+                          </div>
+                          <p className="text-lg font-bold text-foreground">
                             {firstPoint.value.toFixed(1)}
-                            <span className="text-xs text-muted-foreground ml-1">
-                              {selectedMetricDetails?.unit}
-                            </span>
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {selectedMetricDetails?.unit}
                           </p>
                         </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground font-medium">To</p>
-                          <p className="text-sm font-semibold">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-1 mb-1">
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                            <p className="text-xs text-muted-foreground font-medium">
+                              Current
+                            </p>
+                          </div>
+                          <p className="text-lg font-bold text-foreground">
                             {lastPoint.value.toFixed(1)}
-                            <span className="text-xs text-muted-foreground ml-1">
-                              {selectedMetricDetails?.unit}
-                            </span>
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {selectedMetricDetails?.unit}
                           </p>
                         </div>
                       </div>
-                    </div>                    {/* Training Sessions Count */}
-                    <div className="text-center">
-                      <Badge variant="outline" className="text-xs">
-                        {playerRecords.length} training session{playerRecords.length !== 1 ? 's' : ''}
+                    </div>
+
+                    {/* Additional Stats */}
+                    <div className="flex items-center justify-between">
+                      <Badge
+                        variant="outline"
+                        className="text-xs bg-muted/50 hover:bg-muted/70"
+                      >
+                        {playerRecords.length} Sessions
                       </Badge>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">
+                          Attendance
+                        </p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {playerData.attendance_rate
+                            ? `${playerData.attendance_rate}%`
+                            : "N/A"}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
