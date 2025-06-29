@@ -22,7 +22,7 @@ const TeamSide = ({ players }) => {
         <button
           onClick={() => handlePlayerClick(player)}
           key={player.id}
-          className={`aspect-auto border-2 cursor-pointer min-h-12 rounded-lg grid grid-cols-[auto_1fr] items-center justify-center px-2 lg:px-5 ${
+          className={`aspect-auto border-2 cursor-pointer min-h-12 rounded-lg grid grid-cols-[auto_1fr] items-center justify-center xl:px-5 ${
             playerId === player.id
               ? "bg-primary text-white opacity-100"
               : "bg-muted text-muted-foreground hover:bg-muted/50 hover:text-foreground/80 transition-all duration-300"

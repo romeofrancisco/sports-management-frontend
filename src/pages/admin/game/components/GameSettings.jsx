@@ -8,6 +8,7 @@ import {
   Flag,
   Undo2,
   BarChart3,
+  Layout,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,7 +29,7 @@ import { reset } from "@/store/slices/playerStatSlice";
 import { getPeriodLabel } from "@/constants/sport";
 import { useUndoLastStat } from "@/hooks/useStats";
 
-const GameSettings = () => {
+const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
   const dispatch = useDispatch();
   const { scoring_type } = useSelector((state) => state.sport);
   const { game_id } = useSelector((state) => state.game);
@@ -57,6 +58,13 @@ const GameSettings = () => {
     setOpen(false); // Close the dropdown menu
   };
 
+  const handleToggleLayoutMode = () => {
+    if (onToggleLayoutMode) {
+      onToggleLayoutMode();
+    }
+    setOpen(false); // Close the dropdown menu
+  };
+
   return (
     <>
       <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -72,7 +80,13 @@ const GameSettings = () => {
         </DropdownMenuTrigger>{" "}
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Game Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />          <DropdownMenuItem onClick={() => handleStatAction("stats")}>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleToggleLayoutMode}>
+            <Layout className="mr-2 h-4 w-4" />
+            <span>{isLayoutMode ? "Exit Layout Mode" : "Modify Layout"}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => handleStatAction("stats")}>
             <ChartColumn className="mr-2 h-4 w-4" />
             <span>Summary Stats</span>
           </DropdownMenuItem>
