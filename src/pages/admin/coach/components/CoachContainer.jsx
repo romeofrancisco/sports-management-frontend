@@ -22,7 +22,7 @@ const CoachContainer = () => {
 
   const [debouncedSearch] = useDebounce(filter.search, 500);
   const debouncedFilter = { ...filter, search: debouncedSearch };
-  
+
   const { data, isLoading, isError } = useCoaches(
     debouncedFilter,
     currentPage,
@@ -55,10 +55,11 @@ const CoachContainer = () => {
 
   return (
     <div className="space-y-6">
-      {" "}      {/* Filter Section */}
+      {/* Filter Section */}
       <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4 border border-primary/10 shadow-sm">
         <CoachFilterBar filter={filter} setFilter={handleFilterChange} />
-      </div>      {/* Content Section */}
+      </div>
+      {/* Content Section */}
       <div className="bg-gradient-to-br from-card/60 via-card/40 to-primary/5 rounded-xl p-6 border-2 border-primary/10 shadow-xl">
         {/* Stats Header - Always visible */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-primary/10">
@@ -113,8 +114,10 @@ const CoachContainer = () => {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <ContentLoading />
-          </div>        ) : coaches && coaches.length > 0 ? (
-          <>{/* Coaches Content - Cards or Table */}
+          </div>
+        ) : coaches && coaches.length > 0 ? (
+          <>
+            {/* Coaches Content - Cards or Table */}
             {viewMode === "cards" ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -172,7 +175,7 @@ const CoachContainer = () => {
             </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
               No Coaches Found
-            </h3>{" "}
+            </h3>
             <p className="text-muted-foreground max-w-md">
               {filter.search || filter.sex || filter.sport
                 ? "No coaches match your current filter criteria. Try adjusting your search or filters."

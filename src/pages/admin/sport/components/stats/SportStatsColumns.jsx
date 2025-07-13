@@ -19,7 +19,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -33,7 +33,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -47,7 +47,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -61,7 +61,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -75,7 +75,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -89,7 +89,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900" />
+          <CircleCheck size={20} className="text-green-600" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -102,7 +102,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900 self-center" />
+          <CircleCheck size={20} className="text-green-600 self-center" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -116,7 +116,7 @@ const baseColumns = [
     cell: ({ getValue }) => (
       <div className="flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-red-900 self-center" />
+          <CircleCheck size={20} className="text-green-600 self-center" />
         ) : (
           <CircleX size={20} className="text-red-700" />
         )}
@@ -162,7 +162,7 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         cell: ({ getValue }) => (
           <div className="flex justify-center">
             {getValue() ? (
-              <CircleCheck size={20} className="text-red-900 self-center" />
+              <CircleCheck size={20} className="text-green-600 self-center" />
             ) : (
               <CircleX size={20} className="text-red-700" />
             )}

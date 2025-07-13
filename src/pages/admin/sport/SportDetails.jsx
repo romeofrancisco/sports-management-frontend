@@ -1,27 +1,24 @@
 import React from "react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
-import SportStatsView from "./components/SportStatsView";
-import SportFormulasView from "./components/SportFormulasView";
-import SportLeadersView from "./components/SportLeadersView";
-import SportPositionsView from "./components/SportPositionsView";
+import {
+  SportStatsView,
+  SportFormulasView,
+  SportLeadersView,
+  SportPositionsView,
+} from "./components";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useSportDetails } from "@/hooks/useSports";
 import { cn } from "@/lib/utils";
-import {
-  CheckCircle,
-  Calculator,
-  Users,
-  Trophy
-} from "lucide-react";
+import { CheckCircle, Calculator, Users, Trophy } from "lucide-react";
 
 const Sport = () => {
   const { sport } = useParams();
   const location = useLocation();
   const { data: sportDetails } = useSportDetails(sport);
-  
+
   // Get current page from URL path
   const currentPath = location.pathname;
-  
+
   const getCurrentPage = () => {
     if (currentPath.includes("/stats")) return "stats";
     if (currentPath.includes("/formulas")) return "formulas";
@@ -90,43 +87,41 @@ const Sport = () => {
         backButtonPath="/sports"
       />
 
-      <div className="container mx-auto px-4 py-6">
-        {/* Navigation Links */}
-        <div className="mb-4">
-          <nav className="border-b border-border">
-            <div className="flex space-x-3 overflow-x-auto">
-              {navigationItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <Link
-                    key={item.key}
-                    to={item.path}
+      {/* Navigation Links */}
+      <div className="mb-4">
+        <nav className="border-b border-border">
+          <div className="flex space-x-3 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.key}
+                  to={item.path}
+                  className={cn(
+                    "group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200",
+                    currentPage === item.key
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                  )}
+                >
+                  <IconComponent
                     className={cn(
-                      "group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200",
+                      "mr-2 h-4 w-4 transition-colors duration-200",
                       currentPage === item.key
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                        ? "text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
                     )}
-                  >
-                    <IconComponent
-                      className={cn(
-                        "mr-2 h-4 w-4 transition-colors duration-200",
-                        currentPage === item.key
-                          ? "text-primary"
-                          : "text-muted-foreground group-hover:text-foreground"
-                      )}
-                    />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        </div>
-
-        {/* Content */}
-        {renderContent()}
+                  />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       </div>
+
+      {/* Content */}
+      {renderContent()}
     </div>
   );
 };
