@@ -24,7 +24,8 @@ const ControlledSelect = ({
   secondaryLabel = "",
   labelKey = "label",
   size = "",
-  disabled = false
+  disabled = false,
+  rules
 }) => {
   return (
 
@@ -40,8 +41,12 @@ const ControlledSelect = ({
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => (
-          <Select value={String(field.value)} onValueChange={field.onChange}>
+          <Select 
+            value={field.value ? String(field.value) : ""} 
+            onValueChange={field.onChange}
+          >
             <SelectTrigger className="w-full" size={size} disabled={disabled}>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>

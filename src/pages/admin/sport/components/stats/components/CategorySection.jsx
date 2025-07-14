@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { getCategoryIcon, getCategoryColors } from "../utils/statsCategories";
+import { getCategoryIcon, getCategoryColors } from "../utils/statsCategories.jsx";
 import StatCard from "./StatCard";
 
 const CategorySection = ({ 

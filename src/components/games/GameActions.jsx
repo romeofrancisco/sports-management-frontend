@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FileTextIcon, Users, Play, EditIcon, UserCog } from "lucide-react";
+import { FileTextIcon, Users, Play, EditIcon, UserCog, Trash2 } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import CoachAssignmentModal from "@/components/modals/CoachAssignmentModal";
+import DeleteGameModal from "@/components/modals/DeleteGameModal";
 
 export const GameActions = ({
   game,
@@ -18,15 +19,18 @@ export const GameActions = ({
   onEditGame,
 }) => {
   const navigate = useNavigate();
-  const { isAdmin } = useRolePermissions();
+  const { isAdmin, permissions } = useRolePermissions();
   const { requirePermissionForAction } = useCoachPermissions();
   const [selectedGame, setSelectedGame] = useState(null);
   const [showStartGameConfirmation, setShowStartGameConfirmation] =
     useState(false);
   const startingLineupModal = useModal();
   const coachAssignmentModal = useModal();
+  const deleteGameModal = useModal();
 
   const isLeagueGame = game?.type === "league";
+  const isPracticeGame = game?.type === "practice";
+  const canDeleteGame = permissions.games.delete(game);
 
   const handleResultClick = () => {
     navigate(`/games/${game.id}/game-result`);
@@ -61,11 +65,17 @@ export const GameActions = ({
     if (onEditGame) {
       onEditGame(game);
     }
-  }; // Clear selectedGame when modal is fully closed
+  };
+
+  const handleDeleteGame = () => {
+    setSelectedGame(game);
+    deleteGameModal.openModal();
+  };  // Clear selectedGame when modal is fully closed
   useEffect(() => {
     if (
       !startingLineupModal.isOpen &&
       !coachAssignmentModal.isOpen &&
+      !deleteGameModal.isOpen &&
       selectedGame
     ) {
       const timer = setTimeout(() => {
@@ -73,7 +83,7 @@ export const GameActions = ({
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [startingLineupModal.isOpen, coachAssignmentModal.isOpen, selectedGame]);
+  }, [startingLineupModal.isOpen, coachAssignmentModal.isOpen, deleteGameModal.isOpen, selectedGame]);
   return (
     <>
       {" "}
@@ -89,6 +99,18 @@ export const GameActions = ({
           >
             <EditIcon className="mr-1.5 h-3.5 w-3.5" />
             Update
+          </Button>
+        )}
+        {/* Delete button for practice games only */}
+        {isPracticeGame && canDeleteGame && (
+          <Button
+            onClick={handleDeleteGame}
+            variant="outline"
+            size="sm"
+            className="border-red-500/50 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500 transition-all duration-300"
+          >
+            <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+            Delete
           </Button>
         )}
         {/* Coach Assignment for League Games - Admin Only */}
@@ -158,6 +180,14 @@ export const GameActions = ({
         isOpen={coachAssignmentModal.isOpen}
         onClose={() => {
           coachAssignmentModal.closeModal();
+        }}
+        game={selectedGame}
+      />
+      {/* Delete Game Modal */}
+      <DeleteGameModal
+        isOpen={deleteGameModal.isOpen}
+        onClose={() => {
+          deleteGameModal.closeModal();
         }}
         game={selectedGame}
       />

@@ -2,6 +2,7 @@ import React from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -9,14 +10,11 @@ import TrainingSessionForm from "@/components/forms/TrainingSessionForm";
 import { useTrainingSession } from "@/hooks/useTrainings";
 import { useSelector } from "react-redux";
 import { useTeams } from "@/hooks/useTeams";
-import { useTrainingCategories } from "@/hooks/useTrainings";
 import ContentLoading from "@/components/common/ContentLoading";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar, Settings, Dumbbell } from "lucide-react";
 
-const TrainingSessionFormDialog = ({
-  open,
-  onOpenChange,
-  sessionId,
-}) => {
+const TrainingSessionFormDialog = ({ open, onOpenChange, sessionId }) => {
   const { user } = useSelector((state) => state.auth);
   const isCoach = user?.role?.includes("coach");
 
@@ -25,39 +23,60 @@ const TrainingSessionFormDialog = ({
     data: session,
     isLoading,
     error,
-  } = useTrainingSession(sessionId, open && !!sessionId);
-  const { data: categories = [] } =
-    useTrainingCategories(open);  // Only fetch teams if user is not a coach (coaches removed)
-  const { data: teamsData = { results: [] }, isLoading: isLoadingTeams } = useTeams({
-    enabled: open && !isCoach,
-  });
+  } = useTrainingSession(sessionId, Boolean(open && sessionId));
   
+  const { data: teamsData = { results: [] }, isLoading: isLoadingTeams } =
+    useTeams(Boolean(open && !isCoach));
+
   // Extract teams array from paginated response
   const teams = teamsData.results || [];
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[600px] max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-lg sm:text-xl">
-            {sessionId ? "Edit" : "Create"} Training Session
-          </DialogTitle>
-        </DialogHeader>
-        <div className="px-6 pb-6">
-          {sessionId && isLoading ? (
-            <ContentLoading className="p-4" />
-          ) : error ? (
-            <div className="p-4 text-red-500 text-sm">
-              Failed to load session details.
+      <DialogContent className="w-[95vw] max-w-[700px] max-h-[90vh] overflow-hidden p-0">
+        <DialogHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-background via-primary/5 to-background border-b border-border/50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
+              {sessionId ? (
+                <Settings className="h-5 w-5 text-primary" />
+              ) : (
+                <Dumbbell className="h-5 w-5 text-primary" />
+              )}
             </div>
-          ) : (            <TrainingSessionForm
+            <div>
+              <DialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                {sessionId ? "Edit Training Session" : "Schedule New Training Session"}
+              </DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground mt-1">
+                {sessionId
+                  ? "Update the training session details and schedule"
+                  : "Create a new training session with teams and categories"}
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+        <ScrollArea className="max-h-[calc(90vh-140px)] px-6 pb-6">
+          {sessionId && isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <ContentLoading className="p-4" />
+            </div>
+          ) : error ? (
+            <div className="p-4 text-center">
+              <div className="text-destructive text-sm font-medium">
+                Failed to load session details
+              </div>
+              <div className="text-muted-foreground text-xs mt-1">
+                Please try again or contact support if the problem persists
+              </div>
+            </div>
+          ) : (
+            <TrainingSessionForm
               session={sessionId ? session : null}
-              categories={categories}
               teams={!isCoach ? teams : undefined}
-              isLoadingTeams={!isCoach ? isLoadingTeams : false}
               onClose={() => onOpenChange(false)}
             />
           )}
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

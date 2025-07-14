@@ -77,7 +77,7 @@ const Sport = () => {
     }
   };
   return (
-    <div className="md:p-6">
+    <div className="p-3 sm:p-4 md:p-6">
       <UniversityPageHeader
         title={sportDetails?.name || sport}
         subtitle="Sport Management"
@@ -88,9 +88,9 @@ const Sport = () => {
       />
 
       {/* Navigation Links */}
-      <div className="mb-4">
+      <div className="mb-4 sm:mb-6">
         <nav className="border-b border-border">
-          <div className="flex space-x-3 overflow-x-auto">
+          <div className="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-hide">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               return (
@@ -98,7 +98,7 @@ const Sport = () => {
                   key={item.key}
                   to={item.path}
                   className={cn(
-                    "group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200",
+                    "group inline-flex items-center py-3 sm:py-4 px-1 sm:px-2 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200",
                     currentPage === item.key
                       ? "border-primary text-primary"
                       : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
@@ -106,7 +106,7 @@ const Sport = () => {
                 >
                   <IconComponent
                     className={cn(
-                      "mr-2 h-4 w-4 transition-colors duration-200",
+                      "mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 transition-colors duration-200",
                       currentPage === item.key
                         ? "text-primary"
                         : "text-muted-foreground group-hover:text-foreground"

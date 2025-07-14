@@ -33,7 +33,6 @@ const LeaderForm = ({ onClose, stats, sportSlug, leaderCategory = null }) => {
     defaultValues: {
       sport: sportId || null,
       name: leaderCategory?.name || "",
-      display_order: leaderCategory?.display_order || 0,
       stat_types: leaderCategory?.stat_types_details?.map((s) => parseInt(s.id, 10)) || [],
       primary_stat_id: leaderCategory?.primary_stat_id ? Number(leaderCategory.primary_stat_id) : null,
     },
@@ -135,16 +134,6 @@ const LeaderForm = ({ onClose, stats, sportSlug, leaderCategory = null }) => {
         control={control}
         placeholder="e.g., Top Scorers"
         rules={{ required: "Category name is required" }}
-        errors={errors}
-      />
-
-      <ControlledInput
-        name="display_order"
-        label="Display Order"
-        control={control}
-        type="number"
-        min={0}
-        help_text="Lower numbers appear first in the UI"
         errors={errors}
       />
 

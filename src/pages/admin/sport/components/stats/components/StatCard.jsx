@@ -23,7 +23,7 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
   return (
     <Card
       className={cn(
-        "group py-0 overflow-hidden border-l-2 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col h-full",
+        "group py-0 overflow-hidden border-l-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col h-full",
         stat.is_record
           ? "border-l-4 border-l-secondary hover:border-l-secondary/80"
           : "border-l-4 border-l-orange-500 hover:border-l-orange-600",

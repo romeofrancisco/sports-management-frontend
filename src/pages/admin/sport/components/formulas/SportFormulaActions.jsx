@@ -1,49 +1,29 @@
-import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Trash, MoreHorizontal, SquarePen } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 
-const SportFormulaActions = ({ modals, formula, setSelectedFormula }) => {
-  const [open, setOpen] = useState(false);
-  
-  const handleOpen = (modalType) => {
-    setSelectedFormula(formula);
-    modals[modalType]?.openModal();
-    setOpen(false); // Close dropdown when opening modal
-  };
-  
+const SportFormulaActions = ({ formula, onEdit, onDelete }) => {
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleOpen("formula")}>
-          <SquarePen className="mr-2 h-4 w-4" />
-          Update Formula
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          variant="destructive"
-          className="text-destructive"
-          onClick={() => handleOpen("delete")}
-        >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete Formula
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center justify-end space-x-2">
+      <Button 
+        variant="outline" 
+        size="sm"
+        onClick={() => onEdit(formula)}
+        className="h-8 px-3"
+      >
+        <Edit className="h-3 w-3 mr-1" />
+        Edit
+      </Button>
+      <Button 
+        variant="destructive" 
+        size="sm" 
+        onClick={() => onDelete(formula)}
+        className="h-8 px-3"
+      >
+        <Trash2 className="h-3 w-3 mr-1" />
+        Delete
+      </Button>
+    </div>
   );
 };
 

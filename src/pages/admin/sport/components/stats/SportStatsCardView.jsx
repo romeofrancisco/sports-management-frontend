@@ -9,7 +9,7 @@ import EmptyStatsState from "./components/EmptyStatsState";
 import CategorySection from "./components/CategorySection";
 
 // Utility imports
-import { categorizeStats } from "./utils/statsCategories";
+import { categorizeStats } from "./utils/statsCategories.jsx";
 import { getActiveFiltersCount } from "./utils/statsHelpers";
 
 const SportStatsCardView = ({ stats, filter }) => {

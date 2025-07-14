@@ -1,30 +1,28 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { Loader2, X, Plus } from "lucide-react";
+import { DialogFooter } from "../ui/dialog";
+import { Loader2, Calendar, Clock, MapPin, Users, FileText, Info } from "lucide-react";
 import ControlledInput from "../common/ControlledInput";
 import ControlledTextarea from "../common/ControlledTextarea";
-import ControlledSelect from "../common/ControlledSelect";
-import ControlledMultiSelect from "../common/ControlledMultiSelect";
-import ControlledCombobox from "../common/ControlledCombobox";
+import ControlledDateTimePicker from "../common/ControlledDateTimePickerComponent";
 import {
   useCreateTrainingSession,
   useUpdateTrainingSession,
 } from "@/hooks/useTrainings";
-import { Badge } from "../ui/badge";
 import { format } from "date-fns";
+import ControlledTeamSelect from "../common/ControlledTeamSelect";
+import { Separator } from "../ui/separator";
+import { toast } from "sonner";
 
 const TrainingSessionForm = ({
   session = null,
-  categories,
   teams,
   onClose,
 }) => {
   const isEdit = Boolean(session);
   // Ensure teams is always an array to prevent "find is not a function" errors
   const safeTeams = Array.isArray(teams) ? teams : teams?.results || [];
-  // Ensure categories is always an array to prevent "find is not a function" errors
-  const safeCategories = Array.isArray(categories) ? categories : categories?.results || [];
   const { mutate: createSession, isPending: isCreating } =
     useCreateTrainingSession();
   const { mutate: updateSession, isPending: isUpdating } =
@@ -33,7 +31,9 @@ const TrainingSessionForm = ({
     control,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
   } = useForm({
     defaultValues: {
       title: session?.title || "",
@@ -45,27 +45,14 @@ const TrainingSessionForm = ({
       end_time: session?.end_time || "19:00",
       location: session?.location || "",
       team: session?.team || "",
-      categories: session?.categories?.map((cat) => cat.id) || [],
       notes: session?.notes || "",
     },
   });
-  const selectedTeamId = watch("team");
-  // Find the selected team's slug
-  const selectedTeamObj = React.useMemo(
-    () =>
-      safeTeams?.find(
-        (t) =>
-          t.id === selectedTeamId ||
-          t.id?.toString() === selectedTeamId?.toString()
-      ),
-    [safeTeams, selectedTeamId]
-  );
-
-  const selectedCategories = watch("categories") || [];
-
-  const isPending = isCreating || isUpdating;
 
   const onSubmit = (data) => {
+    // Clear any existing errors before submission
+    clearErrors();
+
     const payload = {
       ...data,
       // Ensure date is in proper format
@@ -73,126 +60,223 @@ const TrainingSessionForm = ({
     };
 
     if (isEdit) {
-      updateSession(
-        { id: session.id, ...payload },
-        {
-          onSuccess: () => {
-            onClose();
-          },
+      updateSession({ id: session.id, ...payload }, {
+        onSuccess: () => {
+          onClose();
+        },
+        onError: (error) => {
+          console.error('Update error:', error);
+          // Handle API validation errors
+          const apiErrors = error.response?.data;
+          if (apiErrors) {
+            // Map API errors to form fields
+            Object.keys(apiErrors).forEach(field => {
+              const message = Array.isArray(apiErrors[field])
+                ? apiErrors[field].join(", ")
+                : apiErrors[field];
+                
+              setError(field, {
+                type: "manual",
+                message: message,
+              });
+            });
+          }
         }
-      );
+      });
     } else {
       createSession(payload, {
         onSuccess: () => {
           onClose();
         },
+        onError: (error) => {
+          console.error('Create error:', error);
+          // Handle API validation errors
+          const apiErrors = error.response?.data;
+          if (apiErrors) {
+            // Map API errors to form fields
+            Object.keys(apiErrors).forEach(field => {
+              const message = Array.isArray(apiErrors[field])
+                ? apiErrors[field].join(", ")
+                : apiErrors[field];
+                
+              setError(field, {
+                type: "manual",
+                message: message,
+              });
+            });
+          }
+        }
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-1">
-      <ControlledInput
-        control={control}
-        name="title"
-        label="Session Title"
-        placeholder="Enter training session title"
-        rules={{ required: "Title is required" }}
-      />
-
-      <ControlledTextarea
-        control={control}
-        name="description"
-        label="Description"
-        placeholder="Describe this training session"
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-1">
+      {/* Basic Information Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Info className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Session Information</h3>
+        </div>
+        
         <ControlledInput
           control={control}
-          name="date"
-          label="Date"
-          type="date"
-          rules={{ required: "Date is required" }}
+          name="title"
+          label="Session Title"
+          placeholder="Enter training session title"
+          rules={{ required: "Title is required" }}
+          errors={errors}
         />
 
-        <div className="grid grid-cols-2 gap-2">
-          <ControlledInput
+        <ControlledTextarea
+          control={control}
+          name="description"
+          label="Description"
+          placeholder="Describe this training session"
+          help_text="Optional: Provide details about the training focus or objectives"
+          errors={errors}
+        />
+      </div>
+
+      <Separator className="bg-border/50" />
+
+      {/* Schedule Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Clock className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Schedule</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ControlledDateTimePicker
+            control={control}
+            name="date"
+            label="Date"
+            type="date"
+            help_text="Select the training date"
+            placeholder="Select date"
+            rules={{ 
+              required: "Date is required",
+              validate: (value) => {
+                if (value && new Date(value) < new Date().setHours(0, 0, 0, 0)) {
+                  return "Date cannot be in the past";
+                }
+                return true;
+              }
+            }}
+            errors={errors}
+          />
+
+          <ControlledDateTimePicker
             control={control}
             name="start_time"
             label="Start Time"
             type="time"
+            help_text="Training start time"
+            placeholder="Select start time"
             rules={{ required: "Start time is required" }}
+            errors={errors}
           />
-          <ControlledInput
+          
+          <ControlledDateTimePicker
             control={control}
             name="end_time"
             label="End Time"
             type="time"
-            rules={{ required: "End time is required" }}
+            help_text="Training end time"
+            placeholder="Select end time"
+            rules={{ 
+              required: "End time is required",
+              validate: (value) => {
+                const startTime = watch("start_time");
+                if (value && startTime && value <= startTime) {
+                  return "End time must be after start time";
+                }
+                return true;
+              }
+            }}
+            errors={errors}
           />
         </div>
+
+        <ControlledInput
+          control={control}
+          name="location"
+          label="Location"
+          placeholder="Enter training location"
+          help_text="Venue or facility where the training will take place"
+          rules={{ required: "Location is required" }}
+          errors={errors}
+        />
       </div>
 
-      <ControlledInput
-        control={control}
-        name="location"
-        label="Location"
-        placeholder="Enter training location"        rules={{ required: "Location is required" }}
-      />
+      <Separator className="bg-border/50" />
 
-      <ControlledCombobox
-        control={control}
-        name="team"
-        label="Team"
-        placeholder="Select team"
-        options={safeTeams}
-        valueKey="id"
-        labelKey="name"
-        rules={{ required: "Team is required" }}
-      />
-
-      <ControlledMultiSelect
-        control={control}
-        name="categories"
-        label="Training Categories"
-        placeholder="Select training categories"
-        options={safeCategories}
-        rules={{ required: "At least one category is required" }}
-      />
-
-      {selectedCategories.length > 0 && (
-        <div>
-          <div className="text-sm font-medium mb-2">Selected Categories:</div>
-          <div className="flex flex-wrap gap-2">          {selectedCategories.map((catId) => {
-              const category = safeCategories.find((c) => c.id === catId);
-              if (!category) return null;
-              return (
-                <Badge key={catId} style={{ backgroundColor: "#007bff" }}>
-                  {category.name}
-                </Badge>
-              );
-            })}
-          </div>
+      {/* Team Selection Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Users className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Team Assignment</h3>
         </div>
-      )}
+        
+        <ControlledTeamSelect
+          control={control}
+          name="team"
+          label="Team"
+          placeholder="Select team"
+          teams={safeTeams}
+          rules={{ required: "Team is required" }}
+          errors={errors}
+        />
+      </div>
 
-      <ControlledTextarea
-        control={control}
-        name="notes"
-        label="Notes"
-        placeholder="Additional notes for this session"
-      />
+      <Separator className="bg-border/50" />
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onClose}>
+      {/* Additional Notes Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <FileText className="h-4 w-4 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Additional Information</h3>
+        </div>
+        
+        <ControlledTextarea
+          control={control}
+          name="notes"
+          label="Notes"
+          placeholder="Additional notes for this session"
+          help_text="Optional: Any special instructions or requirements"
+          errors={errors}
+        />
+      </div>
+
+      {/* Form Actions */}
+      <DialogFooter className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border/50">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={isSubmitting}
+          className="w-full sm:w-auto order-2 sm:order-1"
+        >
           Cancel
         </Button>
-        <Button type="submit" disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isEdit ? "Update" : "Schedule"} Training Session
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {isEdit ? "Updating..." : "Creating..."}
+            </>
+          ) : (
+            <>
+              {isEdit ? "Update Session" : "Create Session"}
+            </>
+          )}
         </Button>
-      </div>
+      </DialogFooter>
     </form>
   );
 };

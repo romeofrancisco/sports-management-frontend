@@ -15,10 +15,11 @@ import {
 } from "@/api/gamesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
-import { formatDate } from "@/utils/formatDate";
+import { formatDate, formatShortDate, formatTime } from "@/utils/formatDate";
 import { GAME_ACTIONS } from "@/constants/game";
 import { useSelector } from "react-redux";
 import { getPeriodLabel } from "@/constants/sport";
+import { formatTo12HourTime } from "@/utils/formatTime";
 
 export const useGames = (filter, page = 1, pageSize = 10, enabled = true) => {
   const apiFilter = {
@@ -46,8 +47,10 @@ export const useCreateGame = () => {
   return useMutation({
     mutationFn: (gameData) => createGame(gameData),
     onSuccess: (game) => {
-      toast.success("Game scheduled.", {
-        description: formatDate(game.date),
+      toast.success("Game scheduled successfully!", {
+        description: `${game.home_team?.name || "Home Team"} vs ${
+          game.away_team?.name || "Away Team"
+        } - ${formatShortDate(game.date)} at ${formatTo12HourTime(game.time)}`,
         richColors: true,
       });
       queryClient.invalidateQueries(["games"]);
@@ -58,8 +61,11 @@ export const useCreateGame = () => {
 export const useUpdateGame = (id) => {
   return useMutation({
     mutationFn: (gameData) => updateGame(gameData, id),
-    onSuccess: () => {
-      toast.success("Game updated", {
+    onSuccess: (game) => {
+      toast.success("Game updated successfully!", {
+        description: `${game.home_team?.name || "Home Team"} vs ${
+          game.away_team?.name || "Away Team"
+        } - ${formatShortDate(game.date)} at ${formatTo12HourTime(game.time)}`,
         richColors: true,
       });
       // Refetch game

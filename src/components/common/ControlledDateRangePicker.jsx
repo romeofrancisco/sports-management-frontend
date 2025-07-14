@@ -25,6 +25,7 @@ export const ControlledDateRangePicker = ({
   className = "",
   disabled = false,
   numberOfMonths = 2,
+  rules,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -41,6 +42,7 @@ export const ControlledDateRangePicker = ({
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => (
           <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
             <PopoverTrigger asChild>

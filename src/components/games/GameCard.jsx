@@ -9,6 +9,7 @@ import { ScoreSummary } from "./ScoreSummary";
 import { ViewResultButton } from "./ViewResultButton";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { useGameScoreWebSocket } from "@/hooks/useGameScoreWebSocket";
+import { formatTo12HourTime } from "@/utils/formatTime";
 
 export const GameCard = React.memo(
   ({ game, onEditGame }) => {
@@ -33,7 +34,8 @@ export const GameCard = React.memo(
     const winnerTeamId = liveGameData.winner; // WebSocket connection for real-time updates (connect for live and scheduled games)
     const shouldConnect = isLive || isScheduled;
     const { isConnected } = useGameScoreWebSocket(
-      shouldConnect ? liveGameData.id : null,      (scoreData) => {
+      shouldConnect ? liveGameData.id : null,
+      (scoreData) => {
         // Update local game data with real-time score changes
         setLiveGameData((prev) => ({
           ...prev,
@@ -41,7 +43,8 @@ export const GameCard = React.memo(
           away_team_score: scoreData.awayScore,
           status: scoreData.status,
           current_period: scoreData.currentPeriod,
-          sport_scoring_type: scoreData.sportScoringType || prev.sport_scoring_type,
+          sport_scoring_type:
+            scoreData.sportScoringType || prev.sport_scoring_type,
         }));
 
         // Show score update notification
@@ -94,7 +97,8 @@ export const GameCard = React.memo(
       const parts = duration.split(":");
       return `${parts[0]}h ${parts[1]}m`;
     }; // Status configuration
-    const getStatusConfig = () => {      if (isLive) {
+    const getStatusConfig = () => {
+      if (isLive) {
         return {
           badge: (
             <div className="flex items-center gap-2">
@@ -189,7 +193,7 @@ export const GameCard = React.memo(
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ClockIcon className="h-4 w-4 text-secondary/70" />
                   <span className="font-medium whitespace-nowrap">
-                    {formatTime(liveGameData.time)}
+                    {formatTo12HourTime(liveGameData.time)}
                   </span>
                 </div>
               </div>
