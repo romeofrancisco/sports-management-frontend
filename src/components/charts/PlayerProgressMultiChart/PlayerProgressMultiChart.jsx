@@ -135,6 +135,7 @@ const PlayerProgressMultiChart = ({
             },
             x: {
               ticks: {
+                display: false,
                 font: {
                   size: 12,
                 },
@@ -156,7 +157,7 @@ const PlayerProgressMultiChart = ({
                   // Show all players' improvement at this x (date)
                   const value = context.parsed.y;
                   const unit = selectedMetricDetails?.metric_unit_data?.code || "%";
-                  return `${context.dataset.label} ${value} ${unit}`;
+                  return `${context.dataset.label} ${value.toFixed(2)} ${unit}`;
                 },
               },
             },

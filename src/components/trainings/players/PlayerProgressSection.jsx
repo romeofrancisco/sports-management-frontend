@@ -15,14 +15,13 @@ import TeamPlayerView from "./TeamPlayerView";
 
 const PlayerProgressSection = ({
   initialDateRange,
-  onDateRangeChange,
   onViewContextUpdate,
 }) => {
   // Create default date range (1 month from now)
   const createDefaultDateRange = () => {
     const today = new Date();
     return {
-      from: subMonths(today, 1), // 1 month ago
+      from: subMonths(today, 3), // 3 months ago
       to: today, // today
     };
   };
@@ -243,18 +242,6 @@ const PlayerProgressSection = ({
         playerName: null,
         teamName: null,
       });
-    }
-  };
-  // Handle date range change - use parent handler if available
-  const handleDateRangeChange = (newDateRange) => {
-    setFilter((prev) => ({
-      ...prev,
-      dateRange: newDateRange,
-    }));
-
-    // Notify parent about date range change
-    if (onDateRangeChange) {
-      onDateRangeChange(newDateRange);
     }
   };
 

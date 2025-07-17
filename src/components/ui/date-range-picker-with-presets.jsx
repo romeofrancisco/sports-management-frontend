@@ -71,9 +71,9 @@ export function DateRangePickerWithPresets({
       const daysDiff = Math.ceil((today - from) / (1000 * 60 * 60 * 24));
 
       // Check if it matches common presets (allowing for some tolerance)
-      if (daysDiff >= 28 && daysDiff <= 35) {
-        // ~1 month (28-35 days)
-        setSelectedPreset("1month");
+      if (daysDiff >= 85 && daysDiff <= 95) {
+        // ~3 months (85-95 days)
+        setSelectedPreset("3months");
       } else if (daysDiff >= 175 && daysDiff <= 190) {
         // ~6 months (175-190 days)
         setSelectedPreset("6months");
@@ -100,9 +100,9 @@ export function DateRangePickerWithPresets({
     let newRange = { from: null, to: null };
 
     switch (preset) {
-      case "1month":
+      case "3months":
         newRange = {
-          from: subMonths(today, 1),
+          from: subMonths(today, 3),
           to: today,
         };
         break;
@@ -133,6 +133,23 @@ export function DateRangePickerWithPresets({
   };
 
   const formatDateRange = () => {
+    // If a preset is selected, show the preset name instead of date range
+    if (selectedPreset) {
+      switch (selectedPreset) {
+        case "3months":
+          return "Last 3 Months";
+        case "6months":
+          return "Last 6 Months";
+        case "1year":
+          return "Last Year";
+        case "overall":
+          return "Overall (All Time)";
+        default:
+          break;
+      }
+    }
+
+    // If no preset is selected, show the actual date range
     if (!date?.from) {
       return <span className="text-muted-foreground">{placeholder}</span>;
     }
@@ -160,7 +177,7 @@ export function DateRangePickerWithPresets({
             size={size}
             className={cn(
               "justify-start text-left font-normal",
-              !date?.from && "text-muted-foreground",
+              !date?.from && selectedPreset !== "overall" && "text-muted-foreground",
               className
             )}
           >
@@ -177,9 +194,9 @@ export function DateRangePickerWithPresets({
               <SelectValue placeholder={selectedPreset || "Custom Range"} />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="1month">Last 1 Month</SelectItem>
+              <SelectItem value="3months">Last 3 Months</SelectItem>
               <SelectItem value="6months">Last 6 Months</SelectItem>
-              <SelectItem value="1year">Last 1 Year</SelectItem>
+              <SelectItem value="1year">Last Year</SelectItem>
               <SelectItem value="overall">Overall (All Time)</SelectItem>
             </SelectContent>
           </Select>
@@ -191,6 +208,7 @@ export function DateRangePickerWithPresets({
               selected={date}
               onSelect={handleDateChange}
               numberOfMonths={2}
+              disabled={(date) => date > new Date()}
             />
           </div>
         </PopoverContent>

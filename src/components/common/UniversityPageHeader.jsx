@@ -64,7 +64,7 @@ const UniversityPageHeader = ({
               />
             ) : (
               // University logo with original styling
-              <>
+              <div className="hidden md:block">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg blur-sm opacity-60"></div>
                 <div className="relative bg-card p-1.5 sm:p-2 rounded-lg shadow-lg border-2 border-secondary/30">
                   <img
@@ -73,7 +73,7 @@ const UniversityPageHeader = ({
                     className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto object-contain"
                   />
                 </div>
-              </>
+              </div>
             )}
           </div>
           <div className="sm:border-l-2 sm:border-primary/40 sm:pl-3 md:pl-4 lg:pl-6">

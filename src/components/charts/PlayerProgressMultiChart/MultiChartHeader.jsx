@@ -33,7 +33,7 @@ const MultiChartHeader = ({
   return (
     <>
       {/* Controls Container */}
-      <div className="flex ml-auto md:flex-col lg:flex-row md:items-end gap-2">
+      <div className="flex ml-auto flex-col md:flex-row md:items-end gap-2">
         {/* Metric Selection */}
         <div className="flex flex-col min-w-[180px] w-full">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1 mb-1">
@@ -70,7 +70,7 @@ const MultiChartHeader = ({
           </Select>
         </div>
         {/* Date Range Selection */}
-        <div className="flex flex-col flex-1 min-w-[180px] md:min-w-[260px] w-full">
+        <div className="flex flex-col flex-1 w-full">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1 mb-1">
             <Calendar className="h-3 w-3" />
             Date Range
@@ -78,7 +78,7 @@ const MultiChartHeader = ({
           <DateRangePickerWithPresets
             value={dateRange}
             onChange={onDateChange}
-            className="min-w-[250px] border-border/50 hover:border-border transition-colors"
+            className="border-border/50 hover:border-border transition-colors"
           />
         </div>
       </div>

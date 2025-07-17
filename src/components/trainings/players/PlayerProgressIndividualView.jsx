@@ -33,7 +33,8 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
             {/* Progress Chart */}
             <div className="animate-in fade-in-50 duration-500 delay-200">
               <ProgressChartCard playerId={playerId} dateRange={dateRange} />
-            </div>            {/* Radar Chart */}
+            </div>{" "}
+            {/* Radar Chart */}
             <div className="animate-in fade-in-50 duration-500 delay-300">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                 {/* Radar Chart - Takes 1 column */}
@@ -48,8 +49,8 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
 
                 {/* Category Breakdown - Takes 1 column */}
                 <div className="flex">
-                  <CategoryBreakdown 
-                    categories={radarData?.categories || []} 
+                  <CategoryBreakdown
+                    categories={radarData?.categories || []}
                     className="w-full h-full"
                   />
                 </div>
