@@ -18,7 +18,7 @@ export const ViewResultButton = ({ game }) => {
         size="sm"
         className="border-primary/50 text-primary/70 hover:bg-primary/10 hover:text-primary hover:border-primary transition-all duration-300"
       >
-        <FileTextIcon className="mr-2 h-4 w-4" />
+        <FileTextIcon className="h-4 w-4" />
         View Game Result
       </Button>
     </div>

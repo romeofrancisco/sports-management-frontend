@@ -14,7 +14,7 @@ import { Target } from "lucide-react";
  */
 const PersonalProgressSection = ({ progress }) => {
   return (
-    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
+    <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
@@ -28,13 +28,14 @@ const PersonalProgressSection = ({ progress }) => {
               Your training and development metrics trends over the past 90 days
             </CardDescription>
           </div>
-        </div>      </CardHeader>
+        </div>
+      </CardHeader>
       <CardContent>
         {progress?.metric_trends &&
         Object.keys(progress.metric_trends).length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-1">
+          <div className="grid gap-4 md:grid-cols-1 xl:grid-cols-2">
             {Object.entries(progress.metric_trends)
-              .slice(0, 5)
+              .slice(0, 6)
               .map(([metricName, metricData], index) => {
                 // Get only the latest metric value
                 const latestMetric = metricData[metricData.length - 1];
@@ -53,13 +54,15 @@ const PersonalProgressSection = ({ progress }) => {
                 return (
                   <div
                     key={index}
-                    className="relative overflow-hidden border-2 border-secondary/20 rounded-xl p-4 bg-gradient-to-r from-secondary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+                    className="relative overflow-hidden border-2 border-primary/20 rounded-xl p-4 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
                   >
                     {/* Enhanced background effects */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="relative z-10 space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="font-medium text-foreground">{metricName}</span>
+                        <span className="font-medium text-foreground">
+                          {metricName}
+                        </span>
                         <span className="text-muted-foreground">
                           {currentValue} {unit}
                         </span>
@@ -89,7 +92,9 @@ const PersonalProgressSection = ({ progress }) => {
             <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
               <Target className="h-6 w-6 text-primary" />
             </div>
-            <p className="text-muted-foreground font-medium">No progress metrics available</p>
+            <p className="text-muted-foreground font-medium">
+              No progress metrics available
+            </p>
             <p className="text-sm text-muted-foreground/70 mt-1">
               Complete training sessions to see your progress
             </p>

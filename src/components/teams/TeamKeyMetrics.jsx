@@ -9,7 +9,30 @@ import {
 import { UserCheck, Star, Activity, Info } from "lucide-react";
 import { getDivisionLabel } from "@/constants/team";
 
-const TeamKeyMetrics = ({ data }) => {  const teamMetrics = [
+const TeamKeyMetrics = ({ data }) => {
+  const teamMetrics = [
+    {
+      label: "Head Coach",
+      value: data.head_coach_name || "No Head Coach Assigned",
+      color: "text-primary",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      icon: <UserCheck className="h-5 w-5 text-primary-foreground" />,
+      iconBg: "bg-primary",
+      gradient: "from-primary via-primary/90 to-primary/80",
+      description: "primary team leadership",
+    },
+    {
+      label: "Assistant Coach",
+      value: data.assistant_coach_name || "No Assistant Coach Assigned",
+      color: "text-primary",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      icon: <UserCheck className="h-5 w-5 text-primary-foreground" />,
+      iconBg: "bg-primary",
+      gradient: "from-primary via-primary/90 to-primary/80",
+      description: "Supporting team leadership",
+    },
     {
       label: "Sport",
       value: data.sport_name || "Not Specified",
@@ -20,28 +43,6 @@ const TeamKeyMetrics = ({ data }) => {  const teamMetrics = [
       iconBg: "bg-primary",
       gradient: "from-primary via-primary/90 to-primary/80",
       description: "Team sport discipline",
-    },
-    {
-      label: "Head Coach",
-      value: data.head_coach_name || "No Head Coach Assigned",
-      color: "text-secondary",
-      bgColor: "bg-secondary/8",
-      borderColor: "border-secondary/30",
-      icon: <UserCheck className="h-5 w-5 text-secondary-foreground" />,
-      iconBg: "bg-secondary",
-      gradient: "from-secondary via-secondary/90 to-secondary/80",
-      description: "Primary team leadership",
-    },
-    {
-      label: "Assistant Coach",
-      value: data.assistant_coach_name || "No Assistant Coach Assigned",
-      color: "text-muted-foreground",
-      bgColor: "bg-muted/8",
-      borderColor: "border-muted/30",
-      icon: <UserCheck className="h-5 w-5 text-muted-foreground" />,
-      iconBg: "bg-muted",
-      gradient: "from-muted via-muted/90 to-muted/80",
-      description: "Supporting team leadership",
     },
     {
       label: "Division",
@@ -58,7 +59,7 @@ const TeamKeyMetrics = ({ data }) => {  const teamMetrics = [
 
   return (
     <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
             <Info className="h-5 w-5 text-primary-foreground" />
@@ -74,7 +75,7 @@ const TeamKeyMetrics = ({ data }) => {  const teamMetrics = [
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 xl:grid-cols-2 md:grid-cols-4 sm:grid-cols-2 grid-cols-1">
           {teamMetrics.map((metric, index) => (
             <div
               key={index}

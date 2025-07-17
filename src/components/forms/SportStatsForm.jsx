@@ -15,11 +15,11 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
   // Define category options
   const categoryOptions = [
-    { id: 'scoring', name: 'Scoring' },
-    { id: 'performance', name: 'Performance' },
-    { id: 'offensive', name: 'Offensive' },
-    { id: 'defensive', name: 'Defensive' },
-    { id: 'other', name: 'Other' }
+    { id: "scoring", name: "Scoring" },
+    { id: "performance", name: "Performance" },
+    { id: "offensive", name: "Offensive" },
+    { id: "defensive", name: "Defensive" },
+    { id: "other", name: "Other" },
   ];
 
   const {
@@ -37,12 +37,12 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       code: stat?.code || "",
       category: stat?.category || "other",
 
-      is_player_summary: stat?.is_player_summary || false,
-      is_team_summary: stat?.is_team_summary || false,
+      // is_player_summary: stat?.is_player_summary || false,
+      // is_team_summary: stat?.is_team_summary || false,
       is_team_comparison: stat?.is_team_comparison || false,
 
-      is_player_stat: stat?.is_player_stat || false,
-      is_team_stat: stat?.is_team_stat || false,
+      // is_player_stat: stat?.is_player_stat || false,
+      // is_team_stat: stat?.is_team_stat || false,
 
       is_boxscore: stat?.is_boxscore || false,
       is_record: stat?.is_record || false,
@@ -65,7 +65,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
   // Auto-set category based on stat attributes
   useEffect(() => {
     const pointValue = watch("point_value");
-    
+
     if (isRecord && isPoints && pointValue > 0) {
       // Suggest scoring category for points
       setValue("category", "scoring");
@@ -157,22 +157,22 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       />
 
       {/* Player Summary */}
-      <ControlledCheckbox
+      {/* <ControlledCheckbox
         name="is_player_summary"
         label="Player Summary"
         control={control}
         help_text="Check this if the stat is shown in player summary"
         errors={errors}
-      />
+      /> */}
 
       {/* Team Summary */}
-      <ControlledCheckbox
+      {/* <ControlledCheckbox
         name="is_team_summary"
         label="Team Summary"
         control={control}
         help_text="Check this if the stat is shown in team summary"
         errors={errors}
-      />
+      /> */}
 
       <ControlledCheckbox
         name="is_team_comparison"
@@ -183,22 +183,22 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       />
 
       {/* Player Stat */}
-      <ControlledCheckbox
+      {/* <ControlledCheckbox
         name="is_player_stat"
         label="Player Stat"
         control={control}
         help_text="Check this if the stat is for players"
         errors={errors}
-      />
+      /> */}
 
       {/* Team Stat */}
-      <ControlledCheckbox
+      {/* <ControlledCheckbox
         name="is_team_stat"
         label="Team Stat"
         control={control}
         help_text="Check this if the stat is for teams"
         errors={errors}
-      />
+      /> */}
 
       {/* Boxscore */}
       <ControlledCheckbox

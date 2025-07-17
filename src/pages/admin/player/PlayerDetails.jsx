@@ -43,11 +43,11 @@ const PlayerDetails = () => {
     error: playerDetailsError,
   } = usePlayerDetails(player, !!player && !isNaN(userId));
 
-  // Get date range (last 30 days)
+  // Get date range (last 3 months)
   const dateRange = useMemo(() => {
     const to = new Date();
     const from = new Date();
-    from.setDate(from.getDate() - 30);
+    from.setDate(from.getDate() - 90);
     return {
       date_from: from.toISOString().split("T")[0],
       date_to: to.toISOString().split("T")[0],
@@ -156,21 +156,16 @@ const PlayerDetails = () => {
       <div className="p-4 md:p-6 space-y-8">
         {/* Enhanced Header */}
         <UniversityPageHeader
-          title={`${user?.full_name || "Player"} - Details`}
+          title={user?.full_name || "Player"}
           subtitle="Player Management"
           description="View comprehensive player performance and progress data"
+          backButton={true}
+          backButtonText="Back to Players"
+          backButtonPath="/players"
           showOnlineStatus={false}
           showUniversityColors={true}
-        >
-          {/* Back Button */}
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground bg-background/50 hover:bg-background/80 border border-border rounded-lg transition-all duration-200 hover:shadow-md"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </button>
-        </UniversityPageHeader>
+        />
+
         {/* Overview Cards */}
         <div className="animate-in fade-in-50 duration-500 delay-150">
           <OverviewCards overview={overview} personalStats={personalStats} />
@@ -190,11 +185,19 @@ const PlayerDetails = () => {
             {/* Performance Stats Overview */}
             <div className="animate-in fade-in-50 duration-500 delay-100">
               <PlayerProgressStats playerId={userId} />
-            </div>            {/* Charts Section */}
+            </div>{" "}
+            {/* Charts Section */}
             <div className="animate-in fade-in-50 duration-500 delay-300">
               <ChartsSection user={user} overview={overview} />
             </div>
-
+            {/* Personal Progress Section */}
+            <div className="animate-in fade-in-50 duration-500 delay-550">
+              <PersonalProgressSection progress={progressData} />
+            </div>
+            {/* Recent Metrics */}
+            <div className="animate-in fade-in-50 duration-500 delay-600">
+              <RecentMetricsSection overview={overview} />
+            </div>
             {/* Upcoming Activities */}
             <div className="animate-in fade-in-50 duration-500 delay-350">
               <UpcomingActivitiesSection overview={overview} />
@@ -225,14 +228,6 @@ const PlayerDetails = () => {
                 dateRange={dateRange}
                 className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-secondary/20 transition-all duration-300 hover:shadow-2xl hover:border-secondary/30"
               />
-            </div>
-            {/* Personal Progress Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-550">
-              <PersonalProgressSection progress={progressData} />
-            </div>
-            {/* Recent Metrics */}
-            <div className="animate-in fade-in-50 duration-500 delay-600">
-              <RecentMetricsSection overview={overview} />
             </div>
           </div>
         </div>

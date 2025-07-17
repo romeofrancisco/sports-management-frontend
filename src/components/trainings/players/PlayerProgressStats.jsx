@@ -15,11 +15,11 @@ import {
 import PlayerProgressStatsSkeleton from "./PlayerProgressStatsSkeleton";
 import { formatMetricValue } from "@/utils/formatters";
 
-// Get last 30 days as default date range - calculated once outside component
+// Get last 90 days (3 months) as default date range - calculated once outside component
 const getDefaultDateRange = () => {
   const to = new Date();
   const from = new Date();
-  from.setDate(from.getDate() - 30);
+  from.setDate(from.getDate() - 90);
 
   return {
     date_from: from.toISOString().split("T")[0],
@@ -110,32 +110,13 @@ const PlayerProgressStats = ({ playerId }) => {
             playerData.recent_improvement.percentage
           ).toFixed(1)}%`
         : "--",
-      description: "Last 30 days improvement",
-      icon: <Activity className="h-5 w-5 text-primary-foreground" />,
+      description: "Last 3 months improvement",
+      icon: <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />,
       color: "from-primary via-primary/90 to-primary/80",
       bgColor: "bg-primary/8",
       borderColor: "border-primary/30",
       iconBg: "bg-primary",
-      textAccent: playerData?.recent_improvement?.is_positive
-        ? "text-green-600 dark:text-green-400"
-        : playerData?.recent_improvement?.is_positive === false
-        ? "text-red-600 dark:text-red-400"
-        : "text-muted-foreground",
-      badge: playerData?.recent_improvement ? (
-        <div
-          className={`p-1.5 rounded-full ${
-            playerData.recent_improvement.is_positive
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {playerData.recent_improvement.is_positive ? (
-            <TrendingUp className="h-3 w-3" />
-          ) : (
-            <TrendingDown className="h-3 w-3" />
-          )}
-        </div>
-      ) : null,
+      textAccent: "text-primary",
     },
     {
       title: "Overall Progress",
@@ -145,31 +126,12 @@ const PlayerProgressStats = ({ playerId }) => {
           ).toFixed(1)}%`
         : "--",
       description: "Total improvement",
-      icon: <TrendingUp className="h-5 w-5 text-secondary-foreground" />,
+      icon: <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />,
       color: "from-secondary via-secondary/90 to-secondary/80",
       bgColor: "bg-secondary/8",
       borderColor: "border-secondary/30",
       iconBg: "bg-secondary",
-      textAccent: playerData?.overall_improvement?.is_positive
-        ? "text-green-600 dark:text-green-400"
-        : playerData?.overall_improvement?.is_positive === false
-        ? "text-red-600 dark:text-red-400"
-        : "text-muted-foreground",
-      badge: playerData?.overall_improvement ? (
-        <div
-          className={`p-1.5 rounded-full ${
-            playerData.overall_improvement.is_positive
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {playerData.overall_improvement.is_positive ? (
-            <TrendingUp className="h-3 w-3" />
-          ) : (
-            <TrendingDown className="h-3 w-3" />
-          )}
-        </div>
-      ) : null,
+      textAccent: "text-secondary",
     },
     {
       title: "Best Performance",
@@ -179,14 +141,13 @@ const PlayerProgressStats = ({ playerId }) => {
             playerData.best_performance.unit
           )
         : "--",
-      description:
-        playerData?.best_performance?.metric_name || "No data recorded",
-      icon: <Trophy className="h-5 w-5 text-primary-foreground" />,
-      color: "from-primary/80 via-primary/70 to-primary/60",
-      bgColor: "bg-primary/6",
-      borderColor: "border-primary/25",
-      iconBg: "bg-gradient-to-br from-primary to-primary/80",
-      textAccent: "text-primary/90",
+      description: playerData?.best_performance?.metric_name || "No data recorded",
+      icon: <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
+      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
+      bgColor: "bg-orange-500/8",
+      borderColor: "border-orange-500/30",
+      iconBg: "bg-orange-500",
+      textAccent: "text-orange-600",
       unit: playerData?.best_performance?.unit,
     },
     {
@@ -196,65 +157,60 @@ const PlayerProgressStats = ({ playerId }) => {
           ? `+${parseFloat(bestCategory.average_improvement).toFixed(1)}%`
           : "--",
       description: bestCategory?.category_name || "No category data",
-      icon: <Star className="h-5 w-5 text-yellow-100" />,
-      color: "from-yellow-500 via-yellow-400 to-amber-400",
-      bgColor: "bg-yellow-500/8",
-      borderColor: "border-yellow-500/30",
-      iconBg: "bg-gradient-to-br from-yellow-500 to-amber-500",
-      textAccent: "text-yellow-600 dark:text-yellow-400",
-      badge:
-        bestCategory?.average_improvement !== undefined ? (
-          <div className="p-1.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-            <Star className="h-3 w-3" />
-          </div>
-        ) : null,
+      icon: <Star className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
+      color: "from-red-500 via-red-500/90 to-red-500/80",
+      bgColor: "bg-red-500/8",
+      borderColor: "border-red-500/30",
+      iconBg: "bg-red-500",
+      textAccent: "text-red-600",
     },
   ];
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-      {stats.map((stat, index) => (
-        <Card
-          key={index}
-          className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] border-2 ${stat.borderColor} ${stat.bgColor} backdrop-blur-sm group`}
-        >
-          {/* Enhanced Gradient Background */}
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-8 group-hover:opacity-12 transition-opacity duration-300`}
-          ></div>
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/15 to-transparent rounded-full blur-2xl opacity-60"></div>
-          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-xl opacity-40"></div>
-
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
-            <CardTitle className="text-sm font-semibold text-foreground">
-              {stat.title}
-            </CardTitle>
+    <div className="space-y-3 sm:space-y-4 mb-6">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, index) => (
+          <Card
+            key={index}
+            className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
+              stat.bgColor || ""
+            } ${stat.borderColor || ""} border`}
+          >
             <div
-              className={`p-3 rounded-xl ${stat.iconBg} shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 group-hover:rotate-3`}
-            >
-              {stat.icon}
-            </div>
-          </CardHeader>
-
-          <CardContent className="relative z-10">
-            <div className="flex items-baseline gap-2 mb-2">
+              className={`absolute inset-0 bg-gradient-to-br ${
+                stat.color || ""
+              } opacity-5`}
+            />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+                {stat.title}
+              </CardTitle>
               <div
-                className={`text-2xl md:text-3xl font-bold ${stat.textAccent} drop-shadow-sm`}
+                className={`p-1.5 sm:p-2 rounded-lg ${
+                  stat.iconBg || ""
+                } shadow-lg transition-transform duration-300 hover:scale-110`}
               >
-                {stat.value}
+                {stat.icon}
               </div>
-              {stat.unit && (
-                <span className="text-sm font-medium text-muted-foreground">
-                  {stat.unit}
-                </span>
-              )}
-              {stat.badge}
-            </div>
-            <p className="text-xs text-muted-foreground font-medium tracking-wide">
-              {stat.description}
-            </p>
-          </CardContent>
-        </Card>
-      ))}
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="flex items-center gap-2 mb-1">
+                <div className={`text-xl sm:text-2xl font-bold ${stat.textAccent || ""}`}>
+                  {stat.value}
+                </div>
+                {stat.unit && (
+                  <span className="text-xs sm:text-sm font-medium text-muted-foreground">
+                    {stat.unit}
+                  </span>
+                )}
+                {stat.badge}
+              </div>
+              <p className="text-xs text-muted-foreground font-medium">
+                {stat.description}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

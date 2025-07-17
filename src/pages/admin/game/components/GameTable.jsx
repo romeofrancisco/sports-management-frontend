@@ -16,7 +16,7 @@ import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
 import GameFilterBar from "./GameFilterBar";
 import getGameTableColumns from "./GameTableColumns";
-import { GameCard, StatusSection } from "@/components/games";
+import { GameCard, StatusSection, GameTableSkeleton, GameCardsSkeletons, StatusSectionSkeleton } from "@/components/games";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const GameTable = () => {
@@ -92,24 +92,6 @@ const GameTable = () => {
   const handleEditGame = (game) => {
     setSelectedGame(game);
     modals.update.openModal();
-  };
-
-  const handleDeleteGame = (game) => {
-    setSelectedGame(game);
-    modals.delete.openModal();
-  };
-
-  const handleViewGame = (game) => {
-    navigate(`/games/${game.id}`);
-  };
-
-  const handleStartGame = (game) => {
-    setSelectedGame(game);
-    modals.startGame.openModal();
-  };
-  const handleStartingLineup = (game) => {
-    setSelectedGame(game);
-    modals.startingLineup.openModal();
   };
 
   // Reset filters and switch modes
@@ -257,100 +239,112 @@ const GameTable = () => {
 
           {/* Content based on view mode */}
           {viewMode === "table" ? (
-            <DataTable
-              columns={columns}
-              data={games}
-              loading={isLoading}
-              className="text-xs md:text-sm"
-              showPagination={false} // Disable built-in pagination
-              pageSize={pageSize} // Still pass pageSize for row rendering
-            />
+            <>
+              {isLoading ? (
+                <GameTableSkeleton rows={pageSize} />
+              ) : (
+                <DataTable
+                  columns={columns}
+                  data={games}
+                  loading={false}
+                  className="text-xs md:text-sm"
+                  showPagination={false} // Disable built-in pagination
+                  pageSize={pageSize} // Still pass pageSize for row rendering
+                />
+              )}
+            </>
           ) : (
             <div className="space-y-8">
-              {/* Live Games */}
-              <StatusSection
-                status="in_progress"
-                games={liveGames}
-                variant="default"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {liveGames.map((game, index) => (
-                    <div
-                      key={game.id}
-                      className="animate-in fade-in-50 duration-500"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <GameCard game={game} onEditGame={handleEditGame} />
+              {isLoading ? (
+                <>
+                  <StatusSectionSkeleton title="Live Games" count={3} />
+                  <StatusSectionSkeleton title="Scheduled Games" count={6} />
+                  <StatusSectionSkeleton title="Completed Games" count={3} />
+                </>
+              ) : (
+                <>
+                  {/* Live Games */}
+                  <StatusSection
+                    status="in_progress"
+                    games={liveGames}
+                    variant="default"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {liveGames.map((game, index) => (
+                        <div
+                          key={game.id}
+                          className="animate-in fade-in-50 duration-500"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <GameCard game={game} onEditGame={handleEditGame} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </StatusSection>
+                  </StatusSection>
 
-              {/* Scheduled Games */}
-              <StatusSection
-                status="scheduled"
-                games={scheduledGames}
-                variant="default"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {scheduledGames.map((game, index) => (
-                    <div
-                      key={game.id}
-                      className="animate-in fade-in-50 duration-500"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <GameCard game={game} onEditGame={handleEditGame} />
+                  {/* Scheduled Games */}
+                  <StatusSection
+                    status="scheduled"
+                    games={scheduledGames}
+                    variant="default"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {scheduledGames.map((game, index) => (
+                        <div
+                          key={game.id}
+                          className="animate-in fade-in-50 duration-500"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <GameCard game={game} onEditGame={handleEditGame} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </StatusSection>
+                  </StatusSection>
 
-              {/* Completed Games */}
-              <StatusSection
-                status="completed"
-                games={completedGames}
-                variant="default"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {completedGames.map((game, index) => (
-                    <div
-                      key={game.id}
-                      className="animate-in fade-in-50 duration-500"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <GameCard game={game} onEditGame={handleEditGame} />
+                  {/* Completed Games */}
+                  <StatusSection
+                    status="completed"
+                    games={completedGames}
+                    variant="default"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {completedGames.map((game, index) => (
+                        <GameCard
+                          key={game.id}
+                          game={game}
+                          onEditGame={handleEditGame}
+                        />
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </StatusSection>
+                  </StatusSection>
 
-              {/* Other Status Games */}
-              <StatusSection
-                status="other"
-                games={otherGames}
-                variant="default"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {otherGames.map((game, index) => (
-                    <div
-                      key={game.id}
-                      className="animate-in fade-in-50 duration-500"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <GameCard game={game} onEditGame={handleEditGame} />
+                  {/* Other Status Games */}
+                  <StatusSection
+                    status="other"
+                    games={otherGames}
+                    variant="default"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {otherGames.map((game, index) => (
+                        <GameCard
+                          key={game.id}
+                          game={game}
+                          onEditGame={handleEditGame}
+                        />
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </StatusSection>
+                  </StatusSection>
 
-              {/* No games message */}
-              {games.length === 0 && !isLoading && (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p className="text-lg font-medium">No games found</p>
-                  <p className="text-sm">
-                    Try adjusting your filters or create a new game.
-                  </p>
-                </div>
+                  {/* No games message */}
+                  {games.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p className="text-lg font-medium">No games found</p>
+                      <p className="text-sm">
+                        Try adjusting your filters or create a new game.
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}

@@ -24,6 +24,7 @@ export const ControlledDateTimePicker = ({
   errors,
   className = "",
   disabled = false,
+  rules,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -41,6 +42,7 @@ export const ControlledDateTimePicker = ({
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => (
           <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
             <PopoverTrigger asChild>

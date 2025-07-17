@@ -2,17 +2,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSeasonGames } from "@/hooks/useSeasons";
 import { useModal } from "@/hooks/useModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ContentLoading from "@/components/common/ContentLoading";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { GameCard, StatusSection } from "@/components/games";
+import { GameCard, StatusSection, StatusSectionSkeleton } from "@/components/games";
 import GameModal from "@/components/modals/GameModal";
 
 export const SeasonGames = ({ seasonId, leagueId }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null); // Start with null
   const [editingGame, setEditingGame] = useState(null);
-  const [isDateInitialized, setIsDateInitialized] = useState(false);
 
   // Use the useModal hook instead of manual state management
   const {
@@ -21,23 +19,12 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
     closeModal: closeEditModal,
   } = useModal();
 
-  // Format the selected date as YYYY-MM-DD for API filtering
-  const formattedDate = format(selectedDate, "yyyy-MM-dd");
+  // First, fetch all games to determine the initial date
+  const { data: allGames = [], isLoading: isLoadingAllGames } = useSeasonGames(leagueId, seasonId);
 
-  // Fetch only games for the selected date from the backend
-  const { data: filteredGames = [], isLoading } = useSeasonGames(
-    leagueId,
-    seasonId,
-    {
-      date: formattedDate,
-    }
-  );
-
-  // Also fetch all games to support the date navigation bar
-  const { data: allGames = [] } = useSeasonGames(leagueId, seasonId);
-  // Initialize to today or first available game date when data loads
+  // Initialize date when all games data is available
   useEffect(() => {
-    if (allGames && allGames.length > 0 && !isDateInitialized) {
+    if (allGames && allGames.length > 0 && !selectedDate) {
       // Start with today
       let initialDate = new Date();
       const todayGames = allGames.filter((game) =>
@@ -45,14 +32,27 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
       );
 
       if (todayGames.length === 0) {
-        // If no games today, find the closest game date
-        initialDate = parseISO(allGames[0].date);
+        // If no games today, find the first available game date
+        const sortedGames = [...allGames].sort((a, b) => new Date(a.date) - new Date(b.date));
+        initialDate = parseISO(sortedGames[0].date);
       }
 
       setSelectedDate(initialDate);
-      setIsDateInitialized(true);
     }
-  }, [allGames, isDateInitialized]); // Get games count for a specific date (used by the DateNavigationBar)
+  }, [allGames, selectedDate]);
+
+  // Format the selected date as YYYY-MM-DD for API filtering (only when date is set)
+  const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
+
+  // Fetch filtered games only when we have a selected date
+  const { data: filteredGames = [], isLoading: isLoadingFilteredGames } = useSeasonGames(
+    leagueId,
+    seasonId,
+    formattedDate ? { date: formattedDate } : {}
+  );
+
+  // Combined loading state - show loading until we have both data and selected date
+  const isLoading = isLoadingAllGames || isLoadingFilteredGames || !selectedDate; // Get games count for a specific date (used by the DateNavigationBar)
   const getGamesCountForDate = useCallback(
     (date) => {
       if (!allGames || allGames.length === 0) return 0;
@@ -98,23 +98,25 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
 
         <CardContent className="relative px-6">
           {/* Date Navigation Bar - enhanced with shadow */}
-          <div className="bg-card rounded-xl shadow-md p-1 mb-6">
-            <DateNavigationBar
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
-              data={allGames}
-              dateProperty="date"
-              getDataCountForDate={getGamesCountForDate}
-              countLabel="Game"
-              className="overflow-x-auto"
-            />
-          </div>{" "}
-          {/* Games List with ContentLoading */}
+          {selectedDate && (
+            <div className="bg-card rounded-xl shadow-md p-1 mb-6">
+              <DateNavigationBar
+                selectedDate={selectedDate}
+                onDateChange={setSelectedDate}
+                data={allGames}
+                dateProperty="date"
+                getDataCountForDate={getGamesCountForDate}
+                countLabel="Game"
+                className="overflow-x-auto"
+              />
+            </div>
+          )}
+          {/* Games List with Game Skeletons */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }, (_, i) => (
-                <ContentLoading key={i} count={1} />
-              ))}
+            <div className="space-y-6">
+              <StatusSectionSkeleton title="Live Games" count={2} />
+              <StatusSectionSkeleton title="Scheduled Games" count={4} />
+              <StatusSectionSkeleton title="Completed Games" count={3} />
             </div>
           ) : filteredGames.length > 0 ? (
             <div className="space-y-6">
@@ -187,7 +189,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                   <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
                   <p className="text-muted-foreground text-base sm:text-lg font-medium">
                     No games scheduled for{" "}
-                    {format(selectedDate, "MMMM d, yyyy")}
+                    {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "selected date"}
                   </p>
                 </CardContent>
               </Card>

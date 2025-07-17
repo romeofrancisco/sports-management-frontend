@@ -11,9 +11,11 @@ import { Plus, Filter, CheckCircle, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 // Import column definitions
-import getEssentialColumns from "./columns/EssentialColumns";
-import getDisplayColumns from "./columns/DisplayColumns";
-import getRecordingColumns from "./columns/RecordingColumns";
+import { 
+  getEssentialColumns,
+  getDisplayColumns,
+  getRecordingColumns
+} from "../columns";
 
 const SportStatsTable = ({ filter }) => {
   const { sport } = useParams();
@@ -23,12 +25,11 @@ const SportStatsTable = ({ filter }) => {
   // Use the passed filter if provided, otherwise use a default filter
   const tableFilter = filter || { search: "", category: "all", type: "all" };
   
-  // Transform the filter for the API
+  // Transform the filter for the API - now using backend filtering
   const apiFilter = {
-    search: tableFilter.search,
-    is_record: tableFilter.type === "recording" ? true : 
-               tableFilter.type === "calculated" ? false : null,
-    category: tableFilter.category !== "all" ? tableFilter.category : null
+    search: tableFilter.search || undefined,
+    category: tableFilter.category !== "all" ? tableFilter.category : undefined,
+    type: tableFilter.type !== "all" ? tableFilter.type : undefined,
   };
 
   const { data: stats, isLoading: isStatsLoading } = useSportStats(
@@ -59,16 +60,8 @@ const SportStatsTable = ({ filter }) => {
     filter: apiFilter,
   });
 
-  // Additional client-side filtering for specific types
-  const filteredStats = stats ? stats.filter(stat => {
-    // Extra type filtering for UI-specific types
-    if (tableFilter.type === "boxscore" && stat.is_boxscore) return true;
-    if (tableFilter.type === "comparison" && stat.is_team_comparison) return true;
-    
-    // If type is one of the standard types (recording, calculated, all), 
-    // we already filtered in the API call
-    return tableFilter.type !== "boxscore" && tableFilter.type !== "comparison";
-  }) : [];
+  // No need for additional client-side filtering since backend handles it all
+  const filteredStats = stats || [];
   
   // Function to get active filters count for badge
   const getActiveFiltersCount = () => {
@@ -86,18 +79,15 @@ const SportStatsTable = ({ filter }) => {
     if (tableFilter.category !== "all") {
       const categoryName = {
         "scoring": "Scoring Stats",
-        "performance": "Performance Metrics",
-        "counting": "Counting Stats",
-        "negative": "Negative Actions"
+        "performance": "Performance Metrics", 
+        "actions": "Action Stats"
       }[tableFilter.category] || tableFilter.category;
       filters.push(`Category: ${categoryName}`);
     }
     if (tableFilter.type !== "all") {
       const typeName = {
-        "recording": "Recording Stats",
-        "calculated": "Calculated Stats",
-        "boxscore": "Boxscore Stats",
-        "comparison": "Comparison Stats"
+        "basic": "Basic Stats",
+        "advanced": "Advanced Stats"
       }[tableFilter.type] || tableFilter.type;
       filters.push(`Type: ${typeName}`);
     }
@@ -105,7 +95,7 @@ const SportStatsTable = ({ filter }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg">Table View</h3>

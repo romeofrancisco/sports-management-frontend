@@ -12,11 +12,11 @@ const PlayerProgressIndividualPage = () => {
   const { playerId } = useParams();
   const navigate = useNavigate();
 
-  // Create default date range (1 month from now)
+  // Create default date range (3 months from now)
   const createDefaultDateRange = () => {
     const today = new Date();
     return {
-      from: subMonths(today, 1), // 1 month ago
+      from: subMonths(today, 3), // 3 months ago
       to: today, // today
     };
   };
@@ -68,7 +68,7 @@ const PlayerProgressIndividualPage = () => {
               value={dateRange}
               onChange={handleDateRangeChange}
               placeholder="Select date range..."
-              className="w-auto"
+              className="w-auto min-w-36 justify-center bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg border-primary/20"
             />
           </div>
         </UniversityPageHeader>

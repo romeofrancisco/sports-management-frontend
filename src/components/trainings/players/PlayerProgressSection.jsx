@@ -13,16 +13,15 @@ import TeamCardList from "./TeamCardList";
 import LoadingCard from "./LoadingCard";
 import TeamPlayerView from "./TeamPlayerView";
 
-const PlayerProgressSection = ({ 
-  initialDateRange, 
-  onDateRangeChange, 
-  onViewContextUpdate 
+const PlayerProgressSection = ({
+  initialDateRange,
+  onViewContextUpdate,
 }) => {
   // Create default date range (1 month from now)
   const createDefaultDateRange = () => {
     const today = new Date();
     return {
-      from: subMonths(today, 1), // 1 month ago
+      from: subMonths(today, 3), // 3 months ago
       to: today, // today
     };
   };
@@ -58,14 +57,15 @@ const PlayerProgressSection = ({
   // Fetch sports
   const { data: sports = [], isLoading: isSportsLoading } = useSports();
   // Fetch teams - get all teams by setting a high page size
-  const { data: teamsData = { results: [] }, isLoading: isTeamsLoading } = useTeams(
-    {
-      sport: playerFilters.sport,
-    },
-    1, // page
-    1000 // pageSize - set high to get all teams
-  );
-  
+  const { data: teamsData = { results: [] }, isLoading: isTeamsLoading } =
+    useTeams(
+      {
+        sport: playerFilters.sport,
+      },
+      1, // page
+      1000 // pageSize - set high to get all teams
+    );
+
   // Extract teams array from paginated response
   const teams = teamsData.results || [];
 
@@ -226,7 +226,7 @@ const PlayerProgressSection = ({
         teamName: null,
       });
     }
-  };  // Handle back button from team view
+  }; // Handle back button from team view
   const handleBackToTeamList = () => {
     setFilter((prev) => ({
       ...prev,
@@ -244,18 +244,6 @@ const PlayerProgressSection = ({
       });
     }
   };
-  // Handle date range change - use parent handler if available
-  const handleDateRangeChange = (newDateRange) => {
-    setFilter((prev) => ({
-      ...prev,
-      dateRange: newDateRange,
-    }));
-
-    // Notify parent about date range change
-    if (onDateRangeChange) {
-      onDateRangeChange(newDateRange);
-    }
-  };
 
   // Loading state
   const isLoading = isSportsLoading || isTeamsLoading || isPlayersLoading;
@@ -271,7 +259,8 @@ const PlayerProgressSection = ({
         return <LoadingCard />;
       }
 
-      return (        <>
+      return (
+        <>
           <PlayerProgressIndividualView
             playerId={filter.selectedPlayer}
             playerName={selectedPlayerName}
@@ -283,7 +272,8 @@ const PlayerProgressSection = ({
           />
         </>
       );
-    }    return (
+    }
+    return (
       <PlayerCardList
         players={players}
         totalPlayers={totalPlayers}
@@ -306,12 +296,14 @@ const PlayerProgressSection = ({
   // Render compare view content based on selected team
   const renderCompareContent = () => {
     if (filter.selectedTeam) {
-      return (        <TeamPlayerView
+      return (
+        <TeamPlayerView
           teamSlug={filter.selectedTeam}
           dateRange={filter.dateRange}
         />
       );
-    }    return (
+    }
+    return (
       <TeamCardList
         teams={teams}
         filteredTeams={filteredTeams}
@@ -324,7 +316,8 @@ const PlayerProgressSection = ({
         onViewChange={handleViewTypeChange}
       />
     );
-  };  return (
+  };
+  return (
     <div className="space-y-6">
       {/* Main Content with Combined Headers */}
       <div className="animate-in fade-in-50 duration-500 delay-100">

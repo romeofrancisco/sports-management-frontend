@@ -778,11 +778,15 @@ export const usePlayerRadarChart = (
   dateRange = {},
   enabled = true
 ) => {
+  // For "Overall" selection, dateRange is {from: null, to: null}
+  // For other selections, dateRange has actual date values
+  const effectiveDateRange = dateRange !== null ? dateRange : {};
+  
   return useQuery({
-    queryKey: ["player-radar-chart", playerId, dateRange],
+    queryKey: ["player-radar-chart", playerId, effectiveDateRange],
     queryFn: async () => {
       const { getPlayerRadarChartData } = await import("@/api/trainingsApi");
-      return getPlayerRadarChartData(playerId, dateRange);
+      return getPlayerRadarChartData(playerId, effectiveDateRange);
     },
     enabled: enabled && !!playerId,
   });

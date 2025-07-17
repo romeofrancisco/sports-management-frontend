@@ -12,6 +12,7 @@ const ControlledInput = ({
   placeholder,
   errors,
   className = "",
+  rules,
   ...rest
 }) => {
   return (
@@ -31,6 +32,7 @@ const ControlledInput = ({
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => {
           const inputProps = {
             id: name,

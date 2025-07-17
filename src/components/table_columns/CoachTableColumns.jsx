@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const getCoachTableColumns = ({ onEdit, onDelete }) => [
   {
@@ -104,73 +105,57 @@ const getCoachTableColumns = ({ onEdit, onDelete }) => [
   },
   {
     header: "Teams",
-    accessorKey: "teams",
-    size: 80,
+    accessorKey: "coached_teams",
+    size: 100,
     meta: { priority: "medium" },
     cell: ({ getValue }) => {
       const teams = getValue() || [];
-      const totalPlayers = teams.reduce((sum, team) => sum + (team.player_count || 0), 0);
-      
-      return (
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1">
-            <Volleyball className="h-3 w-3 text-primary/70" />
-            <span className="text-xs font-medium">{teams.length}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-3 w-3 text-secondary/70" />
-            <span className="text-xs font-medium">{totalPlayers}</span>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    header: "Team Details",
-    accessorKey: "team_names",
-    size: 200,
-    meta: { priority: "low" },
-    cell: ({ row }) => {
-      const teams = row.original.teams || [];
       if (teams.length === 0) {
-        return (
-          <span className="text-xs text-muted-foreground italic">
-            No teams assigned
-          </span>
-        );
+        return <span className="text-xs text-muted-foreground italic">No teams</span>;
       }
       return (
-        <div className="space-y-1">
-          {teams.slice(0, 3).map((team) => (
-            <div key={team.id} className="flex items-center gap-2">
-              {team.logo ? (
-                <img
-                  src={team.logo}
-                  alt={team.name}
-                  className="h-4 w-4 rounded-sm object-cover"
-                />
-              ) : (
-                <div
-                  className="h-4 w-4 rounded-sm flex items-center justify-center text-[8px] font-bold text-white"
-                  style={{ backgroundColor: team.color || '#6b7280' }}
-                >
-                  {team.abbreviation || team.name.slice(0, 2).toUpperCase()}
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium truncate">{team.name}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {team.sport_name} • {team.player_count} players
-                </p>
-              </div>
-            </div>
-          ))}
-          {teams.length > 3 && (
-            <p className="text-xs text-muted-foreground text-center">
-              +{teams.length - 3} more teams
-            </p>
-          )}
-        </div>
+        <TooltipProvider>
+          <div className="flex items-center -space-x-2">
+            {teams.slice(0, 4).map((team) => (
+              <Tooltip key={team.id}>
+                <TooltipTrigger asChild>
+                  <div className="relative cursor-pointer">
+                    {team.logo ? (
+                      <img
+                        src={team.logo}
+                        alt={team.name}
+                        className="w-6 h-6 rounded-full border-2 border-background object-cover shadow"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center shadow">
+                        <span className="text-[10px] font-medium text-primary">
+                          {team.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top">{team.name}</TooltipContent>
+              </Tooltip>
+            ))}
+            {teams.length > 4 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center z-10 cursor-pointer">
+                    <span className="text-[10px] text-muted-foreground">
+                      +{teams.length - 4}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <div className="text-xs font-medium text-primary-foreground whitespace-pre-line">
+                    {teams.map((team) => `• ${team.name}`).join("\n")}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        </TooltipProvider>
       );
     },
   },

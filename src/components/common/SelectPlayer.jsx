@@ -36,8 +36,11 @@ const SelectPlayer = ({
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent>
-                <SelectGroup>                  {players.length === 0 ? (
-                    <SelectItem value="no_players_available" disabled>No players available</SelectItem>
+                <SelectGroup>
+                  {players.length === 0 ? (
+                    <SelectItem value="no_players_available" disabled>
+                      No players available
+                    </SelectItem>
                   ) : (
                     players.map((player) => {
                       const isSelected =

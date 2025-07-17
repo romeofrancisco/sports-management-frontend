@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   PencilIcon, 
   TrashIcon, 
@@ -6,8 +6,6 @@ import {
   ClockIcon, 
   Users, 
   MapPin, 
-  PlayCircle, 
-  StopCircle,
   Target,
   UserCheck,
   Settings
@@ -15,16 +13,8 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { Badge } from '../../ui/badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
-import { 
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter
-} from '../../ui/dialog';
-import { useDeleteTrainingSession } from '@/hooks/useTrainings';
-import { formatDate, formatTime } from '../../../utils/formatters';
+import { formatTime } from '../../../utils/formatters';
+import { formatShortDate } from '@/utils/formatDate';
 
 /**
  * Component for displaying a training session card with enhanced UI and status-based validation
@@ -32,249 +22,213 @@ import { formatDate, formatTime } from '../../../utils/formatters';
  * @param {Object} props
  * @param {Object} props.session - The training session data with status validation flags
  * @param {Function} props.onEdit - Function to call when edit button is clicked
- * @param {Function} props.onDeleted - Optional callback after successful deletion
+ * @param {Function} props.onDelete - Function to call when delete button is clicked
  * @param {Function} props.onManage - Function to call when manage session button is clicked
  */
 const TrainingSessionCard = ({ 
   session, 
   onEdit, 
-  onDeleted, 
+  onDelete, 
   onManage
 }) => {
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const { mutateAsync: deleteSession, isPending: isDeleting } = useDeleteTrainingSession();
-  const [activeTab, setActiveTab] = useState("details");
-    const handleDelete = async () => {
-    try {
-      await deleteSession(session.id);
-      // Toast notification is handled by the mutation
-      if (onDeleted) onDeleted();
-    } catch (error) {
-      // Error toast notification is handled by the mutation
-      console.error("Error deleting session:", error);
-    }
-  };
     // Format date for display
-  const formattedDate = formatDate(session.date);
-    // Get session status - use backend status if available, otherwise calculate
-  const getSessionStatus = () => {
-    // If backend provides status validation flags, use them
-    if (session.status) {
-      const statusColors = {
-        'upcoming': { status: 'upcoming', color: 'bg-blue-500', text: 'Upcoming' },
-        'ongoing': { status: 'ongoing', color: 'bg-green-500', text: 'Ongoing' },
-        'completed': { status: 'completed', color: 'bg-gray-500', text: 'Completed' }
-      };
-      return statusColors[session.status] || statusColors['upcoming'];
+  const formattedDate = formatShortDate(session.date);
+    // Get session status with comprehensive styling info like SessionCard
+  const getSessionStatusInfo = () => {
+    let status = session.status?.toLowerCase();
+    
+    // If no backend status, calculate from dates
+    if (!status) {
+      const now = new Date();
+      const sessionStart = new Date(`${session.date}T${session.start_time}`);
+      const sessionEnd = new Date(`${session.date}T${session.end_time}`);
+      
+      if (now < sessionStart) {
+        status = 'upcoming';
+      } else if (now >= sessionStart && now <= sessionEnd) {
+        status = 'ongoing';
+      } else {
+        status = 'completed';
+      }
     }
-    
-    // Fallback to client-side calculation
-    const now = new Date();
-    const sessionStart = new Date(`${session.date}T${session.start_time}`);
-    const sessionEnd = new Date(`${session.date}T${session.end_time}`);
-    
-    if (now < sessionStart) {
-      return { status: 'upcoming', color: 'bg-blue-500', text: 'Upcoming' };
-    } else if (now >= sessionStart && now <= sessionEnd) {
-      return { status: 'ongoing', color: 'bg-green-500', text: 'Ongoing' };
+
+    // Status-based styling similar to SessionCard
+    if (status === 'ongoing' || status === 'in_progress' || status === 'active') {
+      return {
+        gradient: 'from-secondary/10 to-secondary/20',
+        strip: 'bg-secondary',
+        borderColor: 'border-secondary/30',
+        textColor: 'text-secondary',
+        bgColor: 'bg-secondary/10',
+        badgeClass: 'bg-secondary/10 text-secondary border-secondary/20',
+        statusText: 'Ongoing',
+        primaryColor: 'secondary'
+      };
+    } else if (status === 'completed') {
+      return {
+        gradient: 'from-primary/10 to-primary/20',
+        strip: 'bg-primary',
+        borderColor: 'border-primary/30',
+        textColor: 'text-primary',
+        bgColor: 'bg-primary/10',
+        badgeClass: 'bg-primary/10 text-primary border-primary/20',
+        statusText: 'Completed',
+        primaryColor: 'primary'
+      };
     } else {
-      return { status: 'completed', color: 'bg-gray-500', text: 'Completed' };
+      // upcoming or default
+      return {
+        gradient: 'from-orange-500/10 to-orange-500/20',
+        strip: 'bg-orange-500',
+        borderColor: 'border-orange-500/30',
+        textColor: 'text-orange-600',
+        bgColor: 'bg-orange-500/10',
+        badgeClass: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+        statusText: 'Upcoming',
+        primaryColor: 'orange'
+      };
     }
   };
-  const sessionStatus = getSessionStatus();
+  
+  const statusInfo = getSessionStatusInfo();
   
   return (
-    <Card className="group relative overflow-hidden bg-gradient-to-br from-card via-card/95 to-muted/20 border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-primary/20">
-      {/* Status indicator */}
-      <div className={`absolute top-0 right-0 w-3 h-3 ${sessionStatus.color} rounded-bl-lg`}></div>
+    <Card className={`group relative overflow-hidden bg-gradient-to-br ${statusInfo.gradient} hover:shadow-lg transition-all duration-300 border ${statusInfo.borderColor} shadow-sm h-full flex flex-col`}>
+      {/* Status Strip like SessionCard */}
+      <div className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`} />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full bg-muted/30 border-b border-border/30">
-          <TabsTrigger 
-            value="details" 
-            className="flex-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all duration-200"
-          >
-            <Target className="h-4 w-4 mr-2" />
-            Details
-          </TabsTrigger>
-          <TabsTrigger 
-            value="actions" 
-            className="flex-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all duration-200"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Actions
-          </TabsTrigger>
-        </TabsList>        
-        <TabsContent value="details" className="m-0">
-          <CardHeader className="pb-4 bg-gradient-to-r from-primary/5 to-secondary/5">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <CardTitle className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                    {session.title}
-                  </CardTitle>
-                  <Badge 
-                    variant="outline" 
-                    className={`text-xs px-2 py-1 font-medium border-0 text-white ${sessionStatus.color}`}
-                  >
-                    {sessionStatus.text}
-                  </Badge>
-                </div>
-                <div className="flex items-center text-sm text-muted-foreground gap-4">
-                  <div className="flex items-center gap-1">
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>{formattedDate}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <ClockIcon className="h-4 w-4" />
-                    <span>{formatTime(session.start_time)} - {formatTime(session.end_time)}</span>
-                  </div>
-                </div>
+      {/* Header Section */}
+      <CardHeader className="pb-4 pt-3 relative">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+          <div className="space-y-2 flex-1">
+            <div className="flex items-center gap-3">
+              <div className={`p-1.5 rounded-full ${statusInfo.bgColor}`}>
+                <Target className={`h-4 w-4 ${statusInfo.textColor}`} />
               </div>
-              <div className="flex gap-1">
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  onClick={onEdit}
-                  className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  <PencilIcon className="h-4 w-4" />
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  onClick={() => setConfirmDelete(true)}
-                  className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </Button>
-              </div>
+              <CardTitle className={`text-xl font-bold ${statusInfo.textColor} leading-tight`}>
+                {session.title}
+              </CardTitle>
+              <Badge className={`text-xs font-medium border ${statusInfo.badgeClass}`}>
+                {statusInfo.statusText}
+              </Badge>
             </div>
-          </CardHeader>
-          
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-3">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
-                <div className="p-2 rounded-full bg-primary/10">
-                  <Users className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Team</div>
-                  <div className="text-xs text-muted-foreground">
-                    {session.team_name || 'No team specified'}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
-                <div className="p-2 rounded-full bg-secondary/10">
-                  <MapPin className="h-4 w-4 text-secondary" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Location</div>
-                  <div className="text-xs text-muted-foreground">{session.location}</div>
-                </div>
-              </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
-                <div className="p-2 rounded-full bg-blue-500/10">
-                  <UserCheck className="h-4 w-4 text-blue-500" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Players</div>
-                  <div className="text-xs text-muted-foreground">
-                    {session.players_count > 0 
-                      ? `${session.players_count} player${session.players_count !== 1 ? 's' : ''} enrolled`
-                      : 'No players enrolled yet'
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </TabsContent>        <TabsContent value="actions" className="m-0">
-          <CardContent className="pt-6 pb-4">
-            <div className="grid grid-cols-1 gap-3">
-              <Button
-                variant="outline" 
-                size="sm"
-                className="w-full justify-start h-12 transition-all duration-200 hover:bg-primary/5 hover:border-primary/20"
-                onClick={onManage}
-              >
-                <Settings className="mr-3 h-4 w-4 text-primary" />
-                <div className="text-left">
-                  <div className="font-medium">Manage Session</div>
-                  <div className="text-xs text-muted-foreground">
-                    Attendance, metrics, and player records
-                  </div>
-                </div>              </Button>
-              
-              <Button
-                variant="outline" 
-                size="sm"
-                className="w-full justify-start h-12 hover:bg-primary/5 hover:border-primary/20 transition-all duration-200"
-                onClick={onEdit}
-              >
-                <PencilIcon className="mr-3 h-4 w-4 text-primary" />
-                <div className="text-left">
-                  <div className="font-medium">Edit Session</div>
-                  <div className="text-xs text-muted-foreground">Modify session details</div>
-                </div>
-              </Button>
-            </div>
-          </CardContent>
-        </TabsContent></Tabs>
-        <CardFooter className="bg-gradient-to-r from-muted/40 to-muted/20 border-t border-border/30 px-4 py-3">
-        <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <ClockIcon className="h-3 w-3" />
-              <span className="font-medium">{session.duration_minutes} min</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              <span className="font-medium">Team Session</span>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground ml-11">
+              <CalendarIcon className="h-4 w-4" />
+              <span className="font-medium">{formattedDate}</span>
+              <div className="w-1 h-1 bg-muted-foreground/40 rounded-full"></div>
+              <ClockIcon className="h-4 w-4" />
+              <span className="font-medium">{formatTime(session.start_time)} - {formatTime(session.end_time)}</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <div className={`w-2 h-2 rounded-full ${sessionStatus.color}`}></div>
-            <span className="font-medium">{sessionStatus.text}</span>
+          
+          {/* Action Buttons */}
+          <div className="flex gap-2 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`h-9 w-9 p-0 rounded-lg hover:${statusInfo.bgColor} hover:${statusInfo.textColor} transition-all duration-200 group/edit`}
+              onClick={onEdit}
+              aria-label="Edit Session"
+            >
+              <PencilIcon className="h-4 w-4 group-hover/edit:scale-110 transition-transform" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 p-0 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group/delete"
+              onClick={() => onDelete?.(session)}
+              aria-label="Delete Session"
+            >
+              <TrashIcon className="h-4 w-4 group-hover/delete:scale-110 transition-transform" />
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              className={`h-9 px-4 rounded-lg ${statusInfo.strip} text-white hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg group/manage`}
+              onClick={onManage}
+              aria-label="Manage Session"
+            >
+              <Settings className="h-4 w-4 mr-2 group-hover/manage:rotate-45 transition-transform duration-300" />
+              <span className="hidden sm:inline">Manage</span>
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+
+      {/* Content Section */}
+      <CardContent className="space-y-4 pt-0 flex-1">
+        {/* Main Info Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className={`group/item flex items-center gap-3 p-3 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor} hover:border-opacity-50 transition-all duration-300`}>
+            <div className={`p-2 rounded-lg ${statusInfo.bgColor} group-hover/item:opacity-80 transition-colors`}>
+              <MapPin className={`h-4 w-4 ${statusInfo.textColor}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={`text-xs font-medium ${statusInfo.textColor} uppercase tracking-wide`}>Location</p>
+              <p className="text-sm font-semibold text-foreground truncate">{session.location || 'No location specified'}</p>
+            </div>
+          </div>
+
+          <div className={`group/item flex items-center gap-3 p-3 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor} hover:border-opacity-50 transition-all duration-300`}>
+            <div className={`p-2 rounded-lg ${statusInfo.bgColor} group-hover/item:opacity-80 transition-colors`}>
+              <Users className={`h-4 w-4 ${statusInfo.textColor}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={`text-xs font-medium ${statusInfo.textColor} uppercase tracking-wide`}>Team</p>
+              <p className="text-sm font-semibold text-foreground truncate">{session.team_name || 'No team specified'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Section */}
+        <div className={`p-4 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor}`}>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
+                <ClockIcon className={`h-5 w-5 ${statusInfo.textColor}`} />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Duration</p>
+              <p className={`text-base font-bold ${statusInfo.textColor}`}>{session.duration_minutes}<span className="text-xs ml-1">min</span></p>
+            </div>
+            
+            <div className="text-center">
+              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
+                <UserCheck className={`h-5 w-5 ${statusInfo.textColor}`} />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Players</p>
+              <p className={`text-base font-bold ${statusInfo.textColor}`}>{session.players_count || 0}</p>
+            </div>
+
+            <div className="text-center">
+              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
+                <Target className={`h-5 w-5 ${statusInfo.textColor}`} />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Type</p>
+              <p className={`text-sm font-bold ${statusInfo.textColor}`}>Training</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+
+      {/* Footer Section */}
+      <CardFooter className={`${statusInfo.gradient} border-t ${statusInfo.borderColor} px-4 py-3`}>
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${statusInfo.strip} text-white text-xs font-medium shadow-sm`}>
+              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+              {statusInfo.statusText}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className={`px-2 py-1 ${statusInfo.bgColor} rounded-full font-medium ${statusInfo.textColor}`}>
+              {session.players_count > 0 
+                ? `${session.players_count} enrolled`
+                : 'No enrollments'}
+            </span>
           </div>
         </div>
       </CardFooter>
-      
-      <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <TrashIcon className="h-5 w-5" />
-              Confirm Deletion
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete <span className="font-semibold text-foreground">"{session.title}"</span>? 
-              This action cannot be undone and will permanently remove all associated data.
-            </p>
-          </div>
-          <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
-              onClick={() => setConfirmDelete(false)}
-              className="hover:bg-muted/50"
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              {isDeleting ? "Deleting..." : "Delete Session"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 };

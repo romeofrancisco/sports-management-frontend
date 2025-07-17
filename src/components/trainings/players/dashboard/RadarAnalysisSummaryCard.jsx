@@ -104,7 +104,7 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
               </div>
               <p className="text-xs text-primary/80 dark:text-secondary/70">
                 <span className="font-semibold">
-                  {bestCategory.category_name}
+                  {bestCategory.category_name} {" "}
                 </span>
                 with {bestCategory.average_improvement.toFixed(1)}% improvement
               </p>
@@ -120,7 +120,7 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
                 </span>
               </div>
               <p className="text-xs text-primary/80 dark:text-secondary/70">
-                Average score of {averagePerformance.toFixed(1)}/100 across
+                Average score of {averagePerformance.toFixed(1)}/100 across{" "}
                 {categories.length} categories
               </p>
             </div>
@@ -136,9 +136,9 @@ const RadarAnalysisSummaryCard = ({ playerId, dateRange, className = "" }) => {
               </div>
               <p className="text-xs text-primary/80 dark:text-secondary/70">
                 <span className="font-semibold">
-                  {needsImprovement.category_name}
+                  {needsImprovement.category_name} {" "}
                 </span>
-                needs attention with
+                needs attention with {" "}
                 {needsImprovement.average_improvement.toFixed(1)}% change
               </p>
             </div>

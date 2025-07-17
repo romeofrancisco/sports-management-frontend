@@ -11,7 +11,7 @@ const TrainingProgress = () => {
   const createDefaultDateRange = () => {
     const today = new Date();
     return {
-      from: subMonths(today, 1), // 1 month ago
+      from: subMonths(today, 3), // 3 months ago
       to: today, // today
     };
   };

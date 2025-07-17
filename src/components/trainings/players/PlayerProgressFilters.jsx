@@ -80,9 +80,7 @@ const PlayerProgressFilters = ({
           <div className="space-y-2">
             {filter.viewType === "individual" && (
               <>
-                <label className="text-sm font-medium block">
-                  Date Range
-                </label>
+                <label className="text-sm font-medium block">Date Range</label>
                 <DateFilter
                   dateRange={filter.dateRange}
                   setDateRange={handleDateRangeChange}

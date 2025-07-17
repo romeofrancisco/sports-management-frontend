@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import { Loader2, Info, Calendar, Users2 } from "lucide-react";
 
@@ -30,6 +30,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
     setError,
     setValue,
     watch,
+    clearErrors,
   } = useForm({
     defaultValues: {
       name: season?.name || "",
@@ -59,6 +60,9 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
     );
   };
   const onSubmit = (data) => {
+    // Clear any existing errors before submission
+    clearErrors();
+    
     const jsonData = {
       ...data,
       start_date: data.dateRange?.from
@@ -72,6 +76,41 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
     // Remove dateRange as it's not needed in the API
     delete jsonData.dateRange;
 
+    const handleError = (err) => {
+      console.error("Season operation error:", err);
+      
+      const errorData = err.response?.data;
+      if (errorData && typeof errorData === 'object') {
+        // Handle field-specific errors
+        Object.entries(errorData).forEach(([field, message]) => {
+          let errorMessage = message;
+          
+          // Handle different error message formats
+          if (Array.isArray(message)) {
+            errorMessage = message[0];
+          } else if (typeof message === 'object' && message.message) {
+            errorMessage = message.message;
+          }
+          
+          setError(field, { 
+            type: "server", 
+            message: errorMessage 
+          });
+        });
+      } else {
+        // Handle generic errors
+        const errorMessage = err.response?.data?.message || 
+                           err.response?.data?.error || 
+                           err.message || 
+                           "An error occurred. Please try again.";
+        
+        setError("root", { 
+          type: "server", 
+          message: errorMessage 
+        });
+      }
+    };
+
     if (season) {
       updateSeason(
         { id: season.id, data: jsonData },
@@ -79,14 +118,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           onSuccess: () => {
             onClose();
           },
-          onError: (err) => {
-            const errorData = err.response?.data;
-            if (errorData) {
-              Object.entries(errorData).forEach(([field, message]) => {
-                setError(field, { type: "server", message });
-              });
-            }
-          },
+          onError: handleError,
         }
       );
     } else {
@@ -94,20 +126,20 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
         onSuccess: () => {
           onClose();
         },
-        onError: (err) => {
-          const errorData = err.response?.data;
-          if (errorData) {
-            Object.entries(errorData).forEach(([field, message]) => {
-              setError(field, { type: "server", message });
-            });
-          }
-        },
+        onError: handleError,
       });
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-1">
+      {/* Display general form errors */}
+      {errors.root && (
+        <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
+          <p className="text-sm font-medium">{errors.root.message}</p>
+        </div>
+      )}
+      
       {/* Basic Information Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
@@ -121,6 +153,11 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           control={control}
           label="Season Name"
           placeholder="Enter season name"
+          rules={{ 
+            required: "Season name is required",
+            minLength: { value: 2, message: "Season name must be at least 2 characters" },
+            maxLength: { value: 100, message: "Season name must not exceed 100 characters" }
+          }}
           errors={errors}
         />
         <ControlledDateRangePicker
@@ -128,6 +165,15 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           control={control}
           label="Date Range"
           placeholder="Select date range"
+          rules={{
+            required: "Date range is required",
+            validate: (value) => {
+              if (!value || !value.from) {
+                return "Start date is required";
+              }
+              return true;
+            }
+          }}
           errors={errors}
           helpText="Select both dates, or only start date to auto-set end date after bracket generation."
           numberOfMonths={useIsMobile() ? 1 : 2}
@@ -147,6 +193,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           handleToggleTeam={onToggleTeam}
           error={errors.teams}
           disabled={season?.has_bracket}
+          control={control}
         />
         {season?.has_bracket && (
           <p className="text-xs text-muted-foreground mt-1">
@@ -184,6 +231,7 @@ const TeamSelection = ({
   handleToggleTeam,
   error,
   disabled = false,
+  control,
 }) => (
   <div className="rounded-xl border bg-card/70 p-4 mt-2">
     <div className="flex items-center gap-2 mb-3 border-b pb-2">
@@ -195,10 +243,15 @@ const TeamSelection = ({
         disabled={disabled}
       />
       <Label className="text-sm font-semibold">Select All Teams</Label>
-      {error && (
-        <p className="text-xs text-destructive ml-2">{error.message}</p>
-      )}
     </div>
+    
+    {/* Show validation message for teams */}
+    {error && (
+      <p className="text-xs text-destructive mb-3 font-medium">
+        {error.message}
+      </p>
+    )}
+    
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
       {sportTeams.map((team) => {
         const isSelected = selectedTeams.includes(team.id);
@@ -239,6 +292,25 @@ const TeamSelection = ({
         );
       })}
     </div>
+    
+    {/* Hidden input for validation */}
+    <Controller
+      name="teams"
+      control={control}
+      rules={{
+        required: "At least one team must be selected",
+        validate: (value) => {
+          if (!value || value.length === 0) {
+            return "At least one team must be selected";
+          }
+          if (value.length < 2) {
+            return "At least 2 teams are required for a season";
+          }
+          return true;
+        }
+      }}
+      render={() => null}
+    />
   </div>
 );
 

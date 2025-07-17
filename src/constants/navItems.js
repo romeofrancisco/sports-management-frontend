@@ -71,7 +71,7 @@ export const adminGroupedNavigation = () => {
           title: "Trainings",
           href: "/trainings",
           icon: Dumbbell,
-          description: "Schedule training sessions and camps",
+          description: "Schedule training sessions",
         },
       ],
     },

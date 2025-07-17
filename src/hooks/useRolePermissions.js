@@ -133,7 +133,22 @@ export const useRolePermissions = () => {
 
           return false;
         },
-        delete: (game) => isAdmin(), // Only admins can delete games
+        delete: (game) => {
+          if (!game) return false;
+          // Admins can delete any game
+          if (isAdmin()) return true;
+          // Coaches can only delete practice games for their teams
+          if (isCoach()) {
+            const isCoachTeam =
+              game?.home_team?.head_coach_id === user?.id ||
+              game?.home_team?.assistant_coach_id === user?.id ||
+              game?.away_team?.head_coach_id === user?.id ||
+              game?.away_team?.assistant_coach_id === user?.id;
+            const isPracticeGame = game?.type === "practice";
+            return isCoachTeam && isPracticeGame;
+          }
+          return false;
+        },
         start: (game) => {
           if (!game) return false;
           // Admins can start any game

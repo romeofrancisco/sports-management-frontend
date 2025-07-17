@@ -15,6 +15,7 @@ import {
   createSportStats,
   deleteSportStat,
   fetchSportStats,
+  fetchSportStatsOverview,
   updateSportStats,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
@@ -201,6 +202,14 @@ export const useSportStats = (sport, filter) => {
   return useQuery({
     queryKey: ["sport-stats", sport, filter],
     queryFn: () => fetchSportStats(sport, filter),
+    enabled: !!sport,
+  });
+};
+
+export const useSportStatsOverview = (sport) => {
+  return useQuery({
+    queryKey: ["sport-stats-overview", sport],
+    queryFn: () => fetchSportStatsOverview(sport),
     enabled: !!sport,
   });
 };

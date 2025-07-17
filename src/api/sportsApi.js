@@ -113,6 +113,15 @@ export const fetchSportStats = async (sport, filter) => {
   }
 };
 
+export const fetchSportStatsOverview = async (sport) => {
+  try {
+    const { data } = await api.get(`sport-stats/overview/?sport=${sport}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteSportStat = async (statId) => {
   try {
     const { data } = await api.delete(`sport-stats/${statId}/`);

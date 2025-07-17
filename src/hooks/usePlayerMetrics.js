@@ -19,17 +19,15 @@ export function usePlayerMetrics(playerId, dateRange = null) {
   useEffect(() => {
     if (
       dateRange &&
-      dateRange.from &&
-      dateRange.to &&
       (dateRange.from !== localDateRange.from ||
         dateRange.to !== localDateRange.to)
     ) {
       setLocalDateRange(dateRange);
     }
-  }, [dateRange]);
+  }, [dateRange, localDateRange.from, localDateRange.to]);
   // Format date range for API requests
-  const effectiveDateRange =
-    dateRange?.from && dateRange?.to ? dateRange : localDateRange;
+  // Use external dateRange if provided (including null values for "Overall")
+  const effectiveDateRange = dateRange !== null ? dateRange : localDateRange;
 
   const formattedDateRange = useMemo(() => {
     // Only include date parameters if dates are actually selected
