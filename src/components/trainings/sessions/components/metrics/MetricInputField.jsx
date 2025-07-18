@@ -3,7 +3,7 @@ import { Label } from "../../../../ui/label";
 import { Input } from "../../../../ui/input";
 import { Textarea } from "../../../../ui/textarea";
 import { cn } from "@/lib/utils";
-import RealTimeImprovementIndicator from "../RealTimeImprovementIndicator";
+import RealTimeImprovementIndicator from "../record/RealTimeImprovementIndicator";
 
 const MetricInputField = ({
   metric,

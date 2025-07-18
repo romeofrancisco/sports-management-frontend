@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollArea } from "../../../../ui/scroll-area";
 import { Activity, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../../../ui/button";
-import MetricInputField from "./MetricInputField";
+import MetricInputField from "../metrics/MetricInputField";
 
 const MetricsRecordingForm = ({
   metricsToShow,
@@ -21,13 +21,14 @@ const MetricsRecordingForm = ({
   session,
   onShowCompletionModal,
   isFormDisabled = false,
-}) => {const completedMetrics = metricsToShow.filter((metric) => {
+}) => {
+  const completedMetrics = metricsToShow.filter((metric) => {
     const value = metricValues[metric.id] || "";
     return value !== "" && !isNaN(parseFloat(value));
   }).length;
 
   // Check if session is already completed
-  const isSessionCompleted = session?.status === 'completed';
+  const isSessionCompleted = session?.status === "completed";
   const isLastPlayer = currentPlayerIndex === playersWithMetrics?.length - 1;
 
   return (
@@ -89,7 +90,8 @@ const MetricsRecordingForm = ({
             <div key={`${playerTrainingId}-${metric.id}`} className="relative">
               {index > 0 && (
                 <div className="absolute -top-3 left-1/2 w-px h-6 bg-border transform -translate-x-1/2" />
-              )}              <MetricInputField
+              )}{" "}
+              <MetricInputField
                 key={`${playerTrainingId}-${metric.id}-input`}
                 metric={metric}
                 value={metricValues[metric.id] || ""}
@@ -131,10 +133,11 @@ const MetricsRecordingForm = ({
                   Great job! All performance metrics have been captured for this
                   player.
                 </p>
-
                 {/* Navigation Buttons */}
                 {playersWithMetrics && currentPlayerIndex !== undefined && (
-                  <div className="flex items-center justify-center gap-3 mt-6">                    <Button
+                  <div className="flex items-center justify-center gap-3 mt-6">
+                    {" "}
+                    <Button
                       variant="outline"
                       size="sm"
                       onClick={onPreviousPlayer}
@@ -144,10 +147,10 @@ const MetricsRecordingForm = ({
                       <ChevronLeft className="h-4 w-4" />
                       Previous Player
                     </Button>
-
                     <div className="px-3 py-1 bg-primary/10 rounded-full text-sm text-primary font-medium">
                       {currentPlayerIndex + 1} of {playersWithMetrics.length}
-                    </div>                    <Button
+                    </div>{" "}
+                    <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
@@ -160,7 +163,8 @@ const MetricsRecordingForm = ({
                         }
                       }}
                       disabled={
-                        (currentPlayerIndex === playersWithMetrics.length - 1 && !isSessionCompleted)
+                        currentPlayerIndex === playersWithMetrics.length - 1 &&
+                        !isSessionCompleted
                       }
                       className="flex items-center gap-2"
                     >
@@ -177,15 +181,15 @@ const MetricsRecordingForm = ({
                       )}
                     </Button>
                   </div>
-                )}                {/* Completion Status */}
+                )}{" "}
+                {/* Completion Status */}
                 {playersWithMetrics &&
                   currentPlayerIndex === playersWithMetrics.length - 1 && (
                     <div className="mt-4 p-3 bg-primary/10 rounded-lg">
                       <p className="text-sm text-primary font-medium">
-                        {isSessionCompleted 
+                        {isSessionCompleted
                           ? "🎯 Training session completed! Click to view the training summary."
-                          : "🎉 This is the last player! You're all done!"
-                        }
+                          : "🎉 This is the last player! You're all done!"}
                       </p>
                     </div>
                   )}

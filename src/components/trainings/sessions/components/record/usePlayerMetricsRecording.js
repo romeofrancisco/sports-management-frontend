@@ -77,12 +77,12 @@ export const usePlayerMetricsRecording = (session) => {
   }, [metricsToShow, metricValues]);
 
   // Save function
-  const savePlayerMetrics = useCallback(async (shouldNavigate = false) => {
-    if (!hasActualChanges()) {
+  const savePlayerMetrics = useCallback(async (shouldNavigate = false, skipChangeCheck = false) => {
+    if (!skipChangeCheck && !hasActualChanges()) {
       toast.info("No changes detected", {
         description: "Metrics and notes are unchanged from the last recording.",
       });
-      return;
+      return { saved: false, reason: "no_changes" };
     }
 
     const metricsData = metricsToShow
@@ -95,7 +95,12 @@ export const usePlayerMetricsRecording = (session) => {
       .filter((data) => !isNaN(data.value) && data.value > 0);
 
     if (metricsData.length === 0) {
-      return;
+      return { saved: false, reason: "no_valid_metrics" };
+    }
+
+    // If skipChangeCheck is true but there are no actual changes, don't save
+    if (skipChangeCheck && !hasActualChanges()) {
+      return { saved: false, reason: "no_changes_skip_check" };
     }
 
     return new Promise((resolve, reject) => {
@@ -106,7 +111,7 @@ export const usePlayerMetricsRecording = (session) => {
         },
         {
           onSuccess: (data) => {
-            resolve(data);
+            resolve({ saved: true, data });
           },
           onError: (error) => {
             reject(error);
