@@ -425,10 +425,10 @@ export const useDeletePlayerTraining = () => {
   });
 };
 
-export const useRecordPlayerMetrics = () => {
+export const useRecordPlayerMetrics = (sessionId) => {
   return useMutation({
     mutationFn: recordPlayerMetrics,
-    onSuccess: (data, { id }) => {
+    onSuccess: (data, { id, sessionId: mutationSessionId }) => {
       toast.success("Player metrics recorded!", {
         description: `Successfully recorded ${
           data.records?.length || 0
@@ -436,16 +436,19 @@ export const useRecordPlayerMetrics = () => {
         richColors: true,
       });
 
-      // Store previous records in cache for this player training
-      if (data.previous_records && data.previous_records.length > 0) {
-        queryClient.setQueryData(
-          ["player-training-previous", id],
-          data.previous_records
-        );
-      }
+      // Use the sessionId from the mutation payload or the hook parameter
+      const currentSessionId = mutationSessionId || sessionId;
 
+      // Invalidate all related queries to ensure fresh data
       queryClient.invalidateQueries(["player-training", id]);
-      queryClient.invalidateQueries(["player-progress"]);
+      queryClient.invalidateQueries(["session-players-with-metrics", currentSessionId]);
+      queryClient.invalidateQueries(["training-session", currentSessionId]);
+      queryClient.invalidateQueries(["current-player"]);
+      queryClient.invalidateQueries(["player-metrics"]);
+      
+      // Force refetch to ensure immediate UI updates
+      queryClient.refetchQueries(["session-players-with-metrics", currentSessionId]);
+      queryClient.refetchQueries(["training-session", currentSessionId]);
     },
     onError: (error) => {
       toast.error("Failed to record metrics", {
@@ -823,7 +826,6 @@ export const useTrainingOverview = (enabled = true) => {
     queryKey: ["training-overview"],
     queryFn: fetchTrainingOverview,
     enabled,
-    staleTime: 2 * 60 * 1000, // Consider data fresh for 2 minutes
   });
 };
 

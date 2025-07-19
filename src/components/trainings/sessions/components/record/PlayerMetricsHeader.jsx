@@ -3,7 +3,7 @@ import { CardHeader, CardTitle } from "../../../../ui/card";
 import { Button } from "../../../../ui/button";
 import { BadgeInfo, BarChart3 } from "lucide-react";
 
-const PlayerMetricsHeader = ({ session, setShowCompletionModal }) => {
+const PlayerMetricsHeader = () => {
   return (
     <CardHeader className="border-b-2 border-primary/20 shadow-lg py-5">
       <CardTitle className="flex items-center gap-3">
@@ -18,20 +18,6 @@ const PlayerMetricsHeader = ({ session, setShowCompletionModal }) => {
             Step 4 of training session setup
           </p>
         </div>
-        {/* Training Summary Button for completed sessions */}
-        {session?.status === "completed" && (
-          <div className="ml-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowCompletionModal(true)}
-              className="flex items-center gap-2 bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-            >
-              <BarChart3 className="h-4 w-4" />
-              View Training Summary
-            </Button>
-          </div>
-        )}
       </CardTitle>
       <div className="mt-4 p-4 rounded-lg border-2 bg-primary/10 border-primary/20">
         <p className="text-sm inline-flex text-primary items-center gap-1 leading-relaxed">

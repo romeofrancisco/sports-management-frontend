@@ -6,14 +6,15 @@ import EmptyPlayersState from "./metrics/EmptyPlayersState";
 import TrainingCompletionModal from "../../../modals/trainings/TrainingCompletionModal";
 import FullPageLoading from "../../../common/FullPageLoading";
 import PlayerMetricsHeader from "./record/PlayerMetricsHeader";
-import PlayerNavigation from "./record/PlayerNavigation";
-import PlayerMetricsForm from "./record/PlayerMetricsForm";
+import ProgressOverview from "./record/ProgressOverview";
+import MetricsRecordingForm from "./record/MetricsRecordingForm";
 
 const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
   const navigate = useNavigate();
   const [showSuccessAnimation, setShowSuccessAnimation] = React.useState(false);
   const [showCompletionModal, setShowCompletionModal] = React.useState(false);
-  const [isPreparingCompletion, setIsPreparingCompletion] = React.useState(false);
+  const [isPreparingCompletion, setIsPreparingCompletion] =
+    React.useState(false);
 
   // Get form disabled state from workflow
   const recordMetricsStep = workflowData?.steps?.find(
@@ -31,6 +32,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
     hasValidMetrics,
     handlePreviousPlayer,
     handleNextPlayer,
+    navigateToPlayer,
     handleMetricChange,
     handleNotesChange,
     fetchImprovement,
@@ -47,7 +49,7 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
     try {
       // Skip change check when completing session to avoid "no changes" message
       const saveResult = await savePlayerMetrics(false, true);
-      
+
       // Only show success animation if something was actually saved
       if (saveResult?.saved) {
         setShowSuccessAnimation(true);
@@ -76,15 +78,15 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
       console.error("Error saving metrics:", error);
       setIsPreparingCompletion(false);
     }
-  }, [savePlayerMetrics, isLastPlayer, hasValidMetrics, onSaveSuccess]); 
-  
+  }, [savePlayerMetrics, isLastPlayer, hasValidMetrics, onSaveSuccess]);
+
   // Enhanced next player handler
   const handleEnhancedNextPlayer = React.useCallback(async () => {
     // Check if session is already completed
     if (session?.status === "completed") {
       if (isLastPlayer) {
-        // For completed sessions on last player, show completion modal directly
-        setShowCompletionModal(true);
+        // For completed sessions on last player, navigate directly to summary
+        navigate(`/trainings/sessions/${session.id}/summary`);
         return;
       } else {
         // Just navigate to next player without saving
@@ -99,9 +101,17 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
       return;
     }
 
-    if (isLastPlayer && hasValidMetrics()) {
-      await handleSaveAndCheckCompletion();
+    // Always allow navigation to next player, regardless of form completion
+    if (isLastPlayer) {
+      // Only show completion modal if there are valid metrics
+      if (hasValidMetrics()) {
+        await handleSaveAndCheckCompletion();
+      } else {
+        // Navigate to next player even without valid metrics
+        await handleNextPlayer();
+      }
     } else {
+      // Always navigate to next player
       await handleNextPlayer();
     }
   }, [
@@ -110,63 +120,80 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
     handleSaveAndCheckCompletion,
     handleNextPlayer,
     session?.status,
+    session?.id,
+    navigate,
     isFormDisabled,
   ]);
 
-  // Calculate progress
-  const progressPercentage =
-    playersWithMetrics.length > 0
-      ? ((currentPlayerIndex + 1) / playersWithMetrics.length) * 100
-      : 0;
+  // Calculate progress based on players with recorded data
+  const progressPercentage = React.useMemo(() => {
+    if (playersWithMetrics.length === 0) return 0;
 
-  // Check if player can proceed (has metrics and valid data)
-  const canProceed = hasValidMetrics() && Object.keys(metricValues).length > 0;
+    // Count players who have at least one recorded metric
+    const playersWithData = playersWithMetrics.filter((playerRecord) => {
+      if (
+        !playerRecord.metric_records ||
+        playerRecord.metric_records.length === 0
+      ) {
+        return false;
+      }
+      // Check if any metric record has a valid value
+      return playerRecord.metric_records.some(
+        (record) =>
+          record.value !== null &&
+          record.value !== "" &&
+          !isNaN(parseFloat(record.value))
+      );
+    }).length;
+
+    return (playersWithData / playersWithMetrics.length) * 100;
+  }, [playersWithMetrics]);
+
+  // Check if player can proceed (always allow navigation)
+  const canProceed = true; // Always allow navigation to next player
 
   // Check if there are players with metrics configured
   if (playersWithMetrics.length === 0) {
     return <EmptyPlayersState />;
   }
-  
+
   return (
     <Card className="h-full pt-0 gap-0 flex flex-col shadow-xl border-2 border-primary/20 bg-card transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 overflow-hidden">
-      <PlayerMetricsHeader 
-        session={session}
-        setShowCompletionModal={setShowCompletionModal}
-      />
+      <PlayerMetricsHeader />
       <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
         {/* Enhanced Player Navigation & Statistics Dashboard */}
-        <PlayerNavigation
-          currentPlayerIndex={currentPlayerIndex}
-          playersWithMetrics={playersWithMetrics}
-          currentPlayer={currentPlayer}
-          metricsToShow={metricsToShow}
-          metricValues={metricValues}
-          hasChanges={hasChanges}
-          progressPercentage={progressPercentage}
-          canProceed={canProceed}
-          session={session}
-          handlePreviousPlayer={handlePreviousPlayer}
-          handleEnhancedNextPlayer={handleEnhancedNextPlayer}
-          setShowCompletionModal={setShowCompletionModal}
-        />
+        <div className="space-y-6">
+          <ProgressOverview
+            currentPlayerIndex={currentPlayerIndex}
+            playersWithMetrics={playersWithMetrics}
+            progressPercentage={progressPercentage}
+            navigateToPlayer={navigateToPlayer}
+          />
+        </div>
         {/* Metrics Recording Form */}
-        <PlayerMetricsForm
-          metricsToShow={metricsToShow}
-          metricValues={metricValues}
-          notes={notes}
-          handleMetricChange={handleMetricChange}
-          handleNotesChange={handleNotesChange}
-          currentPlayer={currentPlayer}
-          fetchImprovement={fetchImprovement}
-          getImprovementData={getImprovementData}
-          currentPlayerIndex={currentPlayerIndex}
-          playersWithMetrics={playersWithMetrics}
-          handlePreviousPlayer={handlePreviousPlayer}
-          handleEnhancedNextPlayer={handleEnhancedNextPlayer}
-          session={session}
-          setShowCompletionModal={setShowCompletionModal}
-          isFormDisabled={isFormDisabled}
-        />
+        <div className="animate-in fade-in-50 duration-500 delay-200 flex-1">
+          <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden">
+            <MetricsRecordingForm
+              metricsToShow={metricsToShow}
+              metricValues={metricValues}
+              notes={notes}
+              onMetricChange={handleMetricChange}
+              onNotesChange={handleNotesChange}
+              playerTrainingId={currentPlayer?.id}
+              fetchImprovement={fetchImprovement}
+              getImprovementData={getImprovementData}
+              currentPlayerIndex={currentPlayerIndex}
+              playersWithMetrics={playersWithMetrics}
+              onPreviousPlayer={handlePreviousPlayer}
+              onNextPlayer={handleEnhancedNextPlayer}
+              session={session}
+              navigate={navigate}
+              isFormDisabled={isFormDisabled}
+              currentPlayer={currentPlayer}
+              hasChanges={hasChanges}
+            />
+          </div>
+        </div>
       </CardContent>
       {/* Training Completion Modal */}
       <TrainingCompletionModal
@@ -182,10 +209,10 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
           }
         }}
       />
-      
+
       {/* Loading overlay for completion preparation */}
-      <FullPageLoading 
-        message="Preparing training summary..." 
+      <FullPageLoading
+        message="Preparing training summary..."
         isVisible={isPreparingCompletion}
       />
     </Card>
