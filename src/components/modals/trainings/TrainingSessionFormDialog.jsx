@@ -9,7 +9,7 @@ import {
 import TrainingSessionForm from "@/components/forms/TrainingSessionForm";
 import { useTrainingSession } from "@/hooks/useTrainings";
 import { useSelector } from "react-redux";
-import { useTeams } from "@/hooks/useTeams";
+import { useAllTeams } from "@/hooks/useTeams";
 import ContentLoading from "@/components/common/ContentLoading";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar, Settings, Dumbbell } from "lucide-react";
@@ -24,13 +24,13 @@ const TrainingSessionFormDialog = ({ open, onOpenChange, sessionId }) => {
     isLoading,
     error,
   } = useTrainingSession(sessionId, Boolean(open && sessionId));
-  
-  const { data: teamsData = { results: [] }, isLoading: isLoadingTeams } =
-    useTeams(Boolean(open && !isCoach));
 
-  // Extract teams array from paginated response
-  const teams = teamsData.results || [];
-  
+  const { data: teamsData = [], isLoading: isLoadingTeams } =
+    useAllTeams(Boolean(open && !isCoach));
+
+  // Teams are already in array format from useAllTeams
+  const teams = teamsData;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-[700px] max-h-[90vh] overflow-hidden p-0">
@@ -45,7 +45,9 @@ const TrainingSessionFormDialog = ({ open, onOpenChange, sessionId }) => {
             </div>
             <div>
               <DialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                {sessionId ? "Edit Training Session" : "Schedule New Training Session"}
+                {sessionId
+                  ? "Edit Training Session"
+                  : "Schedule New Training Session"}
               </DialogTitle>
               <DialogDescription className="text-sm text-muted-foreground mt-1">
                 {sessionId

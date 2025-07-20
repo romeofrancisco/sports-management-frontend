@@ -1,204 +1,260 @@
-import React from "react";
-import { ScrollArea } from "../../../../ui/scroll-area";
-import { Activity, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "../../../../ui/button";
-import MetricInputField from "../metrics/MetricInputField";
+import React, { useImperativeHandle, forwardRef } from "react";
+import { useRealTimeImprovement } from "../../../../../hooks/useRealTimeImprovement";
+import { usePlayerMetricsData } from "./hooks/usePlayerMetricsData";
+import { useFormState } from "./hooks/useFormState";
+import { useFormValidation } from "./hooks/useFormValidation";
+import { useSaveOperations } from "./hooks/useSaveOperations";
+import { usePlayerNavigation } from "./hooks/usePlayerNavigation";
+import { createNextPlayerHandler } from "./utils/playerMetricsRecordingUtils";
+import MetricsProgressHeader from "./MetricsProgressHeader";
+import MetricsStatusMessage from "./MetricsStatusMessage";
+import InputWarning from "./InputWarning";
+import MetricInputField from "./MetricInputField";
+import FullPageLoading from "../../../../common/FullPageLoading";
+import MetricsRecordingFormSkeleton from "./MetricsRecordingFormSkeleton";
 
-const MetricsRecordingForm = ({
-  metricsToShow,
-  metricValues,
-  notes,
-  onMetricChange,
-  onNotesChange,
-  playerTrainingId,
-  fetchImprovement,
-  getImprovementData,
-  // Add navigation props for completion message
-  currentPlayerIndex,
-  playersWithMetrics,
-  onPreviousPlayer,
-  onNextPlayer,
+const MetricsRecordingForm = forwardRef(({
   session,
-  onShowCompletionModal,
+  currentPlayerIndex,
+  setCurrentPlayerIndex,
+  playersWithMetrics,
+  onSessionUpdate,
+  navigate,
   isFormDisabled = false,
-}) => {
+  onFinishTraining,
+  isNavigating,
+  setIsNavigating,
+  isSavingForNavigation,
+  setIsSavingForNavigation,
+  onFormStateChange,
+  allPlayersComplete = false,
+}, ref) => {
+  // Get improvement functions
+  const { fetchImprovement, getImprovementData, clearImprovementData } = useRealTimeImprovement();
+
+  // Get current player data
+  const {
+    currentPlayer,
+    metricsToShow,
+    isLoadingCurrentPlayer,
+    refetchCurrentPlayerData,
+  } = usePlayerMetricsData(session, currentPlayerIndex);
+
+  // Form state
+  const { metricValues, notes, handleMetricChange, handleNotesChange } = useFormState(
+    currentPlayer,
+    metricsToShow,
+    clearImprovementData
+  );
+
+  // Form validation
+  const {
+    hasChanges,
+    hasActualChanges,
+    hasValidMetrics,
+    hasZeroValues,
+  } = useFormValidation(metricsToShow, metricValues, notes);
+
+  // Save operations
+  const { savePlayerMetrics, isSaving } = useSaveOperations(
+    session,
+    currentPlayer,
+    metricsToShow,
+    metricValues,
+    notes,
+    hasActualChanges,
+    onSessionUpdate,
+    refetchCurrentPlayerData,
+    hasZeroValues
+  );
+
+  // Navigation handlers
+  const navigation = usePlayerNavigation(
+    playersWithMetrics,
+    currentPlayer,
+    hasActualChanges,
+    hasValidMetrics,
+    savePlayerMetrics,
+    currentPlayerIndex,
+    setCurrentPlayerIndex,
+    isNavigating,
+    setIsNavigating,
+    isSavingForNavigation,
+    setIsSavingForNavigation,
+    hasZeroValues
+  );
+
+  // Enhanced next player handler
+  const handleEnhancedNextPlayer = React.useCallback(
+    createNextPlayerHandler({
+      session,
+      isFormDisabled,
+      currentPlayerIndex,
+      playersWithMetrics,
+      handleNextPlayer: navigation.handleNextPlayer,
+      handleFinishTraining: onFinishTraining
+    }),
+    [session, isFormDisabled, currentPlayerIndex, playersWithMetrics, navigation.handleNextPlayer, onFinishTraining]
+  );
+
+  // Enhanced finish training handler that saves current player first
+  const handleSaveAndFinishTraining = React.useCallback(async () => {
+    if (hasActualChanges && hasValidMetrics && !hasZeroValues) {
+      // Save current player's metrics first, then finish training
+      try {
+        await savePlayerMetrics();
+        onFinishTraining();
+      } catch (error) {
+        console.error('Failed to save metrics before finishing training:', error);
+        // Still call finish training even if save fails
+        onFinishTraining();
+      }
+    } else {
+      // No changes to save, directly finish training
+      onFinishTraining();
+    }
+  }, [hasActualChanges, hasValidMetrics, hasZeroValues, savePlayerMetrics, onFinishTraining]);
+
+  // Expose navigation function to parent
+  useImperativeHandle(ref, () => ({
+    navigateToPlayer: navigation.navigateToPlayer,
+    saveAndFinishTraining: handleSaveAndFinishTraining,
+  }), [navigation.navigateToPlayer, handleSaveAndFinishTraining]);
+
+  // Function to focus on first field with zero value
+  const handleFocusFirstZeroField = React.useCallback((metricId) => {
+    const inputElement = document.querySelector(`input[data-metric-id="${metricId}"]`);
+    if (inputElement) {
+      inputElement.focus();
+      inputElement.select();
+    }
+  }, []);
+
   const completedMetrics = metricsToShow.filter((metric) => {
     const value = metricValues[metric.id] || "";
-    return value !== "" && !isNaN(parseFloat(value));
+    if (value === "" || value === ".") return false;
+    
+    const numericValue = parseFloat(value);
+    return !isNaN(numericValue) && numericValue !== 0;
   }).length;
 
-  // Check if session is already completed
-  const isSessionCompleted = session?.status === "completed";
-  const isLastPlayer = currentPlayerIndex === playersWithMetrics?.length - 1;
+  // Consider form "complete" if user has made changes AND has no zero values
+  const isAllMetricsCompleted = (completedMetrics === metricsToShow.length && metricsToShow.length > 0) || (hasActualChanges && !hasZeroValues);
+
+  // Check if current player has empty metrics (all inputs are empty or invalid)
+  const hasEmptyCurrentPlayer = React.useMemo(() => {
+    if (metricsToShow.length === 0) return false;
+    
+    // Check if all metric inputs are empty or invalid
+    const allEmpty = metricsToShow.every((metric) => {
+      const value = metricValues[metric.id] || "";
+      if (value === "" || value === ".") return true;
+      
+      const numericValue = parseFloat(value);
+      return isNaN(numericValue) || numericValue === 0;
+    });
+    
+    return allEmpty;
+  }, [metricsToShow, metricValues]);
+
+  // Notify parent component about form state changes
+  React.useEffect(() => {
+    if (onFormStateChange && metricsToShow.length > 0) {
+      onFormStateChange({
+        hasCompletedMetrics: isAllMetricsCompleted,
+        totalMetrics: metricsToShow.length,
+        completedCount: completedMetrics,
+        hasEmptyCurrentPlayer
+      });
+    }
+  }, [isAllMetricsCompleted, metricsToShow.length, completedMetrics, hasEmptyCurrentPlayer, onFormStateChange]);
+
+  // Show skeleton while loading
+  if (isLoadingCurrentPlayer) {
+    return <MetricsRecordingFormSkeleton metricsCount={4} />;
+  }
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="p-6 bg-card border-b border-primary/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
-              <Activity className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-foreground">
-                Training Metrics
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Record performance data for analysis
-              </p>
-            </div>
-          </div>
+    <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden relative">
+      {/* Saving overlay */}
+      {isSavingForNavigation || isSaving && (
+        <FullPageLoading
+          message="Saving metrics..."
+        />
+      )}
+      
+      {isNavigating ? (
+        <MetricsRecordingFormSkeleton metricsCount={4} />
+      ) : (
+        <div className="h-full flex flex-col">
+          {/* Metrics Progress Header */}
+          <MetricsProgressHeader 
+            completedMetrics={completedMetrics}
+            totalMetrics={metricsToShow.length}
+            currentPlayer={currentPlayer}
+            metricsToShow={metricsToShow}
+            metricValues={metricValues}
+            hasChanges={hasChanges}
+            playersWithMetrics={playersWithMetrics}
+          />
 
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-2xl font-bold text-foreground">
-                {completedMetrics}/{metricsToShow.length}
-              </div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
-                Metrics Recorded
-              </div>
-            </div>
-            <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
-              <TrendingUp className="h-5 w-5 text-primary" />
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-muted-foreground mb-1">
-            <span>Progress</span>
-            <span>
-              {Math.round((completedMetrics / metricsToShow.length) * 100)}%
-            </span>
-          </div>
-          <div className="w-full bg-secondary/20 rounded-full h-2">
-            <div
-              className="bg-gradient-to-r from-primary to-primary/90 h-2 rounded-full transition-all duration-500 ease-out"
-              style={{
-                width: `${(completedMetrics / metricsToShow.length) * 100}%`,
-              }}
-            />
-          </div>
-        </div>
-      </div>
-      {/* Metrics List */}
-      <ScrollArea className="flex-1 p-6 bg-background">
-        <div className="space-y-6">
-          {metricsToShow.map((metric, index) => (
-            <div key={`${playerTrainingId}-${metric.id}`} className="relative">
-              {index > 0 && (
-                <div className="absolute -top-3 left-1/2 w-px h-6 bg-border transform -translate-x-1/2" />
-              )}{" "}
+          {/* Metrics List */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 p-4 sm:p-6">
+            {metricsToShow.map((metric) => (
               <MetricInputField
-                key={`${playerTrainingId}-${metric.id}-input`}
+                key={`${currentPlayer?.id}-${metric.id}-input`}
                 metric={metric}
                 value={metricValues[metric.id] || ""}
-                onChange={(value) => onMetricChange(metric.id, value)}
+                onChange={(value) => handleMetricChange(metric.id, value)}
                 notes={notes[metric.id] || ""}
-                onNotesChange={(noteValue) =>
-                  onNotesChange(metric.id, noteValue)
-                }
-                playerTrainingId={playerTrainingId}
+                onNotesChange={(noteValue) => handleNotesChange(metric.id, noteValue)}
+                playerTrainingId={currentPlayer?.id}
                 fetchImprovement={fetchImprovement}
                 getImprovementData={getImprovementData}
                 isFormDisabled={isFormDisabled}
               />
-            </div>
-          ))}
-        </div>{" "}
-        {/* Completion Message */}
-        {completedMetrics === metricsToShow.length &&
-          metricsToShow.length > 0 && (
-            <div className="mt-8 p-6 bg-primary/5 rounded-xl border border-primary/20">
-              <div className="text-center">
-                <div className="text-primary mb-2">
-                  <svg
-                    className="w-12 h-12 mx-auto"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  All Metrics Recorded!
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Great job! All performance metrics have been captured for this
-                  player.
-                </p>
-                {/* Navigation Buttons */}
-                {playersWithMetrics && currentPlayerIndex !== undefined && (
-                  <div className="flex items-center justify-center gap-3 mt-6">
-                    {" "}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={onPreviousPlayer}
-                      disabled={currentPlayerIndex === 0}
-                      className="flex items-center gap-2"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                      Previous Player
-                    </Button>
-                    <div className="px-3 py-1 bg-primary/10 rounded-full text-sm text-primary font-medium">
-                      {currentPlayerIndex + 1} of {playersWithMetrics.length}
-                    </div>{" "}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (isLastPlayer && isSessionCompleted) {
-                          // If session is completed and this is the last player, show training summary
-                          onShowCompletionModal();
-                        } else {
-                          // Normal next player behavior
-                          onNextPlayer();
-                        }
-                      }}
-                      disabled={
-                        currentPlayerIndex === playersWithMetrics.length - 1 &&
-                        !isSessionCompleted
-                      }
-                      className="flex items-center gap-2"
-                    >
-                      {isLastPlayer && isSessionCompleted ? (
-                        <>
-                          View Training Summary
-                          <ChevronRight className="h-4 w-4" />
-                        </>
-                      ) : (
-                        <>
-                          Next Player
-                          <ChevronRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                )}{" "}
-                {/* Completion Status */}
-                {playersWithMetrics &&
-                  currentPlayerIndex === playersWithMetrics.length - 1 && (
-                    <div className="mt-4 p-3 bg-primary/10 rounded-lg">
-                      <p className="text-sm text-primary font-medium">
-                        {isSessionCompleted
-                          ? "🎯 Training session completed! Click to view the training summary."
-                          : "🎉 This is the last player! You're all done!"}
-                      </p>
-                    </div>
-                  )}
-              </div>
+            ))}
+          </div>
+
+          {/* Status Message - Shows both complete and incomplete states */}
+          {!hasZeroValues && (
+            <div className="p-3 sm:p-6">
+              <MetricsStatusMessage
+                currentPlayerIndex={currentPlayerIndex}
+                playersWithMetrics={playersWithMetrics}
+                onPreviousPlayer={navigation.handlePreviousPlayer}
+                onNextPlayer={handleEnhancedNextPlayer}
+                onFinishTraining={handleSaveAndFinishTraining}
+                session={session}
+                navigate={navigate}
+                completedMetrics={completedMetrics}
+                totalMetrics={metricsToShow.length}
+                hasChanges={hasChanges}
+                isComplete={isAllMetricsCompleted}
+                hasValidMetrics={hasValidMetrics}
+                hasZeroValues={hasZeroValues}
+                allPlayersComplete={allPlayersComplete}
+                hasEmptyCurrentPlayer={hasEmptyCurrentPlayer}
+              />
             </div>
           )}
-      </ScrollArea>
+
+          {/* Invalid Input Warning */}
+          {hasZeroValues && (
+            <div className="p-3 sm:p-6">
+              <InputWarning
+                metricsToShow={metricsToShow}
+                metricValues={metricValues}
+                onFocusFirstZeroField={handleFocusFirstZeroField}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
-};
+});
+
+MetricsRecordingForm.displayName = 'MetricsRecordingForm';
 
 export default MetricsRecordingForm;

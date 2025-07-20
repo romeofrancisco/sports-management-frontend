@@ -40,7 +40,7 @@ export function DateTimePicker({
 
   if (type === "time") {
     return (
-      <div className={`flex flex-col gap-2 ${className}`}>
+      <div className={`flex flex-col ${className}`}>
         {label && (
           <Label htmlFor={id} className="text-sm">
             {label}
@@ -56,7 +56,7 @@ export function DateTimePicker({
           id={id}
           value={value || ""}
           onChange={handleTimeChange}
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          className="bg-background mt-1 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
           placeholder={placeholder}
         />
         {error && (
@@ -69,7 +69,7 @@ export function DateTimePicker({
   }
 
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col ${className}`}>
       {label && (
         <Label htmlFor={id} className="text-sm">
           {label}
@@ -85,7 +85,7 @@ export function DateTimePicker({
           <Button
             variant="outline"
             id={id}
-            className="w-full justify-between font-normal h-9"
+            className="w-full justify-between font-normal h-9 mt-1"
           >
             {value ? new Date(value).toLocaleDateString() : placeholder || "Select date"}
             <ChevronDownIcon className="h-4 w-4" />

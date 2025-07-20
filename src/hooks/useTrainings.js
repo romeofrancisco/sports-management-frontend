@@ -15,6 +15,10 @@ import {
   deleteTrainingMetric,
   fetchTrainingSessions,
   fetchTrainingSession,
+  fetchTrainingSessionInfo,
+  fetchTrainingSessionWorkflow,
+  fetchTrainingSessionAttendance,
+  fetchTrainingSessionMetricsConfig,
   createTrainingSession,
   updateTrainingSession,
   deleteTrainingSession,
@@ -243,6 +247,38 @@ export const useTrainingSession = (id, enabled = true) => {
   });
 };
 
+export const useTrainingSessionInfo = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-info", id],
+    queryFn: () => fetchTrainingSessionInfo(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionWorkflow = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-workflow", id],
+    queryFn: () => fetchTrainingSessionWorkflow(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionAttendance = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-attendance", id],
+    queryFn: () => fetchTrainingSessionAttendance(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionMetricsConfig = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-metrics-config", id],
+    queryFn: () => fetchTrainingSessionMetricsConfig(id),
+    enabled: enabled && !!id,
+  });
+};
+
 export const useCreateTrainingSession = () => {
   return useMutation({
     mutationFn: createTrainingSession,
@@ -425,10 +461,10 @@ export const useDeletePlayerTraining = () => {
   });
 };
 
-export const useRecordPlayerMetrics = () => {
+export const useRecordPlayerMetrics = (sessionId) => {
   return useMutation({
     mutationFn: recordPlayerMetrics,
-    onSuccess: (data, { id }) => {
+    onSuccess: (data, { id, sessionId: mutationSessionId }) => {
       toast.success("Player metrics recorded!", {
         description: `Successfully recorded ${
           data.records?.length || 0
@@ -436,16 +472,16 @@ export const useRecordPlayerMetrics = () => {
         richColors: true,
       });
 
-      // Store previous records in cache for this player training
-      if (data.previous_records && data.previous_records.length > 0) {
-        queryClient.setQueryData(
-          ["player-training-previous", id],
-          data.previous_records
-        );
-      }
-
+      // Use the sessionId from the mutation payload or the hook parameter
+      const currentSessionId = mutationSessionId || sessionId;
+      
+      // Only invalidate the specific player training record that was updated
       queryClient.invalidateQueries(["player-training", id]);
-      queryClient.invalidateQueries(["player-progress"]);
+      
+      // Only invalidate session data that shows overall progress
+      if (currentSessionId) {
+        queryClient.invalidateQueries(["session-players-with-metrics", currentSessionId]);
+      }
     },
     onError: (error) => {
       toast.error("Failed to record metrics", {
@@ -823,7 +859,6 @@ export const useTrainingOverview = (enabled = true) => {
     queryKey: ["training-overview"],
     queryFn: fetchTrainingOverview,
     enabled,
-    staleTime: 2 * 60 * 1000, // Consider data fresh for 2 minutes
   });
 };
 
