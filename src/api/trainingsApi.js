@@ -117,6 +117,18 @@ export const fetchTrainingSessions = async (params = {}) => {
 export const fetchTrainingSession = async (id) => 
   handleApiCall(() => api.get(`trainings/sessions/${id}/`));
 
+export const fetchTrainingSessionInfo = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/info/`));
+
+export const fetchTrainingSessionWorkflow = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/workflow/`));
+
+export const fetchTrainingSessionAttendance = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/attendance/`));
+
+export const fetchTrainingSessionMetricsConfig = async (id) => 
+  handleApiCall(() => api.get(`trainings/sessions/${id}/metrics-config/`));
+
 export const createTrainingSession = async (sessionData) => 
   handleApiCall(() => api.post("trainings/sessions/", sessionData));
 
@@ -475,6 +487,30 @@ export const fetchAssignedMetricsOverview = async () => {
 export const fetchTrainingOverview = async () => {
   try {
     const { data } = await api.get("trainings/player-trainings/training_overview/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// NEW LIGHTWEIGHT ENDPOINTS FOR METRICS RECORDING
+
+// Get specific player's metrics data for recording (lightweight)
+export const fetchPlayerMetricsData = async (playerTrainingId) => {
+  try {
+    const { data } = await api.get(`trainings/player-trainings/${playerTrainingId}/player_metrics_data/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Get all players' metrics data for a session (lightweight)
+export const fetchSessionPlayersMetrics = async (sessionId) => {
+  try {
+    const { data } = await api.get("trainings/player-trainings/session_players_metrics/", {
+      params: { session_id: sessionId },
+    });
     return data;
   } catch (error) {
     throw error;

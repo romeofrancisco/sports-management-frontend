@@ -7,8 +7,12 @@ const ProgressOverview = ({
   currentPlayerIndex,
   playersWithMetrics,
   progressPercentage,
-  navigateToPlayer,
+  isNavigating,
+  onNavigateToPlayer,
 }) => {
+  // This component should only handle navigation through the progress bar
+  // The main form component will handle the data and validation
+  
   return (
     <div className="rounded-2xl border-2 border-primary/20">
       <div className="grid grid-cols-3 border-b-2 border-primary/20 p-4">
@@ -37,7 +41,8 @@ const ProgressOverview = ({
       <PlayerProgressBar
         playersWithMetrics={playersWithMetrics}
         currentPlayerIndex={currentPlayerIndex}
-        navigateToPlayer={navigateToPlayer}
+        navigateToPlayer={onNavigateToPlayer}
+        isNavigating={isNavigating}
       />
     </div>
   );

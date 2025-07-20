@@ -1,8 +1,14 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../ui/avatar";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import PlayerProgressBarSkeleton from "./PlayerProgressBarSkeleton";
 
-const PlayerProgressBar = ({ playersWithMetrics, currentPlayerIndex, navigateToPlayer }) => {
+const PlayerProgressBar = ({ 
+  playersWithMetrics, 
+  currentPlayerIndex, 
+  navigateToPlayer, 
+  isNavigating = false 
+}) => {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between w-full">
@@ -23,11 +29,13 @@ const PlayerProgressBar = ({ playersWithMetrics, currentPlayerIndex, navigateToP
               {/* Player dot with enhanced styling */}
               <div className="flex flex-col items-center group">
                 <button
-                  onClick={() => navigateToPlayer?.(index)}
+                  onClick={() => !isNavigating && navigateToPlayer?.(index)}
+                  disabled={isNavigating}
                   className={`
                     relative flex items-center justify-center w-10 h-10 rounded-full border-3 transition-all duration-300 overflow-hidden
                     ${
                       !isActive &&
+                      !isNavigating &&
                       "hover:scale-110 cursor-pointer transform-gpu"
                     }
                     ${
@@ -37,6 +45,7 @@ const PlayerProgressBar = ({ playersWithMetrics, currentPlayerIndex, navigateToP
                         ? "border-green-500 hover:border-green-600 shadow-md hover:shadow-lg"
                         : "border-muted hover:border-muted-foreground hover:shadow-md"
                     }
+                    ${isNavigating ? "opacity-50 cursor-not-allowed" : ""}
                   `}
                   title={`Navigate to ${playerRecord.player?.first_name} ${playerRecord.player?.last_name}`}
                 >
@@ -61,7 +70,9 @@ const PlayerProgressBar = ({ playersWithMetrics, currentPlayerIndex, navigateToP
                         }
                       `}
                     >
-                      {hasData ? (
+                      {isActive && isNavigating ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : hasData ? (
                         <Check className="w-4 h-4" />
                       ) : (
                         `${playerRecord.player?.first_name?.[0] || ""}${

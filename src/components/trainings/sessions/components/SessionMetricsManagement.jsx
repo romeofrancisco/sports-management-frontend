@@ -19,7 +19,9 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
   const allPlayers = session?.player_records || [];
 
   // Get form disabled state from workflow
-  const sessionMetricsStep = workflowData?.steps?.find(step => step.id === 'session-metrics');
+  const sessionMetricsStep = workflowData?.steps?.find(
+    (step) => step.id === "session-metrics"
+  );
   const isFormDisabled = sessionMetricsStep?.isFormDisabled ?? false;
 
   // Check if session metrics are currently configured
@@ -53,7 +55,12 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
                 Step 1 of training session setup
               </p>
             </div>
-          </CardTitle>          <Button variant="outline" onClick={handleSkip} disabled={isFormDisabled}>
+          </CardTitle>{" "}
+          <Button
+            variant="outline"
+            onClick={handleSkip}
+            disabled={isFormDisabled}
+          >
             <SkipForward className="size-4" />
             Skip Step
           </Button>
@@ -68,10 +75,11 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
-        {/* Session Metrics Configuration */}        <div className="animate-in fade-in-50 duration-500 delay-200 flex-1 h-full">
-          <SessionMetricsTab 
-            session={session} 
-            onSaveSuccess={onSaveSuccess} 
+        {/* Session Metrics Configuration */}{" "}
+        <div className="animate-in fade-in-50 duration-500 delay-200 flex-1 h-full">
+          <SessionMetricsTab
+            session={session}
+            onSaveSuccess={onSaveSuccess}
             isFormDisabled={isFormDisabled}
           />
         </div>

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import WorkflowStepper from "@/components/common/WorkflowStepper";
 import {
-  useTrainingSession,
+  useTrainingSessionWorkflow,
   useEndTrainingSession,
 } from "@/hooks/useTrainings";
 import { useSessionWorkflow } from "@/hooks/useSessionWorkflow";
@@ -24,13 +24,13 @@ const MemoizedContentRenderer = React.memo(ContentRenderer);
 const SessionManagement = () => {
   const { sessionId } = useParams();
 
-  // Data fetching
+  // Data fetching - using workflow-specific endpoint
   const {
     data: sessionDetails,
     isLoading,
     isError,
     refetch,
-  } = useTrainingSession(sessionId);
+  } = useTrainingSessionWorkflow(sessionId);
 
   const { mutate: endTraining, isPending: isEndingTraining } =
     useEndTrainingSession();

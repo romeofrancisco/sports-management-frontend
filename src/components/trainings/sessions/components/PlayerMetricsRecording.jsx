@@ -1,156 +1,173 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../../ui/card";
-import { usePlayerMetricsRecording } from "./record/usePlayerMetricsRecording";
+import { usePlayerMetricsData } from "./record/hooks/usePlayerMetricsData";
 import EmptyPlayersState from "./metrics/EmptyPlayersState";
 import TrainingCompletionModal from "../../../modals/trainings/TrainingCompletionModal";
 import FullPageLoading from "../../../common/FullPageLoading";
 import PlayerMetricsHeader from "./record/PlayerMetricsHeader";
 import ProgressOverview from "./record/ProgressOverview";
 import MetricsRecordingForm from "./record/MetricsRecordingForm";
+import PlayerMetricsRecordingSkeleton from "./record/PlayerMetricsRecordingSkeleton";
+import MetricsRecordingFormSkeleton from "./record/MetricsRecordingFormSkeleton";
+import {
+  calculateProgressPercentage,
+  getFormDisabledState,
+} from "./record/utils/playerMetricsRecordingUtils";
+import {
+  createFinishTrainingHandler,
+  handleCompletionModalClose,
+} from "./record/utils/trainingCompletionUtils";
 
-const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
+const PlayerMetricsRecording = ({
+  session,
+  onSaveSuccess,
+  workflowData,
+  onSessionUpdate,
+}) => {
   const navigate = useNavigate();
-  const [showSuccessAnimation, setShowSuccessAnimation] = React.useState(false);
-  const [showCompletionModal, setShowCompletionModal] = React.useState(false);
-  const [isPreparingCompletion, setIsPreparingCompletion] =
-    React.useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [isPreparingCompletion, setIsPreparingCompletion] = useState(false);
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+
+  // Shared navigation state that both child components will use
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [isSavingForNavigation, setIsSavingForNavigation] = useState(false);
+
+  // Track current form completion state to show finish button on last player
+  const [currentFormState, setCurrentFormState] = useState({
+    hasCompletedMetrics: false,
+    totalMetrics: 0,
+    completedCount: 0
+  });
+
+  // Reference to get navigation functions from the form
+  const formNavigationRef = useRef();
 
   // Get form disabled state from workflow
-  const recordMetricsStep = workflowData?.steps?.find(
-    (step) => step.id === "record-metrics"
-  );
-  const isFormDisabled = recordMetricsStep?.isFormDisabled ?? false;
-  const {
-    currentPlayerIndex,
-    currentPlayer,
-    playersWithMetrics,
-    metricsToShow,
-    metricValues,
-    notes,
-    hasChanges,
-    hasValidMetrics,
-    handlePreviousPlayer,
-    handleNextPlayer,
-    navigateToPlayer,
-    handleMetricChange,
-    handleNotesChange,
-    fetchImprovement,
-    getImprovementData,
-    savePlayerMetrics,
-    isLoading,
-  } = usePlayerMetricsRecording(session);
+  const isFormDisabled = getFormDisabledState(workflowData);
 
-  // Check if this is the last player
-  const isLastPlayer = currentPlayerIndex === playersWithMetrics.length - 1;
+  // Only get basic player data - child components will handle their own state
+  const { playersWithMetrics, isLoadingPlayers, playersError } =
+    usePlayerMetricsData(session, currentPlayerIndex);
 
-  // Enhanced save handler that checks for completion
-  const handleSaveAndCheckCompletion = React.useCallback(async () => {
-    try {
-      // Skip change check when completing session to avoid "no changes" message
-      const saveResult = await savePlayerMetrics(false, true);
-
-      // Only show success animation if something was actually saved
-      if (saveResult?.saved) {
-        setShowSuccessAnimation(true);
-      }
-
-      // If this is the last player and they have valid metrics, show completion modal
-      if (isLastPlayer && hasValidMetrics()) {
-        if (saveResult?.saved) {
-          // Show loading while preparing completion modal
-          setIsPreparingCompletion(true);
-          // Brief delay to show the loading state, then show modal
-          setTimeout(() => {
-            setIsPreparingCompletion(false);
-            setShowCompletionModal(true);
-          }, 800);
-        } else {
-          // Show immediately if nothing was saved
-          setShowCompletionModal(true);
-        }
-      }
-
-      if (onSaveSuccess) {
-        onSaveSuccess();
-      }
-    } catch (error) {
-      console.error("Error saving metrics:", error);
-      setIsPreparingCompletion(false);
-    }
-  }, [savePlayerMetrics, isLastPlayer, hasValidMetrics, onSaveSuccess]);
-
-  // Enhanced next player handler
-  const handleEnhancedNextPlayer = React.useCallback(async () => {
-    // Check if session is already completed
-    if (session?.status === "completed") {
-      if (isLastPlayer) {
-        // For completed sessions on last player, navigate directly to summary
-        navigate(`/trainings/sessions/${session.id}/summary`);
-        return;
-      } else {
-        // Just navigate to next player without saving
-        await handleNextPlayer();
-        return;
-      }
-    }
-
-    // If form is disabled (non-admin on completed session), just navigate without saving
-    if (isFormDisabled) {
-      await handleNextPlayer(); // Just navigate, don't save
-      return;
-    }
-
-    // Always allow navigation to next player, regardless of form completion
-    if (isLastPlayer) {
-      // Only show completion modal if there are valid metrics
-      if (hasValidMetrics()) {
-        await handleSaveAndCheckCompletion();
-      } else {
-        // Navigate to next player even without valid metrics
-        await handleNextPlayer();
-      }
+  // Create a navigation handler that delegates to the form component
+  const handleNavigateToPlayer = (targetIndex) => {
+    if (formNavigationRef.current?.navigateToPlayer) {
+      formNavigationRef.current.navigateToPlayer(targetIndex);
     } else {
-      // Always navigate to next player
-      await handleNextPlayer();
+      // Fallback if form navigation is not available
+      setCurrentPlayerIndex(targetIndex);
     }
-  }, [
-    isLastPlayer,
-    hasValidMetrics,
-    handleSaveAndCheckCompletion,
-    handleNextPlayer,
-    session?.status,
-    session?.id,
-    navigate,
-    isFormDisabled,
-  ]);
+  };
 
-  // Calculate progress based on players with recorded data
+  // Create a finish training handler that delegates to the form component
+  const handleFinishTrainingWithSave = () => {
+    if (formNavigationRef.current?.saveAndFinishTraining) {
+      formNavigationRef.current.saveAndFinishTraining();
+    } else {
+      // Fallback to original handler if form method is not available
+      handleFinishTraining();
+    }
+  };
+
+  // Unified handler for finishing training
+  const handleFinishTraining = React.useCallback(
+    createFinishTrainingHandler({
+      hasChanges: false, // Will be handled by child component
+      savePlayerMetrics: null, // Will be handled by child component
+      onSaveSuccess,
+      setIsPreparingCompletion,
+      setShowCompletionModal,
+    }),
+    [onSaveSuccess]
+  );
+
+  // Calculate progress based on players with recorded data and current form state
   const progressPercentage = React.useMemo(() => {
     if (playersWithMetrics.length === 0) return 0;
 
-    // Count players who have at least one recorded metric
-    const playersWithData = playersWithMetrics.filter((playerRecord) => {
-      if (
-        !playerRecord.metric_records ||
-        playerRecord.metric_records.length === 0
-      ) {
+    let playersWithData = 0;
+    
+    playersWithMetrics.forEach((playerRecord, index) => {
+      if (index === currentPlayerIndex) {
+        // For current player, prioritize form state if available, otherwise check saved data
+        if (currentFormState.hasCompletedMetrics) {
+          playersWithData++;
+        } else if (playerRecord.metric_records && playerRecord.metric_records.length > 0) {
+          const hasValidMetrics = playerRecord.metric_records.some(
+            (record) =>
+              record.value !== null &&
+              record.value !== "" &&
+              !isNaN(parseFloat(record.value)) &&
+              parseFloat(record.value) !== 0
+          );
+          if (hasValidMetrics) {
+            playersWithData++;
+          }
+        }
+      } else {
+        // For other players, check saved data
+        if (playerRecord.metric_records && playerRecord.metric_records.length > 0) {
+          const hasValidMetrics = playerRecord.metric_records.some(
+            (record) =>
+              record.value !== null &&
+              record.value !== "" &&
+              !isNaN(parseFloat(record.value)) &&
+              parseFloat(record.value) !== 0
+          );
+          if (hasValidMetrics) {
+            playersWithData++;
+          }
+        }
+      }
+    });
+
+    return (playersWithData / playersWithMetrics.length) * 100;
+  }, [playersWithMetrics, currentPlayerIndex, currentFormState]);
+
+  // Check if all players have completed metrics (including current form state)
+  const allPlayersComplete = React.useMemo(() => {
+    if (playersWithMetrics.length === 0) return false;
+
+    return playersWithMetrics.every((playerRecord, index) => {
+      if (index === currentPlayerIndex) {
+        // For current player, check form state first, then saved data
+        if (currentFormState.hasCompletedMetrics) {
+          return true;
+        }
+      }
+      
+      // Check saved data for all players
+      if (!playerRecord.metric_records || playerRecord.metric_records.length === 0) {
         return false;
       }
-      // Check if any metric record has a valid value
       return playerRecord.metric_records.some(
         (record) =>
           record.value !== null &&
           record.value !== "" &&
-          !isNaN(parseFloat(record.value))
+          !isNaN(parseFloat(record.value)) &&
+          parseFloat(record.value) !== 0
       );
-    }).length;
+    });
+  }, [playersWithMetrics, currentPlayerIndex, currentFormState]);
 
-    return (playersWithData / playersWithMetrics.length) * 100;
-  }, [playersWithMetrics]);
+  // Reset form state when player changes
+  React.useEffect(() => {
+    setCurrentFormState({
+      hasCompletedMetrics: false,
+      totalMetrics: 0,
+      completedCount: 0
+    });
+  }, [currentPlayerIndex]);
 
-  // Check if player can proceed (always allow navigation)
-  const canProceed = true; // Always allow navigation to next player
+  // Show skeleton while initial data is loading
+  if (
+    isLoadingPlayers &&
+    (!playersWithMetrics || playersWithMetrics.length === 0)
+  ) {
+    return <PlayerMetricsRecordingSkeleton />;
+  }
 
   // Check if there are players with metrics configured
   if (playersWithMetrics.length === 0) {
@@ -159,7 +176,14 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
 
   return (
     <Card className="h-full pt-0 gap-0 flex flex-col shadow-xl border-2 border-primary/20 bg-card transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 overflow-hidden">
-      <PlayerMetricsHeader />
+      <PlayerMetricsHeader
+        onFinishTraining={handleFinishTrainingWithSave}
+        session={session}
+        playersWithMetrics={playersWithMetrics}
+        isFormDisabled={isFormDisabled}
+        allPlayersComplete={allPlayersComplete}
+        hasEmptyCurrentPlayer={currentFormState.hasEmptyCurrentPlayer}
+      />
       <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
         {/* Enhanced Player Navigation & Statistics Dashboard */}
         <div className="space-y-6">
@@ -167,32 +191,41 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
             currentPlayerIndex={currentPlayerIndex}
             playersWithMetrics={playersWithMetrics}
             progressPercentage={progressPercentage}
-            navigateToPlayer={navigateToPlayer}
+            isNavigating={isNavigating}
+            onNavigateToPlayer={handleNavigateToPlayer}
           />
         </div>
         {/* Metrics Recording Form */}
         <div className="animate-in fade-in-50 duration-500 delay-200 flex-1">
-          <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden">
-            <MetricsRecordingForm
-              metricsToShow={metricsToShow}
-              metricValues={metricValues}
-              notes={notes}
-              onMetricChange={handleMetricChange}
-              onNotesChange={handleNotesChange}
-              playerTrainingId={currentPlayer?.id}
-              fetchImprovement={fetchImprovement}
-              getImprovementData={getImprovementData}
-              currentPlayerIndex={currentPlayerIndex}
-              playersWithMetrics={playersWithMetrics}
-              onPreviousPlayer={handlePreviousPlayer}
-              onNextPlayer={handleEnhancedNextPlayer}
-              session={session}
-              navigate={navigate}
-              isFormDisabled={isFormDisabled}
-              currentPlayer={currentPlayer}
-              hasChanges={hasChanges}
-            />
-          </div>
+          <MetricsRecordingForm
+            ref={formNavigationRef}
+            session={session}
+            currentPlayerIndex={currentPlayerIndex}
+            setCurrentPlayerIndex={setCurrentPlayerIndex}
+            playersWithMetrics={playersWithMetrics}
+            onSessionUpdate={onSessionUpdate}
+            navigate={navigate}
+            isFormDisabled={isFormDisabled}
+            onFinishTraining={handleFinishTraining}
+            isNavigating={isNavigating}
+            setIsNavigating={setIsNavigating}
+            isSavingForNavigation={isSavingForNavigation}
+            setIsSavingForNavigation={setIsSavingForNavigation}
+            onFormStateChange={(formState) => {
+              setCurrentFormState(prev => {
+                if (
+                  prev.hasCompletedMetrics !== formState.hasCompletedMetrics ||
+                  prev.totalMetrics !== formState.totalMetrics ||
+                  prev.completedCount !== formState.completedCount ||
+                  prev.hasEmptyCurrentPlayer !== formState.hasEmptyCurrentPlayer
+                ) {
+                  return { ...formState, hasEmptyCurrentPlayer: formState.hasEmptyCurrentPlayer };
+                }
+                return prev;
+              });
+            }}
+            allPlayersComplete={allPlayersComplete}
+          />
         </div>
       </CardContent>
       {/* Training Completion Modal */}
@@ -201,13 +234,10 @@ const PlayerMetricsRecording = ({ session, onSaveSuccess, workflowData }) => {
         onClose={() => setShowCompletionModal(false)}
         session={session}
         playersWithMetrics={playersWithMetrics}
-        onComplete={() => {
-          setShowCompletionModal(false);
-          // Optional: Navigate back or refresh
-          if (onSaveSuccess) {
-            onSaveSuccess();
-          }
-        }}
+        onComplete={handleCompletionModalClose({
+          setShowCompletionModal,
+          onSaveSuccess,
+        })}
       />
 
       {/* Loading overlay for completion preparation */}

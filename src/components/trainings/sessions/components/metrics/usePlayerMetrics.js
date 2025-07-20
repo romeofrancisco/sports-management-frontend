@@ -22,8 +22,8 @@ export const usePlayerMetrics = (session, onSaveSuccess) => {
         id: metric.id,
         name: metric.name,
         metric_unit: {
-          code: metric.metric_unit_data.code,
-          name: metric.metric_unit_data.name
+          code: metric.metric_unit_data?.code || 'N/A',
+          name: metric.metric_unit_data?.name || 'No Unit'
         },
         category_name: metric.category_name,
         is_lower_better: metric.is_lower_better,

@@ -15,6 +15,10 @@ import {
   deleteTrainingMetric,
   fetchTrainingSessions,
   fetchTrainingSession,
+  fetchTrainingSessionInfo,
+  fetchTrainingSessionWorkflow,
+  fetchTrainingSessionAttendance,
+  fetchTrainingSessionMetricsConfig,
   createTrainingSession,
   updateTrainingSession,
   deleteTrainingSession,
@@ -243,6 +247,38 @@ export const useTrainingSession = (id, enabled = true) => {
   });
 };
 
+export const useTrainingSessionInfo = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-info", id],
+    queryFn: () => fetchTrainingSessionInfo(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionWorkflow = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-workflow", id],
+    queryFn: () => fetchTrainingSessionWorkflow(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionAttendance = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-attendance", id],
+    queryFn: () => fetchTrainingSessionAttendance(id),
+    enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingSessionMetricsConfig = (id, enabled = true) => {
+  return useQuery({
+    queryKey: ["training-session-metrics-config", id],
+    queryFn: () => fetchTrainingSessionMetricsConfig(id),
+    enabled: enabled && !!id,
+  });
+};
+
 export const useCreateTrainingSession = () => {
   return useMutation({
     mutationFn: createTrainingSession,
@@ -438,17 +474,14 @@ export const useRecordPlayerMetrics = (sessionId) => {
 
       // Use the sessionId from the mutation payload or the hook parameter
       const currentSessionId = mutationSessionId || sessionId;
-
-      // Invalidate all related queries to ensure fresh data
-      queryClient.invalidateQueries(["player-training", id]);
-      queryClient.invalidateQueries(["session-players-with-metrics", currentSessionId]);
-      queryClient.invalidateQueries(["training-session", currentSessionId]);
-      queryClient.invalidateQueries(["current-player"]);
-      queryClient.invalidateQueries(["player-metrics"]);
       
-      // Force refetch to ensure immediate UI updates
-      queryClient.refetchQueries(["session-players-with-metrics", currentSessionId]);
-      queryClient.refetchQueries(["training-session", currentSessionId]);
+      // Only invalidate the specific player training record that was updated
+      queryClient.invalidateQueries(["player-training", id]);
+      
+      // Only invalidate session data that shows overall progress
+      if (currentSessionId) {
+        queryClient.invalidateQueries(["session-players-with-metrics", currentSessionId]);
+      }
     },
     onError: (error) => {
       toast.error("Failed to record metrics", {
