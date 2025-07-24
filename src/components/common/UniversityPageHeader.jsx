@@ -102,7 +102,7 @@ const UniversityPageHeader = ({
               className={buttonClassName}
               size={buttonSize}
             >
-              {ButtonIcon && <ButtonIcon className="mr-2 h-4 w-4" />}
+              {ButtonIcon && <ButtonIcon/>}
               {buttonText}
             </Button>
           )}

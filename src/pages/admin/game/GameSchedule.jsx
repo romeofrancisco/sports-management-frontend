@@ -25,13 +25,10 @@ const GameSchedule = () => {
             onButtonClick: openModal,
           })}
         />
-        
-        {/* Game Table */}
-        <div className="animate-in fade-in-50 duration-500 delay-100">
-          <GameTable />
-        </div>
+
+        <GameTable />
       </div>
-      
+
       {/* Game Modal */}
       <GameModal isOpen={isOpen} onClose={closeModal} />
     </div>

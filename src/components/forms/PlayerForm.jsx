@@ -11,6 +11,7 @@ import ControlledInput from "../common/ControlledInput";
 import ControlledSelect from "../common/ControlledSelect";
 import { COURSE_CHOICES, SEX, YEAR_LEVEL_CHOICES } from "@/constants/player";
 import { useSportTeams } from "@/hooks/useTeams";
+import ControlledTeamSelect from "../common/ControlledTeamSelect";
 
 const PlayerForm = ({ sports, onClose, player }) => {
   const isEdit = !!player;
@@ -74,168 +75,168 @@ const PlayerForm = ({ sports, onClose, player }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 px-1"
+      className="flex flex-col gap-6 px-1"
     >
-      <h1 className="font-medium mb-2 text-lg">Personal Information</h1>
-      {/* First Name */}
-      <ControlledInput
-        name="first_name"
-        label="First Name"
-        placeholder="Enter first name"
-        control={control}
-        errors={errors}
-      />
+      {/* Personal Details */}
+      <div>
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
+          Personal Details
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <ControlledInput
+            name="first_name"
+            label="First Name"
+            placeholder="Enter first name"
+            control={control}
+            errors={errors}
+          />
+          <ControlledInput
+            name="last_name"
+            label="Last Name"
+            placeholder="Enter last name"
+            control={control}
+            errors={errors}
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+          <ControlledInput
+            name="email"
+            label="Email"
+            placeholder="Enter email"
+            control={control}
+            errors={errors}
+          />
+          <ControlledInput
+            name="profile"
+            label="Profile"
+            type="file"
+            accept="image/*"
+            control={control}
+            errors={errors}
+          />
+        </div>
+      </div>
 
-      {/* Last Name */}
-      <ControlledInput
-        name="last_name"
-        label="Last Name"
-        placeholder="Enter last name"
-        control={control}
-        errors={errors}
-      />
+      {/* Account Details */}
+      <div className="pt-4 border-t border-border">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+          Account Details
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <ControlledSelect
+            name="sex"
+            control={control}
+            label="Sex"
+            placeholder="Select sex"
+            groupLabel="Sex"
+            options={SEX}
+            valueKey="value"
+            labelKey="label"
+            errors={errors}
+          />
+          <ControlledSelect
+            name="year_level"
+            control={control}
+            label="Year Level"
+            placeholder="Select Year Level"
+            groupLabel="Year Level"
+            options={YEAR_LEVEL_CHOICES}
+            valueKey="value"
+            labelKey="label"
+            errors={errors}
+          />
+          <ControlledSelect
+            name="course"
+            control={control}
+            label="Course"
+            groupLabel="Course"
+            placeholder="Select Course"
+            options={COURSE_CHOICES}
+            valueKey="value"
+            labelKey="label"
+            errors={errors}
+          />
+        </div>
+        {!isEdit && (
+          <ControlledInput
+            name="password"
+            label="Password"
+            placeholder="Enter password"
+            type="password"
+            control={control}
+            errors={errors}
+            className="mt-2"
+          />
+        )}
+      </div>
 
-      {/* Email */}
-      <ControlledInput
-        name="email"
-        label="Email"
-        placeholder="Enter email"
-        control={control}
-        errors={errors}
-      />
-
-      <ControlledSelect
-        name="sex"
-        control={control}
-        label="Sex"
-        placeholder="Select sex"
-        groupLabel="Sex"
-        options={SEX}
-        valueKey="value"
-        labelKey="label"
-        errors={errors}
-      />
-
-      {/* Year Level */}
-      <ControlledSelect
-        name="year_level"
-        control={control}
-        label="Year Level"
-        placeholder="Select Year Level"
-        groupLabel="Year Level"
-        options={YEAR_LEVEL_CHOICES}
-        valueKey="value"
-        labelKey="label"
-        errors={errors}
-      />
-
-      {/* Course */}
-      <ControlledSelect
-        name="course"
-        control={control}
-        label="Course"
-        groupLabel="Course"
-        placeholder="Select Course"
-        options={COURSE_CHOICES}
-        valueKey="value"
-        labelKey="label"
-        errors={errors}
-      />
-
-      {/* Password */}
-      {!isEdit && (
-        <ControlledInput
-          name="password"
-          label="Password"
-          placeholder="Enter password"
-          type="password"
+      {/* Player Information */}
+      <div className="pt-4 border-t border-border">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+          Player Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <ControlledSelect
+            name="sport_slug"
+            control={control}
+            label="Sport"
+            placeholder="Select Sport"
+            groupLabel="Sport"
+            options={sports}
+            valueKey="slug"
+            labelKey="name"
+            errors={errors}
+          />
+          <ControlledTeamSelect
+            control={control}
+            name="team_id"
+            label="Team"
+            placeholder="Select team"
+            teams={teams}
+            errorMessage={errors.team_id?.message}
+          />
+        </div>
+        <MultiSelect
+          name="position_ids"
+          label="Position"
           control={control}
-          errors={errors}
+          options={positions}
+          max={3}
+          placeholder="Select player position..."
+          className="mt-2"
         />
-      )}
-
-      {/* Profile */}
-      <ControlledInput
-        name="profile"
-        label="Profile"
-        type="file"
-        accept="image/*"
-        control={control}
-        errors={errors}
-      />
-
-      <h1 className="font-medium text-lg mt-5 py-2 border-t">
-        Player Information
-      </h1>
-
-      {/* Sport */}
-      <ControlledSelect
-        name="sport_slug"
-        control={control}
-        label="Sport"
-        placeholder="Select Sport"
-        groupLabel="Sport"
-        options={sports}
-        valueKey="slug"
-        labelKey="name"
-        errors={errors}
-      />
-
-      {/* Team */}
-      <TeamSelect
-        control={control}
-        name="team_id"
-        label="Team"
-        placeholder="Select team"
-        teams={teams}
-        errorMessage={errors.team_id?.message}
-      />
-
-      {/* Position */}
-      <MultiSelect
-        name="position_ids"
-        label="Position"
-        control={control}
-        options={positions}
-        max={3}
-        placeholder="Select player position..."
-      />
-
-      {/* Jersey # */}
-      <ControlledInput
-        name="jersey_number"
-        label="Jersey #"
-        type="number"
-        control={control}
-        errors={errors}
-      />
-
-      {/* Height */}
-      <ControlledInput
-        name="height"
-        label="Height"
-        type="number"
-        control={control}
-        errors={errors}
-      />
-
-      {/* Weight */}
-      <ControlledInput
-        name="weight"
-        label="Weight"
-        type="number"
-        control={control}
-        errors={errors}
-      />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+          <ControlledInput
+            name="jersey_number"
+            label="Jersey #"
+            type="number"
+            control={control}
+            errors={errors}
+          />
+          <ControlledInput
+            name="height"
+            label="Height"
+            type="number"
+            control={control}
+            errors={errors}
+          />
+          <ControlledInput
+            name="weight"
+            label="Weight"
+            type="number"
+            control={control}
+            errors={errors}
+          />
+        </div>
+      </div>
 
       <Button
         type="submit"
-        className="mt-4"
         disabled={isCreating || isUpdating}
       >
         {isCreating || isUpdating ? (
           <>
-            <Loader2 className="animate-spin" />
+            <Loader2 className="animate-spin mr-2" />
             Please wait
           </>
         ) : isEdit ? (

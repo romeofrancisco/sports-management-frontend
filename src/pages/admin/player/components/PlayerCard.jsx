@@ -6,7 +6,7 @@ import {
   Users,
   Trophy,
   User,
-  MapPin,
+  Target,
   GraduationCap,
   BookOpen,
 } from "lucide-react";
@@ -84,7 +84,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
                   className="flex items-center gap-1"
                   title={`Position: ${allPositions}`}
                 >
-                  <MapPin className="h-3 w-3" />
+                  <Target className="h-3 w-3" />
                   <span className="font-medium">{primaryPosition}</span>
                 </div>
                 {player.team?.name && (

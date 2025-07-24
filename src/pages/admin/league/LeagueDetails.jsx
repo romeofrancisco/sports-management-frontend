@@ -2,7 +2,7 @@ import React from "react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
 import PageError from "@/pages/PageError";
-import Loading from "@/components/common/FullLoading";
+import FullPageLoading from "@/components/common/FullPageLoading";
 import { useParams, Link, useLocation } from "react-router-dom";
 import LeagueSeasons from "./components/seasons/LeagueSeasons";
 import LeagueStandings from "./components/standings/LeagueStandings";
@@ -47,7 +47,7 @@ const LeagueDetails = () => {
     isLeagueLoading || isSeasonsLoading || isLeagueRankingsLoading;
   const isError = isLeagueError || isSeasonsError || isLeagueRankingsError;
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   if (isError) return <PageError />;
 
   const { name, sport } = leagueDetails;

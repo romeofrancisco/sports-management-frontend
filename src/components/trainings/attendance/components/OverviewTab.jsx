@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FiltersSection from "./FiltersSection";
-import { useTeams } from "@/hooks/useTeams";
+import { useAllTeams } from "@/hooks/useTeams";
 import {
   useAttendanceOverview,
   useAttendanceTrends,
@@ -19,9 +19,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   createAttendanceDistributionChart,
   distributionChartOptions,
+} from "./chartConfigs/attendanceDistributionChart";
+import {
   createTrendsChart,
   trendsChartOptions,
-} from "./chartConfigs";
+  verticalLinePlugin,
+} from "./chartConfigs/trendsChart";
+import DataTable from "@/components/common/DataTable";
+import { useAttendanceTracker } from "@/hooks/useAttendanceAnalytics";
+
 import {
   CalendarDays,
   Users,
@@ -30,30 +36,35 @@ import {
   AlertCircle,
   Activity,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { getAllTeamsAttendanceColumns } from "./AttendanceTrackerColumns";
 
 const OverviewTab = () => {
   // Local filter state
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [dateRange, setDateRange] = useState({
-    from: subDays(new Date(), 30),
+    from: subDays(new Date(), 90),
     to: new Date(),
   });
-  const [trendPeriod] = useState("daily");
+
+  // Defensive fallback for dateRange
+  const safeDateRange = {
+    from: dateRange?.from || subDays(new Date(), 90),
+    to: dateRange?.to || new Date(),
+  };
 
   // Fetch teams
-  const { data: teamsResponse = {}, isLoading: teamsLoading } = useTeams();
-  const teams = teamsResponse.results || [];
+  const { data: teams = [], isLoading: teamsLoading } = useAllTeams();
 
   // Build filters
   const filters = {
     team_id: selectedTeam === "all" ? undefined : selectedTeam,
-    start_date: dateRange.from
-      ? format(dateRange.from, "yyyy-MM-dd")
+    start_date: safeDateRange.from
+      ? format(safeDateRange.from, "yyyy-MM-dd")
       : undefined,
-    end_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+    end_date: safeDateRange.to
+      ? format(safeDateRange.to, "yyyy-MM-dd")
+      : undefined,
   };
-  const trendsFilters = { ...filters, period: trendPeriod };
 
   // Fetch analytics
   const {
@@ -65,8 +76,16 @@ const OverviewTab = () => {
     data: trendsData,
     isLoading: trendsLoading,
     error: trendsError,
-  } = useAttendanceTrends(trendsFilters);
-  if (overviewLoading || trendsLoading) {
+  } = useAttendanceTrends(filters);
+  const {
+    data: attendanceTracker,
+    isLoading: attendanceTrackerLoading,
+    error: attendanceTrackerError,
+  } = useAttendanceTracker(filters);
+
+  const teamColumns = getAllTeamsAttendanceColumns(attendanceTracker);
+
+  if (overviewLoading || trendsLoading || attendanceTrackerLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 space-y-6">
         <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -200,8 +219,7 @@ const OverviewTab = () => {
       {/* Charts Grid */}
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Attendance Distribution Chart */}
-        <Card className="relative overflow-hidden col-span-2">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent" />
+        <Card className="relative overflow-hidden col-span-2 border-2 border-primary/20">
           <CardHeader className="relative z-10">
             <div className="flex items-center gap-2">
               <div className="p-3 rounded-lg bg-primary shadow-lg">
@@ -219,15 +237,36 @@ const OverviewTab = () => {
           </CardHeader>
           <CardContent className="relative z-10">
             <div className="h-80">
-              <Doughnut
-                data={attendanceDistribution}
-                options={distributionChartOptions}
-              />
+              {attendanceDistribution &&
+              attendanceDistribution.datasets &&
+              attendanceDistribution.datasets[0] &&
+              attendanceDistribution.datasets[0].data &&
+              attendanceDistribution.datasets[0].data.length > 0 &&
+              attendanceDistribution.datasets[0].data.some((val) => val > 0) ? (
+                <Doughnut
+                  data={attendanceDistribution}
+                  options={distributionChartOptions}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full space-y-4">
+                  <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                    <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">
+                      No attendance distribution data available
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      Check back once more attendance data is recorded
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
         {/* Trends Chart */}
-        <Card className="relative overflow-hidden col-span-3">
+        <Card className="relative overflow-hidden col-span-3 border-2 border-primary/20">
           <CardHeader className="relative z-10">
             <div className="flex items-center gap-2">
               <div className="p-3 rounded-lg bg-primary shadow-lg">
@@ -250,6 +289,7 @@ const OverviewTab = () => {
                   className="h-full w-full"
                   data={trendsChartData}
                   options={trendsChartOptions}
+                  plugins={[verticalLinePlugin]}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full space-y-4">
@@ -264,6 +304,58 @@ const OverviewTab = () => {
                       Check back once more attendance data is recorded
                     </p>
                   </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Attendance Tracker Table */}
+        <Card className="relative overflow-hidden col-span-5 border-2 border-primary/20">
+          <CardHeader className="relative z-10">
+            <div className="flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-primary shadow-lg">
+                <BarChart3 className="size-5 text-primary-foreground" />
+              </div>
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  Attendance Tracker
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">
+                  Daily attendance by team and session
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="overflow-x-auto">
+              {attendanceTrackerLoading ? (
+                <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                  <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                  <p className="text-slate-600 dark:text-slate-400 font-medium">
+                    Loading attendance tracker...
+                  </p>
+                </div>
+              ) : attendanceTrackerError ? (
+                <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                  <AlertCircle className="h-6 w-6 text-red-600" />
+                  <p className="text-red-800 dark:text-red-200 font-medium">
+                    Failed to load attendance tracker data
+                  </p>
+                </div>
+              ) : attendanceTracker &&
+                Object.keys(attendanceTracker).length > 0 ? (
+                <DataTable
+                  unlimited={true}
+                  columns={teamColumns}
+                  data={attendanceTracker}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                  <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+                  <p className="text-slate-500 dark:text-slate-400 font-medium">
+                    No attendance tracker data available
+                  </p>
                 </div>
               )}
             </div>

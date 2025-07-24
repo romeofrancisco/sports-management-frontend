@@ -10,7 +10,6 @@ import GameForm from "../forms/GameForm";
 import { useAllTeams } from "@/hooks/useTeams";
 import { useSports } from "@/hooks/useSports";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
-import Loading from "../common/FullLoading";
 
 const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false }) => {
   const isEdit = !!game;
@@ -19,8 +18,6 @@ const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false }) => {
   
   // Fetch all teams for the dropdown selections
   const { data: teams, isLoading: isTeamsLoading } = useAllTeams(isOpen);
-
-  if (isSportsLoading || isTeamsLoading) return <Loading />;
 
   // Check permissions for editing
   const hasPermission = !isEdit || checkGamePermission(game);

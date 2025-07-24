@@ -9,14 +9,11 @@ import {
 import { useCoaches } from "@/hooks/useCoaches";
 import { useSports } from "@/hooks/useSports";
 import UpdateTeamForm from "../forms/TeamForm";
-import Loading from "../common/FullLoading";
 import { ScrollArea } from "../ui/scroll-area";
 
 const TeamModal = ({ isOpen, onClose, team }) => {
   const { data: coaches, isLoading: isCoachesLoading } = useCoaches({}, 1, 1000, isOpen);
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
-
-  if (isCoachesLoading || isSportsLoading) return <Loading />;
 
   // Extract coaches array from paginated response
   const coachesArray = coaches?.results || [];

@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/dialog";
 import SeasonForm from "../forms/SeasonForm";
 import { useSportTeams } from "@/hooks/useTeams";
-import Loading from "../common/FullLoading";
 import { ScrollArea } from "../ui/scroll-area";
+import FullPageLoading from "../common/FullPageLoading";
 
 const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
   const { data, isLoading } = useSportTeams(sport?.slug);
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

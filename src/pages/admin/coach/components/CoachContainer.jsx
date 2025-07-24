@@ -9,7 +9,9 @@ import CoachModal from "@/components/modals/CoachModal";
 import CoachCard from "./CoachCard";
 import CoachTable from "./CoachTable";
 import { useModal } from "@/hooks/useModal";
-import { Users, UserCheck, Grid3X3, List } from "lucide-react";
+import { Users, ClipboardList, Grid3X3, List } from "lucide-react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import TablePagination from "@/components/ui/table-pagination";
 
@@ -54,63 +56,52 @@ const CoachContainer = () => {
   if (isError) return <PageError />;
 
   return (
-    <div className="space-y-6">
-      {/* Filter Section */}
-      <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4 border border-primary/10 shadow-sm">
-        <CoachFilterBar filter={filter} setFilter={handleFilterChange} />
-      </div>
-      {/* Content Section */}
-      <div className="bg-gradient-to-br from-card/60 via-card/40 to-primary/5 rounded-xl p-6 border-2 border-primary/10 shadow-xl">
-        {/* Stats Header - Always visible */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-primary/10">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <UserCheck className="h-5 w-5 text-primary" />
+    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      {/* Enhanced background effects */}
+      <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-secondary/8 to-transparent rounded-full blur-3xl opacity-60"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/8 to-transparent rounded-full blur-2xl opacity-50"></div>
+
+      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary p-3 rounded-xl">
+              <ClipboardList className="size-7 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">
-                Registered Coaches
-              </h2>
+              <div className="flex gap-2">
+                <h2 className="text-2xl font-bold text-foreground">Coaches</h2>
+                <Badge>{totalCoaches} coaches</Badge>
+              </div>
               <p className="text-sm text-muted-foreground">
-                {isLoading ? (
-                  "Loading coaches..."
-                ) : coaches && coaches.length > 0 ? (
-                  <>
-                    {totalCoaches} coach{totalCoaches !== 1 ? "es" : ""}{" "}
-                    managing teams
-                  </>
-                ) : (
-                  "No coaches found"
-                )}
+                Register, manage, and track coach profiles and assignments for
+                your sports organization.
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            {/* View Toggle - Always visible */}
-            <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1">
-              <Button
-                variant={viewMode === "table" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("table")}
-                className="h-8 px-3"
-              >
-                <List className="h-4 w-4" />
-                <span className="ml-1.5 hidden sm:inline">Table</span>
-              </Button>
-              <Button
-                variant={viewMode === "cards" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("cards")}
-                className="h-8 px-3"
-              >
-                <Grid3X3 className="h-4 w-4" />
-                <span className="ml-1.5 hidden sm:inline">Cards</span>
-              </Button>
-            </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={viewMode === "table" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("table")}
+              className="flex items-center gap-2"
+            >
+              <List className="h-4 w-4" />
+              Table
+            </Button>
+            <Button
+              variant={viewMode === "cards" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("cards")}
+              className="flex items-center gap-2"
+            >
+              <Grid3X3 className="h-4 w-4" />
+              Cards
+            </Button>
           </div>
         </div>
-
+        <CoachFilterBar filter={filter} setFilter={handleFilterChange} />
+      </CardHeader>
+      <CardContent>
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <ContentLoading />
@@ -171,7 +162,7 @@ const CoachContainer = () => {
           // Empty State
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="p-4 bg-primary/10 rounded-full mb-4">
-              <UserCheck className="h-12 w-12 text-primary/70" />
+              <ClipboardList className="h-12 w-12 text-primary/70" />
             </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
               No Coaches Found
@@ -183,7 +174,7 @@ const CoachContainer = () => {
             </p>
           </div>
         )}
-      </div>
+      </CardContent>
       {/* Modals */}
       <CoachModal
         isOpen={modals.update.isOpen}
@@ -195,7 +186,7 @@ const CoachContainer = () => {
         onClose={modals.delete.closeModal}
         coach={selectedCoach}
       />
-    </div>
+    </Card>
   );
 };
 

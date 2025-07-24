@@ -1,3 +1,13 @@
+export const fetchAttendanceTracker = async (filters = {}) => {
+  try {
+    const { data } = await api.get("trainings/attendance-analytics/attendance_tracker/", {
+      params: filters
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
 import api from ".";
 
 export const fetchAttendanceOverview = async (filters = {}) => {

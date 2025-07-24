@@ -48,7 +48,7 @@ const ControlledSelect = ({
             onValueChange={field.onChange}
           >
             <SelectTrigger className="w-full" size={size} disabled={disabled}>
-              <SelectValue placeholder={placeholder} />
+              <SelectValue placeholder={placeholder} className="truncate overflow-hidden whitespace-nowrap w-full" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -60,10 +60,14 @@ const ControlledSelect = ({
                     value={String(opt[valueKey])}
                   >
                     <div className="grid text-start">
-                      {opt[labelKey]}{" "}
-                      <span className="text-xs text-muted-foreground">
-                        {opt[secondaryLabel]}
+                      <span className="truncate overflow-hidden whitespace-nowrap w-full block">
+                        {opt[labelKey]}
                       </span>
+                      {opt[secondaryLabel] && (
+                        <span className="text-xs text-muted-foreground truncate overflow-hidden whitespace-nowrap w-full block">
+                          {opt[secondaryLabel]}
+                        </span>
+                      )}
                     </div>
                   </SelectItem>
                 ))}

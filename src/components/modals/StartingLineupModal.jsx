@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { ScrollArea } from "../ui/scroll-area";
-import Loading from "../common/FullLoading";
 import StartingLineupForm from "../forms/StartingLineupForm";
 import { useGamePlayers } from "@/hooks/useGames";
 import { useStartingLineup } from "@/hooks/useStartingLineup";
 import { useSportDetails } from "@/hooks/useSports";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
+import FullPageLoading from "../common/FullPageLoading";
 
 const StartingLineupModal = ({ isOpen, onClose, game }) => {
   const { data: gamePlayers, isLoading: isGamePlayersLoading } = useGamePlayers(game?.id, isOpen);
@@ -22,8 +22,7 @@ const StartingLineupModal = ({ isOpen, onClose, game }) => {
   const { checkGamePermission } = useCoachPermissions();
 
   const isLoading = isGamePlayersLoading || isLineupLoading || isSportLoading
-
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />
 
   // Check permissions - if no permission, show error content instead of closing
   const hasPermission = game ? checkGamePermission(game) : false;

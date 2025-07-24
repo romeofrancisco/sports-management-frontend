@@ -7,15 +7,14 @@ import {
 } from "@/hooks/useTrainings";
 import { useSessionWorkflow } from "@/hooks/useSessionWorkflow";
 import { useSessionStatus } from "@/hooks/useSessionStatus";
-import Loading from "@/components/common/FullLoading";
 import PageError from "@/pages/PageError";
 import { toast } from "sonner";
-import { SESSION_STATUS } from "@/constants/sessionRoutes";
 
 // Import components
 import SessionHeader from "./components/SessionHeader";
 import ContentRenderer from "./components/ContentRenderer";
 import SessionErrorBoundary from "./components/SessionErrorBoundary";
+import FullPageLoading from "@/components/common/FullPageLoading";
 
 // Memoized components for performance
 const MemoizedWorkflowStepper = React.memo(WorkflowStepper);
@@ -46,7 +45,7 @@ const SessionManagement = () => {
     if (!sessionDetails?.id) return;
 
     try {
-      await endTraining(sessionDetails.id, {
+      endTraining(sessionDetails.id, {
         onSuccess: () => {
           toast.success("Training session ended successfully!");
           refetch();
@@ -67,7 +66,7 @@ const SessionManagement = () => {
   const memoizedWorkflowData = useMemo(() => workflowData, [workflowData]);
 
   // Early returns MUST come after all hooks are called
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   if (isError) return <PageError />;
 
   return (

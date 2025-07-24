@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useLeagues } from "@/hooks/useLeagues";
-import Loading from "@/components/common/FullLoading";
+import FullPageLoading from "../common/FullPageLoading";
 import PageError from "@/pages/PageError";
 import { Card } from "@/components/ui/card";
 import LeaguesHeader from "./LeaguesHeader";
@@ -21,7 +21,7 @@ const LeaguesContainer = () => {
     );
   }, [leagues, searchTerm]);
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   if (isError) return <PageError />;
 
   return (
