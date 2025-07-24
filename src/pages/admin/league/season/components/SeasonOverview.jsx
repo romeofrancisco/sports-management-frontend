@@ -4,7 +4,6 @@ import { useSeasonTeamPerformance } from "@/hooks/useSeasons";
 import { useSportScoringType } from "@/hooks/useSports";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import Loading from "@/components/common/FullLoading";
 import SeasonOverviewStats from "./SeasonOverviewStats";
 import SeasonOverviewSidebar from "./SeasonOverviewSidebar";
 import { SeasonCharts } from "./SeasonCharts";

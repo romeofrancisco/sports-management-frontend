@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useSports } from "@/hooks/useSports";
-import Loading from "../common/FullLoading";
 import LeagueForm from "../forms/LeagueForm";
 import PageError from "@/pages/PageError";
 import { ScrollArea } from "../ui/scroll-area";
@@ -16,7 +15,6 @@ const LeagueModal = ({ isOpen, onClose, league = null }) => {
   const isEdit = !!league;
   const { data: sports, isLoading: isSportsLoading, isError: isSportsError } = useSports(isOpen);
 
-  if (isSportsLoading) return <Loading />;
   if (isSportsError) return <PageError />;
 
   return (

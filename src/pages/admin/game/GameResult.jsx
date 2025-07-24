@@ -2,18 +2,18 @@ import React, { useEffect } from "react";
 import GameResultHeader from "./components/GameResultHeader";
 import { useGameDetails } from "@/hooks/useGames";
 import { useParams } from "react-router";
-import Loading from "@/components/common/FullLoading";
 import GameFlowChart from "@/components/charts/GameFlowChart/index";
 import TeamStatsComparison from "@/components/charts/TeamComparisonChart";
 import Boxscore from "./components/Boxscore";
 import GameLeaders from "./components/GameLeaders";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
+import FullPageLoading from "@/components/common/FullPageLoading";
 
 const GameResult = () => {
   const { gameId } = useParams();
   const { data: game, isLoading: isGameLoading } = useGameDetails(gameId);
 
-  if (isGameLoading) return <Loading />;
+  if (isGameLoading) return <FullPageLoading />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">

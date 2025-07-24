@@ -20,13 +20,10 @@ const CoachList = () => {
           onButtonClick={openModal}
           showUniversityColors={true}
         />
-        
-        {/* Coach Container */}
-        <div className="animate-in fade-in-50 duration-500 delay-100">
-          <CoachContainer />
-        </div>
+
+        <CoachContainer />
       </div>
-      
+
       {/* Coach Modal */}
       <CoachModal isOpen={isOpen} onClose={closeModal} />
     </div>

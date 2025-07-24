@@ -11,12 +11,18 @@ import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import TablePagination from "@/components/ui/table-pagination";
 import { Button } from "@/components/ui/button";
-import { Table2, LayoutGrid, Calendar, Filter } from "lucide-react";
+import { Table2, LayoutGrid, Calendar, Filter, CalendarX } from "lucide-react";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
 import GameFilterBar from "./GameFilterBar";
 import getGameTableColumns from "./GameTableColumns";
-import { GameCard, StatusSection, GameTableSkeleton, GameCardsSkeletons, StatusSectionSkeleton } from "@/components/games";
+import {
+  GameCard,
+  StatusSection,
+  GameTableSkeleton,
+  GameCardsSkeletons,
+  StatusSectionSkeleton,
+} from "@/components/games";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const GameTable = () => {
@@ -28,7 +34,7 @@ const GameTable = () => {
   const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { isAdmin } = useRolePermissions();
+  const { isAdmin, isCoach, isPlayer } = useRolePermissions();
   const [filter, setFilter] = useState({
     search: "",
     team_name: "",
@@ -199,11 +205,7 @@ const GameTable = () => {
       </div>
 
       <div className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl rounded-xl p-4 md:p-6 relative overflow-hidden">
-        {/* Enhanced background effects */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-
-        <div className="relative space-y-6">
+        <div className="min-h-[400px] space-y-6">
           {/* View Mode Toggle Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -254,7 +256,7 @@ const GameTable = () => {
               )}
             </>
           ) : (
-            <div className="space-y-8">
+            <div className="flex flex-col h-full min-h-[400px] space-y-8">
               {isLoading ? (
                 <>
                   <StatusSectionSkeleton title="Live Games" count={3} />
@@ -289,14 +291,8 @@ const GameTable = () => {
                     variant="default"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                      {scheduledGames.map((game, index) => (
-                        <div
-                          key={game.id}
-                          className="animate-in fade-in-50 duration-500"
-                          style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                          <GameCard game={game} onEditGame={handleEditGame} />
-                        </div>
+                      {scheduledGames.map((game) => (
+                        <GameCard key={game.id} game={game} onEditGame={handleEditGame} />
                       ))}
                     </div>
                   </StatusSection>
@@ -308,7 +304,7 @@ const GameTable = () => {
                     variant="default"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                      {completedGames.map((game, index) => (
+                      {completedGames.map((game) => (
                         <GameCard
                           key={game.id}
                           game={game}
@@ -337,11 +333,21 @@ const GameTable = () => {
 
                   {/* No games message */}
                   {games.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="flex-1 flex flex-col justify-center items-center text-center text-muted-foreground">
+                      <div className="mb-4 flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
+                        <CalendarX className="w-8 h-8 text-primary" />
+                      </div>
                       <p className="text-lg font-medium">No games found</p>
-                      <p className="text-sm">
-                        Try adjusting your filters or create a new game.
-                      </p>
+                      {(isAdmin() || isCoach()) && (
+                        <p className="text-sm">
+                          Try adjusting your filters or create a new game.
+                        </p>
+                      )}
+                      {isPlayer() && !isAdmin() && !isCoach() && (
+                        <p className="text-sm">
+                          No games available. Please check back later or contact your coach for more information.
+                        </p>
+                      )}
                     </div>
                   )}
                 </>

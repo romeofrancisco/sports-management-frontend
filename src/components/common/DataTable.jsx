@@ -128,7 +128,7 @@ const DataTable = ({
                         width: header.column.columnDef.size,
                         minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                       }}
-                      className={`${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
+                      className={`border-r border-border ${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
                     >
                       {header.isPlaceholder
                         ? null
@@ -150,7 +150,6 @@ const DataTable = ({
                       >
                         {row.getVisibleCells().map((cell, cellIndex) => {
                           const isFirstColumn = cellIndex === 0;
-                          
                           return (
                             <TableCell
                               key={cell.id}
@@ -159,7 +158,7 @@ const DataTable = ({
                                 width: cell.column.columnDef.size,
                                 minWidth: cell.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                               }}
-                              className={`${isFirstColumn ? "first-col bg-background" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate py-3 px-3`}
+                              className={`border-r border-border relative ${isFirstColumn ? "first-col bg-background" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate p-3`}
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,

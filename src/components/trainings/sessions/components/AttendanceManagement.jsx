@@ -7,7 +7,8 @@ import AttendanceStatistics from "./attendance/AttendanceStatistics";
 import AttendanceTable from "./attendance/AttendanceTable";
 import EmptyAttendanceState from "./attendance/EmptyAttendanceState";
 
-const AttendanceManagement = ({ session, onSaveSuccess, workflowData }) => {  const {
+const AttendanceManagement = ({ session, onSaveSuccess, workflowData }) => {
+  const {
     trainingSession,
     attendanceStats,
     formAttendanceStats,
@@ -70,7 +71,8 @@ const AttendanceManagement = ({ session, onSaveSuccess, workflowData }) => {  co
         <AttendanceWarningCard canMarkAttendance={canMarkAttendance} />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex-1">
-          {/* Attendance Table with Quick Actions and Submit Section */}          <AttendanceTable
+          {/* Attendance Table with Quick Actions and Submit Section */}{" "}
+          <AttendanceTable
             control={control}
             handleStatusChange={handleStatusChange}
             handleNotesChange={handleNotesChange}

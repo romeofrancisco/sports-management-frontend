@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import Loading from "@/components/common/FullLoading";
+import FullPageLoading from "@/components/common/FullPageLoading";
 import PageError from "@/pages/PageError";
 import ScoreBoard from "./components/scoring/ScoreBoard";
 import TeamSide from "./components/scoring/TeamSide";
@@ -79,12 +79,14 @@ const GameScoring = () => {
   const handleToggleLayoutMode = () => {
     if (!isLayoutMode) {
       // Entering layout mode - save current positions
-      const storageKey = `statButtons_${game?.sport_slug || 'default'}_positions`;
+      const storageKey = `statButtons_${
+        game?.sport_slug || "default"
+      }_positions`;
       try {
         const saved = localStorage.getItem(storageKey);
         setOriginalPositions(saved ? JSON.parse(saved) : null);
       } catch (error) {
-        console.warn('Failed to load original positions:', error);
+        console.warn("Failed to load original positions:", error);
         setOriginalPositions(null);
       }
     } else {
@@ -103,13 +105,15 @@ const GameScoring = () => {
   const handleLayoutRevert = () => {
     if (originalPositions) {
       // Restore original positions
-      const storageKey = `statButtons_${game?.sport_slug || 'default'}_positions`;
+      const storageKey = `statButtons_${
+        game?.sport_slug || "default"
+      }_positions`;
       try {
         localStorage.setItem(storageKey, JSON.stringify(originalPositions));
         // Force a re-render by toggling a state or using a callback
-        window.dispatchEvent(new Event('layout-reverted'));
+        window.dispatchEvent(new Event("layout-reverted"));
       } catch (error) {
-        console.warn('Failed to revert positions:', error);
+        console.warn("Failed to revert positions:", error);
       }
     }
     setOriginalPositions(null);
@@ -169,7 +173,7 @@ const GameScoring = () => {
   }, []);
 
   // Loading/Error UI
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   if (isError) return <PageError />;
   if (isPortrait) return <RequireLandscape />;
 
@@ -177,13 +181,13 @@ const GameScoring = () => {
   return (
     <div className="relative h-full content-center">
       {/* Dark overlay when in layout mode */}
-      {isLayoutMode && (
-        <div className="fixed inset-0 bg-black/60 z-30" />
-      )}
-      
-      <div className={`flex justify-between items-center px-2 bg-background/80 backdrop-blur-sm w-full ${
-        isLayoutMode ? "z-40 relative" : "z-20"
-      }`}>
+      {isLayoutMode && <div className="fixed inset-0 bg-black/60 z-30" />}
+
+      <div
+        className={`flex justify-between items-center px-2 bg-background/80 backdrop-blur-sm w-full ${
+          isLayoutMode ? "z-40 relative" : "z-20"
+        }`}
+      >
         <div className="flex gap-2">
           <Button
             variant="ghost"
@@ -216,7 +220,7 @@ const GameScoring = () => {
               </span>
             </div>
           )}
-          <GameSettings 
+          <GameSettings
             isLayoutMode={isLayoutMode}
             onToggleLayoutMode={handleToggleLayoutMode}
           />
@@ -239,7 +243,7 @@ const GameScoring = () => {
           <TeamSide players={away_players} />
         </div>
       </div>
-      
+
       {/* Layout Mode Floating Elements */}
       {isLayoutMode && (
         <>
@@ -249,12 +253,14 @@ const GameScoring = () => {
               Layout Mode
             </div>
           </div>
-          
+
           {/* Floating Save Button */}
           <div className="fixed bottom-6 right-6 z-50">
             <div className="bg-background border rounded-lg shadow-lg p-3 min-w-[250px] animate-in slide-in-from-right-5 fade-in duration-300">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-foreground">Save layout changes?</span>
+                <span className="text-sm font-medium text-foreground">
+                  Save layout changes?
+                </span>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -265,11 +271,7 @@ const GameScoring = () => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={handleLayoutSave}
-                  className="flex-1"
-                  size="sm"
-                >
+                <Button onClick={handleLayoutSave} className="flex-1" size="sm">
                   <Save className="h-4 w-4 mr-2" />
                   Save
                 </Button>

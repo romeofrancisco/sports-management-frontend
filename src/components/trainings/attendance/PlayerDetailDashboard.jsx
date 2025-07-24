@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import {
-  createAttendanceDistributionChart,
-  distributionChartOptions,
-  createPlayerTrendsChart,
-  playerTrendsChartOptions,
-  createPlayerTimelineChart,
-  playerTimelineChartOptions,
-} from "./components/chartConfigs";
+import { createAttendanceDistributionChart, distributionChartOptions } from "./components/chartConfigs/attendanceDistributionChart";
+import { createPlayerTrendsChart, playerTrendsChartOptions } from "./components/chartConfigs/playerTrendsChart";
+import { createPlayerTimelineChart, playerTimelineChartOptions } from "./components/chartConfigs/playerTimelineChart";
 import PlayerDetailHeader from "@/components/trainings/attendance/components/player/PlayerDetailHeader";
 import PlayerStatsCards from "@/components/trainings/attendance/components/player/PlayerStatsCards";
 import PlayerAttendanceCharts from "@/components/trainings/attendance/components/player/PlayerAttendanceCharts";
 import PlayerRecentSessions from "@/components/trainings/attendance/components/player/PlayerRecentSessions";
 
-const PlayerDetailDashboard = ({
+const   PlayerDetailDashboard = ({
   player,
   playerDetailData,
   playerDetailLoading,

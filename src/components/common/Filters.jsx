@@ -120,7 +120,7 @@ export const FilterSex = ({ value, onChange, className = "", hideLabel = false }
     return (
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
-          <SelectValue placeholder="All Sexes" />
+          <SelectValue placeholder="All Sex" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

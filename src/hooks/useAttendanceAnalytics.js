@@ -5,7 +5,17 @@ import {
   fetchAttendanceHeatmap,
   fetchPlayerAttendanceAnalytics,
   fetchPlayerAttendanceDetail,
+  fetchAttendanceTracker,
 } from "@/api/attendanceAnalyticsApi";
+export const useAttendanceTracker = (filters = {}, options = {}) => {
+  return useQuery({
+    queryKey: ["attendance-tracker", filters],
+    queryFn: () => fetchAttendanceTracker(filters),
+    enabled: options?.enabled !== false,
+    keepPreviousData: true,
+    ...options,
+  });
+};
 
 export const useAttendanceOverview = (filters = {}, options = {}) => {
   return useQuery({

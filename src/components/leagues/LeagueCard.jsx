@@ -10,14 +10,36 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import LeagueActions from "./LeagueActions";
+import { useModal } from "@/hooks/useModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const LeagueCard = ({ league, index, viewMode }) => {
   const navigate = useNavigate();
   const { isAdmin } = useRolePermissions();
 
+  // Modal state lifted up
+  const updateModal = useModal();
+  const deleteModal = useModal();
+  const [ignoreNextClick, setIgnoreNextClick] = React.useState(false);
+
+  // Patch modal close to set ignoreNextClick
+  const handleUpdateModalClose = () => {
+    setIgnoreNextClick(true);
+    updateModal.closeModal();
+  };
+  const handleDeleteModalClose = () => {
+    setIgnoreNextClick(true);
+    deleteModal.closeModal();
+  };
+
   const handleCardClick = () => {
-    navigate(`/leagues/${league.id}`);
+    if (ignoreNextClick) {
+      setIgnoreNextClick(false);
+      return;
+    }
+    if (!updateModal.isOpen && !deleteModal.isOpen) {
+      navigate(`/leagues/${league.id}`);
+    }
   };
 
   // Check if league is active
@@ -134,7 +156,14 @@ const LeagueCard = ({ league, index, viewMode }) => {
                 </div>
               </div>
             </div>
-            {isAdmin() && <LeagueActions league={league} className="ml-4" />}
+            {isAdmin() && (
+              <LeagueActions
+                league={league}
+                updateModal={{...updateModal, closeModal: handleUpdateModalClose}}
+                deleteModal={{...deleteModal, closeModal: handleDeleteModalClose}}
+                className="ml-4"
+              />
+            )}
           </div>
         </CardHeader>
       </Card>
@@ -166,7 +195,13 @@ const LeagueCard = ({ league, index, viewMode }) => {
           >
             {league.status || "Active"}
           </Badge>
-          {isAdmin() && <LeagueActions league={league} />}
+          {isAdmin() && (
+            <LeagueActions
+              league={league}
+              updateModal={{...updateModal, closeModal: handleUpdateModalClose}}
+              deleteModal={{...deleteModal, closeModal: handleDeleteModalClose}}
+            />
+          )}
         </div>
 
         {/* Logo Section */}

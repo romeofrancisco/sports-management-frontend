@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Loading from "@/components/common/FullLoading";
+import FullPageLoading from "@/components/common/FullPageLoading";
 import { useTeamsInSeason } from "@/hooks/useTeams";
 import { Users, Trophy, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export const SeasonTeams = ({ seasonId, leagueId }) => {
   const { data: teams, isLoading } = useTeamsInSeason(leagueId, seasonId);
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   return (
     <div className="animate-in fade-in-50 duration-500">
       <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">

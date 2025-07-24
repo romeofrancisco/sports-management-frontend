@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
-import {
-  useSeasonDetails,
-  useSeasonStandings,
-  useSeasons,
-} from "@/hooks/useSeasons";
+import { useSeasonDetails, useSeasonStandings } from "@/hooks/useSeasons";
 import { useLeagueDetails } from "@/hooks/useLeagues";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import SeasonOverview from "./components/SeasonOverview";
@@ -14,9 +10,9 @@ import { SeasonTeams } from "./components/SeasonTeams";
 import BracketView from "./components/BracketView";
 import SeasonActions from "./components/SeasonActions";
 import PageError from "@/pages/PageError";
-import Loading from "@/components/common/FullLoading";
+import FullPageLoading from "@/components/common/FullPageLoading";
 import { cn } from "@/lib/utils";
-import { Trophy, Users, Calendar, BarChart3, Target } from "lucide-react";
+import { Trophy, Users, BarChart3, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { getSeasonYear } from "../utils";
@@ -57,7 +53,7 @@ const SeasonDetails = () => {
   const isLoading =
     isLeagueLoading || isSeasonStandingsLoading || isSeasonLoading;
   const isError = isLeagueError || isSeasonStandingsError || isSeasonError;
-  if (isLoading) return <Loading />;
+  if (isLoading) return <FullPageLoading />;
   if (isError) return <PageError />;
 
   const { sport } = leagueDetails;
@@ -142,9 +138,7 @@ const SeasonDetails = () => {
         {seasonDetails?.name || "Season"}
         {seasonDetails?.start_date && (
           <span className="ml-2 text-lg md:text-xl lg:text-2xl text-muted-foreground font-normal">
-            (
-            {getSeasonYear(seasonDetails.start_date, seasonDetails.end_date)}
-            )
+            ({getSeasonYear(seasonDetails.start_date, seasonDetails.end_date)})
           </span>
         )}
       </span>

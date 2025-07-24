@@ -5,4 +5,3 @@ export { default as PlayersTab } from './PlayersTab';
 export { default as PlayerDetailDashboard } from '../PlayerDetailDashboard';
 export { default as PlayersTabContainer } from './PlayersTabContainer';
 export { default as FiltersSection } from './FiltersSection';
-export * from './chartConfigs';

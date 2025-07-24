@@ -11,7 +11,8 @@ import TeamCard from "./TeamCard.jsx";
 import TeamsTableView from "./TeamsTableView";
 import { TeamsListSkeleton } from "@/components/teams";
 import { Separator } from "@/components/ui/separator";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import TablePagination from "@/components/ui/table-pagination";
 import { Users, Table2, LayoutGrid } from "lucide-react";
@@ -54,18 +55,22 @@ const TeamsContainer = () => {
       <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-secondary/8 to-transparent rounded-full blur-3xl opacity-60"></div>
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/8 to-transparent rounded-full blur-2xl opacity-50"></div>
 
-      <div className="relative p-4 md:p-6">
-        {/* Enhanced Header with View Toggle */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-foreground">Teams</h2>
-            <div className="px-2 py-2 bg-primary/10 rounded-full flex">
-              <span className="text-xs font-medium text-primary">
-                {totalTeams} teams
-              </span>
+            <div className="bg-primary p-3 rounded-xl">
+              <Users className="size-7 text-primary-foreground" />
+            </div>
+            <div>
+              <div className="flex gap-2">
+                <h2 className="text-2xl font-bold text-foreground">Teams</h2>
+                <Badge>{totalTeams} teams</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Register, manage, and track team profiles and statistics for your sports organization.
+              </p>
             </div>
           </div>
-
           <div className="flex items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
@@ -88,7 +93,9 @@ const TeamsContainer = () => {
           </div>
         </div>
         <TeamFiltersBar filter={filter} setFilter={handleFilterChange} />
-        <Separator className="max-h-[0.5px] mb-6 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />{" "}
+      </CardHeader>
+      <CardContent>
+        <Separator className="max-h-[0.5px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         {isLoading ? (
           <TeamsListSkeleton viewMode={viewMode} pageSize={pageSize} />
         ) : teams && teams.length > 0 ? (
@@ -171,7 +178,7 @@ const TeamsContainer = () => {
             </div>
           </div>
         )}
-      </div>
+      </CardContent>
 
       <DeleteTeamModal
         isOpen={deleteModal.isOpen}

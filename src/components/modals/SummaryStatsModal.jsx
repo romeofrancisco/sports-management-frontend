@@ -9,7 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePlayerStatsSummary } from "@/hooks/useStats";
 import { useSelector } from "react-redux";
-import Loading from "../common/FullLoading";
+import FullPageLoading from "../common/FullPageLoading";
 import PlayerStatsSummaryTable from "@/pages/admin/game/components/scoring/PlayerStatsSummaryTable";
 import { ScrollArea } from "../ui/scroll-area";
 import { TEAM_SIDES } from "@/constants/game";
@@ -70,7 +70,7 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
             </TabsList>
 
             {isPlayerStatsLoading || isTeamStatsLoading ? (
-              <Loading />
+              <FullPageLoading />
             ) : (
               <>
                 <TabsContent value={TEAM_SIDES.HOME_TEAM}>
