@@ -39,6 +39,7 @@ const LoginForm = () => {
                 id="email"
                 {...register("email", { required: "Email is required" })}
                 type="email"
+                autoComplete="email"
                 placeholder="m@example.com"
                 required
               />
@@ -59,6 +60,7 @@ const LoginForm = () => {
               <Input
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 {...register("password", { required: "Password is required" })}
                 required
               />

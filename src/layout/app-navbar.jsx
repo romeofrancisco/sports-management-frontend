@@ -337,8 +337,8 @@ const AppNavbar = ({ navItems = [] }) => {
           </NavigationMenuList>
         </NavigationMenu>        {/* Right side - Messages and User menu */}
         <div className="flex items-center gap-4">
-          {/* Messages dropdown */}
-          <NavbarMessages />
+          {/* Messages dropdown temporarily removed */}
+          {/* <NavbarMessages /> */}
           
           {/* Welcome message for larger screens */}
           <div className="hidden xl:block text-sm text-muted-foreground">

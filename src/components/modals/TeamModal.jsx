@@ -12,7 +12,12 @@ import UpdateTeamForm from "../forms/TeamForm";
 import { ScrollArea } from "../ui/scroll-area";
 
 const TeamModal = ({ isOpen, onClose, team }) => {
-  const { data: coaches, isLoading: isCoachesLoading } = useCoaches({}, 1, 1000, isOpen);
+  const { data: coaches, isLoading: isCoachesLoading } = useCoaches(
+    {},
+    1,
+    1000,
+    isOpen
+  );
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
 
   // Extract coaches array from paginated response
@@ -20,13 +25,14 @@ const TeamModal = ({ isOpen, onClose, team }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Update Team Info</DialogTitle>
           <DialogDescription>
             Add team for a specific sport and assign a coach.
           </DialogDescription>
-        </DialogHeader>        <ScrollArea className="max-h-[75vh]">
+        </DialogHeader>{" "}
+        <ScrollArea className="max-h-[75vh]">
           <UpdateTeamForm
             coaches={coachesArray}
             sports={sports}
