@@ -131,3 +131,136 @@ export const getAllTeamsAttendanceColumns = (attendanceData) => {
     return col;
   });
 };
+
+export const getPlayerAttendanceColumns = (attendanceData) => {
+  // When team is selected, attendanceData will be an array with one team containing players
+  const teamData = attendanceData?.[0];
+  const players = teamData?.players || [];
+  
+  if (players.length === 0) {
+    return [];
+  }
+
+  // Get all unique date keys from the first player's attendance
+  const firstPlayer = players[0];
+  const dateKeys = firstPlayer ? Object.keys(firstPlayer.attendance) : [];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "present":
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100";
+      case "late":
+        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100";
+      case "absent":
+        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100";
+      case "excused":
+        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100";
+      case "not_enrolled":
+        return "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400";
+      default:
+        return "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400";
+    }
+  };
+
+  const getCellBgColor = (status) => {
+    switch (status) {
+      case "present":
+        return "bg-green-100 dark:bg-green-900";
+      case "late":
+        return "bg-yellow-100 dark:bg-yellow-900";
+      case "absent":
+        return "bg-red-100 dark:bg-red-900";
+      case "excused":
+        return "bg-blue-100 dark:bg-blue-900";
+      case "not_enrolled":
+        return "bg-gray-100 dark:bg-gray-800";
+      default:
+        return "bg-gray-100 dark:bg-gray-800";
+    }
+  };
+
+  const getStatusDisplay = (status) => {
+    switch (status) {
+      case "present":
+        return "Present";
+      case "late":
+        return "Late";
+      case "absent":
+        return "Absent";
+      case "excused":
+        return "Excused";
+      case "not_enrolled":
+        return "-";
+      default:
+        return "-";
+    }
+  };
+
+  const columns = [
+    {
+      accessorKey: "name",
+      header: "Player Name",
+      cell: ({ row }) => {
+        const playerName = row.getValue("name");
+        const playerProfile = row.original.profile;
+        const jerseyNumber = row.original.jersey_number;
+        return (
+          <span className="flex items-center gap-2 font-semibold">
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={playerProfile} alt={playerName} />
+              <AvatarFallback className="text-xs font-semibold">
+                {jerseyNumber ? `#${jerseyNumber}` : playerName?.split(' ').map(n => n[0]).join('').substring(0, 2) || '??'}
+              </AvatarFallback>
+            </Avatar>
+            {playerName}
+          </span>
+        );
+      },
+    },
+    ...dateKeys.map((date) => ({
+      id: date,
+      accessorKey: date,
+      header: formatShortDate(date),
+      meta: {
+        className: (cellContext) => {
+          const entry = cellContext.row.original.attendance[date];
+          if (entry && entry.has_session) {
+            const bgColor = getCellBgColor(entry.status);
+            return `${bgColor} p-0`;
+          }
+          return "p-0";
+        },
+      },
+      cell: ({ row }) => {
+        const entry = row.original.attendance[date];
+        if (!entry || !entry.has_session) {
+          // No session on this date
+          return (
+            <span
+              className="w-full h-full block"
+              style={{ display: "block", minHeight: 24, minWidth: 24 }}
+            >
+              {/* No session */}
+            </span>
+          );
+        }
+
+        const status = entry.status;
+        const bgColor = getCellBgColor(status);
+        const statusDisplay = getStatusDisplay(status);
+
+        return (
+          <div
+            className={`absolute inset-0 w-full h-full min-h-16 min-w-1 flex items-center justify-center ${bgColor}`}
+          >
+            <span className="text-xs font-medium">
+              {statusDisplay}
+            </span>
+          </div>
+        );
+      },
+    })),
+  ];
+
+  return columns;
+};

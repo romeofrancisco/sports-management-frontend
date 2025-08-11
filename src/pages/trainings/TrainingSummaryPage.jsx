@@ -15,7 +15,7 @@ import {
   EffectivenessScoreCard,
   RecommendationsCard,
 } from "@/components/trainings/sessions/components/summary";
-import { Trophy, ArrowLeft } from "lucide-react";
+import { Trophy, ArrowLeft, Brain } from "lucide-react";
 
 const TrainingSummaryPage = () => {
   const { sessionId } = useParams();
@@ -205,6 +205,9 @@ const TrainingSummaryPage = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
           <div className="xl:col-span-2 space-y-6">
+            {/* Metrics Section */}
+            <MetricsSummarySection metricsSummary={safeMetricsSummary} />
+            
             {/* Player Improvements Section */}
             <PlayerImprovementsSection
               playerImprovements={safePlayerImprovements}
@@ -224,16 +227,16 @@ const TrainingSummaryPage = () => {
             {/* Attendance Summary */}
             <AttendanceSummaryCard attendanceSummary={safeAttendanceSummary} />
 
-            {/* Metrics Section */}
-            <MetricsSummarySection metricsSummary={safeMetricsSummary} />
-
             {/* Effectiveness Score */}
             <EffectivenessScoreCard
               effectivenessScore={safeEffectivenessScore}
             />
 
-            {/* Training Recommendations
-            <RecommendationsCard recommendations={safeRecommendations} /> */}
+            {/* Training Recommendations */}
+            <RecommendationsCard
+              recommendations={safeRecommendations}
+              sessionId={sessionId}
+            />
           </div>
         </div>
       </div>

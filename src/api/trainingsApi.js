@@ -437,6 +437,26 @@ export const fetchTrainingSummary = async (id) => {
   }
 };
 
+// Fetch AI insights for a specific training session
+export const fetchTrainingAIInsights = async (id) => {
+  try {
+    const { data } = await api.get(`trainings/sessions/${id}/ai-insights/`);
+    return data;
+  } catch (error) {
+    // Handle specific AI insights errors
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data?.detail || "AI insights are only available for completed sessions.");
+    }
+    if (error.response?.status === 403) {
+      throw new Error("You don't have permission to view this session's AI insights.");
+    }
+    if (error.response?.status === 500) {
+      throw new Error("AI service is temporarily unavailable. Please try again later.");
+    }
+    throw error;
+  }
+};
+
 // Get missed metrics from the last completed session for a team
 export const fetchLastSessionMissedMetrics = async (teamId, currentSessionId = null) => {
   try {

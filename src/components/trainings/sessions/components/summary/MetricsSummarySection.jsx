@@ -30,39 +30,70 @@ const MetricsSummarySection = ({ metricsSummary }) => {
         </CardHeader>
 
         <CardContent className="space-y-6 relative">
-          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg p-4 border border-primary/20">
-              <p className="text-sm text-muted-foreground font-medium mb-1">
-                Total Records
-              </p>
-              <p className="text-2xl font-bold text-primary">
-                {metricsSummary.total_metrics_recorded}
-              </p>
-            </div>
-            <div className="bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg p-4 border border-primary/20">
-              <p className="text-sm text-muted-foreground font-medium mb-1">
-                Completion Rate
-              </p>
-              <p className="text-2xl font-bold text-primary">
-                {metricsSummary.completion_rate}%
-              </p>
-            </div>
-            <div className="bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg p-4 border border-primary/20">
-              <p className="text-sm text-muted-foreground font-medium mb-1">
-                Unique Metrics
-              </p>
-              <p className="text-2xl font-bold text-primary">
-                {metricsSummary.unique_metrics}
-              </p>
-            </div>
-            <div className="bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg p-4 border border-primary/20">
-              <p className="text-sm text-muted-foreground font-medium mb-1">
-                Players Recorded
-              </p>
-              <p className="text-2xl font-bold text-primary">
-                {metricsSummary.players_with_metrics}
-              </p>
-            </div>
+          {/* Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Records
+                </CardTitle>
+                <div className="p-2 rounded-lg border bg-primary/10 text-primary border-primary/30">
+                  <Target className="h-4 w-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent className="relative">
+                <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  {metricsSummary.total_metrics_recorded}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Performance measurements
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500" style={{ animationDelay: '100ms' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Unique Metrics
+                </CardTitle>
+                <div className="p-2 rounded-lg border bg-primary/10 text-primary border-primary/30">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent className="relative">
+                <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  {metricsSummary.unique_metrics}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Different metrics tracked
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500" style={{ animationDelay: '200ms' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Players Recorded
+                </CardTitle>
+                <div className="p-2 rounded-lg border bg-primary/10 text-primary border-primary/30">
+                  <TrendingDown className="h-4 w-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent className="relative">
+                <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  {metricsSummary.players_with_metrics}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Active participants
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
           {metricsSummary.metrics_breakdown &&
@@ -72,7 +103,7 @@ const MetricsSummarySection = ({ metricsSummary }) => {
                   <Target className="h-5 w-5 text-primary" />
                   Metrics Breakdown
                 </h4>
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {metricsSummary.metrics_breakdown.map((metric, index) => (
                     <div
                       key={index}
@@ -93,7 +124,8 @@ const MetricsSummarySection = ({ metricsSummary }) => {
                               className="bg-primary/15 text-primary border-primary/40 font-medium"
                             >
                               {metric.records_count} records
-                            </Badge>                            <Badge
+                            </Badge>{" "}
+                            <Badge
                               variant="outline"
                               className={`font-medium ${
                                 metric.unique_players /

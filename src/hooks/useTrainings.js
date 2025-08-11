@@ -894,3 +894,19 @@ export const useAssignedMetricsOverview = (enabled = true) => {
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes since overview changes less frequently
   });
 };
+
+// Hook to fetch AI insights for a training session (called on demand)
+export const useTrainingAIInsights = (sessionId, options = {}) => {
+  const { enabled = false } = options;
+  
+  return useQuery({
+    queryKey: ["training-ai-insights", sessionId],
+    queryFn: async () => {
+      const { fetchTrainingAIInsights } = await import("@/api/trainingsApi");
+      return fetchTrainingAIInsights(sessionId);
+    },
+    enabled: enabled && !!sessionId,
+    staleTime: 10 * 60 * 1000, // Consider data fresh for 10 minutes (AI insights don't change)
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+  });
+};
