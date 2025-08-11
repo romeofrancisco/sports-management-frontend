@@ -11,3 +11,4 @@ export { default as EffectivenessScoreCard } from './EffectivenessScoreCard';
 export { default as PlayerImprovementCard } from './PlayerImprovementCard';
 export { default as PlayerImprovementsSection } from './PlayerImprovementsSection';
 export { default as RecommendationsCard } from './RecommendationsCard';
+export { default as AIInsightsCard } from './AIInsightsCard';

@@ -36,7 +36,7 @@ import {
   AlertCircle,
   Activity,
 } from "lucide-react";
-import { getAllTeamsAttendanceColumns } from "./AttendanceTrackerColumns";
+import { getAllTeamsAttendanceColumns, getPlayerAttendanceColumns } from "./AttendanceTrackerColumns";
 
 const OverviewTab = () => {
   // Local filter state
@@ -66,6 +66,17 @@ const OverviewTab = () => {
       : undefined,
   };
 
+  // Build filters for attendance tracker (includes team parameter for player data)
+  const attendanceTrackerFilters = {
+    team: selectedTeam === "all" ? undefined : selectedTeam,
+    start_date: safeDateRange.from
+      ? format(safeDateRange.from, "yyyy-MM-dd")
+      : undefined,
+    end_date: safeDateRange.to
+      ? format(safeDateRange.to, "yyyy-MM-dd")
+      : undefined,
+  };
+
   // Fetch analytics
   const {
     data: overviewData,
@@ -81,9 +92,18 @@ const OverviewTab = () => {
     data: attendanceTracker,
     isLoading: attendanceTrackerLoading,
     error: attendanceTrackerError,
-  } = useAttendanceTracker(filters);
+  } = useAttendanceTracker(attendanceTrackerFilters);
 
-  const teamColumns = getAllTeamsAttendanceColumns(attendanceTracker);
+  // Determine which columns and data to use based on team selection
+  const isTeamSelected = selectedTeam !== "all";
+  const attendanceColumns = isTeamSelected 
+    ? getPlayerAttendanceColumns(attendanceTracker)
+    : getAllTeamsAttendanceColumns(attendanceTracker);
+  
+  // Transform data for player view when team is selected
+  const attendanceTableData = isTeamSelected && attendanceTracker?.[0]?.players 
+    ? attendanceTracker[0].players 
+    : attendanceTracker;
 
   if (overviewLoading || trendsLoading || attendanceTrackerLoading) {
     return (
@@ -319,10 +339,12 @@ const OverviewTab = () => {
               </div>
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  Attendance Tracker
+                  {isTeamSelected ? "Player Attendance Tracker" : "Team Attendance Tracker"}
                 </CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
-                  Daily attendance by team and session
+                  {isTeamSelected 
+                    ? "Individual player attendance by session" 
+                    : "Daily attendance by team and session"}
                 </CardDescription>
               </div>
             </div>
@@ -343,18 +365,20 @@ const OverviewTab = () => {
                     Failed to load attendance tracker data
                   </p>
                 </div>
-              ) : attendanceTracker &&
-                Object.keys(attendanceTracker).length > 0 ? (
+              ) : attendanceTableData &&
+                attendanceTableData.length > 0 ? (
                 <DataTable
                   unlimited={true}
-                  columns={teamColumns}
-                  data={attendanceTracker}
+                  columns={attendanceColumns}
+                  data={attendanceTableData}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 space-y-2">
                   <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
                   <p className="text-slate-500 dark:text-slate-400 font-medium">
-                    No attendance tracker data available
+                    {isTeamSelected 
+                      ? "No player attendance data available for selected team"
+                      : "No attendance tracker data available"}
                   </p>
                 </div>
               )}
