@@ -22,17 +22,17 @@ const TeamKeyMetrics = ({ data }) => {
       gradient: "from-primary via-primary/90 to-primary/80",
       description: "primary team leadership",
     },
-    {
-      label: "Assistant Coach",
-      value: data.assistant_coach_name || "No Assistant Coach Assigned",
-      color: "text-primary",
-      bgColor: "bg-primary/8",
-      borderColor: "border-primary/30",
-      icon: <UserCheck className="h-5 w-5 text-primary-foreground" />,
-      iconBg: "bg-primary",
-      gradient: "from-primary via-primary/90 to-primary/80",
-      description: "Supporting team leadership",
-    },
+    // {
+    //   label: "Assistant Coach",
+    //   value: data.assistant_coach_name || "No Assistant Coach Assigned",
+    //   color: "text-primary",
+    //   bgColor: "bg-primary/8",
+    //   borderColor: "border-primary/30",
+    //   icon: <UserCheck className="h-5 w-5 text-primary-foreground" />,
+    //   iconBg: "bg-primary",
+    //   gradient: "from-primary via-primary/90 to-primary/80",
+    //   description: "Supporting team leadership",
+    // },
     {
       label: "Sport",
       value: data.sport_name || "Not Specified",
@@ -75,7 +75,7 @@ const TeamKeyMetrics = ({ data }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 xl:grid-cols-2 md:grid-cols-4 sm:grid-cols-2 grid-cols-1">
+        <div className="grid gap-4 md:grid-cols-3 grid-cols-1">
           {teamMetrics.map((metric, index) => (
             <div
               key={index}

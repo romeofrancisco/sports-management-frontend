@@ -7,18 +7,21 @@ import { DIVISIONS } from "@/constants/team";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
 import ControlledCombobox from "../common/ControlledCombobox";
+import SelectCoach from "../common/SelectCoach";
 import { convertToFormData } from "@/utils/convertToFormData";
 
 const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   const isEdit = Boolean(team);
   const [logoPreview, setLogoPreview] = useState(team?.logo || null);
   const { mutate: createTeam, isPending: isCreating } = useCreateTeam();
-  const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();  const {
+  const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeam();
+  const {
     control,
     handleSubmit,
     formState: { errors },
     setError,
     watch,
+    setValue,
   } = useForm({
     defaultValues: {
       name: team?.name || "",
@@ -27,13 +30,24 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       sport: team?.sport || "",
       division: team?.division || "",
       head_coach: team?.head_coach || "",
-      assistant_coach: team?.assistant_coach || "",
+      // assistant_coach: team?.assistant_coach || "", // Temporarily removed
       logo: null,
     },
   });
 
   const logoFile = watch("logo");
   const teamColor = watch("color");
+  const selectedSport = watch("sport");
+
+  // Filter coaches based on selected sport
+  const filteredCoaches = React.useMemo(() => {
+    if (!selectedSport || !coaches) return [];
+    
+    return coaches.filter(coach => {
+      // Check if coach can coach the selected sport
+      return coach.sports && coach.sports.some(sport => sport.id === parseInt(selectedSport));
+    });
+  }, [coaches, selectedSport]);
 
   useEffect(() => {
     if (logoFile && logoFile.length > 0) {
@@ -45,6 +59,13 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       return () => URL.revokeObjectURL(url);
     }
   }, [logoFile]);
+
+  // Clear head_coach when sport changes (except during initial load for edit mode)
+  useEffect(() => {
+    if (selectedSport && !isEdit) {
+      setValue("head_coach", "");
+    }
+  }, [selectedSport, setValue, isEdit]);
   const onSubmit = (teamData) => {
     const data = convertToFormData(teamData);
 
@@ -85,7 +106,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
           "Team Logo"
         )}
       </div>
-
       {/* Team Name */}
       <ControlledInput
         name="name"
@@ -94,7 +114,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         placeholder="Enter Team Name"
         errors={errors}
       />
-
       {/* Team Name */}
       <ControlledInput
         name="abbreviation"
@@ -104,7 +123,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         placeholder="Enter Team Abbreviation"
         errors={errors}
       />
-
       {/* Team Logo */}
       <ControlledInput
         name="logo"
@@ -114,7 +132,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         accept="image/*"
         errors={errors}
       />
-
       <ControlledInput
         name="color"
         control={control}
@@ -122,7 +139,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         type="color"
         errors={errors}
       />
-
       {/* Sport */}
       <ControlledSelect
         name="sport"
@@ -135,7 +151,6 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         errors={errors}
         disabled={isEdit}
       />
-
       {/* Division */}
       <ControlledSelect
         name="division"
@@ -144,21 +159,26 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         placeholder="Select Team Division"
         options={DIVISIONS}
         errors={errors}
-      />      {/* Head Coach */}
-      <ControlledCombobox
+      />{" "}
+      {/* Head Coach */}
+      <SelectCoach
         name="head_coach"
         control={control}
-        label="Head Coach"
-        options={coaches}
-        placeholder="Select Head Coach"
-        help_text="Primary coach responsible for the team"
+        label="Coach"
+        coaches={filteredCoaches}
+        placeholder={selectedSport ? "Select Coach" : "Select Sport first"}
+        disabled={!selectedSport || filteredCoaches.length === 0}
         errors={errors}
-        valueKey="id"
-        labelKey="full_name"
+        help_text={
+          !selectedSport 
+            ? "Please select a sport first to see available coaches"
+            : filteredCoaches.length === 0 
+            ? "No coaches available for this sport"
+            : "Coach who can manage this sport"
+        }
       />
-
-      {/* Assistant Coach */}
-      <ControlledCombobox
+      {/* Assistant Coach - Temporarily Removed */}
+      {/* <ControlledCombobox
         name="assistant_coach"
         control={control}
         label="Assistant Coach"
@@ -168,8 +188,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         errors={errors}
         valueKey="id"
         labelKey="full_name"
-      />
-
+      /> */}
       <Button
         type="submit"
         className="mt-4"

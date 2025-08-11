@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
 // Hooks
@@ -10,6 +10,7 @@ import { useRolePermissions } from "@/hooks/useRolePermissions";
 // Components
 import { Button } from "@/components/ui/button";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
+import TeamModal from "@/components/modals/TeamModal";
 import {
   TeamKeyMetrics,
   QuickActions,
@@ -186,7 +187,7 @@ const TeamSidebar = ({
   return (
     <div className="xl:col-span-1 space-y-6">
       {/* Hide QuickActions if user is player */}
-      {!hasRole("Player") && <QuickActions team={teamSlug} />}
+      {/* {!hasRole("Player") && <QuickActions team={teamSlug} />} */}
       <TeamUpcomingGamesSection games={upcomingGames} />
       <TeamUpcomingTrainingSection trainings={upcomingTrainings} />
       <TeamRecentTrainingSection trainings={recentTrainings} />
@@ -199,6 +200,7 @@ const TeamDetails = () => {
   const { team } = useParams();
   const navigate = useNavigate();
   const { hasRole } = useRolePermissions();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Use the existing comprehensive analytics hook
   const {
@@ -259,7 +261,7 @@ const TeamDetails = () => {
           description="Monitor team performance, manage players, and track training progress"
           buttonText="Edit Team"
           buttonIcon={Edit}
-          onButtonClick={() => navigate(`/teams/${team}/edit`)}
+          onButtonClick={() => setIsEditModalOpen(true)}
           showBackButton
           backButtonText="Back to Teams"
           backButtonPath="/teams"
@@ -308,6 +310,13 @@ const TeamDetails = () => {
           />
         </div>
       </section>
+
+      {/* Team Edit Modal */}
+      <TeamModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        team={teamDetails}
+      />
     </div>
   );
 };

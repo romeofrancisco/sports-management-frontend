@@ -57,18 +57,6 @@ const QuickActions = ({ team }) => {
             <div className="text-xs text-muted-foreground">Manage training activities</div>
           </div>
         </Button>
-        
-        <Button 
-          variant="outline" 
-          className="w-full justify-start h-12 bg-gradient-to-r from-transparent to-secondary/5 hover:from-secondary/10 hover:to-secondary/15 border-secondary/30 hover:border-secondary/50 transition-all duration-300"
-          onClick={() => navigate(`/teams/${team}/settings`)}
-        >
-          <Settings className="mr-3 h-5 w-5 text-secondary" />
-          <div className="text-left">
-            <div className="font-medium">Team Settings</div>
-            <div className="text-xs text-muted-foreground">Configure team preferences</div>
-          </div>
-        </Button>
       </CardContent>
     </Card>
   );
