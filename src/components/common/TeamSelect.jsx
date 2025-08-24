@@ -16,12 +16,14 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { useTeams } from "@/hooks/useTeams";
+import { useMemo } from "react";
 
 export const TeamSelect = ({
   name,
   label,
   placeholder = "Select a team",
-  teams = [],
+  teams = [], // Keep for backward compatibility, but will be overridden by API
   excludeTeamId = null,
   value,
   onChange,
@@ -33,15 +35,27 @@ export const TeamSelect = ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
-  const availableTeams = teams.filter(
+  
+  // Use API-based filtering with debounced search
+  const searchFilter = useMemo(() => ({
+    search: search.trim(),
+  }), [search]);
+  
+  // Fetch teams from API with search filter
+  const { data: teamsData, isLoading } = useTeams(searchFilter, 1, 50, true);
+  const apiTeams = teamsData?.results || [];
+  
+  // Filter out excluded team
+  const availableTeams = apiTeams?.filter(
     (team) => String(team.id) !== String(excludeTeamId)
   );
-  const filteredTeams = availableTeams.filter(
-    (team) =>
-      team.name.toLowerCase().includes(search.toLowerCase()) ||
-      (team.sport?.name && team.sport.name.toLowerCase().includes(search.toLowerCase()))
+  
+  // For displaying selected team, we might need to fetch it separately if not in current results
+  const selectedTeam = availableTeams?.find(
+    (team) => String(team.id) === String(value)
   );
 
+  
   // Team logo component with fallback
   const TeamLogo = ({ team, size = "w-6 h-6" }) => {
     const [imageError, setImageError] = React.useState(false);
@@ -67,10 +81,6 @@ export const TeamSelect = ({
       />
     );
   };
-
-  const selectedTeam = availableTeams.find(
-    (team) => String(team.id) === String(value)
-  );
 
   return (
     <div className={`grid gap-1 ${className}`}>
@@ -117,9 +127,11 @@ export const TeamSelect = ({
               onValueChange={setSearch}
             />
             <CommandList>
-              <CommandEmpty>No teams found.</CommandEmpty>
+              <CommandEmpty>
+                {isLoading ? "Loading teams..." : "No teams found."}
+              </CommandEmpty>
               <CommandGroup>
-                {filteredTeams.map((team) => (
+                {availableTeams.map((team) => (
                   <CommandItem
                     key={team.id}
                     value={`${team.name} ${team.sport?.name || ''}`}

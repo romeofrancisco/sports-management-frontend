@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function DateRangePicker({ className, value, onChange }) {
+export function DateRangePicker({ className, value, onChange, showIcon=true }) {
   const [internalDate, setInternalDate] = useState({
     from: null,
     to: null,
@@ -28,7 +28,7 @@ export function DateRangePicker({ className, value, onChange }) {
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            {showIcon && <CalendarIcon className="mr-2 h-4 w-4" />}
             {date?.from ? (
               date.to ? (
                 <>

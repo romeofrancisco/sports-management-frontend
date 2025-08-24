@@ -5,19 +5,25 @@ import TrainingSessionsList from "@/components/trainings/sessions/TrainingSessio
 import TrainingSessionFormDialog from "@/components/modals/trainings/TrainingSessionFormDialog";
 import { useModal } from "@/hooks/useModal";
 import { useSelector } from "react-redux";
+import { useTeams } from "@/hooks/useTeams";
 
 const TrainingSessionsPage = () => {
   const { user } = useSelector((state) => state.auth);
   const isCoach = user?.roles?.includes("coach");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSession, setSelectedSession] = useState(null);
-  
+
   const sessionModal = useModal();
+  
+  // Fetch teams for the filter dropdown
+  const { data: teamsData } = useTeams({}, 1,); // Large page size to get all teams
+  const teams = teamsData?.results || []; // Extract results array from paginated response
 
   const handleEditSession = (session) => {
     setSelectedSession(session);
     sessionModal.openModal();
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
@@ -27,7 +33,8 @@ const TrainingSessionsPage = () => {
           subtitle="Training Management"
           description="Manage and organize training sessions"
           buttonText="New Session"
-          buttonIcon={Target}          onButtonClick={() => {
+          buttonIcon={Target}
+          onButtonClick={() => {
             setSelectedSession(null);
             sessionModal.openModal();
           }}
@@ -41,17 +48,20 @@ const TrainingSessionsPage = () => {
             {/* Enhanced background effects */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-secondary/15 to-transparent rounded-full blur-3xl opacity-70"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-2xl opacity-60"></div>
-            
-            <div className="relative">              <TrainingSessionsList 
+
+            <div className="relative">
+              {" "}
+              <TrainingSessionsList
                 coachId={isCoach ? user?.id : null}
                 onNewSession={() => sessionModal.openModal()}
                 onEditSession={handleEditSession}
+                teams={teams}
               />
             </div>
           </div>
         </div>
       </div>
-        {/* New Session Modal */}
+      {/* New Session Modal */}
       <TrainingSessionFormDialog
         open={sessionModal.isOpen}
         onOpenChange={sessionModal.closeModal}
