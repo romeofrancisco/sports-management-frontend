@@ -2,23 +2,31 @@ import React, { useState } from "react";
 import { PlusIcon, Table2, LayoutGrid, Target } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { useTrainingSessions } from "@/hooks/useTrainings";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
 import getTrainingSessionTableColumns from "../../table_columns/TrainingSessionTableColumns";
 import TrainingSessionCard from "./TrainingSessionCard";
+import EnhancedTrainingFilter from "./EnhancedTrainingFilter";
 import { useModal } from "@/hooks/useModal";
 import DeleteTrainingSessionModal from "@/components/modals/trainings/DeleteTrainingSessionModal";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
+const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
   const navigate = useNavigate();
   const [selectedSession, setSelectedSession] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
-  const [filter, setFilter] = useState({ search: "", team: "", date: "" });
+  const [viewMode, setViewMode] = useState("cards"); // Default to cards view
+  const [filter, setFilter] = useState({ search: "", team: "", date: "", status: "" });
 
   const modals = {
     delete: useModal(),
@@ -64,17 +72,24 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
   });
   return (
     <>
-      {/* Enhanced Header with View Toggle */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 p-4 md:p-6">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold text-foreground">Sessions</h2>
-          <div className="px-2 py-2 bg-primary/10 rounded-full flex">
-            <span className="text-xs font-medium text-primary">
-              {totalSessions} session{totalSessions !== 1 ? "s" : ""}
-            </span>
+    <Card>
+      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary p-3 rounded-xl">
+              <Target className="size-7 text-primary-foreground" />
+            </div>
+            <div>
+              <div className="flex gap-1 items-center">
+                <h2 className="text-2xl font-bold text-foreground">Training Sessions</h2>
+                <Badge className="h-6 p-1 text-[11px]">{totalSessions} sessions</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Manage and organize training sessions for teams.
+              </p>
+            </div>
           </div>
-        </div>
-
+                  {/* View Toggle */}
         <div className="flex items-center gap-2">
           <Button
             variant={viewMode === "table" ? "default" : "outline"}
@@ -95,8 +110,19 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
             Cards
           </Button>
         </div>
-      </div>
-      <div className="px-4 md:px-6 pb-4 md:pb-6">
+        
+        </div>
+        
+        {/* Enhanced Filters */}
+        <EnhancedTrainingFilter
+          teams={teams}
+          filters={filter}
+          onFilterChange={setFilter}
+        />
+      </CardHeader>
+
+      <CardContent>
+      
         {/* Loading and Error States */}
         {isError ? (
           <div className="text-center py-16">
@@ -132,7 +158,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
                         No training sessions found
                       </p>
                       <p className="text-muted-foreground font-medium max-w-sm mx-auto mb-6">
-                        {filter.search || filter.team || filter.date
+                        {filter.search || filter.team || filter.date || filter.status
                           ? "Try adjusting your filters to find sessions"
                           : "Create your first training session to get started"}
                       </p>
@@ -152,7 +178,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {sessions.map((session) => (
                       <TrainingSessionCard
                         key={session.id}
@@ -162,7 +188,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
                           setSelectedSession(session);
                           modals.delete.openModal();
                         }}
-                        onManage={() => handleManageSession(session)}
+                        onViewDetails={() => handleManageSession(session)}
                       />
                     ))}
                   </div>
@@ -187,17 +213,19 @@ const TrainingSessionsList = ({ onNewSession, onEditSession }) => {
             )}
           </>
         )}
-      </div>{" "}
-      {/* Modals */}
-      <DeleteTrainingSessionModal
-        isOpen={modals.delete.isOpen}
-        onClose={modals.delete.closeModal}
-        session={selectedSession}
-        onSuccess={() => {
-          setCurrentPage(1);
-        }}
-      />
-    </>
+      </CardContent>
+    </Card>
+
+    {/* Modals */}
+    <DeleteTrainingSessionModal
+      isOpen={modals.delete.isOpen}
+      onClose={modals.delete.closeModal}
+      session={selectedSession}
+      onSuccess={() => {
+        setCurrentPage(1);
+      }}
+    />
+  </>
   );
 };
 

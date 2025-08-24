@@ -1,232 +1,220 @@
-import React from 'react';
-import { 
-  PencilIcon, 
-  TrashIcon, 
-  CalendarIcon, 
-  ClockIcon, 
-  Users, 
-  MapPin, 
-  Target,
-  UserCheck,
-  Settings
-} from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../ui/card';
-import { Button } from '../../ui/button';
-import { Badge } from '../../ui/badge';
-import { formatTime } from '../../../utils/formatters';
-import { formatShortDate } from '@/utils/formatDate';
+import React from "react";
+import {
+  CalendarIcon,
+  ClockIcon,
+  Users,
+  MapPin,
+  Eye,
+  Edit,
+  Trash2,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Badge } from "../../ui/badge";
+import { formatTime } from "../../../utils/formatters";
+import { formatShortDate } from "@/utils/formatDate";
 
 /**
- * Component for displaying a training session card with enhanced UI and status-based validation
- * 
+ * Component for displaying a training session card with table data and 3 actions
+ *
  * @param {Object} props
- * @param {Object} props.session - The training session data with status validation flags
- * @param {Function} props.onEdit - Function to call when edit button is clicked
+ * @param {Object} props.session - The training session data (title, date, time, team, venue, status)
+ * @param {Function} props.onEdit - Function to call when update button is clicked
  * @param {Function} props.onDelete - Function to call when delete button is clicked
- * @param {Function} props.onManage - Function to call when manage session button is clicked
+ * @param {Function} props.onViewDetails - Function to call when view button is clicked
  */
-const TrainingSessionCard = ({ 
-  session, 
-  onEdit, 
-  onDelete, 
-  onManage
-}) => {
-    // Format date for display
+const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
+  // Format date for display
   const formattedDate = formatShortDate(session.date);
-    // Get session status with comprehensive styling info like SessionCard
+  // Get session status with comprehensive styling info like SessionCard
   const getSessionStatusInfo = () => {
     let status = session.status?.toLowerCase();
-    
+
     // If no backend status, calculate from dates
     if (!status) {
       const now = new Date();
       const sessionStart = new Date(`${session.date}T${session.start_time}`);
       const sessionEnd = new Date(`${session.date}T${session.end_time}`);
-      
+
       if (now < sessionStart) {
-        status = 'upcoming';
+        status = "upcoming";
       } else if (now >= sessionStart && now <= sessionEnd) {
-        status = 'ongoing';
+        status = "ongoing";
       } else {
-        status = 'completed';
+        status = "completed";
       }
     }
 
     // Status-based styling similar to SessionCard
-    if (status === 'ongoing' || status === 'in_progress' || status === 'active') {
+    if (
+      status === "ongoing" ||
+      status === "in_progress" ||
+      status === "active"
+    ) {
       return {
-        gradient: 'from-secondary/10 to-secondary/20',
-        strip: 'bg-secondary',
-        borderColor: 'border-secondary/30',
-        textColor: 'text-secondary',
-        bgColor: 'bg-secondary/10',
-        badgeClass: 'bg-secondary/10 text-secondary border-secondary/20',
-        statusText: 'Ongoing',
-        primaryColor: 'secondary'
+        gradient: "from-secondary/5 to-secondary/10",
+        strip: "bg-secondary",
+        borderColor: "border-secondary/30",
+        textColor: "text-secondary",
+        bgColor: "bg-secondary/10",
+        badgeClass: "bg-secondary/10 text-secondary border-secondary/20",
+        className: "bg-secondary/10 text-secondary border-secondary/20",
+        statusText: "Ongoing",
+        primaryColor: "secondary",
       };
-    } else if (status === 'completed') {
+    } else if (status === "completed") {
       return {
-        gradient: 'from-primary/10 to-primary/20',
-        strip: 'bg-primary',
-        borderColor: 'border-primary/30',
-        textColor: 'text-primary',
-        bgColor: 'bg-primary/10',
-        badgeClass: 'bg-primary/10 text-primary border-primary/20',
-        statusText: 'Completed',
-        primaryColor: 'primary'
+        gradient: "from-primary5 to-primary/10",
+        strip: "bg-primary",
+        borderColor: "border-primary/30",
+        textColor: "text-primary",
+        bgColor: "bg-primary/10",
+        badgeClass: "bg-primary/10 text-primary border-primary/20",
+        className: "bg-primary/10 text-primary border-primary/20",
+        statusText: "Completed",
+        primaryColor: "primary",
       };
     } else {
       // upcoming or default
       return {
-        gradient: 'from-orange-500/10 to-orange-500/20',
-        strip: 'bg-orange-500',
-        borderColor: 'border-orange-500/30',
-        textColor: 'text-orange-600',
-        bgColor: 'bg-orange-500/10',
-        badgeClass: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
-        statusText: 'Upcoming',
-        primaryColor: 'orange'
+        gradient: "from-orange-500/5 to-orange-500/10",
+        strip: "bg-orange-500",
+        borderColor: "border-orange-500/30",
+        textColor: "text-orange-600",
+        bgColor: "bg-orange-500/10",
+        badgeClass: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+        className: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+        statusText: "Upcoming",
+        primaryColor: "orange",
       };
     }
   };
-  
+
   const statusInfo = getSessionStatusInfo();
-  
+
   return (
-    <Card className={`group relative overflow-hidden bg-gradient-to-br ${statusInfo.gradient} hover:shadow-lg transition-all duration-300 border ${statusInfo.borderColor} shadow-sm h-full flex flex-col`}>
-      {/* Status Strip like SessionCard */}
-      <div className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`} />
-      
+    <Card className="group relative overflow-hidden bg-card border border-border transition-all duration-300 hover:shadow-lg hover:border-primary/30 h-full flex flex-col">
+      {/* Simple status strip */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`}
+      />
+
       {/* Header Section */}
-      <CardHeader className="pb-4 pt-3 relative">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          <div className="space-y-2 flex-1">
-            <div className="flex items-center gap-3">
-              <div className={`p-1.5 rounded-full ${statusInfo.bgColor}`}>
-                <Target className={`h-4 w-4 ${statusInfo.textColor}`} />
-              </div>
-              <CardTitle className={`text-xl font-bold ${statusInfo.textColor} leading-tight`}>
+      <CardHeader className="pb-3 pt-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-lg font-semibold text-foreground truncate flex-1 min-w-0">
                 {session.title}
               </CardTitle>
-              <Badge className={`text-xs font-medium border ${statusInfo.badgeClass}`}>
+              <Badge
+                variant="outline"
+                className={`${statusInfo.className} flex-shrink-0`}
+              >
                 {statusInfo.statusText}
               </Badge>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground ml-11">
+            <CardDescription className="mb-2">
+              {session.description || "No description provided"}
+            </CardDescription>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarIcon className="h-4 w-4" />
-              <span className="font-medium">{formattedDate}</span>
-              <div className="w-1 h-1 bg-muted-foreground/40 rounded-full"></div>
+              <span>{formattedDate}</span>
+              <span>•</span>
               <ClockIcon className="h-4 w-4" />
-              <span className="font-medium">{formatTime(session.start_time)} - {formatTime(session.end_time)}</span>
+              <span>
+                {formatTime(session.start_time)} -{" "}
+                {formatTime(session.end_time)}
+              </span>
             </div>
-          </div>
-          
-          {/* Action Buttons */}
-          <div className="flex gap-2 flex-shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`h-9 w-9 p-0 rounded-lg hover:${statusInfo.bgColor} hover:${statusInfo.textColor} transition-all duration-200 group/edit`}
-              onClick={onEdit}
-              aria-label="Edit Session"
-            >
-              <PencilIcon className="h-4 w-4 group-hover/edit:scale-110 transition-transform" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-9 w-9 p-0 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all duration-200 group/delete"
-              onClick={() => onDelete?.(session)}
-              aria-label="Delete Session"
-            >
-              <TrashIcon className="h-4 w-4 group-hover/delete:scale-110 transition-transform" />
-            </Button>
-            <Button
-              variant="default"
-              size="sm"
-              className={`h-9 px-4 rounded-lg ${statusInfo.strip} text-white hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg group/manage`}
-              onClick={onManage}
-              aria-label="Manage Session"
-            >
-              <Settings className="h-4 w-4 mr-2 group-hover/manage:rotate-45 transition-transform duration-300" />
-              <span className="hidden sm:inline">Manage</span>
-            </Button>
           </div>
         </div>
       </CardHeader>
 
-      {/* Content Section */}
-      <CardContent className="space-y-4 pt-0 flex-1">
-        {/* Main Info Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className={`group/item flex items-center gap-3 p-3 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor} hover:border-opacity-50 transition-all duration-300`}>
-            <div className={`p-2 rounded-lg ${statusInfo.bgColor} group-hover/item:opacity-80 transition-colors`}>
-              <MapPin className={`h-4 w-4 ${statusInfo.textColor}`} />
+      {/* Content Section - Table Data Only */}
+      <CardContent className="space-y-3 pt-0 flex-1">
+        <div className="space-y-3">
+          {/* Team */}
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-border">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Users className="h-4 w-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className={`text-xs font-medium ${statusInfo.textColor} uppercase tracking-wide`}>Location</p>
-              <p className="text-sm font-semibold text-foreground truncate">{session.location || 'No location specified'}</p>
+              <p className="text-xs font-medium text-primary uppercase tracking-wide">
+                Team
+              </p>
+              <p className="text-sm font-medium text-foreground truncate">
+                {session.team_name || "No team specified"}
+              </p>
             </div>
           </div>
 
-          <div className={`group/item flex items-center gap-3 p-3 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor} hover:border-opacity-50 transition-all duration-300`}>
-            <div className={`p-2 rounded-lg ${statusInfo.bgColor} group-hover/item:opacity-80 transition-colors`}>
-              <Users className={`h-4 w-4 ${statusInfo.textColor}`} />
+          {/* Venue */}
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-border">
+            <div className="p-2 rounded-lg bg-secondary/10">
+              <MapPin className="h-4 w-4 text-secondary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className={`text-xs font-medium ${statusInfo.textColor} uppercase tracking-wide`}>Team</p>
-              <p className="text-sm font-semibold text-foreground truncate">{session.team_name || 'No team specified'}</p>
+              <p className="text-xs font-medium text-secondary uppercase tracking-wide">
+                Venue
+              </p>
+              <p className="text-sm font-medium text-foreground truncate">
+                {session.location || "No venue specified"}
+              </p>
             </div>
           </div>
-        </div>
+          {/* notes */}
 
-        {/* Stats Section */}
-        <div className={`p-4 rounded-lg ${statusInfo.gradient} border ${statusInfo.borderColor}`}>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
-                <ClockIcon className={`h-5 w-5 ${statusInfo.textColor}`} />
-              </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Duration</p>
-              <p className={`text-base font-bold ${statusInfo.textColor}`}>{session.duration_minutes}<span className="text-xs ml-1">min</span></p>
-            </div>
-            
-            <div className="text-center">
-              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
-                <UserCheck className={`h-5 w-5 ${statusInfo.textColor}`} />
-              </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Players</p>
-              <p className={`text-base font-bold ${statusInfo.textColor}`}>{session.players_count || 0}</p>
-            </div>
-
-            <div className="text-center">
-              <div className={`flex items-center justify-center w-10 h-10 mx-auto mb-2 rounded-lg ${statusInfo.bgColor}`}>
-                <Target className={`h-5 w-5 ${statusInfo.textColor}`} />
-              </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Type</p>
-              <p className={`text-sm font-bold ${statusInfo.textColor}`}>Training</p>
-            </div>
+          <div className="p-3 rounded-lg border border-border">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+              notes
+            </p>
+            <p className="text-sm text-foreground leading-relaxed">
+              {session.notes || "No additional notes"}
+            </p>
           </div>
         </div>
       </CardContent>
 
-      {/* Footer Section */}
-      <CardFooter className={`${statusInfo.gradient} border-t ${statusInfo.borderColor} px-4 py-3`}>
-        <div className="flex justify-between items-center w-full">
-          <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${statusInfo.strip} text-white text-xs font-medium shadow-sm`}>
-              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-              {statusInfo.statusText}
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className={`px-2 py-1 ${statusInfo.bgColor} rounded-full font-medium ${statusInfo.textColor}`}>
-              {session.players_count > 0 
-                ? `${session.players_count} enrolled`
-                : 'No enrollments'}
-            </span>
-          </div>
+      {/* Footer Section - 3 Actions Only */}
+      <CardFooter className="pt-4 border-t border-border">
+        <div className="flex items-center justify-end w-full gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onViewDetails?.(session)}
+            className="h-8 px-3 text-sm"
+          >
+            <Eye className="h-4 w-4 mr-1" />
+            View
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEdit?.(session)}
+            className="h-8 px-3 text-sm"
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Update
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onDelete?.(session)}
+            className="h-8 px-3 text-sm text-destructive hover:text-destructive-foreground hover:bg-destructive"
+          >
+            <Trash2 className="h-4 w-4 mr-1" />
+            Delete
+          </Button>
         </div>
       </CardFooter>
     </Card>

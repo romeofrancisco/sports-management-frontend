@@ -103,6 +103,8 @@ export const deleteTrainingMetric = async (id) =>
 // Training Sessions
 export const fetchTrainingSessions = async (params = {}) => {
   try {
+    // Debug: log the parameters being sent
+    console.log("fetchTrainingSessions params:", params);
     const { data } = await api.get("trainings/sessions/", { params });
     return data;
   } catch (error) {
