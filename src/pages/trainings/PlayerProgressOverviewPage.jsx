@@ -21,8 +21,8 @@ const PlayerProgressOverviewPage = () => {
       description: "View detailed progress for individual players",
       icon: User,
       path: "/trainings/progress/individual",
-      color: "from-blue-500/10 to-blue-600/10",
-      iconColor: "text-blue-600",
+      color: "from-primary/10 to-primary/20",
+      iconColor: "text-primary",
       features: [
         "Individual performance metrics",
         "Personal training history",
@@ -32,17 +32,17 @@ const PlayerProgressOverviewPage = () => {
     },
     {
       id: "team",
-      title: "Team Comparison",
-      description: "Compare performance across teams",
+      title: "Team Player Comparison",
+      description: "Compare player improvements within selected teams",
       icon: Users,
       path: "/trainings/progress/teams",
-      color: "from-green-500/10 to-green-600/10",
-      iconColor: "text-green-600",
+      color: "from-secondary/10 to-secondary/20",
+      iconColor: "text-secondary",
       features: [
-        "Team performance comparison",
-        "Cross-team analytics",
-        "Collective progress tracking",
-        "Team ranking insights",
+        "Select teams to analyze",
+        "Compare players within the team",
+        "Side-by-side improvement tracking",
+        "Team roster performance comparison",
       ],
     },
   ];
@@ -59,6 +59,8 @@ const PlayerProgressOverviewPage = () => {
           description="Track and monitor player improvements and performance"
           showUniversityColors={true}
           backButtonPath="/trainings"
+          backButtonText="Back to Trainings"
+          showBackButton={true}
         />
 
         <div className="max-w-6xl mx-auto">
@@ -121,13 +123,12 @@ const PlayerProgressOverviewPage = () => {
           <div className="mt-12 text-center space-y-4">
             <div className="max-w-2xl mx-auto">
               <h3 className="text-lg font-semibold mb-2">
-                Progress Tracking Features
+                Comprehensive Player Analytics
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Monitor player development through comprehensive analytics,
-                customizable date ranges, and detailed performance metrics.
-                Track individual achievements or compare team performance to
-                identify strengths and areas for improvement.
+                Track individual player development with detailed performance metrics and training history. 
+                Compare players within teams to identify top performers, monitor improvement trends, and 
+                make data-driven decisions for player development and team composition strategies.
               </p>
             </div>
           </div>

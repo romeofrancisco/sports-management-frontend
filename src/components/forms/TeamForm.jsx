@@ -6,7 +6,7 @@ import { useCreateTeam, useUpdateTeam } from "@/hooks/useTeams";
 import { DIVISIONS } from "@/constants/team";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
-import ControlledCombobox from "../common/ControlledCombobox";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 import SelectCoach from "../common/SelectCoach";
 import { convertToFormData } from "@/utils/convertToFormData";
 
@@ -29,7 +29,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
       color: team?.color || "#000000",
       sport: team?.sport || "",
       division: team?.division || "",
-      head_coach: team?.head_coach || "",
+      head_coach: team?.head_coach_id || null,
       // assistant_coach: team?.assistant_coach || "", // Temporarily removed
       logo: null,
     },
@@ -38,6 +38,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   const logoFile = watch("logo");
   const teamColor = watch("color");
   const selectedSport = watch("sport");
+  const { isAdmin } = useRolePermissions();
 
   // Filter coaches based on selected sport
   const filteredCoaches = React.useMemo(() => {
@@ -63,7 +64,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   // Clear head_coach when sport changes (except during initial load for edit mode)
   useEffect(() => {
     if (selectedSport && !isEdit) {
-      setValue("head_coach", "");
+      setValue("head_coach", null);
     }
   }, [selectedSport, setValue, isEdit]);
   const onSubmit = (teamData) => {
@@ -161,22 +162,24 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         errors={errors}
       />{" "}
       {/* Head Coach */}
-      <SelectCoach
-        name="head_coach"
-        control={control}
-        label="Coach"
-        coaches={filteredCoaches}
-        placeholder={selectedSport ? "Select Coach" : "Select Sport first"}
-        disabled={!selectedSport || filteredCoaches.length === 0}
-        errors={errors}
-        help_text={
-          !selectedSport 
-            ? "Please select a sport first to see available coaches"
-            : filteredCoaches.length === 0 
-            ? "No coaches available for this sport"
-            : "Coach who can manage this sport"
-        }
-      />
+      {isAdmin() && (
+        <SelectCoach
+          name="head_coach"
+          control={control}
+          label="Coach"
+          coaches={filteredCoaches}
+          placeholder={selectedSport ? "Select Coach" : "Select Sport first"}
+          disabled={!selectedSport || filteredCoaches.length === 0}
+          errors={errors}
+          help_text={
+            !selectedSport
+              ? "Please select a sport first to see available coaches"
+              : filteredCoaches.length === 0
+              ? "No coaches available for this sport"
+              : "Coach who can manage this sport"
+          }
+        />
+      )}
       {/* Assistant Coach - Temporarily Removed */}
       {/* <ControlledCombobox
         name="assistant_coach"

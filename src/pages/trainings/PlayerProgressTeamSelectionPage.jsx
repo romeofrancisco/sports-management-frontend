@@ -14,38 +14,34 @@ const PlayerProgressTeamSelectionPage = () => {
     sport: "",
   });
 
-  // Fetch data
-  const { data: sportsData = { results: [] }, isLoading: isSportsLoading } =
-    useSports();
-  const sports = sportsData.results || [];
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+  
 
-  const { data: teamsData = { results: [] }, isLoading: isTeamsLoading } =
+  const { data: teamsData = { results: [], count: 0 }, isLoading: isTeamsLoading } =
     useTeams(
-      { sport: filters.sport },
-      1,
-      1000 // Get all teams
+      { sport: filters.sport, search: filters.search },
+      page,
+      pageSize
     );
   const teams = teamsData.results || [];
-
-  // Filter teams based on search and sport filters
-  const filteredTeams = useMemo(() => {
-    return teams.filter((team) => {
-      const searchMatch =
-        !filters.search ||
-        team.name.toLowerCase().includes(filters.search.toLowerCase());
-
-      const sportMatch =
-        !filters.sport ||
-        team.sport === filters.sport ||
-        team.sport_id === filters.sport;
-
-      return searchMatch && sportMatch;
-    });
-  }, [teams, filters.search, filters.sport]);
+  const totalTeams = teamsData.count || 0;
 
   // Handle filter changes
   const handleFilterChange = (newFilters) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
+    setPage(1); // Reset to first page when filters change
+  };
+
+  // Handle pagination
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setPage(1); // Reset to first page when page size changes
   };
 
   // Handle team selection - navigate to team page
@@ -72,11 +68,14 @@ const PlayerProgressTeamSelectionPage = () => {
         />
         <TeamCardList
           teams={teams}
-          filteredTeams={filteredTeams}
-          sports={sports}
+          totalTeams={totalTeams}
           filters={filters}
           onFilterChange={handleFilterChange}
           onTeamSelect={handleTeamSelect}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
           isLoading={isTeamsLoading}
           viewType="team"
         />

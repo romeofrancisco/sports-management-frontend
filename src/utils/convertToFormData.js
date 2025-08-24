@@ -1,9 +1,19 @@
 export const convertToFormData = (data) => {
   const formData = new FormData();
 
+  // Define fields that are file fields and should be omitted when null
+  const fileFields = ['logo', 'image', 'profile', 'avatar', 'photo'];
+
   Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      if (value instanceof Date) {
+    if (value !== undefined) {
+      if (value === null) {
+        // For file fields, don't append anything when null
+        if (fileFields.includes(key)) {
+          return; // Skip file fields when null
+        }
+        // For other fields (like foreign keys), send empty string to explicitly clear
+        formData.append(key, "");
+      } else if (value instanceof Date) {
         formData.append(key, value.toISOString());
       } else if (Array.isArray(value)) {
         value.forEach((item) => {

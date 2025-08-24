@@ -83,7 +83,12 @@ const SelectCoach = ({
                           key={coach.id}
                           value={coach.full_name}
                           onSelect={() => {
-                            field.onChange(coach.id);
+                            // If the coach is already selected, deselect it
+                            if (field.value === coach.id) {
+                              field.onChange(null);
+                            } else {
+                              field.onChange(coach.id);
+                            }
                             setOpen(false);
                           }}
                         >

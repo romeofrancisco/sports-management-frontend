@@ -1,46 +1,154 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Users,
+  Trophy,
+  User,
+  Target,
+  GraduationCap,
+  BookOpen,
+  ChevronRight,
+} from "lucide-react";
+import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 
-const PlayerCard = ({ player, onClick }) => (
-  <Card
-    className="group relative shadow-md border-0 cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-background via-background to-muted/30 hover:from-primary/5 hover:to-secondary/10 overflow-hidden"
-    onClick={() => onClick(player.id)}
-  >
-    {/* Hover gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-transparent to-secondary/0 group-hover:from-primary/5 group-hover:to-secondary/5 transition-all duration-300" />
+const PlayerCard = ({ player, onClick }) => {
+  // Get player's first position for display
+  const primaryPosition = player.positions?.[0]?.abbreviation || "N/A";
+  const allPositions =
+    player.positions?.map((pos) => pos.abbreviation).join(", ") || "N/A";
     
-    <CardContent className="relative p-4 sm:p-5">
-      <div className="flex items-center gap-3 sm:gap-4">
-        <div className="relative">
-          <Avatar className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0 ring-2 ring-transparent group-hover:ring-primary/20 transition-all duration-300">
-            <AvatarImage src={player.profile} alt={player.full_name} />
-            <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-primary/10 to-secondary/10 text-primary group-hover:from-primary/20 group-hover:to-secondary/20">
-              {player.first_name?.charAt(0).toUpperCase() || ''}
-              {player.last_name?.charAt(0).toUpperCase() || ''}
-            </AvatarFallback>
-          </Avatar>
-          {/* Online indicator */}
-          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+  return (
+    <Card 
+      className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 cursor-pointer"
+      onClick={() => onClick(player.id)}
+    >
+      {/* University color indicator  */}
+      <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
+
+      {/* Hover effects with primary color */}
+      <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+
+      <CardHeader className="relative p-5 space-y-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3 flex-1">
+            {/* Avatar with university colors */}
+            <div className="relative">
+              <Avatar
+                className={`h-12 w-12 ring-2 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/30 ${
+                  player.sex === "female"
+                    ? "ring-secondary/30"
+                    : "ring-primary/30"
+                }`}
+              >
+                <AvatarImage
+                  src={player.profile}
+                  alt={`${player.first_name} ${player.last_name}`}
+                />
+                <AvatarFallback
+                  className={`font-bold ${
+                    player.sex === "female"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "bg-primary text-primary-foreground"
+                  }`}
+                >
+                  {player.first_name?.[0]}
+                  {player.last_name?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              {/* Active status indicator */}
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full border-2 border-card shadow-sm"></div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                {player.first_name} {player.last_name}
+              </CardTitle>
+              {/* Jersey number and sport badge with university colors */}
+              <div className="flex items-center gap-2 mt-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs bg-primary/20 text-primary border-primary/40 px-2 py-0.5"
+                >
+                  #{player.jersey_number}
+                </Badge>
+                {player.sport?.name && (
+                  <Badge
+                    variant="secondary"
+                    className="text-xs bg-secondary/20 text-secondary border-secondary/40"
+                  >
+                    {player.sport.name}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Player details */}
+              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                <div
+                  className="flex items-center gap-1"
+                  title={`Position: ${allPositions}`}
+                >
+                  <Target className="h-3 w-3" />
+                  <span className="font-medium">{primaryPosition}</span>
+                </div>
+                {player.team?.name && (
+                  <div
+                    className="flex items-center gap-1"
+                    title={`Team: ${player.team.name}`}
+                  >
+                    <Users className="h-3 w-3" />
+                    <span className="truncate max-w-20">
+                      {player.team.name}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="ml-2 flex-shrink-0 p-2 rounded-full bg-muted/20 group-hover:bg-primary/10 transition-all duration-300">
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
+          </div>
         </div>
-        
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-sm sm:text-base truncate text-foreground group-hover:text-primary transition-colors duration-300 mb-1">
-            {player.full_name}
-          </h3>
-          <p className="text-xs sm:text-sm text-muted-foreground truncate flex items-center gap-1">
-            <span className="w-2 h-2 bg-primary/40 rounded-full flex-shrink-0"></span>
-            {player.team?.name || "No team assigned"}
-          </p>
+        {/* Academic Information */}
+        <div className="pt-2 border-t border-border/50 space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1">
+              <GraduationCap className="h-3 w-3 text-muted-foreground" />
+              <span className="text-muted-foreground font-medium">
+                Year Level
+              </span>
+            </div>
+            <span
+              className={`text-xs font-medium px-2 py-1 rounded-md ${
+                player.sex === "female"
+                  ? "bg-secondary/15 text-secondary"
+                  : "bg-primary/15 text-primary"
+              }`}
+            >
+              {getYearLevelLabel(player.year_level)}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1">
+              <BookOpen className="h-3 w-3 text-muted-foreground" />
+              <span className="text-muted-foreground font-medium">Course</span>
+            </div>
+            <span
+              className={`text-xs font-medium px-2 py-1 rounded-md truncate max-w-24 ${
+                player.sex === "female"
+                  ? "bg-secondary/15 text-secondary"
+                  : "bg-primary/15 text-primary"
+              }`}
+              title={getCourseLabel(player.course)}
+            >
+              {getCourseLabel(player.course)}
+            </span>
+          </div>
         </div>
-        
-        <div className="flex-shrink-0 p-2 rounded-full bg-muted/20 group-hover:bg-primary/10 transition-all duration-300">
-          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardHeader>
+    </Card>
+  );
+};
 
 export default PlayerCard;

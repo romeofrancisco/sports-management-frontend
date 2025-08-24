@@ -133,7 +133,7 @@ export const getAllTeamsAttendanceColumns = (attendanceData) => {
 };
 
 export const getPlayerAttendanceColumns = (attendanceData) => {
-  // When team is selected, attendanceData will be an array with one team containing players
+  // When team is selected or coach has only one team, attendanceData will be an array with one team containing players
   const teamData = attendanceData?.[0];
   const players = teamData?.players || [];
   

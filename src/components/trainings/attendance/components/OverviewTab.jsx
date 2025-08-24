@@ -94,14 +94,16 @@ const OverviewTab = () => {
     error: attendanceTrackerError,
   } = useAttendanceTracker(attendanceTrackerFilters);
 
-  // Determine which columns and data to use based on team selection
+  // Determine which columns and data to use based on whether response contains player data
   const isTeamSelected = selectedTeam !== "all";
-  const attendanceColumns = isTeamSelected 
+  const hasPlayerData = attendanceTracker?.[0]?.players && attendanceTracker[0].players.length > 0;
+  
+  const attendanceColumns = (isTeamSelected || hasPlayerData)
     ? getPlayerAttendanceColumns(attendanceTracker)
     : getAllTeamsAttendanceColumns(attendanceTracker);
   
-  // Transform data for player view when team is selected
-  const attendanceTableData = isTeamSelected && attendanceTracker?.[0]?.players 
+  // Transform data for player view when team is selected or when response contains player data
+  const attendanceTableData = (isTeamSelected || hasPlayerData) && attendanceTracker?.[0]?.players 
     ? attendanceTracker[0].players 
     : attendanceTracker;
 
