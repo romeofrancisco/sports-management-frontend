@@ -8,16 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, TrendingDown, Target } from "lucide-react";
-import { COLORS } from "./constants";
+import { BarChart3, Target } from "lucide-react";
 import { getDefaultChartOptions, getChartTheme } from "./utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const TeamScoringBarChart = ({
   data,
   title = "Scoring Performance",
   subtitle = "Points scored vs conceded over time",
 }) => {
-  console.log("Rendering TeamScoringBarChart with data:", data);
+  const isMobile = useIsMobile();
 
   if (!data || data.length === 0) {
     return (
@@ -140,6 +140,7 @@ export const TeamScoringBarChart = ({
         },
         ticks: {
           color: getChartTheme().textColor,
+          display: isMobile ? false : true,
         },
       },
       y: {

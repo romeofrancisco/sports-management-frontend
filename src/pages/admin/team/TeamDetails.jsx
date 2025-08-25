@@ -56,6 +56,49 @@ const getDateRange = (days = ANALYTICS_PERIOD) => {
   };
 };
 
+const processLastGamesForScoring = (games, maxGames = 10) => {
+  if (!games?.results && !Array.isArray(games)) return [];
+
+  const gamesList = games?.results || games || [];
+  const completedGames = gamesList
+    .filter((game) => game.status === "completed" || game.status === "finished")
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date descending
+    .slice(0, maxGames); // Take last maxGames games
+
+  if (completedGames.length === 0) return [];
+
+  // Group games by individual games for the chart
+  const periods = [];
+
+  completedGames.reverse().forEach((game, index) => {
+    const gameDate = new Date(game.date);
+    const periodLabel = gameDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+
+    // Determine if this is a home or away game and extract relevant scores
+    const isHomeGame = game.home_team_name || game.is_home;
+    const pointsScored = isHomeGame
+      ? game.home_team_score
+      : game.away_team_score;
+    const pointsConceded = isHomeGame
+      ? game.away_team_score
+      : game.home_team_score;
+
+    periods.push({
+      period: periodLabel,
+      avg_points_scored: pointsScored || 0,
+      avg_points_conceded: pointsConceded || 0,
+      point_differential: (pointsScored || 0) - (pointsConceded || 0),
+      games_played: 1,
+      date: game.date,
+    });
+  });
+
+  return periods;
+};
+
 const transformPlayerProgress = (teamPlayerProgress) => {
   if (!teamPlayerProgress?.results) return null;
 
@@ -136,11 +179,37 @@ const TeamAnalyticsSection = ({
   analytics,
   transformedPlayerProgress,
   scoringAnalytics,
+  teamGamesForScoring,
 }) => {
   const { hasRole } = useRolePermissions();
 
+  // Get scoring data, with fallback to last games if recent analytics is empty
+  const getScoringData = () => {
+    const processedScoringData = processGameScoringData(scoringAnalytics);
+
+    // If we have no data from recent period, use last completed games
+    if (!processedScoringData || processedScoringData.length === 0) {
+      return processLastGamesForScoring(teamGamesForScoring);
+    }
+
+    return processedScoringData;
+  };
+
+  const scoringData = getScoringData();
+
   return (
     <div className="space-y-6">
+      <div>
+        <TeamScoringBarChart
+          data={scoringData}
+          title="Scoring Performance Analysis"
+          subtitle={
+            scoringData.length > 0 && scoringAnalytics?.scoring_data
+              ? "Points scored vs conceded by period"
+              : "Points scored vs conceded in recent games"
+          }
+        />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Player Availability Chart */}
         <div className="col-span-2">
@@ -157,14 +226,6 @@ const TeamAnalyticsSection = ({
         <TeamStatsBreakdownChart
           data={processStatsBreakdown(statistics)}
           title="Win/Loss Distribution"
-        />
-      </div>{" "}
-      {/* New Training Metrics Chart */}
-      <div>
-        <TeamScoringBarChart
-          data={processGameScoringData(scoringAnalytics)}
-          title="Scoring Performance Analysis"
-          subtitle="Points scored vs conceded by period"
         />
       </div>
       {/* Hide PlayerProgressSection if user is player */}
@@ -185,7 +246,7 @@ const TeamSidebar = ({
 }) => {
   const { hasRole } = useRolePermissions();
   return (
-    <div className="xl:col-span-1 space-y-6">
+    <div className="grid xl:grid-cols-1 md:grid-cols-2 xl:col-span-1 gap-6">
       {/* Hide QuickActions if user is player */}
       {/* {!hasRole("Player") && <QuickActions team={teamSlug} />} */}
       <TeamUpcomingGamesSection games={upcomingGames} />
@@ -230,7 +291,12 @@ const TeamDetails = () => {
   const { data: scoringAnalytics, isLoading: scoringLoading } =
     useTeamScoringAnalytics(team, { days: ANALYTICS_PERIOD }, !!team);
 
-  const isLoading = analyticsLoading || progressLoading || scoringLoading;
+  // Also get team details which includes all games for fallback scoring data
+  const { data: teamDetailsForGames, isLoading: teamDetailsLoading } =
+    useTeamDetails(team);
+
+  const isLoading =
+    analyticsLoading || progressLoading || scoringLoading || teamDetailsLoading;
 
   // Memoized computations
   const { games, trainings, transformedPlayerProgress } = useMemo(() => {
@@ -296,6 +362,7 @@ const TeamDetails = () => {
               analytics={analytics}
               transformedPlayerProgress={transformedPlayerProgress}
               scoringAnalytics={scoringAnalytics}
+              teamGamesForScoring={teamDetailsForGames?.games || teamGames}
             />
             {/* Removed recent games and trainings from main content */}
           </div>
