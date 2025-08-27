@@ -130,7 +130,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         </div>
       ),
       cell: ({ getValue }) => (
-        <div className="text-center w-auto  text-red-800">{getValue()}</div>
+        <div className="text-center w-auto  text-red-600">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -344,9 +344,9 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
             <div
               className={`text-center w-auto  ${
                 isPositive
-                  ? "text-red-800"
+                  ? "text-green-600"
                   : value < 0
-                  ? "text-rose-600"
+                  ? "text-red-600"
                   : ""
               }`}
             >
@@ -445,9 +445,9 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
             <div
               className={`text-center w-auto  ${
                 isPositive
-                  ? "text-red-800"
+                  ? "text-green-600"
                   : value < 0
-                  ? "text-rose-600"
+                  ? "text-red-600"
                   : ""
               }`}
             >
@@ -480,9 +480,9 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
             <div
               className={`text-center w-auto ${
                 isPositive
-                  ? "text-red-800"
+                  ? "text-green-600"
                   : value < 0
-                  ? "text-rose-600"
+                  ? "text-red-600"
                   : ""
               }`}
             >

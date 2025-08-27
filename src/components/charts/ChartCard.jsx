@@ -1,13 +1,16 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BarChart3 } from "lucide-react";
 
 /**
  * A reusable chart wrapper component for consistent chart styling
  * @param {Object} props - Component properties
  * @param {string} props.title - Chart title
+ * @param {string} [props.description] - Chart description/subtitle
  * @param {React.ReactNode} props.children - Chart content
  * @param {string} [props.className] - Additional CSS classes
  * @param {React.ReactNode} [props.action] - Optional action component in header
+ * @param {React.ReactNode} [props.icon] - Optional icon component
  * @param {number} [props.height] - Optional height for the chart container in pixels
  * @param {React.ReactNode} [props.emptyMessage] - Message to show when no data is available
  * @param {boolean} [props.hasData] - Whether the chart has data to display
@@ -15,20 +18,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  */
 const ChartCard = ({ 
   title, 
+  description,
   children, 
   className = "", 
   action,
+  icon,
   height = 300,
   emptyMessage = "No data available",
   hasData = true
 }) => {
+  const IconComponent = icon || BarChart3;
+
   return (
-    <Card className={`overflow-hidden ${className}`}>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-semibold">
-            {title}
-          </CardTitle>
+    <Card className={`border-2 border-primary/20 overflow-hidden ${className}`}>
+      <CardHeader className="relative">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <IconComponent className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {title}
+              </CardTitle>
+              {description && (
+                <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
+                  {description}
+                </CardDescription>
+              )}
+            </div>
+          </div>
           {action && <div className="ml-auto">{action}</div>}
         </div>
       </CardHeader>

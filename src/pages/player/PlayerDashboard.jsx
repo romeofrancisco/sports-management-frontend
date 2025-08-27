@@ -28,6 +28,7 @@ const PlayerDashboard = () => {
     isLoading: progressLoading,
     error: progressError,
   } = usePlayerProgress();
+  console.log(progress);
 
   if (overviewLoading || progressLoading) {
     return <DashboardSkeleton />;
@@ -75,33 +76,33 @@ const PlayerDashboard = () => {
           {/* Left Column - Primary Content */}
           <div className="xl:col-span-2 space-y-6">
             {/* Player Profile Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+            <div className="animate-in fade-in-50 duration-500 delay-200 grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
               <PlayerProfileSection
                 user={user}
                 personalStats={personalStats}
                 teamInfo={teamInfo}
               />
+              {/* Progress Summary */}
+              <div className="animate-in fade-in-50 duration-500 delay-400">
+                <ProgressSummarySection progress={progress} />
+              </div>
             </div>
             {/* Charts Section */}
             <div className="animate-in fade-in-50 duration-500 delay-500">
               <ChartsSection user={user} overview={overview} />
             </div>
 
-            {/* Upcoming Activities */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
-              <UpcomingActivitiesSection overview={overview} />
+            {/* Personal Progress Section */}
+            <div className="animate-in fade-in-50 duration-500 delay-300">
+              <PersonalProgressSection progress={progress} />
             </div>
           </div>
 
           {/* Right Column - Secondary Content */}
           <div className="xl:col-span-1 space-y-6">
-            {/* Progress Summary */}
-            <div className="animate-in fade-in-50 duration-500 delay-400">
-              <ProgressSummarySection progress={progress} playerId={user?.id} />
-            </div>
-            {/* Personal Progress Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
-              <PersonalProgressSection progress={progress} />
+            {/* Upcoming Activities */}
+            <div className="animate-in fade-in-50 duration-500 delay-200">
+              <UpcomingActivitiesSection overview={overview} />
             </div>
 
             {/* Recent Metrics */}

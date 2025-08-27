@@ -8,26 +8,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, TrendingDown, Target } from "lucide-react";
-import { COLORS } from "./constants";
+import { BarChart3, Target } from "lucide-react";
 import { getDefaultChartOptions, getChartTheme } from "./utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const TeamScoringBarChart = ({
   data,
   title = "Scoring Performance",
   subtitle = "Points scored vs conceded over time",
 }) => {
-  console.log("Rendering TeamScoringBarChart with data:", data);
+  const isMobile = useIsMobile();
 
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-primary" />
-            {title}
-          </CardTitle>
-          <CardDescription>{subtitle}</CardDescription>
+      <Card className="border-2 border-primary/20">
+        <CardHeader className="relative">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+              <BarChart3 className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                {subtitle}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
           <p className="text-muted-foreground">No scoring data available</p>
@@ -89,8 +97,8 @@ export const TeamScoringBarChart = ({
       {
         label: "Points Scored",
         data: data.map((item) => item.avg_points_scored || 0),
-        backgroundColor: "#fbbf2490",
-        borderColor: "#fbbf24",
+        backgroundColor: "#ffd70090", // gold
+        borderColor: "#ffd700", // gold
         borderWidth: 2,
         borderRadius: 4,
         borderSkipped: false,
@@ -109,11 +117,11 @@ export const TeamScoringBarChart = ({
         data: data.map((item) => item.point_differential || 0),
         backgroundColor: data.map((item) => {
           const diff = item.point_differential || 0;
-          return diff >= 0 ? "#fbbf2470" : "#7f1d1d70";
+          return diff >= 0 ? "#f59e0b90" : "#ea580c90"; // amber for positive, orange for negative
         }),
         borderColor: data.map((item) => {
           const diff = item.point_differential || 0;
-          return diff >= 0 ? "#fbbf24" : "#7f1d1d";
+          return diff >= 0 ? "#f59e0b" : "#ea580c"; // amber for positive, orange for negative
         }),
         borderWidth: 2,
         borderRadius: 4,
@@ -140,6 +148,7 @@ export const TeamScoringBarChart = ({
         },
         ticks: {
           color: getChartTheme().textColor,
+          display: isMobile ? false : true,
         },
       },
       y: {
@@ -186,15 +195,21 @@ export const TeamScoringBarChart = ({
   };
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-2 border-primary/20">
+      <CardHeader className="relative">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
-              {title}
-            </CardTitle>
-            <CardDescription>{subtitle}</CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+              <BarChart3 className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                {subtitle}
+              </CardDescription>
+            </div>
           </div>
           <div className="flex gap-2">
             {" "}

@@ -40,44 +40,44 @@ const SessionCard = ({ sessionGroup }) => {
       sessionStatus === "ongoing"
     ) {
       return {
-        gradient: "from-secondary/10 to-secondary/20",
+        gradient: "from-secondary/5 to-secondary/20",
         strip: "bg-secondary",
         borderColor: "border-secondary",
         icon: AlertCircle,
         textColor: "text-secondary",
-        bgColor: "bg-secondary/10",
+        bgColor: "bg-secondary/5",
       };
     } // For completed sessions, use attendance status
     else if (attendanceStatus === "present" || attendanceStatus === "late") {
       return {
-        gradient: "from-primary/10 to-primary/20",
+        gradient: "from-primary/5 to-primary/10",
         strip: "bg-primary",
         borderColor: "border-primary",
         icon: attendanceStatus === "late" ? ClockIcon : CheckCircle2,
         textColor: "text-primary",
-        bgColor: "bg-primary/10",
+        bgColor: "bg-primary/5",
       };
     } else if (
       attendanceStatus === "absent" ||
       attendanceStatus === "excused"
     ) {
       return {
-        gradient: "from-destructive/10 to-destructive/20",
+        gradient: "from-destructive/5 to-destructive/10",
         strip: "bg-destructive",
         borderColor: "border-destructive",
         icon: attendanceStatus === "late" ? ClockIcon : CheckCircle2,
         textColor: "text-destructive",
-        bgColor: "bg-destructive/10",
+        bgColor: "bg-destructive/5",
       };
     } else {
       // Default fallback for any other status (no attendance recorded yet)
       return {
-        gradient: "from-orange-500/10 to-orange-500/20",
+        gradient: "from-orange-500/5 to-orange-500/10",
         strip: "bg-orange-500",
         borderColor: "border-orange-500",
         icon: Clock,
         textColor: "text-orange-600",
-        bgColor: "bg-orange-500/10",
+        bgColor: "bg-orange-500/5",
       };
     }
   };

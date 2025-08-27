@@ -7,3 +7,5 @@ export { default as RecentTrainingSection } from './RecentTrainingSection';
 export { default as PlayerProgressSection } from './PlayerProgressSection';
 export { default as TrainingSummarySection } from './TrainingSummarySection';
 export { default as DashboardSkeleton } from './DashboardSkeleton';
+export { default as RecentGamesSection } from './RecentGamesSection';
+export { default as UpcomingTrainingSection } from './UpcomingTrainingSection';

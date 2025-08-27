@@ -12,60 +12,14 @@ import { usePlayerRadarChart } from "@/hooks/useTrainings";
 /**
  * Enhanced Progress summary section for player dashboard
  */
-const ProgressSummarySection = ({ progress, playerId }) => {
-  // Get date range for radar chart (last 30 days)
-  const getDefaultDateRange = () => {
-    const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - 30);
+const ProgressSummarySection = ({ progress }) => {
 
-    return {
-      date_from: from.toISOString().split("T")[0],
-      date_to: to.toISOString().split("T")[0],
-    };
-  };
-
-  const dateRange = getDefaultDateRange();
-
-  // Fetch radar chart data for best category calculation
-  const { data: radarData, isLoading: isRadarLoading } = usePlayerRadarChart(
-    playerId,
-    dateRange,
-    !!playerId
-  );
-
-  // Helper function to find the best category from radar chart data
-  const getBestCategory = () => {
-    if (!radarData?.categories || radarData.categories.length === 0) {
-      return null;
-    }
-
-    // Find the category with the highest average_improvement
-    let bestCategory = null;
-    let highestImprovement = -Infinity;
-
-    radarData.categories.forEach((category) => {
-      if (
-        category.average_improvement !== undefined &&
-        category.average_improvement !== null
-      ) {
-        const improvement = parseFloat(category.average_improvement);
-        if (improvement > highestImprovement) {
-          highestImprovement = improvement;
-          bestCategory = category;
-        }
-      }
-    });
-
-    return bestCategory;
-  };
-
-  const bestCategory = getBestCategory();
+  
   const summaryCards = [
     {
-      title: "Metrics Tracked",
-      value: progress?.progress_summary?.total_metrics || 0,
-      description: "Performance indicators monitored",
+      title: "Training Sessions",
+      value: progress?.progress_summary?.training_sessions || 0,
+      description: "Sessions attended in last 90 days",
       color: "text-primary",
       bgColor: "bg-primary/10",
       borderColor: "border-primary/30",
@@ -89,11 +43,11 @@ const ProgressSummarySection = ({ progress, playerId }) => {
   }
 
   return (
-    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
+    <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-secondary shadow-lg">
-            <TrendingUp className="h-5 w-5 text-secondary-foreground" />
+          <div className="p-3 rounded-xl bg-primary shadow-lg">
+            <TrendingUp className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
             <CardTitle className="text-lg font-semibold text-gradient">

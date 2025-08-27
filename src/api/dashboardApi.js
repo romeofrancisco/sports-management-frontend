@@ -12,7 +12,10 @@ export const dashboardService = {
 
   // Coach endpoints
   getCoachOverview: () => api.get('dashboard/coach_overview/'),
-  getCoachPlayerProgress: () => api.get('dashboard/coach_player_progress/'),
+  getCoachPlayerProgress: (teamSlug = null) => {
+    const params = teamSlug ? `?team_slug=${teamSlug}` : '';
+    return api.get(`dashboard/coach_player_progress/${params}`);
+  },
 
   // Player endpoints
   getPlayerOverview: () => api.get('dashboard/player_overview/'),
@@ -50,7 +53,7 @@ export const getDashboardData = async (userRole) => {
       case 'coach':
         const [coachOverview, coachProgress] = await Promise.all([
           dashboardService.getCoachOverview(),
-          dashboardService.getCoachPlayerProgress(),
+          dashboardService.getCoachPlayerProgress(), // No team parameter = all teams
         ]);
         return {
           overview: coachOverview.data,
@@ -115,14 +118,14 @@ export const useCoachOverview = () => {
   });
 };
 
-export const useCoachPlayerProgress = () => {
+export const useCoachPlayerProgress = (teamSlug = null) => {
   return useQuery({
-    queryKey: ['coach', 'player-progress'],
+    queryKey: ['coach', 'player-progress', teamSlug],
     queryFn: async () => {
-      const response = await dashboardService.getCoachPlayerProgress();
+      const response = await dashboardService.getCoachPlayerProgress(teamSlug);
       return response.data;
     },
-    staleTime: 3 * 60 * 1000, // 3 minutes
+    staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 1,
   });
 };

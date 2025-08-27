@@ -33,35 +33,36 @@ const ChartsSection = ({ overview, playerProgress }) => {
       {/* Charts Section */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Team Overview Chart */}
-        <div className="bg-card col-span-2 rounded-xl shadow-sm border border-border">
-          <ChartCard
-            title="Team Performance & Activity"
-            hasData={overview?.team_attendance?.length > 0}
-            emptyMessage="No team data available"
-            height={300}
-          >
-            <Bar data={teamOverviewData} options={teamOverviewChartOptions} />
-          </ChartCard>
-        </div>
+        <ChartCard
+          title="Team Performance & Activity"
+          description="Real-time team attendance metrics and performance indicators"
+          hasData={overview?.team_attendance?.length > 0}
+          emptyMessage="No team data available"
+          height={300}
+          className="col-span-3 lg:col-span-2"
+        >
+          <Bar data={teamOverviewData} options={teamOverviewChartOptions} />
+        </ChartCard>
         {/* Games & Activities Overview */}
-        <div className="bg-card rounded-xl shadow-sm border border-border">
-          <ChartCard
-            title="Coaching Activity Overview"
-            hasData={
-              overview?.upcoming_games?.length > 0 ||
-              overview?.recent_training_sessions?.length > 0
-            }
-            emptyMessage="No coaching activities data available"
-            height={300}
-          >
-            <Doughnut data={gamesStatusData} options={baseChartOptions} />
-          </ChartCard>
-        </div>
+
+        <ChartCard
+          title="Coaching Activity"
+          description="Strategic overview of coaching responsibilities and workload distribution"
+          hasData={
+            overview?.upcoming_games?.length > 0 ||
+            overview?.recent_training_sessions?.length > 0
+          }
+          className="col-span-3 lg:col-span-1"
+          emptyMessage="No coaching activities data available"
+          height={300}
+        >
+          <Doughnut data={gamesStatusData} options={baseChartOptions} />
+        </ChartCard>
       </div>
 
       {/* Additional Charts Section */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Training Progress Trend */}
+      <div>
+        {/* Training Progress Trend
         <div className="bg-card rounded-xl shadow-sm border border-border">
           <ChartCard
             title="Training Session Engagement"
@@ -71,21 +72,20 @@ const ChartsSection = ({ overview, playerProgress }) => {
           >
             <Line data={trainingProgressData} options={lineChartOptions} />
           </ChartCard>
-        </div>
+        </div> */}
         {/* Player Development Overview */}
-        <div className="bg-card rounded-xl shadow-sm border border-border">
-          <ChartCard
-            title="Player Development Analytics"
-            hasData={playerProgress?.player_progress?.length > 0}
-            emptyMessage="No player development data available"
-            height={300}
-          >
-            <Bar
-              data={playerDevelopmentData}
-              options={playerDevelopmentChartOptions}
-            />
-          </ChartCard>
-        </div>
+        <ChartCard
+          title="Player Development Analytics"
+          description="Comprehensive player performance metrics and development insights"
+          hasData={playerProgress?.player_progress?.length > 0}
+          emptyMessage="No player development data available"
+          height={300}
+        >
+          <Bar
+            data={playerDevelopmentData}
+            options={playerDevelopmentChartOptions}
+          />
+        </ChartCard>
       </div>
     </div>
   );

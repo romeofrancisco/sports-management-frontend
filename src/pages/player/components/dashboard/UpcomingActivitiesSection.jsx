@@ -18,7 +18,7 @@ const UpcomingActivitiesSection = ({ overview }) => {
   const upcomingSessions = overview?.upcoming_sessions || [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 gap-6">
       {/* Upcoming Games Section */}
       <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">

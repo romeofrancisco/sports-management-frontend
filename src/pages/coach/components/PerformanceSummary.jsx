@@ -116,9 +116,9 @@ const PerformanceSummary = ({ playerProgress }) => {
               {Math.round(
                 (improvingCount / playerProgress.player_progress.length) * 100
               )}
-              %
+              % {" "}
             </span>
-            of your players are showing improvement
+            of your players are showing improvement in the last 3 months.
           </p>
         </div>
       </CardContent>

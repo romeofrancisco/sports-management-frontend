@@ -32,24 +32,33 @@ const SeasonCard = ({ season, onEdit, onDelete, getStatusBadge }) => {
       onClick={() => navigate(`/leagues/${league}/seasons/${season.id}`)}
       className="group relative bg-gradient-to-br from-card via-card to-card/95 border-2 border-primary/20 rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:border-primary/40 hover:scale-[1.02] overflow-hidden cursor-pointer"
     >
-      {/* Background decorative elements */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl opacity-60 group-hover:opacity-80 transition-opacity"></div>
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full blur-lg opacity-50 group-hover:opacity-70 transition-opacity"></div>
-
       <div className="relative z-10">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-md">
-                <Calendar className="h-4 w-4 text-primary-foreground" />
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-md">
+                <Calendar className="size-5 text-primary-foreground" />
               </div>
-              <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {season.name || `Season ${season.year}`}
-              </h3>
+              <div>
+                <div className="flex gap-1 items-center">
+                  <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {season.name || `Season ${season.year}`}
+                  </h3>
+                  <Badge
+                    className={`${getStatusBadge(
+                      season.status
+                    )} capitalize text-[11px] h-6`}
+                    variant="outline"
+                  >
+                    {season.status}
+                  </Badge>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {formatShortDate(season.start_date)} -{" "}
+                  {formatShortDate(season.end_date)}
+                </div>
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground font-medium">
-              {season.year}
-            </p>
           </div>
           {isAdmin() && (
             <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -107,46 +116,6 @@ const SeasonCard = ({ season, onEdit, onDelete, getStatusBadge }) => {
         </div>
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
-            <span className="text-sm font-medium text-muted-foreground">
-              Status
-            </span>
-            <Badge
-              className={`${getStatusBadge(
-                season.status
-              )} capitalize font-medium shadow-sm`}
-              variant="outline"
-            >
-              {season.status}
-            </Badge>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-gradient-to-br from-primary/5 to-transparent rounded-lg border border-primary/10">
-              <div className="flex items-center gap-2 mb-1">
-                <Calendar size={12} className="text-primary" />
-                <span className="text-xs font-medium text-muted-foreground">
-                  Start Date
-                </span>
-              </div>
-              <span className="text-sm font-semibold">
-                {formatShortDate(season.start_date)}
-              </span>
-            </div>
-
-            <div className="p-3 bg-gradient-to-br from-secondary/5 to-transparent rounded-lg border border-secondary/10">
-              <div className="flex items-center gap-2 mb-1">
-                <Calendar size={12} className="text-secondary" />
-                <span className="text-xs font-medium text-muted-foreground">
-                  End Date
-                </span>
-              </div>
-              <span className="text-sm font-semibold">
-                {formatShortDate(season.end_date)}
-              </span>
-            </div>
-          </div>
-
           {season.games_count !== undefined && (
             <div className="p-3 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-lg border border-primary/10">
               <div className="flex items-center justify-between">

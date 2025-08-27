@@ -2,7 +2,7 @@ import React from "react";
 import { useTeamStatsComparison } from "@/hooks/useStats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router-dom";
-import ChartCard from "@/components/charts/ChartCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TeamStatsComparison({ game }) {
   const { gameId } = useParams();
@@ -41,39 +41,52 @@ export default function TeamStatsComparison({ game }) {
 
   if (!hasData) {
     return (
-      <ChartCard 
-        title="Team Comparison" 
-        emptyMessage="No comparable stats available" 
-        hasData={false}
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
+            Team Comparison
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-32">
+            <p className="text-muted-foreground">No comparable stats available</p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   const { home_team, away_team, comparison_stats } = statComparison;
 
   return (
-    <ChartCard title="Team Comparison" height={comparison_stats.length * 50 + 80}>
-      <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium mb-2">
-        <div className="flex items-center gap-2 justify-start">
-          <img
-            className="w-9"
-            src={game.home_team.logo}
-            alt={`${home_team.abbreviation} logo`}
-          />
-          {home_team.abbreviation}
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
+          Team Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium mb-2">
+          <div className="flex items-center gap-2 justify-start">
+            <img
+              className="w-9"
+              src={game.home_team.logo}
+              alt={`${home_team.abbreviation} logo`}
+            />
+            {home_team.abbreviation}
+          </div>
+          <span></span>
+          <div className="flex items-center gap-2 justify-start">
+            <img
+              className="w-9"
+              src={game.away_team.logo}
+              alt={`${away_team.abbreviation} logo`}
+            />
+            {away_team.abbreviation}
+          </div>
         </div>
-        <span></span>
-        <div className="flex items-center gap-2 justify-start">
-          <img
-            className="w-9"
-            src={game.away_team.logo}
-            alt={`${away_team.abbreviation} logo`}
-          />
-          {away_team.abbreviation}
-        </div>
-      </div>
 
-      {comparison_stats.map((stat) => {
+        {comparison_stats.map((stat) => {
         const maxValue = getMaxValue(
           stat.label,
           stat.home_value,
@@ -119,34 +132,42 @@ export default function TeamStatsComparison({ game }) {
           </div>
         );
       })}
-    </ChartCard>
+      </CardContent>
+    </Card>
   );
 }
 
 function LoadingSkeleton() {
   return (
-    <ChartCard title="Team Stats">
-      <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium border-t border-b py-4">
-        <Skeleton className="h-6 w-12 mx-auto" />
-        <div></div>
-        <Skeleton className="h-6 w-12 mx-auto" />
-      </div>
-
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="grid grid-cols-3 items-center gap-4 my-3">
-          <div className="text-right">
-            <Skeleton className="h-6 w-12 ml-auto" />
-            <Skeleton className="h-2 w-full mt-1" />
-          </div>
-
-          <Skeleton className="h-4 w-20 mx-auto" />
-
-          <div className="text-left">
-            <Skeleton className="h-6 w-12 mr-auto" />
-            <Skeleton className="h-2 w-full mt-1" />
-          </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
+          Team Stats
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium border-t border-b py-4">
+          <Skeleton className="h-6 w-12 mx-auto" />
+          <div></div>
+          <Skeleton className="h-6 w-12 mx-auto" />
         </div>
-      ))}
-    </ChartCard>
+
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="grid grid-cols-3 items-center gap-4 my-3">
+            <div className="text-right">
+              <Skeleton className="h-6 w-12 ml-auto" />
+              <Skeleton className="h-2 w-full mt-1" />
+            </div>
+
+            <Skeleton className="h-4 w-20 mx-auto" />
+
+            <div className="text-left">
+              <Skeleton className="h-6 w-12 mr-auto" />
+              <Skeleton className="h-2 w-full mt-1" />
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }

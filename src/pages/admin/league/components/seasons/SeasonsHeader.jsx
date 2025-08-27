@@ -1,13 +1,14 @@
 import React from "react";
 import { Grid3X3, List, Plus, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
-const SeasonsHeader = ({ 
-  viewMode, 
-  setViewMode, 
-  compact, 
-  isAdmin, 
-  onCreateSeason 
+const SeasonsHeader = ({
+  viewMode,
+  setViewMode,
+  compact,
+  isAdmin,
+  onCreateSeason,
 }) => {
   return (
     <div className="flex justify-between items-center">
@@ -19,12 +20,14 @@ const SeasonsHeader = ({
           <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
             Seasons
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Season history and management
+          <p className="text-sm text-muted-foreground">
+            {isAdmin()
+              ? "Season history and management"
+              : "Season history and information"}
           </p>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-2">
         {!compact && (
           <div className="flex items-center bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 rounded-lg p-1 shadow-sm">
@@ -54,7 +57,7 @@ const SeasonsHeader = ({
             </Button>
           </div>
         )}
-        
+
         {isAdmin() && (
           <Button
             onClick={onCreateSeason}

@@ -15,7 +15,7 @@ import { Target } from "lucide-react";
 const PersonalProgressSection = ({ progress }) => {
   return (
     <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
             <Target className="h-5 w-5 text-primary-foreground" />
