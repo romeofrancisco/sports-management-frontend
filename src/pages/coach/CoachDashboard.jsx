@@ -24,6 +24,8 @@ import {
   RecentTrainingSection,
   PlayerProgressSection,
   TrainingSummarySection,
+  RecentGamesSection,
+  UpcomingTrainingSection,
 } from "./components";
 import { ChartsSection } from "./charts";
 import { useSelector } from "react-redux";
@@ -124,9 +126,19 @@ const CoachDashboard = () => {
               <UpcomingGamesSection overview={overview} />
             </div>
 
+            {/* Upcoming Training Sessions */}
+            <div className="animate-in fade-in-50 duration-500 delay-350">
+              <UpcomingTrainingSection overview={overview} />
+            </div>
+
             {/* Recent Training Sessions */}
             <div className="animate-in fade-in-50 duration-500 delay-400">
               <RecentTrainingSection overview={overview} />
+            </div>
+
+            {/* Recent Games */}
+            <div className="animate-in fade-in-50 duration-500 delay-450">
+              <RecentGamesSection overview={overview} />
             </div>
 
             {/* Training Summary */}

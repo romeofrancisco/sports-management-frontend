@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router";
 // Hooks
 import { useTeamDetails, useTeamScoringAnalytics } from "@/hooks/useTeams";
 import { useTeamAnalyticsData } from "@/hooks/useTeamAnalyticsData";
-import { useMultiPlayerProgress } from "@/hooks/useMultiPlayerProgress";
+import { useCoachPlayerProgress } from "@/api/dashboardApi";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 // Components
@@ -43,7 +43,7 @@ import {
 import { ArrowLeft, Edit } from "lucide-react";
 
 // Constants
-const ANALYTICS_PERIOD = 30;
+const ANALYTICS_PERIOD = 90;
 
 // Utility functions
 const getDateRange = (days = ANALYTICS_PERIOD) => {
@@ -99,25 +99,6 @@ const processLastGamesForScoring = (games, maxGames = 10) => {
   return periods;
 };
 
-const transformPlayerProgress = (teamPlayerProgress) => {
-  if (!teamPlayerProgress?.results) return null;
-
-  return {
-    player_progress: Object.entries(teamPlayerProgress.results).map(
-      ([playerId, player]) => ({
-        player_id: playerId,
-        player_name: player.player_name,
-        total_sessions: player.training_count || 0,
-        attendance_rate: player.attendance_rate || 0,
-        recent_metrics_count: player.recent_metrics_count || 0,
-        last_training_date: player.last_training_date,
-        recent_improvement: player.recent_improvement,
-        overall_improvement: player.overall_improvement,
-      })
-    ),
-  };
-};
-
 const filterGamesByDate = (games, todayString) => {
   const gamesArray = games?.results || games || [];
 
@@ -142,11 +123,11 @@ const filterTrainingsByDate = (trainings, todayString) => {
   const trainingsArray = trainings?.results || trainings || [];
 
   const upcoming = trainingsArray.filter(
-    (training) => training.date >= todayString
+    (training) => training.status === "upcoming"
   );
 
   const recent = trainingsArray.filter(
-    (training) => training.date < todayString
+    (training) => training.status === "completed"
   );
 
   return { upcoming, recent };
@@ -245,8 +226,9 @@ const TeamSidebar = ({
   recentTrainings,
 }) => {
   const { hasRole } = useRolePermissions();
+
   return (
-    <div className="grid xl:grid-cols-1 md:grid-cols-2 xl:col-span-1 gap-6">
+    <div className="grid xl:block md:grid-cols-2 xl:col-span-1 gap-6 xl:space-y-6">
       {/* Hide QuickActions if user is player */}
       {/* {!hasRole("Player") && <QuickActions team={teamSlug} />} */}
       <TeamUpcomingGamesSection games={upcomingGames} />
@@ -276,16 +258,10 @@ const TeamDetails = () => {
     quickStats,
     isLoading: analyticsLoading,
   } = useTeamAnalyticsData(team, ANALYTICS_PERIOD);
-  // Fetch team player progress separately
-  const { data: teamPlayerProgress, isLoading: progressLoading } =
-    useMultiPlayerProgress({
-      teamSlug: team,
-      filters: {
-        metric: "overall",
-        ...getDateRange(),
-      },
-      enabled: !!team,
-    });
+  
+  // Use optimized coach endpoint with team filtering on server-side
+  const { data: playerProgress, isLoading: progressLoading } =
+    useCoachPlayerProgress(team);
 
   // Fetch team scoring analytics from backend
   const { data: scoringAnalytics, isLoading: scoringLoading } =
@@ -299,18 +275,16 @@ const TeamDetails = () => {
     analyticsLoading || progressLoading || scoringLoading || teamDetailsLoading;
 
   // Memoized computations
-  const { games, trainings, transformedPlayerProgress } = useMemo(() => {
+  const { games, trainings } = useMemo(() => {
     const todayString = new Date().toISOString().split("T")[0];
     const gameFilters = filterGamesByDate(teamGames, todayString);
     const trainingFilters = filterTrainingsByDate(teamTrainings, todayString);
-    const playerProgress = transformPlayerProgress(teamPlayerProgress);
 
     return {
       games: gameFilters,
       trainings: trainingFilters,
-      transformedPlayerProgress: playerProgress,
     };
-  }, [teamGames, teamTrainings, teamPlayerProgress]);
+  }, [teamGames, teamTrainings]);
 
   if (isLoading) return <TeamDetailsSkeleton />;
 
@@ -360,7 +334,7 @@ const TeamDetails = () => {
               teamTrainings={teamTrainings}
               attendanceTrends={attendanceTrends}
               analytics={analytics}
-              transformedPlayerProgress={transformedPlayerProgress}
+              transformedPlayerProgress={playerProgress}
               scoringAnalytics={scoringAnalytics}
               teamGamesForScoring={teamDetailsForGames?.games || teamGames}
             />

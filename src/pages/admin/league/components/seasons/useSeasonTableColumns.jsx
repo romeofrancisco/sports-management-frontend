@@ -50,31 +50,20 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
     },
     {
       id: "date",
-      header: "Start Date",
+      header: "Date",
       cell: ({ row }) => {
-        const { start_date } = row.original;
+        const { start_date, end_date } = row.original;
         return (
-          <div className="flex items-center gap-1">
-            <Calendar size={14} className="text-primary" />
-            <span className="text-sm">{formatShortDate(start_date)}</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-1">
+              <Calendar size={14} className="text-primary" />
+              <span className="text-sm">{formatShortDate(start_date)}</span> -
+              <span className="text-sm">{formatShortDate(end_date)}</span>
+            </div>
           </div>
         );
       },
-      size: 140,
-    },
-    {
-      id: "end_date",
-      header: "End Date",
-      cell: ({ row }) => {
-        const { end_date } = row.original;
-        return (
-          <div className="flex items-center gap-1">
-            <Calendar size={14} className="text-secondary" />
-            <span className="text-sm">{formatShortDate(end_date)}</span>
-          </div>
-        );
-      },
-      size: 140,
+      size: 160,
     },
     {
       id: "games_progress",

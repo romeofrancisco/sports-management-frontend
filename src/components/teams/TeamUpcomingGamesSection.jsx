@@ -7,13 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MapPin, Trophy } from "lucide-react";
-import { formatShortDate, formatTime } from "@/utils/formatDate";
+import { Calendar, Clock, MapPin, Trophy, Target } from "lucide-react";
+import { formatShortDate } from "@/utils/formatDate";
+import { formatTo12HourTime } from "@/utils/formatTime";
 
 const TeamUpcomingGamesSection = ({ games }) => {
   return (
-    <Card className="bg-card shadow-lg border-2 border-secondary/20 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
+    <Card className="border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
             <Calendar className="h-5 w-5 text-primary-foreground" />
@@ -34,50 +35,47 @@ const TeamUpcomingGamesSection = ({ games }) => {
             {games.slice(0, 3).map((game, index) => (
               <div
                 key={game.id || index}
-                className="relative overflow-hidden border-2 border-secondary/20 rounded-xl p-4 bg-gradient-to-r from-secondary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+                className="relative overflow-hidden border border-primary/20 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
               >
-                {/* Enhanced priority indicator */}
-                <div className="absolute top-0 right-0 w-3 h-full bg-gradient-to-b from-primary to-secondary"></div>
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-60"></div>
+                {/* Primary indicator */}
+                <div className="absolute top-0 right-0 w-2 h-full bg-primary"></div>
 
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <div className="font-semibold text-foreground text-sm">
-                        {game.home_team_name}
-                        <span className="text-primary font-bold"> vs </span>
-                        {game.away_team_name}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Calendar className="h-3 w-3 text-primary" />
-                        <span>{formatShortDate(game.date)}</span>
+                <div className="space-y-2">
+                  {/* Header section with teams and time */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">
+                          {game.home_team_name} vs {game.away_team_name}
+                        </p>
                       </div>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-secondary/15 text-secondary border-secondary/30 font-semibold"
-                    >
-                      <Clock className="h-3 w-3 mr-1" />
-                      {formatTime(game.date) || "TBD"}
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                      <Target className="h-3 w-3" />
+                      {formatTo12HourTime(game.time) || "TBA"}
                     </Badge>
                   </div>
 
-                  {game.venue && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                      <MapPin className="h-3 w-3" />
-                      <span>{game.venue}</span>
+                  {/* Content section */}
+                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    {/* Left column */}
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="h-3 w-3 text-primary" />
+                        <span>{formatShortDate(game.date)}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3 w-3 text-primary" />
+                        <span>{game.location || "TBA"}</span>
+                      </div>
                     </div>
-                  )}
+
+                    {/* Right column */}
+                  </div>
                 </div>
               </div>
             ))}
-            {games.length > 4 && (
-              <div className="text-center pt-2">
-                <button className="text-sm text-primary hover:text-secondary font-medium transition-colors">
-                  View all {games.length} games →
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           <div className="text-center py-12">

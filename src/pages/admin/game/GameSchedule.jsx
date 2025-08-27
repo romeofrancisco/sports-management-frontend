@@ -16,7 +16,7 @@ const GameSchedule = () => {
       <div className="p-0 md:p-4 space-y-8">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
-          title="Game Management"
+          title={isPlayer() ? "Game Schedule" : "Game Management"}
           description="Schedule and manage games for your leagues"
           showUniversityColors={true}
           {...(!isPlayer() && {

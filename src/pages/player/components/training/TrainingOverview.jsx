@@ -112,8 +112,20 @@ const TrainingOverview = () => {
       <OverviewStatsCards trainingStats={trainingStats} />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 ">
+        {/* Side Section - First in DOM but right side on xl */}
+        <div className="xl:col-span-1 xl:order-2 space-y-6">
+          {/* Assigned Training Preview */}
+          <AssignedTrainingPreview
+            assignedData={assignedData}
+            isAssignedLoading={isAssignedLoading}
+            showAllAssigned={showAllAssigned}
+            setShowAllAssigned={setShowAllAssigned}
+            type="assigned"
+          />
+        </div>
+        {/* Main Section - Second in DOM but left side on xl */}
+        <div className="xl:col-span-2 xl:order-1 space-y-6">
           <ChartsSection user={user} overview={overview} />
           {/* Recent Completed Assigned Sessions */}
           <AssignedTrainingPreview
@@ -123,17 +135,6 @@ const TrainingOverview = () => {
             setShowAllAssigned={() => {}}
             hideShowAllButton={true}
             type="recent"
-          />
-        </div>
-        {/* Side Section */}
-        <div className="xl:col-span-1 space-y-6">
-          {/* Assigned Training Preview */}
-          <AssignedTrainingPreview
-            assignedData={assignedData}
-            isAssignedLoading={isAssignedLoading}
-            showAllAssigned={showAllAssigned}
-            setShowAllAssigned={setShowAllAssigned}
-            type="assigned"
           />
         </div>
       </div>

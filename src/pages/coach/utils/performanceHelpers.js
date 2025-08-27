@@ -10,17 +10,23 @@ export const getPlayerPerformanceScore = (player) => {
   if (player.overall_improvement?.percentage !== undefined) {
     // Convert percentage to a score out of 100, with base of 50 for neutral performance
     const baseScore = 50;
-    const improvementBonus = Math.max(-30, Math.min(30, player.overall_improvement.percentage));
+    const improvementBonus = Math.max(
+      -30,
+      Math.min(30, player.overall_improvement.percentage)
+    );
     return Math.round(baseScore + improvementBonus);
   }
-  
+
   // Fallback to recent improvement if overall not available
   if (player.recent_improvement?.percentage !== undefined) {
     const baseScore = 50;
-    const improvementBonus = Math.max(-30, Math.min(30, player.recent_improvement.percentage));
+    const improvementBonus = Math.max(
+      -30,
+      Math.min(30, player.recent_improvement.percentage)
+    );
     return Math.round(baseScore + improvementBonus);
   }
-  
+
   // No meaningful performance data available
   return null;
 };
@@ -46,7 +52,7 @@ export const getPerformanceTrend = (player) => {
 export const getPerformanceBadgeVariant = (score) => {
   if (score === null) return "outline"; // No data available
   if (score >= 70) return "default"; // Good performance
-  if (score >= 50) return "secondary"; // Average performance  
+  if (score >= 50) return "secondary"; // Average performance
   return "destructive"; // Needs improvement
 };
 
@@ -57,14 +63,22 @@ export const getPerformanceBadgeVariant = (score) => {
  */
 export const getPerformanceInsights = (player) => {
   const insights = [];
-  
+
   if (player.overall_improvement?.percentage !== undefined) {
-    insights.push(`Overall: ${player.overall_improvement.percentage > 0 ? '+' : ''}${player.overall_improvement.percentage.toFixed(1)}%`);
+    insights.push(
+      `Overall: ${
+        player.overall_improvement.percentage > 0 ? "+" : ""
+      }${player.overall_improvement.percentage.toFixed(1)}%`
+    );
   }
   if (player.recent_improvement?.percentage !== undefined) {
-    insights.push(`Recent: ${player.recent_improvement.percentage > 0 ? '+' : ''}${player.recent_improvement.percentage.toFixed(1)}%`);
+    insights.push(
+      `Recent: ${
+        player.recent_improvement.percentage > 0 ? "+" : ""
+      }${player.recent_improvement.percentage.toFixed(1)}%`
+    );
   }
-  
+
   return insights;
 };
 
@@ -75,7 +89,7 @@ export const getPerformanceInsights = (player) => {
  */
 export const getTeamInsights = (team) => {
   const insights = [];
-  
+
   // Add team performance insights
   if (team.attendance_rate >= 90) {
     insights.push("🟢 Excellent attendance");
@@ -86,10 +100,10 @@ export const getTeamInsights = (team) => {
   } else {
     insights.push("🔴 Poor attendance");
   }
-  
+
   // Add team size context
   insights.push(`Team size: ${team.total_players} players`);
-  
+
   return insights;
 };
 
@@ -100,21 +114,21 @@ export const getTeamInsights = (team) => {
  */
 export const getPlayerDevelopmentInsights = (player) => {
   const insights = [];
-  
+
   // Add performance trend insight
   const trend = getPerformanceTrend(player);
   if (trend === "improving") {
-    insights.push("📈 Performance trending upward");
+    insights.push("Performance trending upward");
   } else if (trend === "declining") {
-    insights.push("📉 Needs attention");
+    insights.push("Needs attention");
   } else {
-    insights.push("📊 Stable performance");
+    insights.push("Stable performance");
   }
-  
+
   // Add last training date if available
   if (player.last_training_date) {
     insights.push(`Last trained: ${player.last_training_date}`);
   }
-  
+
   return insights;
 };

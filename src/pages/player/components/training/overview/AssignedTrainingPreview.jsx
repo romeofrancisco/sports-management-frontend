@@ -45,9 +45,7 @@ const AssignedTrainingPreview = ({
       <CardHeader>
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <div
-              className={`p-3 rounded-lg bg-primary shadow-lg`}
-            >
+            <div className={`p-3 rounded-lg bg-primary shadow-lg`}>
               {config.icon}
             </div>
             <div>
@@ -89,7 +87,7 @@ const AssignedTrainingPreview = ({
               })}
             {/* Always show the button below if not hidden */}
             {!hideShowAllButton && (
-              <div className="text-center pt-2">
+              <div className="text-center pt-4 mt-4 border-t border-border/50">
                 <Button
                   variant="ghost"
                   size="sm"

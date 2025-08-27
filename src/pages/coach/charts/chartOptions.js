@@ -46,6 +46,13 @@ export const createTeamOverviewChartOptions = (overview) => ({
     mode: 'index',
     intersect: false,
   },
+  elements: {
+    bar: {
+      borderRadius: 4,
+      borderSkipped: false,
+      borderWidth: 2,
+    },
+  },
   scales: {
     percentage: {
       type: 'linear',
@@ -136,11 +143,18 @@ export const createPlayerDevelopmentChartOptions = (playerProgress) => ({
     mode: 'index',
     intersect: false,
   },
+  elements: {
+    bar: {
+      borderRadius: 4,
+      borderSkipped: false,
+      borderWidth: 2,
+    },
+  },
   scales: {
     percentage: {
       type: 'linear',
       display: true,
-      position: 'left',
+      position: 'right',
       beginAtZero: true,
       max: 100,
       grid: {
@@ -157,7 +171,7 @@ export const createPlayerDevelopmentChartOptions = (playerProgress) => ({
       },
       title: {
         display: true,
-        text: 'Attendance Rate (%)',
+        text: 'Recent Improvement (%)',
         font: {
           size: 12,
           family: "'Inter', sans-serif",
@@ -168,7 +182,7 @@ export const createPlayerDevelopmentChartOptions = (playerProgress) => ({
     count: {
       type: 'linear',
       display: true,
-      position: 'right',
+      position: 'left',
       beginAtZero: true,
       grid: {
         drawOnChartArea: false, // Only want the grid lines for one axis to show up

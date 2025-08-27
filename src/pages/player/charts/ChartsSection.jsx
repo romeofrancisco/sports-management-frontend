@@ -47,8 +47,7 @@ const ChartsSection = ({ user, overview }) => {
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Progress Chart */}
         {user?.id && (
-          <Card className="relative overflow-hidden col-span-3">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent" />
+          <Card className="relative overflow-hidden border-2 border-primary/20 col-span-3">
             <CardHeader className="relative z-10">
               <div className="flex items-center gap-2">
                 <div className="p-3 rounded-lg bg-primary shadow-lg">
@@ -84,7 +83,7 @@ const ChartsSection = ({ user, overview }) => {
 
         {/* Radar Chart */}
         {user?.id && (
-          <Card className="relative overflow-hidden col-span-2">
+          <Card className="relative overflow-hidden border-2 border-primary/20 col-span-3 xl:col-span-2">
             <CardHeader className="relative z-10">
               <div className="flex items-center gap-2">
                 <div className="p-3 rounded-lg bg-primary shadow-lg">

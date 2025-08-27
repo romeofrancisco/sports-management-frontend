@@ -46,10 +46,6 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
         seasonDetails.games_count || 0
       }`,
       icon: Goal,
-      description:
-        seasonDetails.games_played && seasonDetails.games_count
-          ? `${gamesProgress}% completed`
-          : "No games played yet",
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
@@ -75,7 +71,7 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
           return (
             <Card
               key={stat.title}
-              className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br backdrop-blur-sm"
+              className="group relative overflow-hidden border-2 border-primary/20 transition-all duration-300 animate-in fade-in-50 duration-500 bg-gradient-to-br backdrop-blur-sm"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Enhanced Gradient Background */}

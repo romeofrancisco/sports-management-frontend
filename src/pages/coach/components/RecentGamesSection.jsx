@@ -11,7 +11,7 @@ import { Trophy, Calendar, Target, MapPin } from "lucide-react";
 import { formatShortDate } from "@/utils/formatDate";
 import { formatTo12HourTime } from "@/utils/formatTime";
 
-const TeamRecentGamesSection = ({ games }) => {
+const RecentGamesSection = ({ overview }) => {
   return (
     <Card className=" border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader>
@@ -30,13 +30,9 @@ const TeamRecentGamesSection = ({ games }) => {
         </div>
       </CardHeader>
       <CardContent>
-        {games?.length > 0 ? (
+        {overview?.recent_games?.length > 0 ? (
           <div className="space-y-4">
-            {games.slice(0, 4).map((game, index) => {
-              const isWin = game.result === "win";
-              const isLoss = game.result === "loss";
-              const isDraw = game.result === "draw";
-
+            {overview.recent_games.slice(0, 4).map((game, index) => {
               return (
                 <div
                   key={game.id || index}
@@ -50,7 +46,9 @@ const TeamRecentGamesSection = ({ games }) => {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium">{game.home_team_name} vs {game.away_team_name}</p>
+                          <p className="font-medium">
+                            {game.home_team} vs {game.away_team}
+                          </p>
                           <div className="space-y-1">
                             {game.result && (
                               <div className="flex items-center text-sm gap-1">
@@ -63,10 +61,9 @@ const TeamRecentGamesSection = ({ games }) => {
                       </div>
                       <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                         <Target className="h-3 w-3" />
-                        {game.score_summary ||
-                          `${game.home_team_score || 0} - ${
-                            game.away_team_score || 0
-                          }`}
+                        {`${game.home_team_score || 0} - ${
+                          game.away_team_score || 0
+                        }`}
                       </Badge>
                     </div>
 
@@ -78,25 +75,15 @@ const TeamRecentGamesSection = ({ games }) => {
                           <Calendar className="h-3 w-3 text-primary" />
                           <span>{formatShortDate(game.date)}</span>
                         </div>
-                        {game.location && (
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 text-primary" />
-                            <span>{game.location}</span>
-                          </div>
-                        )}
+
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 text-primary" />
+                          <span>{game.location || "N/A"}</span>
+                        </div>
                       </div>
 
                       {/* Right column */}
                     </div>
-
-                    {/* Team abbreviations - full width */}
-                    {game.home_team_abbreviation &&
-                      game.away_team_abbreviation && (
-                        <p className="text-xs text-muted-foreground pt-1">
-                          {game.home_team_abbreviation} vs{" "}
-                          {game.away_team_abbreviation}
-                        </p>
-                      )}
                   </div>
                 </div>
               );
@@ -118,4 +105,4 @@ const TeamRecentGamesSection = ({ games }) => {
   );
 };
 
-export default TeamRecentGamesSection;
+export default RecentGamesSection;

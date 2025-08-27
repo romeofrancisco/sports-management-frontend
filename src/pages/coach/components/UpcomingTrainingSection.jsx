@@ -11,10 +11,10 @@ import { Calendar, Clock, MapPin, Users, Activity } from "lucide-react";
 import { formatShortDate } from "@/utils/formatDate";
 import { formatTo12HourTime } from "@/utils/formatTime";
 
-const TeamUpcomingTrainingSection = ({ trainings }) => {
+const UpcomingTrainingSection = ({ overview }) => {
   return (
     <Card className=" border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
             <Activity className="h-5 w-5 text-primary-foreground" />
@@ -30,9 +30,9 @@ const TeamUpcomingTrainingSection = ({ trainings }) => {
         </div>
       </CardHeader>
       <CardContent>
-        {trainings?.length > 0 ? (
+        {overview?.upcoming_training_sessions?.length > 0 ? (
           <div className="space-y-4">
-            {trainings.slice(0, 3).map((training, index) => (
+            {overview.upcoming_training_sessions.slice(0, 3).map((training, index) => (
               <div
                 key={training.id || index}
                 className="relative overflow-hidden border border-amber-600/30 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
@@ -45,7 +45,7 @@ const TeamUpcomingTrainingSection = ({ trainings }) => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <h4 className="font-medium text-foreground text-sm leading-tight">
-                        {training.title || training.name}
+                        {training.title}
                       </h4>
                     </div>
                     <Badge className="bg-amber-600/10 text-amber-600 border-amber-600/20 text-xs">
@@ -66,24 +66,6 @@ const TeamUpcomingTrainingSection = ({ trainings }) => {
                         <div className="flex items-center gap-1.5">
                           <MapPin className="h-3 w-3 text-amber-600" />
                           <span>{training.location}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Right column */}
-                    <div className="space-y-1">
-                      {training.type && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs px-2 py-0.5 w-fit"
-                        >
-                          {training.type}
-                        </Badge>
-                      )}
-                      {training.max_participants && (
-                        <div className="flex items-center gap-1.5">
-                          <Users className="h-3 w-3 text-primary" />
-                          <span>Max {training.max_participants}</span>
                         </div>
                       )}
                     </div>
@@ -117,4 +99,4 @@ const TeamUpcomingTrainingSection = ({ trainings }) => {
   );
 };
 
-export default TeamUpcomingTrainingSection;
+export default UpcomingTrainingSection;

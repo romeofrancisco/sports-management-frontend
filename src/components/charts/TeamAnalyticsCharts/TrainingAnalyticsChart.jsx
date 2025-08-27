@@ -1,34 +1,61 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Target } from 'lucide-react';
-import { COLORS } from './constants';
-import { getDefaultChartOptions, getChartTheme } from './utils';
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Target, ChartColumn } from "lucide-react";
+import { COLORS } from "./constants";
+import { getDefaultChartOptions, getChartTheme } from "./utils";
 
-export const TrainingAnalyticsChart = ({ data, title = "Training Analytics" }) => {
+export const TrainingAnalyticsChart = ({
+  data,
+  title = "Training Analytics",
+}) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            {title}
-          </CardTitle>
-          <CardDescription>Training session attendance and participation</CardDescription>
+      <Card className="border-2 border-primary/20">
+        <CardHeader className="relative">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+              <Target className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Weekly training sessions and attendance rates
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <p className="text-muted-foreground">No training data available</p>
+          <div className="text-center py-12">
+            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <ChartColumn className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground font-medium">
+              No training data
+            </p>
+            <p className="text-sm text-muted-foreground/70 mt-1">
+              Training analytics will appear here after sessions are completed.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
   const chartData = {
-    labels: data.map(item => item.week),
+    labels: data.map((item) => item.week),
     datasets: [
       {
-        label: 'Training Sessions',
-        data: data.map(item => item.sessions),
+        label: "Training Sessions",
+        data: data.map((item) => item.sessions),
         backgroundColor: `${COLORS.primary}80`,
         borderColor: COLORS.primary,
         borderWidth: 2,
@@ -36,16 +63,16 @@ export const TrainingAnalyticsChart = ({ data, title = "Training Analytics" }) =
         borderSkipped: false,
       },
       {
-        label: 'Attendance Rate %',
-        data: data.map(item => item.attendance_rate),
+        label: "Attendance Rate %",
+        data: data.map((item) => item.attendance_rate),
         backgroundColor: `${COLORS.secondary}80`,
         borderColor: COLORS.secondary,
         borderWidth: 2,
         borderRadius: 4,
         borderSkipped: false,
-        yAxisID: 'y1',
-      }
-    ]
+        yAxisID: "y1",
+      },
+    ],
   };
 
   const chartOptions = {
@@ -54,24 +81,24 @@ export const TrainingAnalyticsChart = ({ data, title = "Training Analytics" }) =
       ...getDefaultChartOptions().scales,
       y: {
         ...getDefaultChartOptions().scales.y,
-        type: 'linear',
+        type: "linear",
         display: true,
-        position: 'left',
+        position: "left",
         title: {
           display: true,
-          text: 'Training Sessions',
+          text: "Training Sessions",
           color: getChartTheme().textColor,
         },
       },
       y1: {
-        type: 'linear',
+        type: "linear",
         display: true,
-        position: 'right',
+        position: "right",
         min: 0,
         max: 100,
         title: {
           display: true,
-          text: 'Attendance Rate (%)',
+          text: "Attendance Rate (%)",
           color: getChartTheme().textColor,
         },
         grid: {
@@ -86,7 +113,7 @@ export const TrainingAnalyticsChart = ({ data, title = "Training Analytics" }) =
       ...getDefaultChartOptions().plugins,
       legend: {
         display: true,
-        position: 'bottom',
+        position: "bottom",
         labels: {
           color: getChartTheme().textColor,
           usePointStyle: true,
@@ -97,13 +124,21 @@ export const TrainingAnalyticsChart = ({ data, title = "Training Analytics" }) =
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Target className="h-5 w-5 text-primary" />
-          {title}
-        </CardTitle>
-        <CardDescription>Weekly training sessions and attendance rates</CardDescription>
+    <Card className="border-2 border-primary/20">
+      <CardHeader className="relative">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+            <Target className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div>
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              {title}
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Weekly training sessions and attendance rates
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">

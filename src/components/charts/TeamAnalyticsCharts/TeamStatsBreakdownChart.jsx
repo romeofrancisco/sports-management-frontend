@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
-import { CHART_COLORS } from "./constants";
+import { COLORS } from "./constants";
 
 export const TeamStatsBreakdownChart = ({
   data,
@@ -16,15 +16,21 @@ export const TeamStatsBreakdownChart = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" />
-            {title}
-          </CardTitle>
-          <CardDescription>
-            Statistical breakdown of team performance
-          </CardDescription>
+      <Card className="border-2 border-primary/20">
+        <CardHeader className="pb-4 relative">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+              <Trophy className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground font-medium">
+                Statistical breakdown of team performance
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
           <p className="text-muted-foreground">No statistics data available</p>
@@ -38,14 +44,25 @@ export const TeamStatsBreakdownChart = ({
     datasets: [
       {
         data: data.map((item) => item.value),
-        backgroundColor: CHART_COLORS.slice(0, data.length),
-        borderColor: CHART_COLORS.slice(0, data.length).map(
-          (color) => `${color}80`
-        ),
+        backgroundColor: [
+          `${COLORS.primary}80`,
+          `${COLORS.secondary}80`,
+          `${COLORS.primary}60`,
+          `${COLORS.secondary}60`,
+        ].slice(0, data.length),
+        borderColor: [
+          COLORS.primary,
+          COLORS.secondary,
+          COLORS.primary,
+          COLORS.secondary,
+        ].slice(0, data.length),
         borderWidth: 2,
-        hoverBackgroundColor: CHART_COLORS.slice(0, data.length).map(
-          (color) => `${color}CC`
-        ),
+        hoverBackgroundColor: [
+          `${COLORS.primary}CC`,
+          `${COLORS.secondary}CC`,
+          `${COLORS.primary}AA`,
+          `${COLORS.secondary}AA`,
+        ].slice(0, data.length),
         hoverBorderWidth: 3,
       },
     ],
@@ -84,13 +101,21 @@ export const TeamStatsBreakdownChart = ({
   };
 
   return (
-    <Card className="gap-0">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-primary" />
-          {title}
-        </CardTitle>
-        <CardDescription>Wins and losses distribution</CardDescription>
+    <Card className="border-2 border-primary/20">
+      <CardHeader className="relative">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
+            <Trophy className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div>
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              {title}
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Wins and losses distribution
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
