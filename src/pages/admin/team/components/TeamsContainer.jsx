@@ -62,9 +62,9 @@ const TeamsContainer = () => {
               <Users className="size-7 text-primary-foreground" />
             </div>
             <div>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold text-foreground">Teams</h2>
-                <Badge>{totalTeams} teams</Badge>
+                <Badge className="h-6 text-[11px]">{totalTeams} teams</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
                 Register, manage, and track team profiles and statistics for your sports organization.

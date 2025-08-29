@@ -24,7 +24,7 @@ const ChartCard = ({
   action,
   icon,
   height = 300,
-  emptyMessage = "No data available",
+  emptyMessage = "Chart data will appear here once information is available.",
   hasData = true
 }) => {
   const IconComponent = icon || BarChart3;
@@ -57,8 +57,16 @@ const ChartCard = ({
             {children}
           </div>
         ) : (
-          <div className="flex items-center justify-center" style={{ height: `${height}px` }}>
-            <p className="text-muted-foreground">{emptyMessage}</p>
+          <div className="text-center py-12" style={{ minHeight: `${height}px` }}>
+            <div className="p-4 bg-muted rounded-full mb-4 mx-auto w-fit">
+              <IconComponent className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              No Data Available
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              {emptyMessage}
+            </p>
           </div>
         )}
       </CardContent>

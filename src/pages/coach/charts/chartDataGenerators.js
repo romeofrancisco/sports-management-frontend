@@ -159,7 +159,10 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
         playerProgress?.player_progress
           ?.slice(0, 10)
           .map(
-            (player) => player.recent_improvement?.percentage.toFixed(2) || 0
+            (player) => {
+              const perc = player.recent_improvement?.percentage;
+              return !isNaN(perc) && perc !== null ? parseFloat(perc.toFixed(1)) : 0;
+            }
           ) || [],
       backgroundColor: "#7f1d1d90", // Dark red with transparency (same as Points Conceded)
       borderColor: "#7f1d1d", // Dark red

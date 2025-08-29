@@ -27,16 +27,6 @@ const TrainingSummaryPage = () => {
     error,
   } = useTrainingSummary(sessionId);
 
-  // Format date and time
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   // Get effectiveness color
   const getEffectivenessColor = (level) => {
     const colors = {
@@ -207,7 +197,7 @@ const TrainingSummaryPage = () => {
           <div className="xl:col-span-2 space-y-6">
             {/* Metrics Section */}
             <MetricsSummarySection metricsSummary={safeMetricsSummary} />
-            
+
             {/* Player Improvements Section */}
             <PlayerImprovementsSection
               playerImprovements={safePlayerImprovements}
@@ -220,10 +210,7 @@ const TrainingSummaryPage = () => {
           {/* Right Sidebar - Session Info & Recommendations */}
           <div className="xl:col-span-1 space-y-6">
             {/* Session Details */}
-            <SessionInfoCard
-              sessionInfo={safeSessionInfo}
-              formatDate={formatDate}
-            />
+            <SessionInfoCard sessionInfo={safeSessionInfo} />
             {/* Attendance Summary */}
             <AttendanceSummaryCard attendanceSummary={safeAttendanceSummary} />
 

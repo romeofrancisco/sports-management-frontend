@@ -72,8 +72,16 @@ const ChartsSection = ({ user, overview }) => {
                 ) : selectedMetricData ? (
                   <ProgressChart selectedMetricData={selectedMetricData} />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    No progress data available
+                  <div className="text-center py-8">
+                    <div className="mx-auto size-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                      <Activity className="size-8 text-muted-foreground" />
+                    </div>
+                    <p className="text-muted-foreground font-medium">
+                      No progress metrics available
+                    </p>
+                    <p className="text-sm text-muted-foreground/70 mt-1">
+                      Complete training sessions to see your progress
+                    </p>
                   </div>
                 )}
               </div>

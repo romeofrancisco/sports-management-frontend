@@ -220,6 +220,12 @@ export const createPlayerDevelopmentChartOptions = (playerProgress) => ({
     tooltip: {
       ...baseChartOptions.plugins.tooltip,
       callbacks: {
+        label: function(context) {
+          if (context.dataset.label === "Improvement (3 months)") {
+            return context.dataset.label + ': ' + context.parsed.y + '%';
+          }
+          return context.dataset.label + ': ' + context.parsed.y;
+        },
         afterBody: function(tooltipItems) {
           const playerIndex = tooltipItems[0].dataIndex;
           const player = playerProgress?.player_progress?.[playerIndex];

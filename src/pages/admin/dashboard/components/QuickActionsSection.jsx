@@ -37,7 +37,7 @@ const QuickActionsSection = ({ overview }) => {
       description: "Add new player",
       icon: <UserPlus className="h-4 w-4" />,
       color:
-        "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/25",
+        "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "players/create",
     },
     {
@@ -52,7 +52,7 @@ const QuickActionsSection = ({ overview }) => {
     //   description: "Configure system",
     //   icon: <Settings className="h-4 w-4" />,
     //   color:
-    //     "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/25",
+    //     "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
     //   action: "settings",
     // },
   ];
@@ -77,11 +77,11 @@ const QuickActionsSection = ({ overview }) => {
   };
 
   return (
-    <Card className="overflow-hidden border-2 border-secondary/20 bg-gradient-to-br from-card to-secondary/5">
+    <Card className="overflow-hidden border-2 border-primary/20">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-secondary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <Zap className="h-5 w-5 text-secondary-foreground" />
+          <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+            <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
           <CardTitle className="text-lg font-semibold text-gradient">
             Quick Actions
@@ -89,14 +89,14 @@ const QuickActionsSection = ({ overview }) => {
         </div>
         <CardDescription>Common administrative tasks</CardDescription>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent>
         <div className="grid grid-cols-3 sm:grid-cols-1 gap-4">
           {quickActions.map((action, index) => (
             <Button
               key={action.title}
               variant="outline"
               onClick={() => handleQuickAction(action.action)}
-              className="group relative h-auto p-0 overflow-hidden rounded-xl border-2 border-secondary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br from-background to-secondary/5 hover:from-primary/5 hover:to-secondary/10"
+              className="group relative h-auto p-0 overflow-hidden rounded-xl border-2 border-primary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br from-background to-primary/5 hover:from-primary/5 hover:to-primary/10"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="flex items-center w-full p-4 gap-4">

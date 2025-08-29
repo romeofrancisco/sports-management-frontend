@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchCoaches, createCoach, deleteCoach, updateCoach } from "@/api/coachesApi";
+import { fetchCoaches, fetchCoachById, createCoach, deleteCoach, updateCoach } from "@/api/coachesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
@@ -15,6 +15,14 @@ export const useCoaches = (filter = {}, page = 1, pageSize = 12, enabled = true)
     queryFn: () => fetchCoaches(apiFilter),
     enabled,
     keepPreviousData: true,
+  });
+};
+
+export const useCoach = (coachId, enabled = true) => {
+  return useQuery({
+    queryKey: ["coach", coachId],
+    queryFn: () => fetchCoachById(coachId),
+    enabled: enabled && !!coachId,
   });
 };
 
