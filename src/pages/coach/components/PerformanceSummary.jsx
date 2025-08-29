@@ -13,7 +13,41 @@ import { getPerformanceTrend } from "../utils/performanceHelpers";
  * Enhanced performance summary component showing player trend analysis
  */
 const PerformanceSummary = ({ playerProgress }) => {
-  if (!playerProgress?.player_progress?.length) return null;
+  // Show fallback if no data available
+  if (!playerProgress?.player_progress?.length) {
+    return (
+      <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-primary shadow-lg">
+              <Target className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-semibold text-gradient">
+                Team Performance Summary
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Quick insights about your team's performance trends
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <div className="p-4 bg-muted rounded-full mb-4 mx-auto w-fit">
+              <Target className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              No Performance Data Available
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              Performance trends will appear here once you have players assigned to your teams and training data is recorded.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const improvingCount = playerProgress.player_progress.filter(
     (player) => getPerformanceTrend(player) === "improving"
@@ -62,7 +96,7 @@ const PerformanceSummary = ({ playerProgress }) => {
 
   return (
     <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-lg">
             <Target className="h-5 w-5 text-primary-foreground" />
@@ -112,13 +146,19 @@ const PerformanceSummary = ({ playerProgress }) => {
         {/* Enhanced insight section */}
         <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/20">
           <p className="text-sm text-muted-foreground text-center">
-            <span className="font-bold text-primary">
-              {Math.round(
-                (improvingCount / playerProgress.player_progress.length) * 100
-              )}
-              % {" "}
-            </span>
-            of your players are showing improvement in the last 3 months.
+            {playerProgress.player_progress.length > 0 ? (
+              <>
+                <span className="font-bold text-primary">
+                  {Math.round(
+                    (improvingCount / playerProgress.player_progress.length) * 100
+                  )}
+                  % {" "}
+                </span>
+                of your players are showing improvement in the last 3 months.
+              </>
+            ) : (
+              "No player data available for performance analysis."
+            )}
           </p>
         </div>
       </CardContent>

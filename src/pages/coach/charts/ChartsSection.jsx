@@ -28,6 +28,7 @@ const ChartsSection = ({ overview, playerProgress }) => {
   const teamOverviewChartOptions = createTeamOverviewChartOptions(overview);
   const playerDevelopmentChartOptions =
     createPlayerDevelopmentChartOptions(playerProgress);
+    
   return (
     <div className="space-y-6">
       {/* Charts Section */}

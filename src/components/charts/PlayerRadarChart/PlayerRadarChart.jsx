@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import { BarChart3 } from "lucide-react";
+import { RadarIcon } from "lucide-react";
 
 // Register Chart.js components for radar chart
 ChartJS.register(
@@ -34,19 +34,17 @@ const PlayerRadarChart = ({
     radarData.categories.length === 0
   ) {
     return (
-      <div className={`w-full ${className} text-center pb-8`}>
-        <div className="mx-auto w-16 h-16 bg-muted/30 rounded-full flex items-center justify-center mb-4">
-          <BarChart3 className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <h3 className="text-xl font-bold text-foreground mb-2">
-          No Training Data Available
-        </h3>
-        <p className="text-base max-w-md mx-auto text-muted-foreground">
-          This player hasn't recorded performance data across different training
-          categories yet. Start tracking their progress in various training
-          areas.
-        </p>
-      </div>
+         <div className="text-center py-8">
+            <div className="mx-auto size-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <RadarIcon className="size-8 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground font-medium">
+              No progress metrics available
+            </p>
+            <p className="text-sm text-muted-foreground/70 mt-1">
+              Complete training sessions to see your progress
+            </p>
+          </div>
     );
   }
 

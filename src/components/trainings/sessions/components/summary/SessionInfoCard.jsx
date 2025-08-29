@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Calendar, Clock, MapPin, MessageSquare, FileText, Users } from "lucide-react";
 import { formatTime } from "@/utils/formatters";
+import { formatShortDate } from "@/utils/formatDate";
 
-const SessionInfoCard = ({ sessionInfo, formatDate }) => {
+const SessionInfoCard = ({ sessionInfo }) => {
   return (
     <div className="animate-in fade-in-50 duration-500 delay-600">
       <Card className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl gap-0 shadow-xl border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden">
@@ -39,7 +40,7 @@ const SessionInfoCard = ({ sessionInfo, formatDate }) => {
                     Date
                   </p>
                   <p className="font-semibold text-foreground text-sm">
-                    {formatDate(sessionInfo.date)}
+                    {formatShortDate(sessionInfo.date)}
                   </p>
                 </div>
               </div>

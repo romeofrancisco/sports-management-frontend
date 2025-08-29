@@ -13,13 +13,7 @@ import {
   Filler,
 } from "chart.js";
 import { Bar, Line, Pie, Doughnut } from "react-chartjs-2";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import ChartCard from "./ChartCard";
 
 // Register Chart.js components
 ChartJS.register(
@@ -50,17 +44,13 @@ const commonOptions = {
 export const TeamsBySportChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Teams by Sport</CardTitle>
-          <CardDescription>
-            Distribution of teams across different sports
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Teams by Sport"
+        description="Distribution of teams across different sports"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
   const chartData = {
@@ -95,17 +85,14 @@ export const TeamsBySportChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Teams by Sport</CardTitle>
-        <CardDescription>
-          Distribution of teams across different sports
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Doughnut data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Teams by Sport"
+      description="Distribution of teams across different sports"
+      hasData={true}
+      height={256}
+    >
+      <Doughnut data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -113,15 +100,13 @@ export const TeamsBySportChart = ({ data }) => {
 export const SystemActivityChart = ({ data }) => {
   if (!data) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>System Activity</CardTitle>
-          <CardDescription>Recent system activity metrics</CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="System Activity"
+        description="Recent system activity metrics"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
   const chartData = {
@@ -169,15 +154,14 @@ export const SystemActivityChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>System Activity</CardTitle>
-        <CardDescription>Recent system activity metrics</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="System Activity"
+      description="Recent system activity metrics"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -185,17 +169,13 @@ export const SystemActivityChart = ({ data }) => {
 export const UserActivityChart = ({ data }) => {
   if (!data) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>User Activity & Engagement</CardTitle>
-          <CardDescription>
-            Comprehensive user activity metrics and growth trends
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="User Activity & Engagement"
+        description="Comprehensive user activity metrics and growth trends"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
   const chartData = {
@@ -242,17 +222,14 @@ export const UserActivityChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Activity & Engagement</CardTitle>
-        <CardDescription>
-          Comprehensive user activity metrics and growth trends
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="User Activity & Engagement"
+      description="Comprehensive user activity metrics and growth trends"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -260,15 +237,13 @@ export const UserActivityChart = ({ data }) => {
 export const TrainingAttendanceChart = ({ data }) => {
   if (!data || !data.overall_attendance_rate) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Training Attendance</CardTitle>
-          <CardDescription>Overall training attendance metrics</CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Training Attendance"
+        description="Overall training attendance metrics"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
 
@@ -305,15 +280,14 @@ export const TrainingAttendanceChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Training Attendance</CardTitle>
-        <CardDescription>Overall training attendance rate</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Pie data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Training Attendance"
+      description="Overall training attendance rate"
+      hasData={true}
+      height={256}
+    >
+      <Pie data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -321,15 +295,13 @@ export const TrainingAttendanceChart = ({ data }) => {
 export const TopTeamsChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Performing Teams</CardTitle>
-          <CardDescription>Teams with highest win rates</CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Top Performing Teams"
+        description="Teams with highest win rates"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
 
@@ -388,15 +360,14 @@ export const TopTeamsChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Top Performing Teams</CardTitle>
-        <CardDescription>Teams with highest win rates</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Top Performing Teams"
+      description="Teams with highest win rates"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -404,17 +375,13 @@ export const TopTeamsChart = ({ data }) => {
 export const CoachEffectivenessChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Coach Effectiveness</CardTitle>
-          <CardDescription>
-            Coach performance based on attendance and training frequency
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Coach Effectiveness"
+        description="Coach performance based on attendance and training frequency"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
 
@@ -469,17 +436,14 @@ export const CoachEffectivenessChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Coach Effectiveness</CardTitle>
-        <CardDescription>
-          Coach performance based on attendance and training frequency
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Coach Effectiveness"
+      description="Coach performance based on attendance and training frequency"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -487,15 +451,13 @@ export const CoachEffectivenessChart = ({ data }) => {
 export const SystemHealthChart = ({ score }) => {
   if (typeof score !== "number") {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>System Health</CardTitle>
-          <CardDescription>Overall system health score</CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="System Health"
+        description="Overall system health score"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
 
@@ -547,25 +509,24 @@ export const SystemHealthChart = ({ score }) => {
   const healthStatus = getHealthStatus(score);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>System Health</CardTitle>
-        <CardDescription>Overall system health score</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <div className="relative h-full">
-          <Doughnut data={healthData} options={options} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{score}</div>
-              <div className={`text-sm ${healthStatus.color}`}>
-                {healthStatus.text}
-              </div>
+    <ChartCard
+      title="System Health"
+      description="Overall system health score"
+      hasData={true}
+      height={256}
+    >
+      <div className="relative h-full">
+        <Doughnut data={healthData} options={options} />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-2xl font-bold">{score}</div>
+            <div className={`text-sm ${healthStatus.color}`}>
+              {healthStatus.text}
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </ChartCard>
   );
 };
 
@@ -573,15 +534,13 @@ export const SystemHealthChart = ({ score }) => {
 export const TrainingTrendChart = ({ data }) => {
   if (!data) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Training Trends</CardTitle>
-          <CardDescription>Monthly training session trends</CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Training Trends"
+        description="Monthly training session trends"
+        hasData={false}
+        emptyMessage="No data available"
+        height={256}
+      />
     );
   }
 
@@ -618,15 +577,14 @@ export const TrainingTrendChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Training Trends</CardTitle>
-        <CardDescription>Monthly training session trends</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Line data={trendData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Training Trends"
+      description="Monthly training session trends"
+      hasData={true}
+      height={256}
+    >
+      <Line data={trendData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -640,17 +598,13 @@ export const GenderDistributionChart = ({ data }) => {
       !data.female_teams)
   ) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Gender Distribution</CardTitle>
-          <CardDescription>
-            Players and teams by gender/division
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No gender data available</p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Gender Distribution"
+        description="Players and teams by gender/division"
+        hasData={false}
+        emptyMessage="No gender data available"
+        height={256}
+      />
     );
   }
   const chartData = {
@@ -690,15 +644,14 @@ export const GenderDistributionChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Gender Distribution</CardTitle>
-        <CardDescription>Players and teams by gender/division</CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Gender Distribution"
+      description="Players and teams by gender/division"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -706,19 +659,13 @@ export const GenderDistributionChart = ({ data }) => {
 export const PlayersByGenderSportChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Players by Gender & Sport</CardTitle>
-          <CardDescription>
-            Player distribution across sports by gender
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">
-            No player gender data available
-          </p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Players by Gender & Sport"
+        description="Player distribution across sports by gender"
+        hasData={false}
+        emptyMessage="No player gender data available"
+        height={256}
+      />
     );
   }
 
@@ -775,17 +722,14 @@ export const PlayersByGenderSportChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Players by Gender & Sport</CardTitle>
-        <CardDescription>
-          Player distribution across sports by gender
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Players by Gender & Sport"
+      description="Player distribution across sports by gender"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 
@@ -793,19 +737,13 @@ export const PlayersByGenderSportChart = ({ data }) => {
 export const TeamsByDivisionSportChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Teams by Division & Sport</CardTitle>
-          <CardDescription>
-            Team distribution across sports by division
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">
-            No team division data available
-          </p>
-        </CardContent>
-      </Card>
+      <ChartCard
+        title="Teams by Division & Sport"
+        description="Team distribution across sports by division"
+        hasData={false}
+        emptyMessage="No team division data available"
+        height={256}
+      />
     );
   }
 
@@ -862,16 +800,13 @@ export const TeamsByDivisionSportChart = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Teams by Division & Sport</CardTitle>
-        <CardDescription>
-          Team distribution across sports by division
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="h-64">
-        <Bar data={chartData} options={options} />
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Teams by Division & Sport"
+      description="Team distribution across sports by division"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };

@@ -88,8 +88,8 @@ const MyTeamsSection = ({ overview }) => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Users className="h-8 w-8 text-primary" />
+            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <Users className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground font-medium">
               No teams assigned yet

@@ -16,6 +16,10 @@ export const dashboardService = {
     const params = teamSlug ? `?team_slug=${teamSlug}` : '';
     return api.get(`dashboard/coach_player_progress/${params}`);
   },
+  
+  // Admin access to specific coach data (for CoachDetails component)
+  getCoachOverviewById: (coachId) => api.get(`dashboard/coach_overview/?coach_id=${coachId}`),
+  getCoachPlayerProgressById: (coachId) => api.get(`dashboard/coach_player_progress/?coach_id=${coachId}`),
 
   // Player endpoints
   getPlayerOverview: () => api.get('dashboard/player_overview/'),
@@ -125,6 +129,33 @@ export const useCoachPlayerProgress = (teamSlug = null) => {
       const response = await dashboardService.getCoachPlayerProgress(teamSlug);
       return response.data;
     },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 1,
+  });
+};
+
+// Admin hooks for viewing specific coach data
+export const useCoachOverviewById = (coachId) => {
+  return useQuery({
+    queryKey: ['coach', 'overview', coachId],
+    queryFn: async () => {
+      const response = await dashboardService.getCoachOverviewById(coachId);
+      return response.data;
+    },
+    enabled: !!coachId,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+    retry: 1,
+  });
+};
+
+export const useCoachPlayerProgressById = (coachId) => {
+  return useQuery({
+    queryKey: ['coach', 'player-progress', coachId],
+    queryFn: async () => {
+      const response = await dashboardService.getCoachPlayerProgressById(coachId);
+      return response.data;
+    },
+    enabled: !!coachId,
     staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 1,
   });

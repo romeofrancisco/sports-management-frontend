@@ -75,29 +75,22 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
     // Show loading state
     if (aiInsightsLoading) {
       return (
-        <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 transition-all duration-300 hover:shadow-xl">
+        <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full blur-xl opacity-50"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-50"></div>
           
           <CardContent className="text-center relative">
-            <div className="relative mb-6">
-              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-primary/30">
-                <Loader2 className="h-8 w-8 text-primary animate-spin" />
-              </div>
-              <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 animate-pulse"></div>
-            </div>
-            
             <div className="space-y-3">
               <p className="text-primary font-semibold text-lg">Generating AI Insights...</p>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                Our AI is analyzing training data to provide strategic insights and recommendations
+                AI is analyzing training data to provide strategic insights and recommendations
               </p>
               
               <div className="flex justify-center mt-4">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
               </div>
             </div>
@@ -125,7 +118,7 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
               
               <button 
                 onClick={() => refetchAiInsights()}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-lg text-sm font-medium"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-lg text-sm font-medium"
               >
                 <Brain className="h-4 w-4" />
                 Try Again
@@ -139,11 +132,11 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
     // Show no insights state
     if (!hasAiInsights) {
       return (
-        <Card className="group relative overflow-hidden border-2 border-dashed border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 transition-all duration-300 hover:shadow-lg">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-40"></div>
+        <Card className="group relative overflow-hidden border-2 border-dashed border-primary/20 bg-gradient-to-br from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-lg">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-40"></div>
           
           <CardContent className="text-center relative">
-            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-dashed border-primary/30 mb-6">
+            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-primary/20 flex items-center justify-center border-2 border-dashed border-primary/30 mb-6">
               <Brain className="h-8 w-8 text-primary" />
             </div>
             
@@ -166,7 +159,7 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
     return (
       <div className="space-y-4">
         {Object.entries(ai_analysis).map(([category, analysis]) => (
-          <Card key={category} className="border border-border/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20">
+          <Card key={category} className="border border-primary/50 bg-gradient-to-r from-primary/5 to-primary/10">
             <CardContent>
               <h4 className="font-semibold mb-3 text-sm text-primary flex items-center gap-2">
                 <Brain className="h-4 w-4" />
@@ -213,7 +206,7 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
         {Object.entries(recommendations).length > 0 ? (
           Object.entries(recommendations).map(([category, items]) => 
             items.length > 0 && (
-              <Card key={category} className="border border-border/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20">
+          <Card key={category} className="border border-primary/50 bg-gradient-to-r from-primary/5 to-primary/10">
                 <CardContent>
                   <h4 className="font-semibold mb-3 text-sm text-primary flex items-center gap-2">
                     {getCategoryIcon(category)}
@@ -290,11 +283,11 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
             )
           )
         ) : (
-          <Card className="group relative overflow-hidden border-2 border-dashed border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 transition-all duration-300 hover:shadow-lg">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-40"></div>
+          <Card className="group relative overflow-hidden border-2 border-dashed border-primary/20 bg-gradient-to-br from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-lg">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-40"></div>
             
             <CardContent className="p-8 text-center relative">
-              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-dashed border-primary/30 mb-6">
+              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-primary/20 flex items-center justify-center border-2 border-dashed border-primary/30 mb-6">
                 <Lightbulb className="h-8 w-8 text-primary" />
               </div>
               
@@ -313,17 +306,17 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
 
   return (
     <div className="animate-in fade-in-50 duration-500 delay-800">
-      <Card className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl gap-0 shadow-xl border-2 border-secondary/20 backdrop-blur-sm relative overflow-hidden">
+      <Card className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl gap-0 shadow-xl border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/8 to-transparent rounded-full blur-2xl opacity-60 pointer-events-none"></div>
         
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className="p-3 rounded-xl bg-secondary shadow-sm">
+              <div className="p-3 rounded-xl bg-primary shadow-sm">
                 {showAiInsights ? (
-                  <Brain className="h-6 w-6 text-secondary-foreground" />
+                  <Brain className="h-6 w-6 text-primary-foreground" />
                 ) : (
-                  <Lightbulb className="h-6 w-6 text-secondary-foreground" />
+                  <Lightbulb className="h-6 w-6 text-primary-foreground" />
                 )}
               </div>
               <div>

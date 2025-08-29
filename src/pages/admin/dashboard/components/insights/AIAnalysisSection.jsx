@@ -335,8 +335,8 @@ const AIAnalysisSection = ({ insights }) => {
           )}
         </div>
         {insights.ai_insights.fallback_used && (
-          <div className="mt-4 p-3 bg-secondary/10 border border-secondary/30 rounded-lg">
-            <p className="text-sm text-secondary-foreground">
+          <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
+            <p className="text-sm text-primary-foreground">
               <span className="font-medium">Note:</span> AI analysis is
               temporarily using fallback mode. Full AI insights will resume
               automatically.

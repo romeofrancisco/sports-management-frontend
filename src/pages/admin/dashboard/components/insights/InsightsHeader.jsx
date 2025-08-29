@@ -1,11 +1,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import {
-  Lightbulb,
-  Brain,
-  Sparkles,
-} from "lucide-react";
+import { Lightbulb, Brain, Sparkles } from "lucide-react";
 
 const InsightsHeader = ({ aiEnabled, onAiToggle }) => {
   return (
@@ -23,12 +19,16 @@ const InsightsHeader = ({ aiEnabled, onAiToggle }) => {
           </p>
         </div>
       </div>
-      
-      <div className="flex flex-col sm:flex-row xl:flex-col gap-3">        {/* AI Toggle Control - Compact for sidebar */}
+
+      <div className="flex flex-col sm:flex-row xl:flex-col gap-3">
+        {" "}
+        {/* AI Toggle Control - Compact for sidebar */}
         <div className="flex items-center justify-between gap-1 p-2 xl:p-2 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
           <div className="flex items-center gap-2 min-w-0">
             <Brain className="h-4 w-4 xl:h-3 xl:w-3 text-primary flex-shrink-0" />
-            <span className="text-sm xl:text-xs font-medium text-primary truncate">AI Analysis</span>
+            <span className="text-sm xl:text-xs font-medium text-primary truncate">
+              AI Analysis
+            </span>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Switch
@@ -37,14 +37,21 @@ const InsightsHeader = ({ aiEnabled, onAiToggle }) => {
               className="data-[state=checked]:bg-primary scale-75 xl:scale-75"
             />
             {aiEnabled ? (
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs xl:text-[10px] px-1 xl:px-1 py-0">
+              <Badge
+                variant="outline"
+                className="bg-primary/10 text-primary border-primary/30 text-xs xl:text-[10px] px-1 xl:px-1 py-0"
+              >
                 <Sparkles className="h-3 w-3 xl:h-2 xl:w-2 mr-1" />
                 On
               </Badge>
             ) : (
-              <Badge variant="outline" className="bg-muted text-muted-foreground border-muted-foreground/30 text-xs xl:text-[10px] px-1 xl:px-1 py-0">
+              <Badge
+                variant="outline"
+                className="bg-muted text-muted-foreground border-muted-foreground/30 text-xs xl:text-[10px] px-1 xl:px-1 py-0"
+              >
                 Off
-              </Badge>            )}
+              </Badge>
+            )}
           </div>
         </div>
       </div>

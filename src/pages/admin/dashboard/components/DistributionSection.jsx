@@ -12,15 +12,12 @@ import { Card, CardContent } from "@/components/ui/card";
 const DistributionSection = ({ overview }) => {
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      {/* Enhanced background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
       <CardContent className="relative">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-secondary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <PieChart className="h-5 w-5 text-secondary-foreground" />
+              <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                <PieChart className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <h2 className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
@@ -53,7 +50,7 @@ const DistributionSection = ({ overview }) => {
                 return (
                   <div 
                     key={sport.sport__name || index}
-                    className={`p-4 rounded-lg border-2 border-secondary/20 bg-gradient-to-br from-card to-secondary/10 transition-all duration-300 hover:shadow-lg hover:scale-105 animate-in fade-in-50 duration-500`}
+                    className={`p-4 rounded-lg border-2 border-primary/20 bg-gradient-to-br from-card to-primary/10 transition-all duration-300 hover:shadow-lg hover:scale-105 animate-in fade-in-50 duration-500`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="text-center mb-4">
@@ -73,8 +70,8 @@ const DistributionSection = ({ overview }) => {
                         </div>
                       </div>
                       
-                      <div className="text-center p-3 rounded-md bg-secondary/10 border border-secondary/20">
-                        <div className="text-xl font-bold text-secondary">
+                      <div className="text-center p-3 rounded-md bg-primary/10 border border-primary/20">
+                        <div className="text-xl font-bold text-primary">
                           {sport.active_players || 0}
                         </div>
                         <div className="text-xs text-muted-foreground font-medium">
@@ -118,8 +115,8 @@ const DistributionSection = ({ overview }) => {
               })
             ) : (
               <div className="col-span-full text-center py-8 text-muted-foreground">
-                <div className="mx-auto w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                  <Activity className="h-8 w-8 text-secondary" />
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Activity className="h-8 w-8 text-primary" />
                 </div>
                 <p className="font-medium">No sports data available</p>
                 <p className="text-sm text-muted-foreground/70 mt-1">

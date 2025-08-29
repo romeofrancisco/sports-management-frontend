@@ -4,11 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, Mail, User, Target } from "lucide-react";
 import CoachActions from "./CoachActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 const CoachCard = ({ coach, onDelete, onUpdate }) => {
+  const navigate = useNavigate();
 
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30">
+    <Card 
+      className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30"
+    >
       {/* Primary color bar */}
       <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
       {/* Hover effect */}
@@ -56,11 +60,13 @@ const CoachCard = ({ coach, onDelete, onUpdate }) => {
             </div>
           </div>
           <div className="ml-2">
-            <CoachActions
-              coach={coach}
-              onDelete={onDelete}
-              onUpdate={onUpdate}
-            />
+            <div data-actions>
+              <CoachActions
+                coach={coach}
+                onDelete={onDelete}
+                onUpdate={onUpdate}
+              />
+            </div>
           </div>
         </div>
         {/* Stats Row */}

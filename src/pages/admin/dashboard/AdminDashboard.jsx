@@ -80,7 +80,6 @@ const AdminDashboard = () => {
           <div className="xl:col-span-2 space-y-6">
             {/* System Health Section */}
             <SystemHealthSection overview={overview} />
-            <DistributionSection overview={overview} />
             {/* Analytics Charts */}
             <ChartsSection overview={overview} analytics={analytics} />
           </div>
@@ -89,6 +88,7 @@ const AdminDashboard = () => {
             {/* Quick Actions */}
             <QuickActionsSection overview={overview} />
             {/* Insights Section Card now handled inside InsightsSection */}
+            <DistributionSection overview={overview} />
             <InsightsSection
               insights={insights}
               isLoading={insightsLoading}

@@ -175,44 +175,49 @@ const PlayerDetails = () => {
           {/* Left Column - Primary Content */}
           <div className="xl:col-span-2 space-y-6">
             {/* Player Profile Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+            <div className="animate-in fade-in-50 duration-500 delay-200 grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
               <PlayerProfileSection
                 user={user}
                 personalStats={personalStats}
                 teamInfo={teamInfo}
               />
+              {/* Progress Summary */}
+              <div className="animate-in fade-in-50 duration-500 delay-400">
+                <ProgressSummarySection
+                  progress={progressData}
+                  playerId={player}
+                />
+              </div>
             </div>
-            {/* Performance Stats Overview */}
-            <div className="animate-in fade-in-50 duration-500 delay-100">
-              <PlayerProgressStats playerId={userId} />
-            </div>{" "}
+
             {/* Charts Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
+            <div className="animate-in fade-in-50 duration-500 delay-500">
               <ChartsSection user={user} overview={overview} />
             </div>
+
+            {/* Performance Stats Overview */}
+            <div className="animate-in fade-in-50 duration-500 delay-300">
+              <PlayerProgressStats playerId={userId} />
+            </div>
+
             {/* Personal Progress Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-550">
+            <div className="animate-in fade-in-50 duration-500 delay-300">
               <PersonalProgressSection progress={progressData} />
-            </div>
-            {/* Recent Metrics */}
-            <div className="animate-in fade-in-50 duration-500 delay-600">
-              <RecentMetricsSection overview={overview} />
-            </div>
-            {/* Upcoming Activities */}
-            <div className="animate-in fade-in-50 duration-500 delay-350">
-              <UpcomingActivitiesSection overview={overview} />
             </div>
           </div>
 
           {/* Right Column - Secondary Content */}
           <div className="xl:col-span-1 space-y-6">
-            {/* Progress Summary */}
-            <div className="animate-in fade-in-50 duration-500 delay-500">
-              <ProgressSummarySection
-                progress={progressData}
-                playerId={player}
-              />
+            {/* Upcoming Activities */}
+            <div className="animate-in fade-in-50 duration-500 delay-200">
+              <UpcomingActivitiesSection overview={overview} />
             </div>
+
+            {/* Recent Metrics */}
+            <div className="animate-in fade-in-50 duration-500 delay-300">
+              <RecentMetricsSection overview={overview} />
+            </div>
+
             {/* Performance Insights */}
             <div className="animate-in fade-in-50 duration-500 delay-400">
               <PerformanceInsightCard
@@ -221,6 +226,7 @@ const PlayerDetails = () => {
                 className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30"
               />
             </div>
+
             {/* Radar Analysis Summary */}
             <div className="animate-in fade-in-50 duration-500 delay-450">
               <RadarAnalysisSummaryCard

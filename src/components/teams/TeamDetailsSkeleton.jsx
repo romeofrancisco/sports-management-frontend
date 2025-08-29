@@ -32,8 +32,8 @@ const TeamDetailsSkeleton = () => {
 
       {/* Quick Stats Cards Skeleton */}
       <section className="p-4 md:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {[1, 2, 3, 4].map((i) => (
             <Card key={i} className="border-2 border-primary/20">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <Skeleton className="h-4 w-20" />

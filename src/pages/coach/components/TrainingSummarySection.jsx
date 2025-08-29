@@ -77,13 +77,6 @@ const TrainingSummarySection = ({ overview }) => {
               key={index}
               className={`relative overflow-hidden text-center p-5 border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.03] group ${item.bgColor} ${item.borderColor}`}
             >
-              {/* Enhanced gradient background */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-8`}
-              ></div>
-              {/* Hover effect overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
               <div className="relative z-10 space-y-4">
                 <div className="flex justify-center">
                   <div

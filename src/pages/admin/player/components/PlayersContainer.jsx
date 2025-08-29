@@ -64,7 +64,7 @@ const PlayersContainer = () => {
                 <h2 className="text-2xl font-bold text-foreground">
                   Student Athletes
                 </h2>
-                <Badge>{totalPlayers} players</Badge>
+                <Badge className="h-6 text-[11px]">{totalPlayers} players</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
                 Register, manage, and track student athlete profiles and statistics for your sports team.

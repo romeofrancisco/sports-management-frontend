@@ -89,8 +89,8 @@ const PersonalProgressSection = ({ progress }) => {
           </div>
         ) : (
           <div className="text-center py-8">
-            <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Target className="h-6 w-6 text-primary" />
+            <div className="mx-auto size-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <Target className="size-8 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground font-medium">
               No progress metrics available

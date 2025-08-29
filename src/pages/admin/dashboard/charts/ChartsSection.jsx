@@ -13,30 +13,15 @@ import {
 
 const ChartsSection = ({ overview, analytics }) => {
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      {/* Enhanced background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-      
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <BarChart3 className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
-            Analytics Dashboard
-          </h2>
-        </div>
-      </CardHeader>
-
-      <CardContent className="relative space-y-6">
+    <div className="space-y-6">
       {/* Primary Charts Row - 4 Column Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">        {/* System Health Chart - 1 column */}        <div className="lg:col-span-1">
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* System Health Chart - 1 column */}{" "}
+        <div className="lg:col-span-1">
           <SystemHealthChart
             score={overview?.insights?.system_health_score || 50}
           />
         </div>
-
         {/* System Activity Chart - 3 columns (wider) */}
         <div className="lg:col-span-2">
           <SystemActivityChart
@@ -93,12 +78,12 @@ const ChartsSection = ({ overview, analytics }) => {
               analytics?.training_analytics?.overall_attendance_rate || 0,
           }}
         />
-      </div>      {/* Coach Analytics Row */}
+      </div>{" "}
+      {/* Coach Analytics Row */}
       <div className="grid gap-6">
         <CoachEffectivenessChart data={analytics?.coach_analytics || []} />
       </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 };
 

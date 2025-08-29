@@ -194,7 +194,7 @@ const PlayerProgressSection = ({ playerProgress }) => {
                                 style={{
                                   width: `${Math.min(
                                     100,
-                                    Math.max(8, (Math.abs(improvementPercentage) / 30) * 100)
+                                    Math.max(8, (Math.abs(improvementPercentage) / 20) * 100)
                                   )}%`,
                                 }}
                               ></div>

@@ -51,15 +51,15 @@ const getInsightIcon = (type) => {
 const getInsightColor = (type) => {
   switch (type) {
     case "warning":
-      return "from-card to-secondary/10 border-secondary/20";
+      return "from-card to-secondary/5 border-secondary/30";
     case "success":
-      return "from-card to-primary/10 border-primary/20";
+      return "from-card to-primary/5 border-primary/30";
     case "trend_up":
-      return "from-card to-primary/10 border-primary/20";
+      return "from-card to-primary/5 border-primary/30";
     case "trend_down":
-      return "from-card to-destructive/10 border-destructive/20";
+      return "from-card to-destructive/5 border-destructive/30";
     default:
-      return "from-card to-secondary/10 border-secondary/20";
+      return "from-card to-secondary/5 border-secondary/30";
   }
 };
 
@@ -108,21 +108,17 @@ const InsightsListSection = ({ insights }) => {
           return (
             <Card
               key={`insight-${index}`}
-              className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500 bg-gradient-to-br ${colorClass} ${
-                insight.source === "ai" ? "ring-2 ring-blue-400/30" : ""
-              }`}
+              className={`group relative overflow-hidden border-2 gap-0 transition-all animate-in fade-in-50 duration-500 bg-gradient-to-br ${colorClass}`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
-
-              <CardHeader className="pb-3 relative">
+              <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">
                       System Insight
                     </CardTitle>
                     {insight.source === "ai" && (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
+                      <div className="flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
                         <Brain className="h-3 w-3" />
                         AI
                       </div>

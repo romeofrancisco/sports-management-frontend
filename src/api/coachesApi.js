@@ -9,6 +9,15 @@ export const fetchCoaches = async (filter) => {
   }
 };
 
+export const fetchCoachById = async (coachId) => {
+  try {
+    const { data } = await api.get(`coaches/${coachId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createCoach = async (coachData) => {
   try {
     const { data } = await api.post("coaches/", coachData);
