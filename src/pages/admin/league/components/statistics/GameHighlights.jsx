@@ -13,7 +13,6 @@ import { getSeasonYear } from "../../utils";
 
 const GameHighlights = ({ comprehensiveStats }) => {
   const navigate = useNavigate();
-  console.log("GameHighlights", comprehensiveStats);
 
   if (!comprehensiveStats) {
     return null;
@@ -32,19 +31,24 @@ const GameHighlights = ({ comprehensiveStats }) => {
     return (
       <div className="animate-in fade-in-50 duration-500 delay-400">
         <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-          <CardHeader className="relative border-b border-border/50">
-            <CardTitle className="text-xl font-bold flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <Trophy className="h-5 w-5 text-primary-foreground" />
+          <CardHeader className="relative">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <Trophy className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Set Highlights
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
+                    Most memorable moments from this league
+                  </CardDescription>
+                </div>
               </div>
-              Set Highlights
-            </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
-              Most memorable sets from this league
-            </CardDescription>
+            </div>
           </CardHeader>
-          <CardContent className="relative p-6">
+          <CardContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Highest Scoring Sets */}
               <div className="flex flex-col">
@@ -243,7 +247,8 @@ const GameHighlights = ({ comprehensiveStats }) => {
                               {index + 1}
                             </div>
                             <span className="text-xs font-medium text-muted-foreground truncate">
-                              {game.season} ({getSeasonYear(game.start_date, game.end_date)})
+                              {game.season} (
+                              {getSeasonYear(game.start_date, game.end_date)})
                             </span>
                           </div>
                           <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
@@ -306,7 +311,8 @@ const GameHighlights = ({ comprehensiveStats }) => {
                                 {index + 1}
                               </div>
                               <span className="text-xs font-medium text-muted-foreground truncate">
-                                {game.season} ({getSeasonYear(game.start_date, game.end_date)})
+                                {game.season} (
+                                {getSeasonYear(game.start_date, game.end_date)})
                               </span>
                             </div>
                             <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">

@@ -56,16 +56,20 @@ export const getPointsData = (sanitizedPerformance, isSetsScoring) => {
         {
           label: 'Points per Set',
           data: sortedTeams.map(team => team.pointsPerSet),
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(139, 21, 56, 0.6)',
+          borderColor: '#8B1538',
+          borderWidth: 2,
+          borderRadius: 4, 
+          borderSkipped: false,
         },
         {
           label: 'Points Conceded per Set',
           data: sortedTeams.map(team => team.pointsConcededPerSet),
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(255, 215, 0, 0.6)',
+          borderColor: '#FFD700',
+          borderWidth: 2,
+          borderRadius: 4,
+          borderSkipped: false,
         }
       ]
     };
@@ -84,9 +88,11 @@ export const getPointsData = (sanitizedPerformance, isSetsScoring) => {
             const val = team.avg_points_scored;
             return val !== undefined && val !== null ? parseFloat(val.toFixed(1)) : 0;
           }),
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(139, 21, 56, 0.6)',
+          borderColor: '#8B1538',
+          borderWidth: 2,
+          borderRadius: 4,
+          borderSkipped: false,
         },
         {
           label: 'Points Conceded',
@@ -94,9 +100,11 @@ export const getPointsData = (sanitizedPerformance, isSetsScoring) => {
             const val = team.avg_points_conceded;
             return val !== undefined && val !== null ? parseFloat(val.toFixed(1)) : 0;
           }),
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(255, 215, 0, 0.6)',
+          borderColor: '#FFD700',
+          borderWidth: 2,
+          borderRadius: 4,
+          borderSkipped: false,
         }
       ]
     };
@@ -126,20 +134,22 @@ export const getStreakData = (sanitizedPerformance, isSetsScoring) => {
         label: isSetsScoring ? 'Longest Sets Win Streak' : 'Longest Win Streak',
         data: streakTeams.map(team => team.max_streak || 0),
         backgroundColor: [
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(255, 206, 86, 0.6)',
-          'rgba(75, 192, 192, 0.6)',
-          'rgba(153, 102, 255, 0.6)',
+          'rgba(139, 21, 56, 0.6)',   // Primary red
+          'rgba(255, 215, 0, 0.6)',   // Secondary gold
+          'rgba(166, 54, 80, 0.6)',   // Primary red lighter
+          'rgba(230, 194, 0, 0.6)',   // Secondary gold darker
+          'rgba(107, 15, 42, 0.6)',   // Primary red darker
         ],
         borderColor: [
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
+          '#8B1538', // Primary red
+          '#FFD700', // Secondary gold
+          '#A63650', // Primary red lighter
+          '#E6C200', // Secondary gold darker
+          '#6B0F2A', // Primary red darker
         ],
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
       }
     ]
   };
@@ -203,12 +213,14 @@ export const getDifferentialData = (sanitizedPerformance, isSetsScoring) => {
         data: differentialTeams.map(team => team.differential),
         backgroundColor: differentialTeams.map(team => {
           // Use different colors for positive and negative differentials
-          return team.differential >= 0 ? 'rgba(54, 162, 235, 0.7)' : 'rgba(255, 99, 132, 0.7)';
+          return team.differential >= 0 ? 'rgba(139, 21, 56, 0.6)' : 'rgba(255, 215, 0, 0.6)';
         }),
         borderColor: differentialTeams.map(team => {
-          return team.differential >= 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)';
+          return team.differential >= 0 ? '#8B1538' : '#FFD700';
         }),
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
       }
     ]
   };

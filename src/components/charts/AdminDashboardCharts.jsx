@@ -33,6 +33,13 @@ ChartJS.register(
 const commonOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  elements: {
+    bar: {
+      borderRadius: 4,
+      borderSkipped: false,
+      borderWidth: 2,
+    },
+  },
   plugins: {
     legend: {
       position: "bottom",
@@ -60,10 +67,12 @@ export const TeamsBySportChart = ({ data }) => {
         label: "Number of Teams",
         data: data.map((item) => item.team_count),
         backgroundColor: data.map(
-          (_, index) => (index % 2 === 0 ? "#8B1538" : "#FFD700") // Alternating primary and secondary colors
+          (_, index) => (index % 2 === 0 ? "#8B153890" : "#FFD70090") // Maroon and gold with transparency
+        ),
+        borderColor: data.map(
+          (_, index) => (index % 2 === 0 ? "#8B1538" : "#FFD700") // Maroon and gold borders
         ),
         borderWidth: 2,
-        borderColor: "#fff",
       },
     ],
   };
@@ -127,9 +136,9 @@ export const SystemActivityChart = ({ data }) => {
           data.games_scheduled || 0,
           data.upcoming_trainings || 0,
         ],
-        backgroundColor: "#8B1538", // Primary color
-        borderColor: "#B01E47", // Primary light
-        borderWidth: 1,
+        backgroundColor: "#8B153890", // Maroon with transparency
+        borderColor: "#8B1538", // Maroon border
+        borderWidth: 2,
       },
     ],
   };
@@ -194,8 +203,8 @@ export const UserActivityChart = ({ data }) => {
           data.new_users_month || 0,
           data.new_users_week || 0,
         ],
-        backgroundColor: "rgba(139, 21, 56, 0.2)", // Primary with transparency
-        borderColor: "#8B1538", // Primary color
+        backgroundColor: "#8B153890", // Maroon with transparency
+        borderColor: "#8B1538", // Maroon border
         borderWidth: 2,
         fill: true,
       },
@@ -254,8 +263,8 @@ export const TrainingAttendanceChart = ({ data }) => {
     datasets: [
       {
         data: [attendanceRate, absenteeRate],
-        backgroundColor: ["#8B1538", "#FFD700"], // Primary and secondary colors
-        borderColor: ["#B01E47", "#FFC107"], // Lighter variations
+        backgroundColor: ["#8B153890", "#FFD70090"], // Maroon and gold with transparency
+        borderColor: ["#8B1538", "#FFD700"], // Maroon and gold borders
         borderWidth: 2,
       },
     ],
@@ -313,12 +322,12 @@ export const TopTeamsChart = ({ data }) => {
         label: "Win Rate (%)",
         data: topTeams.map((team) => team.win_rate),
         backgroundColor: topTeams.map(
-          (_, index) => (index % 2 === 0 ? "#8B1538" : "#FFD700") // Alternating primary and secondary
+          (_, index) => (index % 2 === 0 ? "#8B153890" : "#FFD70090") // Maroon and gold with transparency
         ),
         borderColor: topTeams.map(
-          (_, index) => (index % 2 === 0 ? "#B01E47" : "#FFC107") // Lighter variations
+          (_, index) => (index % 2 === 0 ? "#8B1538" : "#FFD700") // Maroon and gold borders
         ),
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
@@ -392,16 +401,16 @@ export const CoachEffectivenessChart = ({ data }) => {
       {
         label: "Effectiveness Score",
         data: topCoaches.map((coach) => coach.effectiveness_score),
-        backgroundColor: "#8B1538", // Primary color
-        borderColor: "#B01E47", // Primary light
-        borderWidth: 1,
+        backgroundColor: "#8B153890", // Maroon with transparency
+        borderColor: "#8B1538", // Maroon border
+        borderWidth: 2,
       },
       {
         label: "Attendance Rate (%)",
         data: topCoaches.map((coach) => coach.attendance_rate),
-        backgroundColor: "#FFD700", // Secondary color
-        borderColor: "#FFC107", // Secondary variant
-        borderWidth: 1,
+        backgroundColor: "#FFD70090", // Gold with transparency
+        borderColor: "#FFD700", // Gold border
+        borderWidth: 2,
       },
     ],
   };
@@ -467,11 +476,11 @@ export const SystemHealthChart = ({ score }) => {
       {
         data: [score, 100 - score],
         backgroundColor: [
-          score >= 80 ? "#8B1538" : score >= 60 ? "#FFD700" : "#EF4444", // Primary, secondary, or red for poor health
-          "#E5E7EB",
+          score >= 80 ? "#8B153890" : score >= 60 ? "#FFD70090" : "#EF444490", // Maroon, gold, or red with transparency
+          "#E5E7EB90",
         ],
         borderColor: [
-          score >= 80 ? "#B01E47" : score >= 60 ? "#FFC107" : "#DC2626", // Lighter variations
+          score >= 80 ? "#8B1538" : score >= 60 ? "#FFD700" : "#EF4444", // Maroon, gold, or red borders
           "#D1D5DB",
         ],
         borderWidth: 2,
@@ -551,9 +560,9 @@ export const TrainingTrendChart = ({ data }) => {
       {
         label: "Training Sessions",
         data: [45, 52, 48, 61, data.monthly_sessions || 0],
-        borderColor: "#8B1538", // Primary color
-        backgroundColor: "rgba(139, 21, 56, 0.1)", // Primary with transparency
-        borderWidth: 3,
+        borderColor: "#8B1538", // Maroon border
+        backgroundColor: "rgba(139, 21, 56, 0.1)", // Maroon with transparency
+        borderWidth: 2,
         fill: true,
         tension: 0.4,
       },
@@ -618,8 +627,8 @@ export const GenderDistributionChart = ({ data }) => {
           data.male_teams || 0,
           data.female_teams || 0,
         ],
-        backgroundColor: ["#8B1538", "#FFD700", "#B01E47", "#FFC107"], // University colors pattern
-        borderColor: ["#B01E47", "#FFC107", "#8B1538", "#FFD700"], // Alternating pattern
+        backgroundColor: ["#8B153890", "#FFD70090", "#f59e0b90", "#7f1d1d90"], // Maroon, gold, amber, dark red with transparency
+        borderColor: ["#8B1538", "#FFD700", "#f59e0b", "#7f1d1d"], // Matching borders
         borderWidth: 2,
       },
     ],
@@ -688,16 +697,16 @@ export const PlayersByGenderSportChart = ({ data }) => {
       {
         label: "Male Players",
         data: maleData,
-        backgroundColor: "#8B1538", // Primary color
-        borderColor: "#B01E47", // Primary light
-        borderWidth: 1,
+        backgroundColor: "#8B153890", // Maroon with transparency
+        borderColor: "#8B1538", // Maroon border
+        borderWidth: 2,
       },
       {
         label: "Female Players",
         data: femaleData,
-        backgroundColor: "#FFD700", // Secondary color
-        borderColor: "#FFC107", // Secondary variant
-        borderWidth: 1,
+        backgroundColor: "#FFD70090", // Gold with transparency
+        borderColor: "#FFD700", // Gold border
+        borderWidth: 2,
       },
     ],
   };
@@ -766,16 +775,16 @@ export const TeamsByDivisionSportChart = ({ data }) => {
       {
         label: "Male Division",
         data: maleData,
-        backgroundColor: "#8B1538", // Primary color
-        borderColor: "#B01E47", // Primary light
-        borderWidth: 1,
+        backgroundColor: "#8B153890", // Maroon with transparency
+        borderColor: "#8B1538", // Maroon border
+        borderWidth: 2,
       },
       {
         label: "Female Division",
         data: femaleData,
-        backgroundColor: "#FFD700", // Secondary color
-        borderColor: "#FFC107", // Secondary variant
-        borderWidth: 1,
+        backgroundColor: "#FFD70090", // Gold with transparency
+        borderColor: "#FFD700", // Gold border
+        borderWidth: 2,
       },
     ],
   };

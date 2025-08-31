@@ -48,10 +48,24 @@ const SportStatsCardView = ({ stats, filter }) => {
   // No stats - show empty state
   if (!stats || stats.length === 0) {
     return (
-      <EmptyStatsState
-        getActiveFiltersCount={() => getActiveFiltersCount(filter)}
-        onCreateStat={handleCreateStat}
-      />
+      <>
+        <EmptyStatsState
+          getActiveFiltersCount={() => getActiveFiltersCount(filter)}
+          onCreateStat={handleCreateStat}
+        />
+        
+        {/* Modals need to be rendered even in empty state */}
+        <SportStatsModal
+          isOpen={modals.stat.isOpen}
+          onClose={modals.stat.closeModal}
+          stat={selectedStat}
+        />
+        <DeleteStatModal
+          isOpen={modals.delete.isOpen}
+          onClose={modals.delete.closeModal}
+          stat={selectedStat}
+        />
+      </>
     );
   }
 
@@ -62,7 +76,7 @@ const SportStatsCardView = ({ stats, filter }) => {
         getActiveFiltersCount={() => getActiveFiltersCount(filter)}
         onCreateStat={handleCreateStat}
       />
-      
+
       <div className="space-y-8">
         {Object.entries(categorizedStats).map(([category, categoryStats]) => {
           const isExpanded = expandedCategories[category] !== false; // default to expanded

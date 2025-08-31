@@ -140,7 +140,7 @@ const SportForm = ({ onClose, sport = null }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Info className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Basic Information</h3>
+          <h3 className="text-lg font-semibold text-primary">Basic Information</h3>
         </div>
         
         <ControlledInput
@@ -183,7 +183,7 @@ const SportForm = ({ onClose, sport = null }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Users className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Team Configuration</h3>
+          <h3 className="text-lg font-semibold text-primary">Team Configuration</h3>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,7 +226,7 @@ const SportForm = ({ onClose, sport = null }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="h-4 w-4 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Game Structure</h3>
+              <h3 className="text-lg font-semibold text-primary">Game Structure</h3>
             </div>
             
             <div className="space-y-4">
@@ -245,7 +245,6 @@ const SportForm = ({ onClose, sport = null }) => {
                     label="Maximum Periods"
                     control={control}
                     type="number"
-                    placeholder="4"
                     help_text="Maximum periods/quarters possible in a game"
                     rules={{ 
                       min: { value: 1, message: "Must be at least 1" },
@@ -283,7 +282,7 @@ const SportForm = ({ onClose, sport = null }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Target className="h-4 w-4 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Set-Based Winning Conditions</h3>
+              <h3 className="text-lg font-semibold text-primary">Set-Based Winning Conditions</h3>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -306,7 +305,6 @@ const SportForm = ({ onClose, sport = null }) => {
                 label="Points to Win Set"
                 control={control}
                 type="number"
-                placeholder="25"
                 help_text="Points needed to win a single set"
                 rules={{ 
                   min: { value: 1, message: "Must be at least 1" },
@@ -320,7 +318,6 @@ const SportForm = ({ onClose, sport = null }) => {
                 label="Winning Margin"
                 control={control}
                 type="number"
-                placeholder="2"
                 help_text="Minimum point difference to win a set"
                 rules={{ 
                   min: { value: 1, message: "Must be at least 1" },
@@ -338,7 +335,7 @@ const SportForm = ({ onClose, sport = null }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Settings2 className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Visual Settings</h3>
+          <h3 className="text-lg font-semibold text-primary">Visual Settings</h3>
         </div>
         
         <div className="space-y-2">

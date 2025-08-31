@@ -69,9 +69,6 @@ const SystemHealthSection = ({ overview }) => {
 
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      {/* Enhanced background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
       <CardHeader className="relative">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
