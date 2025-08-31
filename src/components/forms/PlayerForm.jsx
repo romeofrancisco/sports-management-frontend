@@ -59,12 +59,20 @@ const PlayerForm = ({ sports, onClose, player }) => {
         onClose();
       },
       onError: (e) => {
-        const error = e.response.data;
+        console.log("Error response:", e.response);
+        const error = e.response?.data;
         if (error) {
+          console.log("Error data:", error);
           Object.keys(error).forEach((fieldName) => {
+            // Handle both string and array error formats
+            let errorMessage = error[fieldName];
+            if (Array.isArray(errorMessage)) {
+              errorMessage = errorMessage[0]; // Take the first error message
+            }
+            console.log(`Setting error for ${fieldName}:`, errorMessage);
             setError(fieldName, {
               type: "server",
-              message: error[fieldName],
+              message: errorMessage,
             });
           });
         }
@@ -75,54 +83,32 @@ const PlayerForm = ({ sports, onClose, player }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-6 px-1"
+      className="flex flex-col gap-8 px-4 py-6 max-w-2xl mx-auto"
     >
       {/* Personal Details */}
-      <div>
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
+      <div className="space-y-4">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Personal Details
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <ControlledInput
-            name="first_name"
-            label="First Name"
-            placeholder="Enter first name"
-            control={control}
-            errors={errors}
-          />
-          <ControlledInput
-            name="last_name"
-            label="Last Name"
-            placeholder="Enter last name"
-            control={control}
-            errors={errors}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-          <ControlledInput
-            name="email"
-            label="Email"
-            placeholder="Enter email"
-            control={control}
-            errors={errors}
-          />
-          <ControlledInput
-            name="profile"
-            label="Profile"
-            type="file"
-            accept="image/*"
-            control={control}
-            errors={errors}
-          />
-        </div>
-      </div>
-
-      {/* Account Details */}
-      <div className="pt-4 border-t border-border">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
-          Account Details
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="space-y-4">
+          {/* Only group truly related fields */}
+          <div className="grid grid-cols-2 gap-3">
+            <ControlledInput
+              name="first_name"
+              label="First Name"
+              placeholder="Enter first name"
+              control={control}
+              errors={errors}
+            />
+            <ControlledInput
+              name="last_name"
+              label="Last Name"
+              placeholder="Enter last name"
+              control={control}
+              errors={errors}
+            />
+          </div>
+          
           <ControlledSelect
             name="sex"
             control={control}
@@ -134,59 +120,88 @@ const PlayerForm = ({ sports, onClose, player }) => {
             labelKey="label"
             errors={errors}
           />
+          
+          <ControlledInput
+            name="profile"
+            label="Profile Photo"
+            type="file"
+            accept="image/*"
+            control={control}
+            errors={errors}
+          />
+        </div>
+      </div>
+
+      {/* Account Details */}
+      <div className="space-y-4 pt-6 border-t border-border/60">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Account Details
+        </h2>
+        <div className="space-y-4">
+          <ControlledInput
+            name="email"
+            label="Email Address"
+            placeholder="Enter email address"
+            type="email"
+            control={control}
+            errors={errors}
+          />
+          
           <ControlledSelect
             name="year_level"
             control={control}
             label="Year Level"
-            placeholder="Select Year Level"
+            placeholder="Select year level"
             groupLabel="Year Level"
             options={YEAR_LEVEL_CHOICES}
             valueKey="value"
             labelKey="label"
             errors={errors}
           />
+          
           <ControlledSelect
             name="course"
             control={control}
             label="Course"
             groupLabel="Course"
-            placeholder="Select Course"
+            placeholder="Select course"
             options={COURSE_CHOICES}
             valueKey="value"
             labelKey="label"
             errors={errors}
           />
+          
+          {!isEdit && (
+            <ControlledInput
+              name="password"
+              label="Password"
+              placeholder="Enter password"
+              type="password"
+              control={control}
+              errors={errors}
+            />
+          )}
         </div>
-        {!isEdit && (
-          <ControlledInput
-            name="password"
-            label="Password"
-            placeholder="Enter password"
-            type="password"
-            control={control}
-            errors={errors}
-            className="mt-2"
-          />
-        )}
       </div>
 
       {/* Player Information */}
-      <div className="pt-4 border-t border-border">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+      <div className="space-y-4 pt-6 border-t border-border/60">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Player Information
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="space-y-4">
           <ControlledSelect
             name="sport_slug"
             control={control}
             label="Sport"
-            placeholder="Select Sport"
+            placeholder="Select sport"
             groupLabel="Sport"
             options={sports}
             valueKey="slug"
             labelKey="name"
             errors={errors}
           />
+          
           <ControlledTeamSelect
             control={control}
             name="team_id"
@@ -195,45 +210,47 @@ const PlayerForm = ({ sports, onClose, player }) => {
             teams={teams}
             errorMessage={errors.team_id?.message}
           />
-        </div>
-        <MultiSelect
-          name="position_ids"
-          label="Position"
-          control={control}
-          options={positions}
-          max={3}
-          placeholder="Select player position..."
-          className="mt-2"
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+          
+          <MultiSelect
+            name="position_ids"
+            label="Position"
+            control={control}
+            options={positions}
+            max={3}
+            placeholder="Select player position..."
+            className=""
+          />
+          
           <ControlledInput
             name="jersey_number"
-            label="Jersey #"
+            label="Jersey Number"
             type="number"
+            placeholder="Enter jersey number"
             control={control}
             errors={errors}
           />
+          
           <ControlledInput
             name="height"
-            label="Height"
+            label="Height (cm)"
             type="number"
+            placeholder="Enter height in centimeters"
             control={control}
             errors={errors}
           />
+          
           <ControlledInput
             name="weight"
-            label="Weight"
+            label="Weight (kg)"
             type="number"
+            placeholder="Enter weight in kilograms"
             control={control}
             errors={errors}
           />
         </div>
       </div>
 
-      <Button
-        type="submit"
-        disabled={isCreating || isUpdating}
-      >
+      <Button type="submit" disabled={isCreating || isUpdating}>
         {isCreating || isUpdating ? (
           <>
             <Loader2 className="animate-spin mr-2" />

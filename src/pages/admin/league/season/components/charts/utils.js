@@ -5,29 +5,29 @@
 // Define theme-based color palettes with full opacity
 const COLORS = {
   primary: {
-    main: 'rgba(139, 21, 56, 1)',          // Primary maroon full opacity
-    light: 'rgba(176, 30, 71, 1)',         // Lighter maroon full opacity
-    dark: 'rgba(107, 16, 40, 1)',          // Darker maroon full opacity
+    main: 'rgba(139, 21, 56, 0.7)',          // Primary maroon full opacity
+    light: 'rgba(176, 30, 71, 0.7)',         // Lighter maroon full opacity
+    dark: 'rgba(107, 16, 40, 0.7)',          // Darker maroon full opacity
     border: 'rgba(139, 21, 56, 1)',        // Primary maroon solid
     lightBorder: 'rgba(176, 30, 71, 1)',   // Lighter maroon solid
     darkBorder: 'rgba(107, 16, 40, 1)',    // Darker maroon solid
   },
   secondary: {
-    main: 'rgba(255, 215, 0, 1)',          // Secondary gold full opacity
-    light: 'rgba(255, 237, 78, 1)',        // Lighter gold full opacity
-    dark: 'rgba(230, 194, 0, 1)',          // Darker gold full opacity
+    main: 'rgba(255, 215, 0, 0.7)',          // Secondary gold full opacity
+    light: 'rgba(255, 237, 78, 0.7)',        // Lighter gold full opacity
+    dark: 'rgba(230, 194, 0, 0.7)',          // Darker gold full opacity
     border: 'rgba(255, 215, 0, 1)',        // Secondary gold solid
     lightBorder: 'rgba(255, 237, 78, 1)',  // Lighter gold solid
     darkBorder: 'rgba(230, 194, 0, 1)',    // Darker gold solid
   },
   // Additional colors for variety when needed - using slight transparency for backgrounds
   tertiary: [
-    { bg: 'rgba(139, 21, 56, 0.9)', border: 'rgba(139, 21, 56, 1)' },  // Primary with slight transparency
-    { bg: 'rgba(255, 215, 0, 0.9)', border: 'rgba(255, 215, 0, 1)' },  // Secondary with slight transparency
-    { bg: 'rgba(176, 30, 71, 0.9)', border: 'rgba(176, 30, 71, 1)' },  // Primary light with slight transparency
-    { bg: 'rgba(255, 237, 78, 0.9)', border: 'rgba(255, 237, 78, 1)' }, // Secondary light with slight transparency
-    { bg: 'rgba(107, 16, 40, 0.9)', border: 'rgba(107, 16, 40, 1)' },  // Primary dark with slight transparency
-    { bg: 'rgba(230, 194, 0, 0.9)', border: 'rgba(230, 194, 0, 1)' },  // Secondary dark with slight transparency
+    { bg: 'rgba(139, 21, 56, 0.7)', border: 'rgba(139, 21, 56, 1)' },  // Primary with slight transparency
+    { bg: 'rgba(255, 215, 0, 0.7)', border: 'rgba(255, 215, 0, 1)' },  // Secondary with slight transparency
+    { bg: 'rgba(176, 30, 71, 0.7)', border: 'rgba(176, 30, 71, 1)' },  // Primary light with slight transparency
+    { bg: 'rgba(255, 237, 78, 0.7)', border: 'rgba(255, 237, 78, 1)' }, // Secondary light with slight transparency
+    { bg: 'rgba(107, 16, 40, 0.7)', border: 'rgba(107, 16, 40, 1)' },  // Primary dark with slight transparency
+    { bg: 'rgba(230, 194, 0, 0.7)', border: 'rgba(230, 194, 0, 1)' },  // Secondary dark with slight transparency
   ]
 };
 
@@ -90,14 +90,16 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
           data: sortedTeams.map(team => team.pointsPerSet),
           backgroundColor: COLORS.primary.main,
           borderColor: COLORS.primary.border,
-          borderWidth: 1
+          borderWidth: 2,
+          borderRadius: 4,
         },
         {
           label: 'Points Conceded per Set',
           data: sortedTeams.map(team => team.pointsConcededPerSet),
           backgroundColor: COLORS.secondary.main,
           borderColor: COLORS.secondary.border,
-          borderWidth: 1
+          borderWidth: 2,
+          borderRadius: 4,
         }
       ]
     };
@@ -117,7 +119,8 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
           }),
           backgroundColor: COLORS.primary.main,
           borderColor: COLORS.primary.border,
-          borderWidth: 1
+          borderWidth: 2,
+          borderRadius: 4,
         },
         {
           label: 'Points Conceded',
@@ -127,7 +130,8 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
           }),
           backgroundColor: COLORS.secondary.main,
           borderColor: COLORS.secondary.border, 
-          borderWidth: 1
+          borderWidth: 2,
+          borderRadius: 4,
         }
       ]
     };
@@ -163,7 +167,8 @@ export const getStreakChartData = (sanitizedPerformance, isSetsScoring) => {
         data: streakTeams.map(team => team.max_streak || 0),
         backgroundColor: backgroundColors.slice(0, streakTeams.length),
         borderColor: borderColors.slice(0, streakTeams.length),
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 4,
       }
     ]
   };
@@ -231,7 +236,8 @@ export const getDifferentialChartData = (sanitizedPerformance, isSetsScoring) =>
         borderColor: differentialTeams.map(team => {
           return team.differential >= 0 ? COLORS.primary.border : COLORS.secondary.border;
         }),
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 4,
       }
     ]
   };

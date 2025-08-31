@@ -18,7 +18,6 @@ const CategorySection = ({
 
   return (
     <Card className={`relative pt-0 gap-0 overflow-hidden border-2 shadow-lg hover:shadow-xl transition-all duration-300 ${categoryColors.border} ${categoryColors.bg}`}>
-      <div className={`absolute inset-0 bg-gradient-to-br opacity-5`} />
       
       <div
         className={`flex justify-between items-center p-3 sm:p-4 lg:p-5 border-b-2 cursor-pointer transition-all duration-200 hover:bg-opacity-80 ${categoryColors.bg} ${categoryColors.border} relative z-10`}

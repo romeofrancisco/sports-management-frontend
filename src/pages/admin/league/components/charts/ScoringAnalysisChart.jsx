@@ -9,13 +9,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import ChartCard from "@/components/charts/ChartCard";
+import { TrendingUp } from "lucide-react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -28,25 +23,9 @@ ChartJS.register(
 );
 
 const ScoringAnalysisChart = ({ teams, isSetBased = false, className = "" }) => {
-  if (!teams || teams.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Scoring Analysis</CardTitle>
-          <CardDescription>
-            Team scoring performance and analysis
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-64 flex items-center justify-center">
-          <p className="text-muted-foreground">No scoring data available</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   // Sort teams by the appropriate metric based on sport type
   const sortKey = isSetBased ? 'point_efficiency' : 'points_per_game';
-  const topTeams = teams
+  const topTeams = (teams || [])
     .sort((a, b) => (b[sortKey] || 0) - (a[sortKey] || 0))
     .slice(0, 8);
 
@@ -59,18 +38,22 @@ const ScoringAnalysisChart = ({ teams, isSetBased = false, className = "" }) => 
         data: topTeams.map((team) => 
           isSetBased ? (team.point_efficiency || 0) : (team.points_per_game || 0)
         ),
-        backgroundColor: "#8B1538",
+        backgroundColor: "rgba(139, 21, 56, 0.7)",
         borderColor: "#8B1538",
-        borderWidth: 1,
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
       },
       {
         label: isSetBased ? "Sets Win Percentage %" : "Points Conceded Per Game",
         data: topTeams.map((team) => 
           isSetBased ? (team.sets_win_percentage || 0) : (team.points_conceded_per_game || 0)
         ),
-        backgroundColor: "#FFD700",
+        backgroundColor: "rgba(255, 215, 0, 0.7)",
         borderColor: "#FFD700",
-        borderWidth: 1,
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
       },
     ],
   };
@@ -78,15 +61,51 @@ const ScoringAnalysisChart = ({ teams, isSetBased = false, className = "" }) => 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    elements: {
+      bar: {
+        borderRadius: 4,
+        borderSkipped: false,
+        borderWidth: 2,
+      },
+    },
     plugins: {
       legend: {
         display: true,
-        position: "top",
+        position: "bottom",
+        labels: {
+          padding: 16,
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif",
+            weight: "500",
+          },
+        },
       },
       title: {
         display: false, // Removed since we're using Card title
       },
       tooltip: {
+        backgroundColor: "rgba(15, 23, 42, 0.9)",
+        titleColor: "#f1f5f9",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(139, 0, 0, 0.3)",
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+        titleFont: {
+          size: 14,
+          family: "'Inter', sans-serif",
+          weight: "600",
+        },
+        bodyFont: {
+          size: 12,
+          family: "'Inter', sans-serif",
+          weight: "400",
+        },
         callbacks: {
           label: function (context) {
             const value = Math.round(context.parsed.y * 100) / 100;
@@ -98,34 +117,60 @@ const ScoringAnalysisChart = ({ teams, isSetBased = false, className = "" }) => 
     scales: {
       y: {
         beginAtZero: true,
+        grid: {
+          color: "rgba(148, 163, 184, 0.1)",
+        },
+        ticks: {
+          font: {
+            size: 11,
+            family: "'Inter', sans-serif",
+          },
+        },
         title: {
           display: true,
           text: isSetBased ? 'Efficiency Percentage' : 'Points per Game',
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif",
+            weight: "600",
+          },
         },
       },
       x: {
+        grid: {
+          color: "rgba(148, 163, 184, 0.1)",
+        },
+        ticks: {
+          font: {
+            size: 11,
+            family: "'Inter', sans-serif",
+          },
+        },
         title: {
           display: true,
           text: 'Teams',
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif",
+            weight: "600",
+          },
         },
       },
     },
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Scoring Analysis</CardTitle>
-        <CardDescription>
-          Team scoring performance and statistical analysis
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-full">
-          <Bar data={chartData} options={options} />
-        </div>
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Scoring Analysis"
+      description="Team scoring performance and statistical analysis"
+      className={className}
+      icon={TrendingUp}
+      hasData={teams && teams.length > 0}
+      height={300}
+      emptyMessage="No scoring analysis data available. Analysis will appear here once teams have played games."
+    >
+      <Bar data={chartData} options={options} />
+    </ChartCard>
   );
 };
 

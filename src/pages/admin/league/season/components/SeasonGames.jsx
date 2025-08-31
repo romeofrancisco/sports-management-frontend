@@ -24,22 +24,25 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
 
   // Initialize date when all games data is available
   useEffect(() => {
-    if (allGames && allGames.length > 0 && !selectedDate) {
+    if (!selectedDate && !isLoadingAllGames) {
       // Start with today
       let initialDate = new Date();
-      const todayGames = allGames.filter((game) =>
-        isSameDay(parseISO(game.date), initialDate)
-      );
+      
+      if (allGames && allGames.length > 0) {
+        const todayGames = allGames.filter((game) =>
+          isSameDay(parseISO(game.date), initialDate)
+        );
 
-      if (todayGames.length === 0) {
-        // If no games today, find the first available game date
-        const sortedGames = [...allGames].sort((a, b) => new Date(a.date) - new Date(b.date));
-        initialDate = parseISO(sortedGames[0].date);
+        if (todayGames.length === 0) {
+          // If no games today, find the first available game date
+          const sortedGames = [...allGames].sort((a, b) => new Date(a.date) - new Date(b.date));
+          initialDate = parseISO(sortedGames[0].date);
+        }
       }
-
+      // Set the date regardless of whether there are games or not
       setSelectedDate(initialDate);
     }
-  }, [allGames, selectedDate]);
+  }, [allGames, selectedDate, isLoadingAllGames]);
 
   // Format the selected date as YYYY-MM-DD for API filtering (only when date is set)
   const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;

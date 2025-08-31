@@ -37,8 +37,8 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       code: stat?.code || "",
       category: stat?.category || "other",
 
-      // is_player_summary: stat?.is_player_summary || false,
-      // is_team_summary: stat?.is_team_summary || false,
+      is_player_summary: stat?.is_player_summary || false,
+      is_team_summary: stat?.is_team_summary || false,
       is_team_comparison: stat?.is_team_comparison || false,
 
       // is_player_stat: stat?.is_player_stat || false,
@@ -104,7 +104,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
     } else {
       // Reset recording stat fields when switching to metric stat
       setValue("is_points", false);
-      setValue("point_value", 0);
+      setValue("point_value", 1);
       setValue("is_negative", false);
     }
   }, [isRecord, setValue]);
@@ -157,22 +157,22 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       />
 
       {/* Player Summary */}
-      {/* <ControlledCheckbox
+      <ControlledCheckbox
         name="is_player_summary"
         label="Player Summary"
         control={control}
         help_text="Check this if the stat is shown in player summary"
         errors={errors}
-      /> */}
+      />
 
       {/* Team Summary */}
-      {/* <ControlledCheckbox
+      <ControlledCheckbox
         name="is_team_summary"
         label="Team Summary"
         control={control}
         help_text="Check this if the stat is shown in team summary"
         errors={errors}
-      /> */}
+      />
 
       <ControlledCheckbox
         name="is_team_comparison"
@@ -189,7 +189,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         control={control}
         help_text="Check this if the stat is for players"
         errors={errors}
-      /> */}
+      />
 
       {/* Team Stat */}
       {/* <ControlledCheckbox
@@ -240,7 +240,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
                 name="uses_point_value"
                 label="Uses Point Value"
                 control={control}
-                help_text="Check if this stat uses its point value for calculations (e.g., FT in Basketball are worth 1 point each)"
+                help_text="Check if this stat uses its point value instead of its count for calculations"
                 errors={errors}
               />
               <ControlledInput

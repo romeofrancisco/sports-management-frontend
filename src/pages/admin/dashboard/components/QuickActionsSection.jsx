@@ -36,8 +36,7 @@ const QuickActionsSection = ({ overview }) => {
       title: "Register Player",
       description: "Add new player",
       icon: <UserPlus className="h-4 w-4" />,
-      color:
-        "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
+      color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "players/create",
     },
     {
@@ -47,14 +46,13 @@ const QuickActionsSection = ({ overview }) => {
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "games/create",
     },
-    // {
-    //   title: "System Settings",
-    //   description: "Configure system",
-    //   icon: <Settings className="h-4 w-4" />,
-    //   color:
-    //     "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
-    //   action: "settings",
-    // },
+    {
+      title: "Schedule Training",
+      description: "Create new training session",
+      icon: <Calendar className="h-4 w-4" />,
+      color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
+      action: "trainings/create",
+    },
   ];
 
   const handleQuickAction = (action) => {
@@ -68,8 +66,9 @@ const QuickActionsSection = ({ overview }) => {
       case "games/create":
         navigate("/games");
         break;
-      case "settings":
-        navigate("/settings");
+
+      case "trainings/create":
+        navigate("/trainings/sessions");
         break;
       default:
         console.log(`Action ${action} not implemented yet`);
@@ -78,19 +77,25 @@ const QuickActionsSection = ({ overview }) => {
 
   return (
     <Card className="overflow-hidden border-2 border-primary/20">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <Zap className="h-5 w-5 text-primary-foreground" />
+      <CardHeader className="relative">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <Settings className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Quick Actions
+              </CardTitle>
+              <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
+                Common administrative actions for quick access
+              </CardDescription>
+            </div>
           </div>
-          <CardTitle className="text-lg font-semibold text-gradient">
-            Quick Actions
-          </CardTitle>
         </div>
-        <CardDescription>Common administrative tasks</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 sm:grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
           {quickActions.map((action, index) => (
             <Button
               key={action.title}
