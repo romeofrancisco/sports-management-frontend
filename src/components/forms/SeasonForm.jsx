@@ -62,7 +62,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
   const onSubmit = (data) => {
     // Clear any existing errors before submission
     clearErrors();
-    
+
     const jsonData = {
       ...data,
       start_date: data.dateRange?.from
@@ -78,35 +78,36 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
 
     const handleError = (err) => {
       console.error("Season operation error:", err);
-      
+
       const errorData = err.response?.data;
-      if (errorData && typeof errorData === 'object') {
+      if (errorData && typeof errorData === "object") {
         // Handle field-specific errors
         Object.entries(errorData).forEach(([field, message]) => {
           let errorMessage = message;
-          
+
           // Handle different error message formats
           if (Array.isArray(message)) {
             errorMessage = message[0];
-          } else if (typeof message === 'object' && message.message) {
+          } else if (typeof message === "object" && message.message) {
             errorMessage = message.message;
           }
-          
-          setError(field, { 
-            type: "server", 
-            message: errorMessage 
+
+          setError(field, {
+            type: "server",
+            message: errorMessage,
           });
         });
       } else {
         // Handle generic errors
-        const errorMessage = err.response?.data?.message || 
-                           err.response?.data?.error || 
-                           err.message || 
-                           "An error occurred. Please try again.";
-        
-        setError("root", { 
-          type: "server", 
-          message: errorMessage 
+        const errorMessage =
+          err.response?.data?.message ||
+          err.response?.data?.error ||
+          err.message ||
+          "An error occurred. Please try again.";
+
+        setError("root", {
+          type: "server",
+          message: errorMessage,
         });
       }
     };
@@ -139,7 +140,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           <p className="text-sm font-medium">{errors.root.message}</p>
         </div>
       )}
-      
+
       {/* Basic Information Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
@@ -153,10 +154,16 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
           control={control}
           label="Season Name"
           placeholder="Enter season name"
-          rules={{ 
+          rules={{
             required: "Season name is required",
-            minLength: { value: 2, message: "Season name must be at least 2 characters" },
-            maxLength: { value: 100, message: "Season name must not exceed 100 characters" }
+            minLength: {
+              value: 2,
+              message: "Season name must be at least 2 characters",
+            },
+            maxLength: {
+              value: 100,
+              message: "Season name must not exceed 100 characters",
+            },
           }}
           errors={errors}
         />
@@ -172,7 +179,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
                 return "Start date is required";
               }
               return true;
-            }
+            },
           }}
           errors={errors}
           helpText="Select both dates, or only start date to auto-set end date after bracket generation."
@@ -244,14 +251,14 @@ const TeamSelection = ({
       />
       <Label className="text-sm font-semibold">Select All Teams</Label>
     </div>
-    
+
     {/* Show validation message for teams */}
     {error && (
       <p className="text-xs text-destructive mb-3 font-medium">
         {error.message}
       </p>
     )}
-    
+
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
       {sportTeams.map((team) => {
         const isSelected = selectedTeams.includes(team.id);
@@ -292,7 +299,7 @@ const TeamSelection = ({
         );
       })}
     </div>
-    
+
     {/* Hidden input for validation */}
     <Controller
       name="teams"
@@ -307,7 +314,7 @@ const TeamSelection = ({
             return "At least 2 teams are required for a season";
           }
           return true;
-        }
+        },
       }}
       render={() => null}
     />

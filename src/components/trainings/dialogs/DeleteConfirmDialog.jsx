@@ -11,18 +11,28 @@ import { Button } from "../../ui/button";
 import { Loader2 } from "lucide-react";
 
 /**
- * Confirmation dialog for deleting metric units
- * Handles its own delete mutation internally
+ * Confirmation dialog for deleting items
+ * Accepts a delete mutation hook as a prop for flexibility
  */
-export const DeleteConfirmDialog = ({ open, onOpenChange, unit, onSuccess }) => {
-  const deleteMutation = useDeleteMetricUnit();  const handleDeleteConfirm = () => {
-    if (!unit) return;
-    
-    deleteMutation.mutate(unit.id, {
+export const DeleteConfirmDialog = ({
+  open,
+  onOpenChange,
+  item,
+  onSuccess,
+  deleteMutation: customDeleteMutation,
+  title = "Delete Item",
+  description,
+}) => {
+  const defaultDeleteMutation = useDeleteMetricUnit();
+  const deleteMutation = customDeleteMutation || defaultDeleteMutation;
+  const handleDeleteConfirm = () => {
+    if (!item) return;
+
+    deleteMutation.mutate(item.id, {
       onSuccess: () => {
         onOpenChange(false);
         onSuccess?.();
-      }
+      },
     });
   };
 
@@ -30,23 +40,23 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, unit, onSuccess }) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-[400px]">
         <DialogHeader className="pb-4">
-          <DialogTitle className="text-lg sm:text-xl">Delete Metric Unit</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">{title}</DialogTitle>
           <DialogDescription className="text-sm">
-            Are you sure you want to delete "{unit?.name}"? This action cannot be undone.
+            {description || `Are you sure you want to delete "${item?.name}"? This action cannot be undone.`}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-2 pt-4">
-          <Button 
-            variant="outline" 
-            onClick={() => onOpenChange(false)} 
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
             disabled={deleteMutation.isLoading}
             className="w-full sm:w-auto"
           >
             Cancel
           </Button>
-          <Button 
-            variant="destructive" 
-            onClick={handleDeleteConfirm} 
+          <Button
+            variant="destructive"
+            onClick={handleDeleteConfirm}
             disabled={deleteMutation.isLoading}
             className="w-full sm:w-auto"
           >
@@ -61,5 +71,6 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, unit, onSuccess }) => 
           </Button>
         </div>
       </DialogContent>
-    </Dialog>  );
+    </Dialog>
+  );
 };

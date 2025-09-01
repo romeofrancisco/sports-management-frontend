@@ -23,7 +23,7 @@ const ChartCard = ({
   className = "", 
   action,
   icon,
-  height = 300,
+  height = "full",
   emptyMessage = "Chart data will appear here once information is available.",
   hasData = true
 }) => {
@@ -32,7 +32,7 @@ const ChartCard = ({
   return (
     <Card className={`border-2 border-primary/20 overflow-hidden ${className}`}>
       <CardHeader className="relative">
-        <div className="flex items-center justify-between">
+        <div className="flex lg:flex-row flex-col space-y-4 lg:space-y-0">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <IconComponent className="h-5 w-5 text-primary-foreground" />
@@ -48,7 +48,7 @@ const ChartCard = ({
               )}
             </div>
           </div>
-          {action && <div className="ml-auto">{action}</div>}
+          {action && <div className="lg:ml-auto">{action}</div>}
         </div>
       </CardHeader>
       <CardContent>

@@ -7,7 +7,12 @@ import { useModal } from "@/hooks/useModal";
 import { MetricUnitFormDialog } from "../dialogs/MetricUnitFormDialog";
 import { DeleteConfirmDialog } from "../dialogs/DeleteConfirmDialog";
 import { MetricUnitsTable } from "../tables/MetricUnitsTable";
-import { TabLayout, TabHeader, TabContent, TabCard } from "@/components/common/TabLayout";
+import {
+  TabLayout,
+  TabHeader,
+  TabContent,
+  TabCard,
+} from "@/components/common/TabLayout";
 import { toast } from "sonner";
 
 // Explanation component for normalization weights
@@ -29,13 +34,9 @@ const WeightExplanation = () => (
 
 // Main component
 export const MetricUnitsManager = () => {
-  const { 
-    user, 
-    isAdmin, 
-    canCreateMetricUnits, 
-    canModifyMetricUnit 
-  } = useRolePermissions();
-  
+  const { user, isAdmin, canCreateMetricUnits, canModifyMetricUnit } =
+    useRolePermissions();
+
   const modals = {
     unit: useModal(),
     delete: useModal(),
@@ -55,7 +56,8 @@ export const MetricUnitsManager = () => {
     }
     setSelectedUnit(unit);
     modals.unit.openModal();
-  };  const handleDelete = (unit) => {
+  };
+  const handleDelete = (unit) => {
     if (!canModifyMetricUnit(unit)) {
       toast.error("Access denied", {
         description: "You don't have permission to delete this unit.",
@@ -63,19 +65,21 @@ export const MetricUnitsManager = () => {
       });
       return;
     }
-    
+
     // Only prevent deletion of system defaults for non-admin users
     if (unit.is_default && !isAdmin()) {
       toast.error("Cannot delete system units", {
-        description: "Default system units cannot be deleted to maintain data integrity.",
+        description:
+          "Default system units cannot be deleted to maintain data integrity.",
         richColors: true,
       });
       return;
     }
-    
+
     setUnitToDelete(unit);
     modals.delete.openModal();
-  };  const handleAddNew = () => {
+  };
+  const handleAddNew = () => {
     // Check if user has permission to create units
     if (!canCreateMetricUnits()) {
       toast.error("Access denied", {
@@ -84,7 +88,7 @@ export const MetricUnitsManager = () => {
       });
       return;
     }
-    
+
     setSelectedUnit(null);
     modals.unit.openModal();
   };
@@ -97,15 +101,18 @@ export const MetricUnitsManager = () => {
   const handleDeleteSuccess = () => {
     // Reset delete state and refresh data
     setUnitToDelete(null);
-    refetch();  };  return (
+    refetch();
+  };
+  return (
     <TabLayout>
       <TabHeader
         title="Metric Units"
-        description="Manage units of measurement for training metrics"        actions={
+        description="Manage units of measurement for training metrics"
+        actions={
           // Only show Add Unit button for users with permission
           canCreateMetricUnits() && (
             <Button onClick={handleAddNew} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus />
               Add Unit
             </Button>
           )

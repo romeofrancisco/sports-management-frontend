@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import {
@@ -36,6 +37,7 @@ import { useSports } from "@/hooks/useSports";
 const TrainingSessionForm = ({ session = null, teams, onClose }) => {
   const isEdit = Boolean(session);
   const [selectedSport, setSelectedSport] = useState("all");
+  const navigate = useNavigate();
 
   // Ensure teams is always an array to prevent "find is not a function" errors
   const safeTeams = Array.isArray(teams) ? teams : teams?.results || [];
@@ -89,8 +91,10 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
       updateSession(
         { id: session.id, ...payload },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             onClose();
+            // Navigate to session metrics page
+            navigate(`/sessions/${data.id}/manage/session-metrics`);
           },
           onError: (error) => {
             console.error("Update error:", error);
@@ -114,8 +118,10 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
       );
     } else {
       createSession(payload, {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          // Navigate to session metrics page
+          navigate(`/sessions/${data.id}/manage/session-metrics`);
         },
         onError: (error) => {
           console.error("Create error:", error);

@@ -78,6 +78,120 @@ export const useRolePermissions = () => {
     return `You can only ${actionText} units you created`;
   };
 
+  // Training metrics permission functions (same pattern as metric units)
+  // Check if user can create training metrics
+  const canCreateTrainingMetrics = () => {
+    return isAdmin() || isCoach();
+  };
+
+  // Check if user can modify (edit/delete) a specific training metric
+  const canModifyTrainingMetric = (metric) => {
+    if (!user || !metric) return false;
+
+    // Admin can modify any metric
+    if (isAdmin()) return true;
+
+    // Coach can only modify metrics they created (non-default)
+    if (isCoach()) {
+      return !metric.is_default && metric.created_by === user.id;
+    }
+
+    return false;
+  };
+
+  // Check if user can delete a specific training metric
+  const canDeleteTrainingMetric = (metric) => {
+    if (!user || !metric) return false;
+
+    // Use the same logic as modify, but could be extended for different rules
+    return canModifyTrainingMetric(metric);
+  };
+
+  // Check if user can edit a specific training metric
+  const canEditTrainingMetric = (metric) => {
+    if (!user || !metric) return false;
+
+    // Use the same logic as modify, but could be extended for different rules
+    return canModifyTrainingMetric(metric);
+  };
+
+  // Get appropriate tooltip message for training metric actions
+  const getTrainingMetricTooltip = (metric, action = "modify") => {
+    if (!metric) return "";
+
+    const canModify = canModifyTrainingMetric(metric);
+
+    if (canModify) {
+      return action === "edit" ? "Edit metric" : "Delete metric";
+    }
+
+    // User cannot modify the metric - provide specific reason
+    if (metric.is_default && !isAdmin()) {
+      const actionText = action === "edit" ? "edit" : "delete";
+      return `Cannot ${actionText} system metrics (Admin access required)`;
+    }
+
+    const actionText = action === "edit" ? "edit" : "delete";
+    return `You can only ${actionText} metrics you created`;
+  };
+
+  // Training categories permission functions (same pattern as training metrics)
+  // Check if user can create training categories
+  const canCreateTrainingCategories = () => {
+    return isAdmin() || isCoach();
+  };
+
+  // Check if user can modify (edit/delete) a specific training category
+  const canModifyTrainingCategory = (category) => {
+    if (!user || !category) return false;
+
+    // Admin can modify any category
+    if (isAdmin()) return true;
+
+    // Coach can only modify categories they created (non-default)
+    if (isCoach()) {
+      return !category.is_default && category.created_by === user.id;
+    }
+
+    return false;
+  };
+
+  // Check if user can delete a specific training category
+  const canDeleteTrainingCategory = (category) => {
+    if (!user || !category) return false;
+
+    // Use the same logic as modify, but could be extended for different rules
+    return canModifyTrainingCategory(category);
+  };
+
+  // Check if user can edit a specific training category
+  const canEditTrainingCategory = (category) => {
+    if (!user || !category) return false;
+
+    // Use the same logic as modify, but could be extended for different rules
+    return canModifyTrainingCategory(category);
+  };
+
+  // Get appropriate tooltip message for training category actions
+  const getTrainingCategoryTooltip = (category, action = "modify") => {
+    if (!category) return "";
+
+    const canModify = canModifyTrainingCategory(category);
+
+    if (canModify) {
+      return action === "edit" ? "Edit category" : "Delete category";
+    }
+
+    // User cannot modify the category - provide specific reason
+    if (category.is_default && !isAdmin()) {
+      const actionText = action === "edit" ? "edit" : "delete";
+      return `Cannot ${actionText} system categories (Admin access required)`;
+    }
+
+    const actionText = action === "edit" ? "edit" : "delete";
+    return `You can only ${actionText} categories you created`;
+  };
+
   // Memoize permissions to prevent infinite re-renders
   const permissions = useMemo(
     () => ({
@@ -88,6 +202,24 @@ export const useRolePermissions = () => {
         edit: canEditMetricUnit,
         delete: canDeleteMetricUnit,
         getTooltip: getMetricUnitTooltip,
+      },
+
+      // Training Metrics
+      trainingMetrics: {
+        create: canCreateTrainingMetrics(),
+        modify: canModifyTrainingMetric,
+        edit: canEditTrainingMetric,
+        delete: canDeleteTrainingMetric,
+        getTooltip: getTrainingMetricTooltip,
+      },
+
+      // Training Categories
+      trainingCategories: {
+        create: canCreateTrainingCategories(),
+        modify: canModifyTrainingCategory,
+        edit: canEditTrainingCategory,
+        delete: canDeleteTrainingCategory,
+        getTooltip: getTrainingCategoryTooltip,
       },
 
       // Teams management
@@ -334,5 +466,19 @@ export const useRolePermissions = () => {
     canEditMetricUnit,
     canDeleteMetricUnit,
     getMetricUnitTooltip,
+
+    // Training metrics permission functions
+    canCreateTrainingMetrics,
+    canModifyTrainingMetric,
+    canEditTrainingMetric,
+    canDeleteTrainingMetric,
+    getTrainingMetricTooltip,
+
+    // Training categories permission functions
+    canCreateTrainingCategories,
+    canModifyTrainingCategory,
+    canEditTrainingCategory,
+    canDeleteTrainingCategory,
+    getTrainingCategoryTooltip,
   };
 };

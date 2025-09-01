@@ -11,6 +11,7 @@ import {
   Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { ChartSpline } from "lucide-react";
 
 import { formatShortDate } from "@/utils/formatDate";
 
@@ -72,24 +73,33 @@ const PlayerProgressMultiChart = ({
 }) => {
   if (!chartData || chartData.length === 0 || !multiPlayerData?.results) {
     return (
-      <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-        No data available for the selected metric and date range
+      <div className="text-center py-12 h-[370px] flex flex-col items-center justify-center border-2 border-dashed rounded-md">
+        <div className="p-4 bg-muted rounded-full mb-4 mx-auto w-fit">
+          <ChartSpline className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+          No Performance Data to Compare
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+          The selected players don't have enough training session data for the chosen metric. 
+          Players need at least 2 recorded sessions to generate comparison charts.
+        </p>
       </div>
     );
   }
 
   // Calculate max value from all datasets to add padding
   const maxValue = Math.max(
-    ...Object.entries(multiPlayerData.results).flatMap(([playerId, playerData]) =>
-      chartData.map((point) => point[playerId] || 0)
+    ...Object.entries(multiPlayerData.results).flatMap(
+      ([playerId, playerData]) => chartData.map((point) => point[playerId] || 0)
     )
   );
-  
+
   // Add 20% padding to the max value for better spacing
   const suggestedMax = Math.ceil(maxValue * 1.2);
 
   return (
-    <div className="h-[400px] mt-4">
+    <div className="h-[400px]">
       <Line
         data={{
           labels: chartData.map((point) => point.date),
@@ -156,7 +166,8 @@ const PlayerProgressMultiChart = ({
                 label: function (context) {
                   // Show all players' improvement at this x (date)
                   const value = context.parsed.y;
-                  const unit = selectedMetricDetails?.metric_unit_data?.code || "%";
+                  const unit =
+                    selectedMetricDetails?.metric_unit_data?.code || "%";
                   return `${context.dataset.label} ${value.toFixed(2)} ${unit}`;
                 },
               },

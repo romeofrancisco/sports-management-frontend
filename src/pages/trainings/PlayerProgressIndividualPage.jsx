@@ -78,10 +78,6 @@ const PlayerProgressIndividualPage = () => {
           playerName={playerName}
           dateRangeParams={dateRangeParams}
           dateRange={dateRange}
-          openModal={() => {
-            // Handle modal opening if needed
-            console.log("Open modal for player", playerId);
-          }}
         />
       </div>
     </div>
