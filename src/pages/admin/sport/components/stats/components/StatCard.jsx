@@ -23,7 +23,7 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
   return (
     <Card
       className={cn(
-        "group overflow-hidden border-l-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.01] flex flex-col h-full",
+        "gap-0 group overflow-hidden border-l-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.01] flex flex-col h-full",
         stat.is_record
           ? "border-l-secondary bg-secondary/2 hover:border-l-secondary/80"
           : "border-l-orange-500 bg-orange-500/2 hover:border-l-orange-600",
@@ -35,11 +35,17 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
       <CardHeader className="pb-2 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-sm leading-tight line-clamp-1 mb-1" title={stat.name}>
+            <h4
+              className="font-semibold text-sm leading-tight line-clamp-1 mb-1"
+              title={stat.name}
+            >
               {stat.name}
             </h4>
             {stat.display_name && stat.display_name !== stat.name && (
-              <p className="text-xs text-muted-foreground line-clamp-1" title={stat.display_name}>
+              <p
+                className="text-xs text-muted-foreground line-clamp-1"
+                title={stat.display_name}
+              >
                 {stat.display_name}
               </p>
             )}
@@ -66,7 +72,7 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
             )}
           </div>
         </div>
-        
+
         {/* Code */}
         <div className="flex items-center gap-2 text-xs">
           <Code className="h-3 w-3 text-muted-foreground" />
@@ -80,7 +86,9 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
       <CardContent className="py-2 flex-grow">
         {!stat.is_record && stat.expression && (
           <div className="mb-3">
-            <div className="text-xs font-medium text-muted-foreground mb-1">Formula:</div>
+            <div className="text-xs font-medium text-muted-foreground mb-1">
+              Formula:
+            </div>
             <div className="bg-muted/40 p-2 rounded text-xs font-mono border text-muted-foreground line-clamp-2">
               {stat.expression}
             </div>
@@ -98,8 +106,24 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
             )}
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-muted-foreground">Team:</span>
+            <span className="text-muted-foreground">Team Comparison:</span>
             {stat.is_team_comparison ? (
+              <Check size={12} className="text-green-600" />
+            ) : (
+              <X size={12} className="text-red-500" />
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-muted-foreground">Player Summary:</span>
+            {stat.is_player_summary ? (
+              <Check size={12} className="text-green-600" />
+            ) : (
+              <X size={12} className="text-red-500" />
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-muted-foreground">Team Summary:</span>
+            {stat.is_team_summary ? (
               <Check size={12} className="text-green-600" />
             ) : (
               <X size={12} className="text-red-500" />

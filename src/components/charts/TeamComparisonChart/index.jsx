@@ -3,13 +3,21 @@ import { useTeamStatsComparison } from "@/hooks/useStats";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSelector } from "react-redux";
+import { SCORING_TYPE_VALUES } from "@/constants/sport";
 
 export default function TeamStatsComparison({ game }) {
   const { gameId } = useParams();
   const { data: statComparison, isLoading } = useTeamStatsComparison(gameId);
+  const { scoring_type, win_points_threshold } = useSelector((state) => state.sport);
 
   // Calculate a dynamic maximum value for each stat type
   const getMaxValue = (label, homeValue, awayValue) => {
+    // For Points stat in set-based sports, use win_points_threshold as max value
+    if (scoring_type === SCORING_TYPE_VALUES.SETS && label === "Points") {
+      return win_points_threshold || 25; // fallback to 25 if threshold not set
+    }
+
     // Use the greater of the two values and add a buffer
     const maxFromValues = Math.max(homeValue, awayValue);
 

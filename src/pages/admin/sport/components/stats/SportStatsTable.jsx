@@ -11,10 +11,10 @@ import { Plus, Filter, CheckCircle, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 // Import column definitions
-import { 
+import {
   getEssentialColumns,
   getDisplayColumns,
-  getRecordingColumns
+  getRecordingColumns,
 } from "../columns";
 
 const SportStatsTable = ({ filter }) => {
@@ -24,7 +24,7 @@ const SportStatsTable = ({ filter }) => {
 
   // Use the passed filter if provided, otherwise use a default filter
   const tableFilter = filter || { search: "", category: "all", type: "all" };
-  
+
   // Transform the filter for the API - now using backend filtering
   const apiFilter = {
     search: tableFilter.search || undefined,
@@ -62,7 +62,7 @@ const SportStatsTable = ({ filter }) => {
 
   // No need for additional client-side filtering since backend handles it all
   const filteredStats = stats || [];
-  
+
   // Function to get active filters count for badge
   const getActiveFiltersCount = () => {
     let count = 0;
@@ -77,18 +77,20 @@ const SportStatsTable = ({ filter }) => {
     const filters = [];
     if (tableFilter.search) filters.push(`Search: "${tableFilter.search}"`);
     if (tableFilter.category !== "all") {
-      const categoryName = {
-        "scoring": "Scoring Stats",
-        "performance": "Performance Metrics", 
-        "actions": "Action Stats"
-      }[tableFilter.category] || tableFilter.category;
+      const categoryName =
+        {
+          scoring: "Scoring Stats",
+          performance: "Performance Metrics",
+          actions: "Action Stats",
+        }[tableFilter.category] || tableFilter.category;
       filters.push(`Category: ${categoryName}`);
     }
     if (tableFilter.type !== "all") {
-      const typeName = {
-        "basic": "Basic Stats",
-        "advanced": "Advanced Stats"
-      }[tableFilter.type] || tableFilter.type;
+      const typeName =
+        {
+          basic: "Basic Stats",
+          advanced: "Advanced Stats",
+        }[tableFilter.type] || tableFilter.type;
       filters.push(`Type: ${typeName}`);
     }
     return filters.join(", ");
@@ -103,18 +105,19 @@ const SportStatsTable = ({ filter }) => {
             {filteredStats.length} stats
           </Badge>
           {getActiveFiltersCount() > 0 && (
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="flex items-center gap-1.5 bg-secondary/80"
               title={getFilterNames()}
             >
               <Filter className="h-3 w-3" />
-              {getActiveFiltersCount()} filter{getActiveFiltersCount() !== 1 ? 's' : ''}
+              {getActiveFiltersCount()} filter
+              {getActiveFiltersCount() !== 1 ? "s" : ""}
             </Badge>
           )}
         </div>
-        <Button 
-          onClick={handleCreateStat} 
+        <Button
+          onClick={handleCreateStat}
           size="sm"
           className="bg-primary hover:bg-primary/90 text-white shadow-sm"
         >
@@ -132,29 +135,30 @@ const SportStatsTable = ({ filter }) => {
         >
           <div className="bg-muted/30 border-b">
             <TabsList className="p-1 bg-transparent justify-start h-12">
-              <TabsTrigger 
-                value="essential" 
+              <TabsTrigger
+                value="essential"
                 className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <CheckCircle className="h-3.5 w-3.5" />
                 Essential Info
               </TabsTrigger>
-              <TabsTrigger 
-                value="display" 
+              <TabsTrigger
+                value="display"
                 className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Display Settings
               </TabsTrigger>
-              <TabsTrigger 
-                value="recording" 
+              <TabsTrigger
+                value="recording"
                 className="text-xs md:text-sm flex items-center gap-1.5"
               >
                 <CheckCircle className="h-3.5 w-3.5" />
                 Recording Settings
               </TabsTrigger>
             </TabsList>
-          </div>          <TabsContent value="essential" className="space-y-0">
+          </div>{" "}
+          <TabsContent value="essential" className="space-y-0">
             <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable
                 columns={essentialColumns}
@@ -167,7 +171,6 @@ const SportStatsTable = ({ filter }) => {
               />
             </div>
           </TabsContent>
-
           <TabsContent value="display" className="space-y-0">
             <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable
@@ -181,7 +184,6 @@ const SportStatsTable = ({ filter }) => {
               />
             </div>
           </TabsContent>
-          
           <TabsContent value="recording" className="space-y-0">
             <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable

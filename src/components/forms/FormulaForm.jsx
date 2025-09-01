@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Plus, Trash, Loader2 } from "lucide-react";
 import { useCreateFormula, useUpdateFormula } from "@/hooks/useFormula";
 import ControlledCheckbox from "../common/ControlledCheckbox";
+import ControlledCombobox from "../common/ControlledCombobox";
 
 const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
   const isEdit = !!formula;
@@ -15,7 +16,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
 
   const {
     control,
-    formState: { errors },  
+    formState: { errors },
     setError,
     handleSubmit,
     watch,
@@ -110,7 +111,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         {fields.map((field, index) => (
           <div key={field.id} className="flex items-center gap-2">
             <div className="flex-1">
-              <ControlledSelect
+              <ControlledCombobox
                 name={`components.${index}.stat_type`}
                 control={control}
                 label={`Stat ${index + 1}`}
@@ -121,6 +122,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
                 valueKey="id"
                 secondaryLabel="code"
                 rules={{ required: "Stat is required" }}
+                size="lg"
               />
             </div>
             <Button

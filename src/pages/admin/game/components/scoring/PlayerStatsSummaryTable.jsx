@@ -12,10 +12,13 @@ import {
 import { useSelector } from "react-redux";
 import { getPeriodLabel, SCORING_TYPE_VALUES } from "@/constants/sport";
 
-const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
+const PlayerStatsSummaryTable = ({
+  players,
+  has_period = true,
+  selectedPeriod = "total",
+}) => {
   const { current_period } = useSelector((state) => state.game);
   const { scoring_type } = useSelector((state) => state.sport);
-  const [selectedPeriod, setSelectedPeriod] = useState(String(current_period));
 
   // Get available periods from the first player's stats
   const availablePeriods = useMemo(() => {
@@ -157,34 +160,7 @@ const PlayerStatsSummaryTable = ({ players, has_period = true }) => {
   }, [allStatDisplayNames, selectedPeriod, scoring_type]);
 
   return (
-    <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem] mt-4 mb-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Player Stats</h3>
-        {scoring_type === SCORING_TYPE_VALUES.SETS &&
-          has_period &&
-          availablePeriods.length > 1 && (
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">
-                {getPeriodLabel(scoring_type)}:
-              </span>
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger className="w-[100px] text-xs" size="sm">
-                  <SelectValue placeholder="Period" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availablePeriods.map((period) => (
-                    <SelectItem className="text-xs" key={period} value={period}>
-                      {period === "total"
-                        ? "Total"
-                        : `${getPeriodLabel(scoring_type)} ${period}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-      </div>
-
+    <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem]">
       <DataTable
         columns={columns}
         data={tableData}

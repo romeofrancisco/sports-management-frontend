@@ -101,10 +101,19 @@ const StatButtons = ({
           }))
         );
       }
+      console.log('Button positions reset successfully');
     } catch (error) {
       console.warn("Failed to reset button positions:", error);
     }
   };
+
+  // Add a global function for debugging (can be called from console)
+  useEffect(() => {
+    window.resetStatButtonPositions = resetButtonPositions;
+    return () => {
+      delete window.resetStatButtonPositions;
+    };
+  }, [resetButtonPositions]);
 
   const handleStatRecord = (statId, point_value) => {
     // Prevent stat recording in layout mode
@@ -136,26 +145,69 @@ const StatButtons = ({
     Math.ceil((statTypes?.length || 0) / columns)
   );
 
+  // Debug logging
+  useEffect(() => {
+    if (statTypes && buttons.length > 0) {
+      console.log('StatTypes:', statTypes.length, statTypes.map(s => s.display_name));
+      console.log('Buttons:', buttons.length, buttons.map(b => ({ name: b.display_name, pos: b.position })));
+      console.log('Grid:', { columns, rows, total: columns * rows });
+    }
+  }, [statTypes, buttons, columns, rows]);
+
   useEffect(() => {
     if (statTypes) {
       const savedPositions = loadButtonPositions();
+      
+      // Create a map to track occupied positions
+      const occupiedPositions = new Set();
 
       setButtons(
         statTypes.map((btn, index) => {
           // Check if there's a saved position for this button
-          const savedPosition = savedPositions && savedPositions[btn.id];
+          let savedPosition = savedPositions && savedPositions[btn.id];
+          
+          // Validate saved position - ensure it's within bounds and not occupied
+          if (savedPosition) {
+            const posKey = `${savedPosition.x}-${savedPosition.y}`;
+            if (
+              savedPosition.x >= columns || 
+              savedPosition.y >= rows ||
+              occupiedPositions.has(posKey)
+            ) {
+              savedPosition = null; // Invalid position, use default
+            } else {
+              occupiedPositions.add(posKey);
+            }
+          }
+
+          // If no valid saved position, find next available default position
+          if (!savedPosition) {
+            let defaultX = index % columns;
+            let defaultY = Math.floor(index / columns);
+            let posKey = `${defaultX}-${defaultY}`;
+            
+            // Find next available position if default is occupied
+            while (occupiedPositions.has(posKey)) {
+              defaultX++;
+              if (defaultX >= columns) {
+                defaultX = 0;
+                defaultY++;
+              }
+              posKey = `${defaultX}-${defaultY}`;
+            }
+            
+            savedPosition = { x: defaultX, y: defaultY };
+            occupiedPositions.add(posKey);
+          }
 
           return {
             ...btn,
-            position: savedPosition || {
-              x: index % columns,
-              y: Math.floor(index / columns),
-            },
+            position: savedPosition,
           };
         })
       );
     }
-  }, [statTypes, columns, storageKey]);
+  }, [statTypes, columns, rows]);
 
   // Save button positions whenever buttons change (backup save)
   useEffect(() => {

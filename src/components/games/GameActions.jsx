@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FileTextIcon, Users, Play, EditIcon, UserCog, Trash2 } from "lucide-react";
+import {
+  FileTextIcon,
+  Users,
+  Play,
+  EditIcon,
+  UserCog,
+  Trash2,
+} from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
@@ -70,7 +77,7 @@ export const GameActions = ({
   const handleDeleteGame = () => {
     setSelectedGame(game);
     deleteGameModal.openModal();
-  };  // Clear selectedGame when modal is fully closed
+  }; // Clear selectedGame when modal is fully closed
   useEffect(() => {
     if (
       !startingLineupModal.isOpen &&
@@ -83,7 +90,12 @@ export const GameActions = ({
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [startingLineupModal.isOpen, coachAssignmentModal.isOpen, deleteGameModal.isOpen, selectedGame]);
+  }, [
+    startingLineupModal.isOpen,
+    coachAssignmentModal.isOpen,
+    deleteGameModal.isOpen,
+    selectedGame,
+  ]);
   return (
     <>
       {" "}
@@ -97,7 +109,7 @@ export const GameActions = ({
             size="sm"
             className="border-primary/50 text-primary/70 hover:bg-primary/10 hover:text-primary hover:border-primary transition-all duration-300"
           >
-            <EditIcon className="mr-1.5 h-3.5 w-3.5" />
+            <EditIcon />
             Update
           </Button>
         )}
@@ -109,7 +121,7 @@ export const GameActions = ({
             size="sm"
             className="border-red-500/50 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500 transition-all duration-300"
           >
-            <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+            <Trash2 />
             Delete
           </Button>
         )}
@@ -121,7 +133,7 @@ export const GameActions = ({
             size="sm"
             className="border-amber-500/50 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
           >
-            <UserCog className="mr-1.5 h-3.5 w-3.5" />
+            <UserCog />
             Assign Coach
           </Button>
         )}
@@ -132,7 +144,7 @@ export const GameActions = ({
             size="sm"
             className="bg-red-500 hover:bg-red-600 text-white border-red-300"
           >
-            <Play className="mr-1.5 h-3.5 w-3.5" />
+            <Play />
             Resume
           </Button>
         )}
@@ -147,12 +159,12 @@ export const GameActions = ({
               size="sm"
               className="border-secondary/50 text-secondary/70 hover:text-secondary hover:bg-secondary/10"
             >
-              <Users className="mr-1.5 h-3.5 w-3.5" />
+              <Users />
               Lineup
             </Button>
             {bothReady && (
               <Button onClick={handleStartGame} size="sm">
-                <Play className="mr-1.5 h-3.5 w-3.5" />
+                <Play />
                 Start Game
               </Button>
             )}
