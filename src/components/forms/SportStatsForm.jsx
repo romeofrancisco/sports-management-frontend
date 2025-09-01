@@ -51,7 +51,6 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       is_points: stat?.is_points || false,
       is_negative: stat?.is_negative || false,
       point_value: stat?.point_value || 0,
-      uses_point_value: stat?.uses_point_value || false,
 
       // Metric Stats
       formula: stat?.formula || "",
@@ -60,20 +59,6 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
 
   const isRecord = watch("is_record");
   const isPoints = watch("is_points");
-  const isNegative = watch("is_negative");
-
-  // Auto-set category based on stat attributes
-  useEffect(() => {
-    const pointValue = watch("point_value");
-
-    if (isRecord && isPoints && pointValue > 0) {
-      // Suggest scoring category for points
-      setValue("category", "scoring");
-    } else if (isNegative) {
-      // Suggest defensive category for negative stats
-      setValue("category", "defensive");
-    }
-  }, [isRecord, isPoints, isNegative, setValue, watch]);
 
   const onSubmit = (data) => {
     const mutationFn = isEdit ? updateStat : createStat;
@@ -104,10 +89,17 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
     } else {
       // Reset recording stat fields when switching to metric stat
       setValue("is_points", false);
-      setValue("point_value", 1);
+      setValue("point_value", 0);
       setValue("is_negative", false);
     }
   }, [isRecord, setValue]);
+
+  // Reset point_value when is_points is unchecked
+  useEffect(() => {
+    if (!isPoints) {
+      setValue("point_value", 0);
+    }
+  }, [isPoints, setValue]);
 
   return (
     <form
@@ -236,18 +228,11 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
           />
           {isPoints && (
             <>
-              <ControlledCheckbox
-                name="uses_point_value"
-                label="Uses Point Value"
-                control={control}
-                help_text="Check if this stat uses its point value instead of its count for calculations"
-                errors={errors}
-              />
               <ControlledInput
                 name="point_value"
                 label="Point Value"
                 control={control}
-                help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations."
+                help_text="Number of points this stat contributes (e.g. 2 for a 2-point shot, 1 for a free throw). Used in score calculations. If the Negative checkbox is checked, this value will be points for opposing team"
                 placeholder="Enter Point Value"
                 type="number"
                 errors={errors}

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/command";
 import {
   Popover,
-  PopoverContent,
+  PopoverModalContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
@@ -30,6 +30,7 @@ const ControlledCombobox = ({
   className = "",
   valueKey = "value",
   labelKey = "label",
+  secondaryLabel = "",
   size = "",
   disabled = false,
   searchPlaceholder = "Search...",
@@ -63,11 +64,24 @@ const ControlledCombobox = ({
                   size={size}
                   disabled={disabled}
                 >
-                  {selected ? selected[labelKey] : placeholder}
+                  {selected ? (
+                    <div className="grid text-start w-full">
+                      <span className="truncate overflow-hidden whitespace-nowrap w-full block">
+                        {selected[labelKey]}
+                      </span>
+                      {selected[secondaryLabel] && (
+                        <span className="text-xs text-muted-foreground truncate overflow-hidden whitespace-nowrap w-full block">
+                          {selected[secondaryLabel]}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    placeholder
+                  )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full min-w-[200px] p-0 pointer-events-auto">
+              <PopoverModalContent className="w-full min-w-[200px] p-0 pointer-events-auto">
                 <Command>
                   <CommandInput placeholder={searchPlaceholder} />
                   <CommandList>
@@ -95,13 +109,22 @@ const ControlledCombobox = ({
                                 : "opacity-0"
                             )}
                           />
-                          {opt[labelKey]}
+                          <div className="grid text-start">
+                            <span className="truncate overflow-hidden whitespace-nowrap w-full block">
+                              {opt[labelKey]}
+                            </span>
+                            {opt[secondaryLabel] && (
+                              <span className="text-xs text-muted-foreground truncate overflow-hidden whitespace-nowrap w-full block">
+                                {opt[secondaryLabel]}
+                              </span>
+                            )}
+                          </div>
                         </CommandItem>
                       ))}
                     </CommandGroup>
                   </CommandList>
                 </Command>
-              </PopoverContent>
+              </PopoverModalContent>
             </Popover>
           );
         }}
