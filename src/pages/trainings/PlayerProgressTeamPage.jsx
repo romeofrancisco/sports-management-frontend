@@ -31,7 +31,7 @@ const PlayerProgressTeamPage = () => {
 
   // Handle back navigation
   const handleBackClick = () => {
-    navigate("/trainings/progress");
+    navigate("/trainings/progress/teams");
   };
 
   return (

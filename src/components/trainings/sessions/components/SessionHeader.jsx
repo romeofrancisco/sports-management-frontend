@@ -107,6 +107,9 @@ const SessionHeader = ({
       title={titleWithBadge}
       subtitle={enhancedSubtitle}
       description={sessionDescription}
+      backButtonPath={"/trainings/sessions/"}
+      backButtonText="Back to Sessions"
+      showBackButton={true}
       breadcrumbs={[
         { label: "Training", href: "/training" },
         { label: "Sessions", href: "/training/sessions" },

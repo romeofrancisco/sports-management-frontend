@@ -50,7 +50,6 @@ const TrainingSessionsPage = () => {
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-2xl opacity-60"></div>
 
             <div className="relative">
-              {" "}
               <TrainingSessionsList
                 coachId={isCoach ? user?.id : null}
                 onNewSession={() => sessionModal.openModal()}

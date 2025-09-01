@@ -41,18 +41,15 @@ const MultiChartHeader = ({
             Performance Metric
           </label>
           <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-            <SelectTrigger className="min-w-[10rem] md:min-w-[12rem] w-full bg-background/50 border-border/50 hover:border-border transition-colors">
+            <SelectTrigger className="min-w-[10rem] md:min-w-[12rem] w-full bg-background/50 border-primary/50">
               <SelectValue placeholder="Select a metric to analyze" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="overall">
                 <div className="flex gap-2 items-center">
-                    <LineChart className="h-3 w-3 text-muted-foreground" />
+                  <LineChart className="h-3 w-3 text-muted-foreground" />
                   <div>
                     <span className="font-medium">Overall Performance</span>
-                    <p className="text-xs text-muted-foreground">
-                      Comprehensive analysis
-                    </p>
                   </div>
                 </div>
               </SelectItem>
@@ -78,7 +75,7 @@ const MultiChartHeader = ({
           <DateRangePickerWithPresets
             value={dateRange}
             onChange={onDateChange}
-            className="border-border/50 hover:border-border transition-colors"
+            className="border-primary/50 hover:border-border transition-colors"
           />
         </div>
       </div>

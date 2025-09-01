@@ -18,7 +18,6 @@ export const ChartHeader = ({
   metrics,
   selectedMetric,
   setSelectedMetric,
-  selectedMetricData,
   dateRange,
   onDateChange,
   showDateControls = true,
@@ -35,7 +34,7 @@ export const ChartHeader = ({
             setSelectedMetric(newValue);
           }}
         >
-          <SelectTrigger className="w-full sm:w-56">
+          <SelectTrigger className="w-full sm:w-56 border-primary/50 border-2">
             <div className="truncate">
               <SelectValue placeholder="Select a metric" />
             </div>

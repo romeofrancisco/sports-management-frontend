@@ -31,29 +31,25 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
           {/* Charts Section - Takes up most space */}
           <div className="xl:col-span-8 space-y-6">
             {/* Progress Chart */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
-              <ProgressChartCard playerId={playerId} dateRange={dateRange} />
-            </div>{" "}
+            <ProgressChartCard playerId={playerId} dateRange={dateRange} />
             {/* Radar Chart */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                {/* Radar Chart - Takes 1 column */}
-                <div className="flex">
-                  <RadarChartCard
-                    playerId={playerId}
-                    playerName={playerName}
-                    dateRange={dateRange}
-                    className="w-full h-full"
-                  />
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
+              {/* Radar Chart - Takes 1 column */}
+              <div className="flex col-span-2">
+                <RadarChartCard
+                  playerId={playerId}
+                  playerName={playerName}
+                  dateRange={dateRange}
+                  className="w-full h-full"
+                />
+              </div>
 
-                {/* Category Breakdown - Takes 1 column */}
-                <div className="flex">
-                  <CategoryBreakdown
-                    categories={radarData?.categories || []}
-                    className="w-full h-full"
-                  />
-                </div>
+              {/* Category Breakdown - Takes 1 column */}
+              <div className="flex col-span-3">
+                <CategoryBreakdown
+                  categories={radarData?.categories || []}
+                  className="w-full h-full"
+                />
               </div>
             </div>
           </div>

@@ -1,55 +1,45 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Target, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import ChartCard from "@/components/charts/ChartCard";
 
 const CategoryBreakdown = ({
   categories = [],
   className = "",
   title = "Category Breakdown",
+  description = "Performance breakdown by training categories",
 }) => {
   if (!categories || categories.length === 0) {
     return (
-      <Card
-        className={`bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl shadow-xl border border-border/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:border-secondary/20 ${className}`}
+      <ChartCard
+        title={title}
+        description={description}
+        icon={Target}
+        className={className}
       >
-        {" "}
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            {title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center space-y-4">
-              <Target className="h-12 w-12 text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground">
-                No category data available
-              </p>
-            </div>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center space-y-4">
+            <Target className="h-12 w-12 text-muted-foreground mx-auto" />
+            <p className="text-sm text-muted-foreground">
+              No category data available
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </ChartCard>
     );
   }
 
   return (
-    <Card
-      className={`bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl shadow-xl border border-border/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:border-secondary/20 ${className}`}
+    <ChartCard
+      title={title}
+      description={description}
+      icon={Target}
+      className={className}
     >
-      {" "}
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Target className="h-5 w-5 text-primary" />
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0 h-full">
-        <ScrollArea className="h-80">
-          <div className="space-y-3 pr-4">
-            {categories.map((category, index) => {
+      <ScrollArea className="h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {categories.map((category, index) => {
               const improvementPercentage = category.average_improvement;
               const isImproved = improvementPercentage > 0;
               const isDeclined = improvementPercentage < -5;
@@ -136,7 +126,7 @@ const CategoryBreakdown = ({
         </ScrollArea>
 
         {/* Summary Stats */}
-        <div className="pt-4 border-t border-border/50 flex-shrink-0">
+        {/* <div className="pt-4 border-t border-border/50 flex-shrink-0">
           <div className="grid grid-cols-2 gap-3 text-center">
             <div className="p-2 bg-primary/5 rounded-lg">
               <p className="text-xs text-muted-foreground">Categories</p>
@@ -157,10 +147,9 @@ const CategoryBreakdown = ({
               </p>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+        </div> */}
+      </ChartCard>
+    );
+  };
 
 export default CategoryBreakdown;

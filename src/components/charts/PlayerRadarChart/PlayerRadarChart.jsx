@@ -23,10 +23,7 @@ ChartJS.register(
 
 const PlayerRadarChart = ({
   radarData,
-  dateRange = {},
-  onDateRangeChange,
   className = "",
-  showControls = true,
 }) => {
   if (
     !radarData ||
@@ -47,6 +44,7 @@ const PlayerRadarChart = ({
           </div>
     );
   }
+  console.log(radarData)
 
   // Prepare chart data
   const chartData = {
@@ -62,7 +60,7 @@ const PlayerRadarChart = ({
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: "rgba(139, 21, 56, 1)",
-        pointRadius: 5,
+        pointRadius: 4,
         pointHoverRadius: 7,
       },
       {
@@ -96,7 +94,7 @@ const PlayerRadarChart = ({
         ticks: {
           stepSize: 20,
           font: {
-            size: 11,
+            size: 9,
             family: "'Inter', sans-serif",
           },
           color: "rgba(148, 163, 184, 0.8)",
@@ -110,7 +108,7 @@ const PlayerRadarChart = ({
         },
         pointLabels: {
           font: {
-            size: 12,
+            size: 10,
             family: "'Inter', sans-serif",
             weight: "600",
           },
@@ -124,7 +122,7 @@ const PlayerRadarChart = ({
         labels: {
           padding: 20,
           font: {
-            size: 12,
+            size: 11,
             family: "'Inter', sans-serif",
           },
           usePointStyle: true,
@@ -175,7 +173,7 @@ const PlayerRadarChart = ({
   return (
     <div className={`w-full ${className}`}>
       {/* Chart */}
-      <div className="h-96 w-full">
+      <div className="h-80 w-full">
         <Radar data={chartData} options={chartOptions} />
       </div>
     </div>
