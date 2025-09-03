@@ -98,31 +98,14 @@ const SportStatsTable = ({ filter }) => {
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-lg">Table View</h3>
-          <Badge variant="outline" className="bg-primary/10 font-medium">
-            {filteredStats.length} stats
-          </Badge>
-          {getActiveFiltersCount() > 0 && (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1.5 bg-secondary/80"
-              title={getFilterNames()}
-            >
-              <Filter className="h-3 w-3" />
-              {getActiveFiltersCount()} filter
-              {getActiveFiltersCount() !== 1 ? "s" : ""}
-            </Badge>
-          )}
-        </div>
+      <div className="flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
         <Button
           onClick={handleCreateStat}
           size="sm"
           className="bg-primary hover:bg-primary/90 text-white shadow-sm"
         >
-          <Plus className="mr-1.5 h-3.5 w-3.5" />
-          New Stat
+          <Plus/>
+          Create New Stat
         </Button>
       </div>
 

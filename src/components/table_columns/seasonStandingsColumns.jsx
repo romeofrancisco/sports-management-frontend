@@ -130,7 +130,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         </div>
       ),
       cell: ({ getValue }) => (
-        <div className="text-center w-auto  text-red-600">{getValue()}</div>
+        <div className="text-center w-auto">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -148,7 +148,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
         </div>
       ),
       cell: ({ getValue }) => (
-        <div className="text-center w-auto  text-rose-600">{getValue()}</div>
+        <div className="text-center w-auto">{getValue()}</div>
       ),
       size: 40, // Reduced from original
       minWidth: 35,
@@ -327,7 +327,8 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           mobileSize: 55,
           tabletSize: 60,
         },
-      },      {
+      },
+      {
         accessorKey: "point_differential_per_set",
         header: () => (
           <div className="text-center">
@@ -343,11 +344,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           return (
             <div
               className={`text-center w-auto  ${
-                isPositive
-                  ? "text-green-600"
-                  : value < 0
-                  ? "text-red-600"
-                  : ""
+                isPositive ? "text-green-600" : value < 0 ? "text-red-600" : ""
               }`}
             >
               {isPositive ? "+" : ""}
@@ -428,7 +425,8 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           mobileSize: 45,
           tabletSize: 50,
         },
-      },      {
+      },
+      {
         accessorKey: "point_differential_avg",
         header: () => (
           <div className="text-center">
@@ -444,11 +442,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           return (
             <div
               className={`text-center w-auto  ${
-                isPositive
-                  ? "text-green-600"
-                  : value < 0
-                  ? "text-red-600"
-                  : ""
+                isPositive ? "text-green-600" : value < 0 ? "text-red-600" : ""
               }`}
             >
               {isPositive ? "+" : ""}
@@ -463,42 +457,39 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           mobileSize: 45,
           tabletSize: 50,
         },
-      },      {
-        accessorKey: "point_differential",
-        header: () => (
-          <div className="text-center">
-            <HeaderWithTooltip
-              label="TOT DIFF"
-              tooltipText="Total Point Differential"
-            />
-          </div>
-        ),
-        cell: ({ getValue }) => {
-          const value = getValue() || 0;
-          const isPositive = value > 0;
-          return (
-            <div
-              className={`text-center w-auto ${
-                isPositive
-                  ? "text-green-600"
-                  : value < 0
-                  ? "text-red-600"
-                  : ""
-              }`}
-            >
-              {isPositive ? "+" : ""}
-              {value}
-            </div>
-          );
-        },
-        size: 50,
-        minWidth: 45,
-        meta: {
-          priority: "medium",
-          mobileSize: 45,
-          tabletSize: 50,
-        },
       },
+      // {
+      //   accessorKey: "point_differential",
+      //   header: () => (
+      //     <div className="text-center">
+      //       <HeaderWithTooltip
+      //         label="TOT DIFF"
+      //         tooltipText="Total Point Differential"
+      //       />
+      //     </div>
+      //   ),
+      //   cell: ({ getValue }) => {
+      //     const value = getValue() || 0;
+      //     const isPositive = value > 0;
+      //     return (
+      //       <div
+      //         className={`text-center w-auto ${
+      //           isPositive ? "text-green-600" : value < 0 ? "text-red-600" : ""
+      //         }`}
+      //       >
+      //         {isPositive ? "+" : ""}
+      //         {value}
+      //       </div>
+      //     );
+      //   },
+      //   size: 50,
+      //   minWidth: 45,
+      //   meta: {
+      //     priority: "medium",
+      //     mobileSize: 45,
+      //     tabletSize: 50,
+      //   },
+      // },
       {
         accessorKey: "points",
         header: () => (

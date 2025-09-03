@@ -116,6 +116,7 @@ export const createFormula = async (formulaData) => {
     const { data } = await api.post("formulas/", formulaData);
     return data;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 };

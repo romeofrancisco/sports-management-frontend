@@ -55,12 +55,7 @@ const MetricInputField = ({
 
   return (
     <div
-      className={getContainerClasses(
-        performanceStatus,
-        hasValue,
-        isFocused,
-        isFormDisabled
-      )}
+      className="border-primary/20 rounded-xl border-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -141,7 +136,7 @@ const MetricInputField = ({
                   onBlur={() => setIsFocused(false)}
                   placeholder="Enter measurement..."
                   disabled={isFormDisabled}
-                  className={getInputTextClasses(performanceStatus)}
+                 className={getInputTextClasses(performanceStatus)}
                 />
 
                 {/* Value Status Indicator */}

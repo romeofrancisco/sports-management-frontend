@@ -102,9 +102,9 @@ export const fetchRecordableStats = async (gameId) => {
   }
 };
 
-export const fetchSportStats = async (sport, filter) => {
+export const fetchStatCategories = async (filter) => {
   try {
-    const { data } = await api.get(`sport-stats/?sport=${sport}`, {
+    const { data } = await api.get(`sport-categories/`, {
       params: filter,
     });
     return data;
@@ -112,6 +112,51 @@ export const fetchSportStats = async (sport, filter) => {
     throw error;
   }
 };
+
+export const createStatCategories = async (sport, filter) => {
+  try {
+    const { data } = await api.post(`sport-categories/`, {
+      params: filter,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateStatCategories = async (filter) => {
+  try {
+    const { data } = await api.patch(`sport-categories/`, {
+      params: filter,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteStatCategories = async (filter) => {
+  try {
+    const { data } = await api.delete(`sport-categories/`, {
+      params: filter,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchSportStats = async (sport, filter) => {
+  try {
+    const { data } = await api.get(`sport-stats/?sport=${sport}`, {
+      params: filter,
+    });       
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export const fetchSportStatsOverview = async (sport) => {
   try {

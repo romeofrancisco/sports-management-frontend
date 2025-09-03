@@ -3,10 +3,16 @@ import { SportStatsActions } from "../stats";
 import { CircleCheck, CircleX } from "lucide-react";
 
 const getEssentialColumns = ({ setSelectedStat, modals, filter }) => {
+
   return [
     {
       accessorKey: "name",
       header: "Stat Name",
+      cell: ({ getValue }) => getValue(),
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
       cell: ({ getValue }) => getValue(),
     },
     {

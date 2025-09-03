@@ -33,7 +33,9 @@ const MetricsStatusMessage = ({
     totalMetrics > 0 ? Math.round((completedMetrics / totalMetrics) * 100) : 0;
 
   // Determine theme and content based on completion status
-  const theme = isComplete
+  // Only show completed theme when current player is complete AND all players are complete
+  const isFullyComplete = isComplete && allPlayersComplete;
+  const theme = isFullyComplete
     ? {
         container:
           "bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/30",
@@ -69,7 +71,7 @@ const MetricsStatusMessage = ({
     <div className={`p-4 sm:p-6 ${theme.container} rounded-xl border`}>
       <div className="text-center">
         {/* Icon */}
-        {isComplete ? (
+        {isFullyComplete ? (
           <CheckCircle2
             className={`h-8 w-8 sm:h-10 sm:w-10 ${theme.icon} mb-3 mx-auto`}
           />
@@ -83,14 +85,14 @@ const MetricsStatusMessage = ({
         <h3
           className={`text-base sm:text-lg font-semibold ${theme.title} mb-2`}
         >
-          {isComplete
+          {isFullyComplete
             ? "All Metrics Recorded!"
             : "Metrics Recording In Progress"}
         </h3>
 
         {/* Description */}
         <p className={`text-xs sm:text-sm ${theme.description} mb-4`}>
-          {isComplete
+          {isFullyComplete
             ? "Great job! All performance metrics have been captured for this player."
             : hasChanges
             ? `Keep going! You've completed ${completedMetrics} of ${totalMetrics} metrics (${progressPercentage}%).`
@@ -109,7 +111,7 @@ const MetricsStatusMessage = ({
                 ></div>
               </div>
               <p className={`text-xs ${theme.progressText} mb-4`}>
-                {isComplete
+                {isFullyComplete
                   ? `${completedMetrics} of ${totalMetrics} metrics completed`
                   : `${remainingMetrics} metric${
                       remainingMetrics !== 1 ? "s" : ""
@@ -187,7 +189,7 @@ const MetricsStatusMessage = ({
         <div className="text-center">
           <p className={`text-xs ${theme.tip}`}>
             💡 <strong>Tip:</strong>{" "}
-            {isComplete
+            {isFullyComplete
               ? isLastPlayer && !isSessionCompleted && !allPlayersComplete
                 ? "Complete metrics for all players to finish the training session"
                 : "All metrics have been successfully recorded for this player"

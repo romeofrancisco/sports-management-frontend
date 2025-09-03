@@ -51,6 +51,9 @@ const PointsChart = ({ data, isSetsScoring }) => {
     },
     scales: {
       y: {
+        type: 'linear',
+        display: true,
+        position: 'left',
         beginAtZero: true,
         grid: {
           color: "rgba(148, 163, 184, 0.1)",
@@ -64,6 +67,29 @@ const PointsChart = ({ data, isSetsScoring }) => {
         title: {
           display: true,
           text: isSetsScoring ? 'Points per Set' : 'Points',
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif",
+            weight: "600",
+          },
+        },
+      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        grid: {
+          drawOnChartArea: false, // Don't draw grid lines for secondary axis
+        },
+        ticks: {
+          font: {
+            size: 11,
+            family: "'Inter', sans-serif",
+          },
+        },
+        title: {
+          display: true,
+          text: 'Point Differential',
           font: {
             size: 12,
             family: "'Inter', sans-serif",
@@ -94,13 +120,17 @@ const PointsChart = ({ data, isSetsScoring }) => {
     },
   };
 
-  const title = isSetsScoring ? 'Points per Set' : 'Points Scored vs Conceded';
+  const title = isSetsScoring ? 'Points per Set Performance' : 'Points per Game Performance';
+  const description = isSetsScoring
+    ? 'Average points scored, conceded, and point differential per set. Point differential shows the average difference between scored and conceded points.'
+    : 'Average points scored, conceded, and point differential per game. Point differential shows the average difference between scored and conceded points.';
   const hasData = data.labels.length > 0;
   const emptyMessage = "No scoring data available";
 
   return (
     <ChartCard 
       title={title}
+      description={description}
       hasData={hasData}
       emptyMessage={emptyMessage}
     >

@@ -17,7 +17,7 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
     useSeasonTeamPerformance(league, season);
   const { isSetsScoring, isLoading: isSportLoading } =
     useSportScoringType(sport);
-
+console.log(teamPerformance)
   // Prepare chart data using the utility function
   const { pointsData, streakData, differentialData } = useMemo(() => {
     return prepareChartData(teamPerformance, isSetsScoring);

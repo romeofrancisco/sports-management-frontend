@@ -96,12 +96,16 @@ const StreakChart = ({ data, isSetsScoring }) => {
   };
 
   const title = isSetsScoring ? 'Longest Sets Win Streaks' : 'Longest Win Streaks';
+  const description = isSetsScoring
+    ? 'Maximum consecutive sets won by each team during the season.'
+    : 'Maximum consecutive games won by each team during the season.';
   const hasData = data.labels.length > 0;
   const emptyMessage = "No streak data available";
 
   return (
     <ChartCard 
       title={title}
+      description={description}
       hasData={hasData}
       emptyMessage={emptyMessage}
       className="lg:col-span-2"

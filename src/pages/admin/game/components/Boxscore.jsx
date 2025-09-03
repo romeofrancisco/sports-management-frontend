@@ -96,9 +96,10 @@ const Boxscore = ({ game }) => {
 
       // Add stats to row data
       allStatNames.forEach((statName) => {
-        const isTeamTotal = player.id === "home_team_total" || player.id === "away_team_total";
-        const isPercentage = statName.includes('%');
-        
+        const isTeamTotal =
+          player.id === "home_team_total" || player.id === "away_team_total";
+        const isPercentage = statName.includes("%");
+
         // Get the stat value directly from the player data
         let statValue;
         if (scoring_type === SCORING_TYPE_VALUES.SETS) {
@@ -114,15 +115,23 @@ const Boxscore = ({ game }) => {
           // For points scoring type, always use the total value
           statValue = player.total_stats?.[statName];
         }
-        
+
         // Special handling for team totals with percentage stats when the backend doesn't provide them
-        if (isTeamTotal && isPercentage && (statValue === undefined || statValue === null)) {
+        if (
+          isTeamTotal &&
+          isPercentage &&
+          (statValue === undefined || statValue === null)
+        ) {
           // Calculate percentage from ratio (e.g., "14/15" → 93.33%)
-          const baseStatName = statName.replace('%', '');
+          const baseStatName = statName.replace("%", "");
           const ratioValue = player.total_stats?.[baseStatName];
-          
-          if (ratioValue && typeof ratioValue === 'string' && ratioValue.includes('/')) {
-            const [makes, attempts] = ratioValue.split('/').map(Number);
+
+          if (
+            ratioValue &&
+            typeof ratioValue === "string" &&
+            ratioValue.includes("/")
+          ) {
+            const [makes, attempts] = ratioValue.split("/").map(Number);
             if (attempts > 0) {
               const percentage = (makes / attempts) * 100;
               // Round to 2 decimal places
@@ -161,18 +170,21 @@ const Boxscore = ({ game }) => {
         header: () => <span className="ps-4">Player</span>,
         cell: ({ row }) => {
           const { jersey_number, name, id } = row.original;
-          const isTeamTotal = id === "home_team_total" || id === "away_team_total";
-          
+          const isTeamTotal =
+            id === "home_team_total" || id === "away_team_total";
+
           return (
-            <div className={`grid ${isTeamTotal ? "grid-cols-1" : "grid-cols-[1rem_auto]"} gap-2 ps-1`}>
+            <div
+              className={`grid ${
+                isTeamTotal ? "grid-cols-1" : "grid-cols-[1rem_auto]"
+              } gap-2 ps-1`}
+            >
               {!isTeamTotal && (
                 <span className="text-muted-foreground text-end">
                   {jersey_number}
                 </span>
               )}
-              <span className={isTeamTotal ? "font-bold" : ""}>
-                {name}
-              </span>
+              <span className={isTeamTotal ? "font-bold" : ""}>{name}</span>
             </div>
           );
         },
@@ -186,9 +198,15 @@ const Boxscore = ({ game }) => {
       header: () => <div className="text-center text-xs">{statName}</div>,
       cell: ({ getValue, row }) => {
         const value = getValue();
-        const isTeamTotal = row.original.id === "home_team_total" || row.original.id === "away_team_total";
+        const isTeamTotal =
+          row.original.id === "home_team_total" ||
+          row.original.id === "away_team_total";
         return (
-          <div className={`text-center ${isTeamTotal ? "font-semibold" : "text-muted-foreground"}`}>
+          <div
+            className={`text-center ${
+              isTeamTotal ? "font-semibold" : "text-muted-foreground"
+            }`}
+          >
             {value !== undefined ? value : "-"}
           </div>
         );
@@ -206,39 +224,38 @@ const Boxscore = ({ game }) => {
     <Card className="max-w-screen lg:max-w-[calc(100vw-24rem)]">
       <CardContent className="p-0 md:px-6">
         <CardHeader className="p-0">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2 border-b border-dashed pb-2">
+          <CardTitle className="text-lg font-semibold flex justify-between items-center gap-2 border-b border-dashed pb-2">
             Boxscore
+            <div className="flex justify-between items-center">
+              {scoring_type === SCORING_TYPE_VALUES.SETS &&
+                availablePeriods.length > 1 && (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-muted-foreground">
+                      {getPeriodLabel(scoring_type)}:
+                    </span>
+                    <Select
+                      value={selectedPeriod}
+                      onValueChange={setSelectedPeriod}
+                    >
+                      <SelectTrigger className="w-[100px] text-xs">
+                        <SelectValue placeholder="Period" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availablePeriods.map((period) => (
+                          <SelectItem key={period} value={period}>
+                            {period === "total"
+                              ? "Total"
+                              : `${getPeriodLabel(scoring_type)} ${period}`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+            </div>
           </CardTitle>
         </CardHeader>
         <div className="flex flex-col mt-4">
-          <div className="flex justify-between items-center">
-            {scoring_type === SCORING_TYPE_VALUES.SETS &&
-              availablePeriods.length > 1 && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">
-                    {getPeriodLabel(scoring_type)}:
-                  </span>
-                  <Select
-                    value={selectedPeriod}
-                    onValueChange={setSelectedPeriod}
-                  >
-                    <SelectTrigger className="w-[100px] text-xs">
-                      <SelectValue placeholder="Period" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availablePeriods.map((period) => (
-                        <SelectItem key={period} value={period}>
-                          {period === "total"
-                            ? "Total"
-                            : `${getPeriodLabel(scoring_type)} ${period}`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-          </div>
-
           {/* Home Team Table */}
           <div>
             <div className="flex items-center gap-2 px-2">

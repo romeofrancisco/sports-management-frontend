@@ -43,7 +43,7 @@ const DifferentialChart = ({ data, isSetsScoring }) => {
         callbacks: {
           label: function(context) {
             const value = context.raw;
-            return `${value > 0 ? '+' : ''}${value}`;
+            return `${value}%`;
           }
         }
       }
@@ -62,7 +62,7 @@ const DifferentialChart = ({ data, isSetsScoring }) => {
         },
         title: {
           display: true,
-          text: isSetsScoring ? 'Points per Set Differential' : 'Point Differential',
+          text: 'Win Percentage (%)',
           font: {
             size: 12,
             family: "'Inter', sans-serif",
@@ -94,13 +94,17 @@ const DifferentialChart = ({ data, isSetsScoring }) => {
     },
   };
 
-  const title = isSetsScoring ? 'Points per Set Differential' : 'Point Differential';
+  const title = 'Win Percentage';
+  const description = isSetsScoring 
+    ? 'Shows each team\'s percentage of sets won during the season. Higher percentages indicate better performance.'
+    : 'Shows each team\'s percentage of games won during the season. Higher percentages indicate better performance.';
   const hasData = data.labels.length > 0;
-  const emptyMessage = "No differential data available";
+  const emptyMessage = "No win percentage data available";
 
   return (
     <ChartCard 
       title={title}
+      description={description}
       hasData={hasData}
       emptyMessage={emptyMessage}
       className="lg:col-span-3"
