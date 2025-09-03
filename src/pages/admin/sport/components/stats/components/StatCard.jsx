@@ -23,7 +23,7 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
   return (
     <Card
       className={cn(
-        "gap-0 group overflow-hidden border-l-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.01] flex flex-col h-full",
+        "gap-0 group overflow-hidden border-l-4 flex-col h-full",
         stat.is_record
           ? "border-l-secondary bg-secondary/2 hover:border-l-secondary/80"
           : "border-l-orange-500 bg-orange-500/2 hover:border-l-orange-600",
@@ -133,24 +133,24 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
       </CardContent>
 
       {/* Footer - Action Buttons */}
-      <CardFooter className="pt-2 pb-3 border-t bg-muted/10">
+      <CardFooter className="pt-2 border-t">
         <div className="flex gap-2 w-full">
           <Button
             size="sm"
             variant="outline"
-            className="flex-1 h-7 hover:bg-primary/10 hover:text-primary hover:border-primary text-xs"
+            className="flex-1 text-xs h-7"
             onClick={() => onEdit(stat)}
           >
-            <Edit className="h-3 w-3 mr-1" />
+            <Edit />
             Edit
           </Button>
           <Button
             size="sm"
             variant="destructive"
             onClick={() => onDelete(stat)}
-            className="flex-1 h-7 hover:bg-red-600 text-xs"
+            className="flex-1 text-xs h-7"
           >
-            <Trash2 className="h-3 w-3 mr-1" />
+            <Trash2 />
             Delete
           </Button>
         </div>

@@ -314,7 +314,7 @@ const LeagueStandings = ({ rankings }) => {
           return (            <div
               className={`text-center font-medium ${
                 isPositive
-                  ? "text-red-800"
+                  ? "text-green-600"
                   : value < 0
                   ? "text-rose-600"
                   : ""
@@ -374,7 +374,7 @@ const LeagueStandings = ({ rankings }) => {
           return (            <div
               className={`text-center  ${
                 isPositive
-                  ? "text-red-800"
+                  ? "text-green-600"
                   : value < 0
                   ? "text-rose-600"
                   : ""

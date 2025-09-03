@@ -43,6 +43,7 @@ const ControlledInput = ({
               type === "file"
                 ? field.onChange(e.target.files)
                 : field.onChange(e.target.value),
+            ...(type === "password" && { autoComplete: "off" }),
             ...rest,
           };
 

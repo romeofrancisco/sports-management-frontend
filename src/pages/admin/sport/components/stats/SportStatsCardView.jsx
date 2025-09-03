@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import SportStatsModal from "@/components/modals/SportStatsModal";
 import DeleteStatModal from "@/components/modals/DeleteStatModal";
 
 // Component imports
-import CardViewHeader from "./components/CardViewHeader";
 import EmptyStatsState from "./components/EmptyStatsState";
 import CategorySection from "./components/CategorySection";
 
@@ -53,7 +54,7 @@ const SportStatsCardView = ({ stats, filter }) => {
           getActiveFiltersCount={() => getActiveFiltersCount(filter)}
           onCreateStat={handleCreateStat}
         />
-        
+
         {/* Modals need to be rendered even in empty state */}
         <SportStatsModal
           isOpen={modals.stat.isOpen}
@@ -71,11 +72,16 @@ const SportStatsCardView = ({ stats, filter }) => {
 
   return (
     <div>
-      <CardViewHeader
-        stats={stats}
-        getActiveFiltersCount={() => getActiveFiltersCount(filter)}
-        onCreateStat={handleCreateStat}
-      />
+      <div className="flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
+        <Button
+          onClick={handleCreateStat}
+          size="sm"
+          className="bg-primary hover:bg-primary/90 text-white shadow-sm"
+        >
+          <Plus />
+          Create New Stat
+        </Button>
+      </div>
 
       <div className="space-y-8">
         {Object.entries(categorizedStats).map(([category, categoryStats]) => {

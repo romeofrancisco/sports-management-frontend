@@ -55,6 +55,10 @@ export const adminRoutes = [
     element: <SportDetails />,
   },
   {
+    path: "/sports/:sport/categories",
+    element: <SportDetails />,
+  },
+  {
     path: "/sports/:sport/formulas",
     element: <SportDetails />,
   },

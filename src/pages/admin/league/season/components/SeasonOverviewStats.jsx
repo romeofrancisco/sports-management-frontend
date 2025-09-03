@@ -20,16 +20,19 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
     : "";
   const teamsCount =
     seasonDetails?.teams_count || seasonDetails?.teams_list?.length || 0;
-  const statsData = [    {
+  const statsData = [
+    {
       title: "Season Status",
-      value: seasonDetails.status ? seasonDetails.status.charAt(0).toUpperCase() + seasonDetails.status.slice(1) : "Upcoming",
+      value: seasonDetails.status
+        ? seasonDetails.status.charAt(0).toUpperCase() +
+          seasonDetails.status.slice(1)
+        : "Upcoming",
       icon: Calendar,
-      description: formattedStartDate,
       color: "from-primary via-primary/90 to-primary/80",
       iconBg: "bg-primary",
       iconColor: "text-primary",
       progress: seasonDetails.status === "ongoing" ? seasonProgress : null,
-      progressLabel: "Season Progress",
+      progressLabel: formattedStartDate,
     },
     {
       title: "Teams",
@@ -108,7 +111,7 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
                       <span>{stat.progressLabel}</span>
                       <span>{stat.progress}%</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-muted border rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full transition-all duration-300"
                         style={{ width: `${stat.progress}%` }}

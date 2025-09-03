@@ -113,6 +113,8 @@ const CoachDetails = () => {
       <div className="p-4 md:p-6 space-y-8">
         {/* Enhanced Header */}
         <UniversityPageHeader
+          showBackButton={true}
+          backButtonText="Back to Coaches"
           title={`Coach ${coach.full_name}`}
           description="Detailed view of coach profile and performance metrics"
           showOnlineStatus={true}

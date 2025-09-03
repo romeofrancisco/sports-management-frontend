@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/command";
 import {
   Popover,
-  PopoverContent,
+  PopoverModalContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
@@ -119,7 +119,7 @@ const ControlledTeamSelect = ({
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full min-w-[200px] p-0 pointer-events-auto">
+              <PopoverModalContent className="w-full min-w-[200px] p-0 pointer-events-auto">
                 <Command>
                   <CommandInput placeholder={searchPlaceholder} />
                   <CommandList>
@@ -158,7 +158,7 @@ const ControlledTeamSelect = ({
                     </CommandGroup>
                   </CommandList>
                 </Command>
-              </PopoverContent>
+              </PopoverModalContent>
             </Popover>
           );
         }}

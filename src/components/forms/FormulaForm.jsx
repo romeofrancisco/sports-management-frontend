@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ControlledInput from "../common/ControlledInput";
 import { useForm, useFieldArray } from "react-hook-form";
 import ControlledTextarea from "../common/ControlledTextarea";
@@ -20,6 +20,8 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
     setError,
     handleSubmit,
     watch,
+    setValue,
+    reset,
   } = useForm({
     defaultValues: {
       name: formula?.name || "",
@@ -34,12 +36,37 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "components",
   });
 
+  const isRatio = watch("is_ratio");
+
+  // Effect to handle ratio changes
+  useEffect(() => {
+    if (isRatio) {
+      // Clear the expression when ratio is enabled
+      setValue("expression", "");
+
+      // Ensure exactly 2 components for ratio
+      if (fields.length !== 2) {
+        replace([
+          { id: "", stat_type: "" },
+          { id: "", stat_type: "" },
+        ]);
+      }
+    }
+  }, [isRatio, setValue, replace, fields.length]);
+
   const onSubmit = (data) => {
+    // Clear any previous server errors
+    Object.keys(errors).forEach((fieldName) => {
+      if (errors[fieldName]?.type === "server") {
+        setError(fieldName, null);
+      }
+    });
+
     const mutationFn = isEdit ? updateFormula : createFormula;
     const payload = isEdit ? { id: formula.id, data: data } : data;
 
@@ -56,10 +83,34 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         const error = e.response?.data;
         if (error) {
           Object.keys(error).forEach((fieldName) => {
-            setError(fieldName, {
-              type: "server",
-              message: error[fieldName],
-            });
+            if (fieldName === "components" && Array.isArray(error[fieldName])) {
+              // Handle nested component errors
+              error[fieldName].forEach((componentError, index) => {
+                if (componentError && typeof componentError === "object") {
+                  Object.keys(componentError).forEach((nestedField) => {
+                    const fieldPath = `components.${index}.${nestedField}`;
+                    const errorMessage = Array.isArray(
+                      componentError[nestedField]
+                    )
+                      ? componentError[nestedField][0]
+                      : componentError[nestedField];
+                    setError(fieldPath, {
+                      type: "server",
+                      message: errorMessage,
+                    });
+                  });
+                }
+              });
+            } else {
+              // Handle top-level field errors
+              const errorMessage = Array.isArray(error[fieldName])
+                ? error[fieldName][0]
+                : error[fieldName];
+              setError(fieldName, {
+                type: "server",
+                message: errorMessage,
+              });
+            }
           });
         }
       },
@@ -81,8 +132,8 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
 
       <ControlledCheckbox
         name="is_ratio"
-        label="Ratio Formula"
-        help_text="Enable if this formula represents a ratio between two stats (e.g., FT%, FG%)"
+        label="Make/Attempt"
+        help_text="Enable if this formula represents a make/attempt (e.g; 5/7)"
         control={control}
         errors={errors}
       />
@@ -95,7 +146,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         errors={errors}
       />
 
-      {!watch("is_ratio") && (
+      {!isRatio && (
         <ControlledTextarea
           name="expression"
           control={control}
@@ -106,7 +157,14 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
       )}
 
       <div className="space-y-4">
-        <label className="block font-medium">Components</label>
+        <label className="block font-medium">
+          Components{" "}
+          {isRatio && (
+            <span className="text-xs text-muted-foreground">
+              (Make/Attempt requires exactly 2 stats)
+            </span>
+          )}
+        </label>
 
         {fields.map((field, index) => (
           <div key={field.id} className="flex items-center gap-2">
@@ -114,7 +172,13 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
               <ControlledCombobox
                 name={`components.${index}.stat_type`}
                 control={control}
-                label={`Stat ${index + 1}`}
+                label={
+                  isRatio
+                    ? index === 0
+                      ? "Made"
+                      : "Attempted"
+                    : `Stat ${index + 1}`
+                }
                 placeholder="Select stat..."
                 errors={errors}
                 options={stats}
@@ -125,25 +189,30 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
                 size="lg"
               />
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="mt-6"
-              onClick={() => remove(index)}
-            >
-              <Trash />
-            </Button>
+            {!isRatio && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="mt-6"
+                onClick={() => remove(index)}
+                disabled={fields.length <= 1}
+              >
+                <Trash />
+              </Button>
+            )}
           </div>
         ))}
       </div>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => append({ stat_type: "" })}
-      >
-        <Plus />
-        Add Component
-      </Button>
+      {!isRatio && (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => append({ stat_type: "" })}
+        >
+          <Plus />
+          Add Component
+        </Button>
+      )}
 
       <Button
         type="submit"

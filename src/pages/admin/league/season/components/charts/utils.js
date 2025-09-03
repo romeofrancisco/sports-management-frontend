@@ -20,6 +20,10 @@ const COLORS = {
     lightBorder: 'rgba(255, 237, 78, 1)',  // Lighter gold solid
     darkBorder: 'rgba(230, 194, 0, 1)',    // Darker gold solid
   },
+  amber: {
+    main: 'rgba(245, 158, 11, 0.7)',         // Amber with transparency
+    border: 'rgba(245, 158, 11, 1)',         // Amber solid
+  },
   // Additional colors for variety when needed - using slight transparency for backgrounds
   tertiary: [
     { bg: 'rgba(139, 21, 56, 0.7)', border: 'rgba(139, 21, 56, 1)' },  // Primary with slight transparency
@@ -74,7 +78,8 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
       return {
         name: team.team_name,
         pointsPerSet: parseFloat((totalPointsScored / setsPlayed).toFixed(1)),
-        pointsConcededPerSet: parseFloat((totalPointsConceded / setsPlayed).toFixed(1))
+        pointsConcededPerSet: parseFloat((totalPointsConceded / setsPlayed).toFixed(1)),
+        differentialPerSet: parseFloat(((totalPointsScored - totalPointsConceded) / setsPlayed).toFixed(1))
       };
     });
     
@@ -85,7 +90,8 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
     
     return {
       labels: sortedTeams.map(team => team.name),
-      datasets: [        {
+      datasets: [
+        {
           label: 'Points per Set',
           data: sortedTeams.map(team => team.pointsPerSet),
           backgroundColor: COLORS.primary.main,
@@ -100,6 +106,15 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
           borderColor: COLORS.secondary.border,
           borderWidth: 2,
           borderRadius: 4,
+        },
+        {
+          label: 'Point Differential per Set',
+          data: sortedTeams.map(team => team.differentialPerSet),
+          backgroundColor: COLORS.amber.main,
+          borderColor: COLORS.amber.border,
+          borderWidth: 2,
+          borderRadius: 4,
+          yAxisID: 'y1', // Use secondary Y-axis
         }
       ]
     };
@@ -132,6 +147,20 @@ export const getPointsChartData = (sanitizedPerformance, isSetsScoring) => {
           borderColor: COLORS.secondary.border, 
           borderWidth: 2,
           borderRadius: 4,
+        },
+        {
+          label: 'Point Differential',
+          data: sortedTeams.map(team => {
+            const scored = team.avg_points_scored || 0;
+            const conceded = team.avg_points_conceded || 0;
+            const diff = scored - conceded;
+            return diff !== undefined && !isNaN(diff) ? parseFloat(diff.toFixed(1)) : 0;
+          }),
+          backgroundColor: COLORS.amber.main,
+          borderColor: COLORS.amber.border,
+          borderWidth: 2,
+          borderRadius: 4,
+          yAxisID: 'y1', // Use secondary Y-axis
         }
       ]
     };
@@ -175,10 +204,10 @@ export const getStreakChartData = (sanitizedPerformance, isSetsScoring) => {
 };
 
 /**
- * Processes team performance data for differential chart
+ * Processes team performance data for win percentage chart
  * @param {Array} sanitizedPerformance - Sanitized team performance data
  * @param {Boolean} isSetsScoring - Whether the sport uses sets scoring
- * @returns {Object} - Chart data structure for differential chart
+ * @returns {Object} - Chart data structure for win percentage chart
  */
 export const getDifferentialChartData = (sanitizedPerformance, isSetsScoring) => {
   if (!sanitizedPerformance || sanitizedPerformance.length === 0) 
@@ -189,52 +218,51 @@ export const getDifferentialChartData = (sanitizedPerformance, isSetsScoring) =>
   if (teamsWithGames.length === 0) 
     return { labels: [], datasets: [] };
   
-  const differentialTeams = [...teamsWithGames]
+  const winPercentageTeams = [...teamsWithGames]
     .map(team => {
+      let winPercentage = 0;
+      
       if (isSetsScoring) {
         // For set-based sports, use set win percentage
         const setsWon = team.sets_won || 0;
         const setsPlayed = team.sets_played || 0;
         
-        // Calculate set win percentage (if sets played > 0)
-        let differential = 0;
         if (setsPlayed > 0) {
-          differential = parseFloat(((setsWon / setsPlayed) * 100).toFixed(1));
+          winPercentage = parseFloat(((setsWon / setsPlayed) * 100).toFixed(1));
         }
-        
-        return {
-          ...team,
-          differential,
-          label: team.team_name,
-        };
       } else {
-        // For point-based sports, use traditional point differential
-        const avgScored = team.avg_points_scored || 0;
-        const avgConceded = team.avg_points_conceded || 0;
-        const diff = avgScored - avgConceded;
-        return {
-          ...team,
-          differential: diff !== undefined && !isNaN(diff) ? parseFloat(diff.toFixed(1)) : 0,
-          label: team.team_name
-        };
+        // For point-based sports, use game win percentage
+        const gamesWon = team.matches_won || 0;
+        const gamesPlayed = team.total_games || 0;
+        
+        if (gamesPlayed > 0) {
+          winPercentage = parseFloat(((gamesWon / gamesPlayed) * 100).toFixed(1));
+        }
       }
+      
+      return {
+        ...team,
+        winPercentage,
+        label: team.team_name
+      };
     })
-    // Sort by differential value from highest to lowest
-    .sort((a, b) => b.differential - a.differential)
+    // Sort by win percentage from highest to lowest
+    .sort((a, b) => b.winPercentage - a.winPercentage)
     .slice(0, 8); // Limit to top 8 teams for readability
     
   return {
     // Use team names as labels
-    labels: differentialTeams.map(team => team.label),
+    labels: winPercentageTeams.map(team => team.label),
     datasets: [
       {
-        label: isSetsScoring ? 'Set Win Percentage' : 'Point Differential',
-        data: differentialTeams.map(team => team.differential),        backgroundColor: differentialTeams.map(team => {
-          // Use primary for positive, secondary for negative differentials
-          return team.differential >= 0 ? COLORS.primary.main : COLORS.secondary.main;
+        label: 'Win Percentage',
+        data: winPercentageTeams.map(team => team.winPercentage),
+        backgroundColor: winPercentageTeams.map(team => {
+          // Use primary for >50%, secondary for <=50%
+          return team.winPercentage > 50 ? COLORS.primary.main : COLORS.secondary.main;
         }),
-        borderColor: differentialTeams.map(team => {
-          return team.differential >= 0 ? COLORS.primary.border : COLORS.secondary.border;
+        borderColor: winPercentageTeams.map(team => {
+          return team.winPercentage > 50 ? COLORS.primary.border : COLORS.secondary.border;
         }),
         borderWidth: 2,
         borderRadius: 4,

@@ -23,7 +23,7 @@ const ChartCard = ({
   className = "", 
   action,
   icon,
-  height = "full",
+  height = 300,
   emptyMessage = "Chart data will appear here once information is available.",
   hasData = true
 }) => {

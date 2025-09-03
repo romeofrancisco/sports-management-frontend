@@ -13,10 +13,14 @@ import {
 } from "@/api/statsApi";
 import {
   createSportStats,
+  createStatCategories,
   deleteSportStat,
+  deleteStatCategories,
   fetchSportStats,
   fetchSportStatsOverview,
+  fetchStatCategories,
   updateSportStats,
+  updateStatCategories,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -195,6 +199,49 @@ export const useBoxscore = (gameId) => {
     queryKey: ["box-score", gameId],
     queryFn: () => fetchBoxscore(gameId),
     enabled: Boolean(gameId),
+  });
+};
+
+export const useStatCategories = (filter) => {
+  return useQuery({
+    queryKey: ["stat-categories", filter],
+    queryFn: () => fetchStatCategories(filter),
+  });
+};
+
+export const useCreateCategory = () => {
+  return useMutation({
+    mutationFn: (data) => createStatCategories(data),
+    onSuccess: (data) => {
+      toast.success(`Category Created: ${data.name}`, {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["stat-categories"]);
+    },
+  });
+};
+
+export const useUpdateCategory = () => {
+  return useMutation({
+    mutationFn: (data) => updateStatCategories(data),
+    onSuccess: (data) => {
+      toast.success(`Category Updated: ${data.name}`, {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["stat-categories"]);
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  return useMutation({
+    mutationFn: (data) => deleteStatCategories(data),
+    onSuccess: (data) => {
+      toast.success(`Category Deleted: ${data.name}`, {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["stat-categories"]);
+    },
   });
 };
 

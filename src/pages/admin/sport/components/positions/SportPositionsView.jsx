@@ -14,7 +14,7 @@ const SportPositionsView = () => {
   const { sport } = useParams();
   const [filter, setFilter] = useState({ search: "" });
   const [selectedPosition, setSelectedPosition] = useState(null);
-  
+
   const { data: positions, isLoading } = useSportPositions(sport);
   const filteredPositions = positions || [];
 
@@ -42,16 +42,19 @@ const SportPositionsView = () => {
     <div className="space-y-4 lg:space-y-6">
       {/* Header Section */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-            Positions
-          </h2>
-          <Badge variant="outline" className="bg-primary/10 text-primary w-fit">
-            {filteredPositions.length} positions
-          </Badge>
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <Users className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-xl font-bold">Positions</span>
+
+            <span className="text-muted-foreground line-clamp-1 text-sm">
+              Manage player positions for {sport || "this sport"}.
+            </span>
+          </div>
         </div>
-        <Button 
+        <Button
           onClick={handleCreatePosition}
           className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white"
         >
@@ -60,21 +63,16 @@ const SportPositionsView = () => {
         </Button>
       </div>
 
-      {/* Content Section */}
-      <div className="bg-background">
-        <Card className="shadow-sm border rounded-lg overflow-hidden">
-          <SportPositionsTable 
-            positions={filteredPositions}
-            filter={filter}
-            modals={modals}
-            selectedPosition={selectedPosition}
-            setSelectedPosition={setSelectedPosition}
-            onEdit={handleEditPosition}
-            onDelete={handleDeletePosition}
-            isLoading={isLoading}
-          />
-        </Card>
-      </div>
+      <SportPositionsTable
+        positions={filteredPositions}
+        filter={filter}
+        modals={modals}
+        selectedPosition={selectedPosition}
+        setSelectedPosition={setSelectedPosition}
+        onEdit={handleEditPosition}
+        onDelete={handleDeletePosition}
+        isLoading={isLoading}
+      />
 
       {/* Modals */}
       <PositionModal

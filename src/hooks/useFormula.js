@@ -46,6 +46,7 @@ export const useDeleteFormula = () => {
       toast.info("Formula Deleted", {
         richColors: true,
       });
+      queryClient.invalidateQueries(["formulas"]);
     },
   });
 };

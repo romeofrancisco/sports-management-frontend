@@ -18,6 +18,13 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 
+// Helper function to get nested error
+const getNestedError = (errors, path) => {
+  return path.split('.').reduce((current, key) => {
+    return current?.[key];
+  }, errors);
+};
+
 const ControlledCombobox = ({
   name,
   control,
@@ -34,6 +41,7 @@ const ControlledCombobox = ({
   size = "",
   disabled = false,
   searchPlaceholder = "Search...",
+  rules = {},
 }) => {
   return (
     <div className={`grid gap-0.5 ${className}`}>
@@ -48,6 +56,7 @@ const ControlledCombobox = ({
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => {
           const selected = options.find(
             (opt) => String(opt[valueKey]) === String(field.value)
@@ -129,11 +138,14 @@ const ControlledCombobox = ({
           );
         }}
       />
-      {errors?.[name] && (
-        <p className="text-xs text-left text-destructive">
-          {errors[name].message}
-        </p>
-      )}
+      {(() => {
+        const fieldError = getNestedError(errors, name);
+        return fieldError && (
+          <p className="text-xs text-left text-destructive">
+            {fieldError.message}
+          </p>
+        );
+      })()}
     </div>
   );
 };
