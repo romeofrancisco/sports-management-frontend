@@ -53,25 +53,87 @@ const PlayerProgressStats = ({ playerId }) => {
     (playerData.metrics_data && playerData.metrics_data.length === 0)
   ) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Card className="relative overflow-hidden border-2 border-dashed border-muted-foreground/20 bg-gradient-to-br from-muted/5 to-background shadow-lg sm:col-span-2 lg:col-span-4">
-          <div className="absolute inset-0 bg-gradient-to-br from-muted/10 via-transparent to-muted/5" />
-          <CardContent className="relative p-6 text-center">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl shadow-inner">
-                <BarChart3 className="h-8 w-8 text-muted-foreground/60" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-bold text-foreground">
-                  No Training Data Available
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Start tracking progress by recording training sessions
+      <div className="space-y-3 sm:space-y-4 mb-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
+          {/* No Data Cards */}
+          {[
+            {
+              title: "Recent Progress",
+              icon: (
+                <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
+              ),
+              color: "from-primary via-primary/90 to-primary/80",
+              bgColor: "bg-primary/8",
+              borderColor: "border-primary/30",
+              iconBg: "bg-primary",
+            },
+            {
+              title: "Overall Progress",
+              icon: (
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+              ),
+              color: "from-secondary via-secondary/90 to-secondary/80",
+              bgColor: "bg-secondary/8",
+              borderColor: "border-secondary/30",
+              iconBg: "bg-secondary",
+            },
+            {
+              title: "Best Performance",
+              icon: (
+                <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              ),
+              color: "from-orange-500 via-orange-500/90 to-orange-500/80",
+              bgColor: "bg-orange-500/8",
+              borderColor: "border-orange-500/30",
+              iconBg: "bg-orange-500",
+            },
+            {
+              title: "Best Category",
+              icon: (
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              ),
+              color: "from-red-500 via-red-500/90 to-red-500/80",
+              bgColor: "bg-red-500/8",
+              borderColor: "border-red-500/30",
+              iconBg: "bg-red-500",
+            },
+          ].map((stat, index) => (
+            <Card
+              key={index}
+              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
+                stat.bgColor || ""
+              } ${stat.borderColor || ""} border`}
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${
+                  stat.color || ""
+                } opacity-5`}
+              />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <div
+                  className={`p-1.5 sm:p-2 rounded-lg ${
+                    stat.iconBg || ""
+                  } shadow-lg transition-transform duration-300 hover:scale-110`}
+                >
+                  {stat.icon}
+                </div>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="text-xl sm:text-2xl font-bold text-muted-foreground">
+                    --
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground/70 font-medium">
+                  No data available
                 </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   } // Helper function to find the best category from radar chart data
@@ -111,7 +173,9 @@ const PlayerProgressStats = ({ playerId }) => {
           ).toFixed(1)}%`
         : "--",
       description: "Last 3 months improvement",
-      icon: <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />,
+      icon: (
+        <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
+      ),
       color: "from-primary via-primary/90 to-primary/80",
       bgColor: "bg-primary/8",
       borderColor: "border-primary/30",
@@ -126,7 +190,9 @@ const PlayerProgressStats = ({ playerId }) => {
           ).toFixed(1)}%`
         : "--",
       description: "Total improvement",
-      icon: <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />,
+      icon: (
+        <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+      ),
       color: "from-secondary via-secondary/90 to-secondary/80",
       bgColor: "bg-secondary/8",
       borderColor: "border-secondary/30",
@@ -141,7 +207,8 @@ const PlayerProgressStats = ({ playerId }) => {
             playerData.best_performance.unit
           )
         : "--",
-      description: playerData?.best_performance?.metric_name || "No data recorded",
+      description:
+        playerData?.best_performance?.metric_name || "No data recorded",
       icon: <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
       color: "from-orange-500 via-orange-500/90 to-orange-500/80",
       bgColor: "bg-orange-500/8",
@@ -194,7 +261,11 @@ const PlayerProgressStats = ({ playerId }) => {
             </CardHeader>
             <CardContent className="relative z-10">
               <div className="flex items-center gap-2 mb-1">
-                <div className={`text-xl sm:text-2xl font-bold ${stat.textAccent || ""}`}>
+                <div
+                  className={`text-xl sm:text-2xl font-bold ${
+                    stat.textAccent || ""
+                  }`}
+                >
                   {stat.value}
                 </div>
                 {stat.unit && (

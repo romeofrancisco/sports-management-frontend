@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Lightbulb, PieChart } from "lucide-react";
 import {
   useAdminOverview,
   useAdminAnalytics,
@@ -14,7 +12,6 @@ import {
   DashboardSkeleton,
   SystemOverviewCards,
   SystemHealthSection,
-  DistributionSection,
   InsightsSection,
   QuickActionsSection,
 } from "./components";
@@ -88,7 +85,6 @@ const AdminDashboard = () => {
             {/* Quick Actions */}
             <QuickActionsSection overview={overview} />
             {/* Insights Section Card now handled inside InsightsSection */}
-            <DistributionSection overview={overview} />
             <InsightsSection
               insights={insights}
               isLoading={insightsLoading}

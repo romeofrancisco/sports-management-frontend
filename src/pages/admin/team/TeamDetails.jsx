@@ -305,7 +305,6 @@ const TeamDetails = () => {
           showBackButton
           backButtonText="Back to Teams"
           backButtonPath="/teams"
-          showUniversityColors
           teamLogo={teamDetails.logo}
           teamName={teamDetails.name}
           // Hide Edit Team button if user is player
@@ -318,12 +317,12 @@ const TeamDetails = () => {
       </section>
 
       {/* Quick Stats Cards */}
-      <section className="p-4 md:p-6">
+      <section className="p-4 md:p-6 pt-0 md:pt-0">
         <QuickStatsCards stats={quickStats} />
       </section>
 
       {/* Main Content */}
-      <section className="p-4 md:p-6">
+      <section className="px-4 md:px-6">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Primary Content */}
           <div className="xl:col-span-2 space-y-6">

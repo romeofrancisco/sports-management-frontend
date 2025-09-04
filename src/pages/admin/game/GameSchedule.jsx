@@ -18,7 +18,6 @@ const GameSchedule = () => {
         <UniversityPageHeader
           title={isPlayer() ? "Game Schedule" : "Game Management"}
           description="Schedule and manage games for your leagues"
-          showUniversityColors={true}
           {...(!isPlayer() && {
             buttonText: "Create Game",
             buttonIcon: CalendarPlus,

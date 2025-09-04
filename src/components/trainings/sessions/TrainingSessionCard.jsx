@@ -100,14 +100,14 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
   const statusInfo = getSessionStatusInfo();
 
   return (
-    <Card className="group relative overflow-hidden bg-card border border-border transition-all duration-300 hover:shadow-lg hover:border-primary/30 h-full flex flex-col">
+    <Card className="group relative overflow-hidden bg-card border-2 border-primary/20 transition-all duration-300 h-full flex flex-col">
       {/* Simple status strip */}
       <div
         className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`}
       />
 
       {/* Header Section */}
-      <CardHeader className="pb-3 pt-4">
+      <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">

@@ -12,9 +12,9 @@ import { SelectMetricPrompt } from "@/components/charts/PlayerProgressChart/Sele
 import { ChartHeader } from "@/components/charts/PlayerProgressChart/ChartHeader";
 import ChartCard from "@/components/charts/ChartCard";
 
-const ProgressChartCard = ({ 
-  playerId, 
-  dateRange, 
+const ProgressChartCard = ({
+  playerId,
+  dateRange,
   className = "",
   title = "Performance Progress",
   description = "Track player performance trends over time",
@@ -43,21 +43,21 @@ const ProgressChartCard = ({
       title={title}
       description={description}
       icon={TrendingUp}
+      height={"full"}
       className={className}
       action={
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-col md:flex-row gap-2 items-center">
           {/* Metric Badge */}
-          {selectedMetricData && (
-            selectedMetricData.metric_id === "overall" ? (
-              <Badge>
-                Overall Performance
-              </Badge>
+          {selectedMetricData &&
+            (selectedMetricData.metric_id === "overall" ? (
+              <Badge className="order-1">Overall Performance</Badge>
             ) : (
               <Badge>
-                {selectedMetricData.is_lower_better ? "Lower is Better" : "Higher is Better"}
+                {selectedMetricData.is_lower_better
+                  ? "Lower is Better"
+                  : "Higher is Better"}
               </Badge>
-            )
-          )}
+            ))}
           <ChartHeader
             playerName={playerData?.player_name || "Player"}
             metrics={metrics || []}

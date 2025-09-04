@@ -2,6 +2,7 @@ import { formatShortDate } from "@/utils/formatDate";
 import { formatMetricValue } from "@/utils/formatters";
 import React, { useMemo } from "react";
 import { Line } from "react-chartjs-2";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Vertical line plugin similar to GameFlowChart
 const verticalLinePlugin = {
@@ -33,6 +34,7 @@ const verticalLinePlugin = {
  * Renders a line chart visualization of player progress
  */
 export const ProgressChart = ({ selectedMetricData }) => {
+  const isMobile = useIsMobile();
   // Get data points - check if they come from backend analysis or direct data_points
   const dataPoints = useMemo(() => {
     // If we have performance_analysis from backend with trend data
@@ -121,7 +123,7 @@ export const ProgressChart = ({ selectedMetricData }) => {
             y: {
               beginAtZero: selectedMetricData.is_lower_better ? false : true,
               title: {
-                display: true,
+                display: isMobile ? false : true,
                 text: `${selectedMetricData.metric_name} (${selectedMetricData.unit})`,
               },
             },

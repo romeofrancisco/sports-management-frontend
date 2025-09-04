@@ -18,7 +18,6 @@ const TeamsList = () => {
           buttonText="Create Team"
           buttonIcon={Users}
           onButtonClick={openModal}
-          showUniversityColors={true}
         />
         
         {/* Teams Container */}

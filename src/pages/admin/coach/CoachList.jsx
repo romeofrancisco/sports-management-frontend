@@ -18,7 +18,6 @@ const CoachList = () => {
           buttonText="Register Coach"
           buttonIcon={UserCheck}
           onButtonClick={openModal}
-          showUniversityColors={true}
         />
 
         <CoachContainer />
