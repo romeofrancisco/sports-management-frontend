@@ -117,7 +117,6 @@ const CoachDetails = () => {
           backButtonText="Back to Coaches"
           title={`Coach ${coach.full_name}`}
           description="Detailed view of coach profile and performance metrics"
-          showOnlineStatus={true}
           showUniversityColors={true}
         />
 

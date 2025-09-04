@@ -34,7 +34,7 @@ export const ChartHeader = ({
             setSelectedMetric(newValue);
           }}
         >
-          <SelectTrigger className="w-full sm:w-56 border-primary/50 border-2">
+          <SelectTrigger className="w-full md:w-44 lg:w-48 border-primary/50 border-2">
             <div className="truncate">
               <SelectValue placeholder="Select a metric" />
             </div>

@@ -18,16 +18,6 @@ import {
   ProgressSummarySection,
 } from "@/pages/player/components/dashboard";
 import { ChartsSection } from "@/pages/player/charts";
-// Import training dashboard components for detailed analysis
-import PlayerProgressStats from "@/components/trainings/players/PlayerProgressStats";
-import {
-  PerformanceInsightCard,
-  RadarAnalysisSummaryCard,
-  ProgressChartCard,
-  RadarChartCard,
-  CategoryBreakdown,
-} from "@/components/trainings/players/dashboard";
-import { ArrowLeft } from "lucide-react";
 
 const PlayerDetails = () => {
   const { player } = useParams(); // This is now the player ID
@@ -195,11 +185,6 @@ const PlayerDetails = () => {
               <ChartsSection user={user} overview={overview} />
             </div>
 
-            {/* Performance Stats Overview */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
-              <PlayerProgressStats playerId={userId} />
-            </div>
-
             {/* Personal Progress Section */}
             <div className="animate-in fade-in-50 duration-500 delay-300">
               <PersonalProgressSection progress={progressData} />
@@ -218,23 +203,6 @@ const PlayerDetails = () => {
               <RecentMetricsSection overview={overview} />
             </div>
 
-            {/* Performance Insights */}
-            <div className="animate-in fade-in-50 duration-500 delay-400">
-              <PerformanceInsightCard
-                playerId={player}
-                dateRange={dateRange}
-                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30"
-              />
-            </div>
-
-            {/* Radar Analysis Summary */}
-            <div className="animate-in fade-in-50 duration-500 delay-450">
-              <RadarAnalysisSummaryCard
-                playerId={player}
-                dateRange={dateRange}
-                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-secondary/20 transition-all duration-300 hover:shadow-2xl hover:border-secondary/30"
-              />
-            </div>
           </div>
         </div>
       </div>

@@ -18,7 +18,6 @@ const SportsList = () => {
           buttonText="Register Sport"
           buttonIcon={Plus}
           onButtonClick={openModal}
-          showUniversityColors={true}
         />
         
         {/* Sports Container */}

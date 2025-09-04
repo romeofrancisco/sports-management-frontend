@@ -21,6 +21,7 @@ const RadarAnalysisSummaryCard = ({
         title={title}
         description={description}
         icon={PieChart}
+        height={"full"}
         className={className}
       >
         <div className="space-y-4 animate-pulse">
@@ -37,6 +38,7 @@ const RadarAnalysisSummaryCard = ({
         title={title}
         description={description}
         icon={PieChart}
+        height={"full"}
         className={className}
         hasData={false}
         emptyMessage="Performance insights will appear when sufficient data is available"
@@ -73,6 +75,7 @@ const RadarAnalysisSummaryCard = ({
       title={title}
       description={description}
       icon={PieChart}
+      height={"full"}
       className={className}
     >
       <div className="space-y-4">

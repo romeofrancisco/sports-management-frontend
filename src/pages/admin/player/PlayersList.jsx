@@ -18,7 +18,6 @@ const PlayersList = () => {
           buttonText="Register Player"
           buttonIcon={UserPlus}
           onButtonClick={openModal}
-          showUniversityColors={true}
         />
         
         {/* Players Container */}

@@ -85,6 +85,7 @@ const Sport = () => {
         showBackButton={true}
         backButtonText="Back to Sports"
         backButtonPath="/sports"
+        showUniversityColors={true}
       />
 
       {/* Navigation Links */}

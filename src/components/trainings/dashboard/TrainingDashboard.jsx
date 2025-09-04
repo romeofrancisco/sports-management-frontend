@@ -68,7 +68,6 @@ const TrainingDashboard = () => {
           title="Training Management"
           subtitle="Training Portal"
           description="Monitor and track player improvements through comprehensive training analysis"
-          showOnlineStatus={true}
           showUniversityColors={true}
         />
 

@@ -23,9 +23,12 @@ const RadarChartCard = ({
       title={title}
       description={description}
       icon={PieChart}
+      height={"full"}
       className={className}
+      emptyMessage="No radar data available"
+      hasData={radarData && radarData.categories && radarData.categories.length > 0}
     >
-      <div className="h-96 flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         {isLoading ? (
           <div className="text-center space-y-4">
             <div className="w-8 h-8 border-4 border-secondary/30 border-t-secondary rounded-full animate-spin mx-auto"></div>
@@ -38,24 +41,19 @@ const RadarChartCard = ({
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto">
               <span className="text-2xl">⚠️</span>
             </div>
-            <p className="text-sm text-red-600 dark:text-red-400">
+            <p className="text-sm text-destructive">
               Failed to load radar chart
             </p>
           </div>
-        ) : radarData?.categories ? (
-          <PlayerRadarChart
-            radarData={radarData}
-            dateRange={dateRange}
-            showControls={false}
-            className="w-full"
-          />
         ) : (
-          <div className="text-center space-y-4">
-            <PieChart className="h-12 w-12 text-muted-foreground mx-auto" />
-            <p className="text-sm text-muted-foreground">
-              No radar data available
-            </p>
-          </div>
+          radarData?.categories && (
+            <PlayerRadarChart
+              radarData={radarData}
+              dateRange={dateRange}
+              showControls={false}
+              className="w-full"
+            />
+          )
         )}
       </div>
     </ChartCard>

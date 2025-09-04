@@ -35,7 +35,7 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
             {/* Radar Chart */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               {/* Radar Chart - Takes 1 column */}
-              <div className="flex col-span-2">
+              <div className="flex col-span-5 lg:col-span-2">
                 <RadarChartCard
                   playerId={playerId}
                   playerName={playerName}
@@ -45,7 +45,7 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
               </div>
 
               {/* Category Breakdown - Takes 1 column */}
-              <div className="flex col-span-3">
+              <div className="flex col-span-5 lg:col-span-3">
                 <CategoryBreakdown
                   categories={radarData?.categories || []}
                   className="w-full h-full"
@@ -61,7 +61,6 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
               <PerformanceInsightCard
                 playerId={playerId}
                 dateRange={dateRange}
-                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30"
               />
             </div>
 
@@ -70,7 +69,6 @@ const PlayerProgressIndividualView = ({ playerId, playerName, dateRange }) => {
               <RadarAnalysisSummaryCard
                 playerId={playerId}
                 dateRange={dateRange}
-                className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-secondary/20 transition-all duration-300 hover:shadow-2xl hover:border-secondary/30"
               />
             </div>
           </div>

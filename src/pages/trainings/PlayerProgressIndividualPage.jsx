@@ -26,7 +26,7 @@ const PlayerProgressIndividualPage = () => {
   // Fetch player data to get player name
   const { data: playersData } = usePlayers({}, 1, 1000);
   const players = playersData?.results || [];
-  const currentPlayer = players.find(p => p.id === parseInt(playerId));
+  const currentPlayer = players.find((p) => p.id === parseInt(playerId));
   const playerName = currentPlayer?.full_name || "Player";
 
   // Handle date range change
@@ -58,10 +58,10 @@ const PlayerProgressIndividualPage = () => {
           title={`${playerName}'s Progress`}
           subtitle="Training Management"
           description="Individual performance analysis and progress tracking"
-          showUniversityColors={true}
           showBackButton={true}
           backButtonText="Back to Player List"
-          onBackClick={handleBackClick}        >
+          onBackClick={handleBackClick}
+        >
           {/* Date Controls in header with enhanced styling */}
           <div className="flex items-center gap-3">
             <DateRangePickerWithPresets

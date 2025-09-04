@@ -37,7 +37,7 @@ const UniversityPageHeader = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-xl p-3 md:p-4 lg:p-6 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-xl p-3 md:p-4 lg:p-6 shadow-lg border-2 border-primary/20 transition-all duration-300 animate-in fade-in-50 duration-500 relative overflow-hidden">
       <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
           {/* University Logo with enhanced styling */}
@@ -91,7 +91,7 @@ const UniversityPageHeader = ({
           </div>
         </div>
         {/* Right side content */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-6 mt-4 lg:mt-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           {/* Custom children content */}
           {children}
 
@@ -102,14 +102,14 @@ const UniversityPageHeader = ({
               className={buttonClassName}
               size={buttonSize}
             >
-              {ButtonIcon && <ButtonIcon/>}
+              {ButtonIcon && <ButtonIcon />}
               {buttonText}
             </Button>
           )}
 
           {/* Online Status */}
           {showOnlineStatus && (
-            <div className="flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
+            <div className="hidden lg:flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
               <div className="h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 animate-pulse shadow-sm"></div>
               <span className="text-xs md:text-sm font-semibold text-foreground whitespace-nowrap">
                 {user?.role?.includes("Admin")
@@ -121,7 +121,7 @@ const UniversityPageHeader = ({
 
           {/* Enhanced University Colors Indicator */}
           {showUniversityColors && (
-            <div className="flex gap-2 items-center bg-card/80 backdrop-blur-md rounded-full px-2 md:px-3 py-2 border-2 border-primary/30 shadow-lg">
+            <div className="hidden lg:flex gap-2 items-center bg-card/80 backdrop-blur-md rounded-full px-2 md:px-3 py-2 border-2 border-primary/30 shadow-lg">
               <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-md border border-white/30"></div>
               <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-gradient-to-br from-secondary to-secondary/80 shadow-md border border-white/30"></div>
               <span className="text-xs font-semibold text-muted-foreground ml-1 whitespace-nowrap">

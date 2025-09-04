@@ -32,7 +32,7 @@ const ChartCard = ({
   return (
     <Card className={`border-2 border-primary/20 overflow-hidden ${className}`}>
       <CardHeader className="relative">
-        <div className="flex lg:flex-row flex-col space-y-4 lg:space-y-0">
+        <div className="flex md:flex-row flex-col justify-between space-y-4 lg:space-y-0">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <IconComponent className="h-5 w-5 text-primary-foreground" />
@@ -57,7 +57,7 @@ const ChartCard = ({
             {children}
           </div>
         ) : (
-          <div className="text-center py-12" style={{ minHeight: `${height}px` }}>
+          <div className="text-center content-center py-12" style={{ minHeight: `${height}px` }}>
             <div className="p-4 bg-muted rounded-full mb-4 mx-auto w-fit">
               <IconComponent className="h-8 w-8 text-muted-foreground" />
             </div>
