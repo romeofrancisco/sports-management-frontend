@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { TeamSelect } from "../common/TeamSelect";
@@ -25,6 +25,8 @@ const PlayerForm = ({ sports, onClose, player }) => {
     formState: { errors },
     watch,
     setError,
+    setValue,
+    reset,
   } = useForm({
     defaultValues: {
       first_name: player?.first_name || "",
@@ -44,9 +46,20 @@ const PlayerForm = ({ sports, onClose, player }) => {
   });
 
   const selectedSport = watch("sport_slug");
+  const selectedSex = watch("sex");
+
+  // Convert sex to division for team filtering
+  const division = selectedSex; // Since sex values match division values
 
   const { data: positions } = useSportPositions(selectedSport);
-  const { data: teams } = useSportTeams(selectedSport);
+  const { data: teams } = useSportTeams(selectedSport, division);
+
+  // Reset team selection when sex or sport changes
+  useEffect(() => {
+    if (!isEdit) {
+      setValue("team_id", "");
+    }
+  }, [selectedSex, selectedSport, setValue, isEdit]);
 
   const onSubmit = (playerData) => {
     const formData = convertToFormData(playerData);
@@ -206,9 +219,23 @@ const PlayerForm = ({ sports, onClose, player }) => {
             control={control}
             name="team_id"
             label="Team"
-            placeholder="Select team"
+            placeholder={
+              !selectedSport 
+                ? "Please select sport first" 
+                : !selectedSex 
+                ? "Please select sex first" 
+                : "Select team"
+            }
             teams={teams}
+            disabled={!selectedSport || !selectedSex}
             errorMessage={errors.team_id?.message}
+            helperText={
+              !selectedSport 
+                ? "You must select a sport first to see available teams" 
+                : !selectedSex 
+                ? "You must select your sex to see available teams" 
+                : ""
+            }
           />
           
           <MultiSelect

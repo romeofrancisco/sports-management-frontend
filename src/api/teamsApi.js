@@ -18,9 +18,10 @@ export const fetchTeamDetails = async (team) => {
   }
 };
 
-export const fetchSportTeams = async (sport) => {
+export const fetchSportTeams = async (sport, division = null) => {
   try {
-    const { data } = await api.get(`sports/${sport}/teams`);
+    const params = division ? { division } : {};
+    const { data } = await api.get(`sports/${sport}/teams`, { params });
     return data;
   } catch (error) {
     throw error;
