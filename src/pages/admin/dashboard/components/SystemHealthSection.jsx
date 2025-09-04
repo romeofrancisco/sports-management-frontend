@@ -75,9 +75,15 @@ const SystemHealthSection = ({ overview }) => {
             <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
               <Shield className="h-5 w-5 text-primary-foreground" />
             </div>
-            <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
-              System Health
-            </CardTitle>
+            <div>
+              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                System Health
+              </CardTitle>
+              <CardDescription>
+                Monitor the health of your system and address issues affecting
+                teams and players.
+              </CardDescription>
+            </div>
           </div>
           <Badge
             variant={totalIssues === 0 ? "default" : "destructive"}
@@ -104,7 +110,7 @@ const SystemHealthSection = ({ overview }) => {
             return (
               <Card
                 key={issue.title}
-                className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500 ${
+                className={`group relative overflow-hidden border-2  ${
                   issue.count === 0
                     ? "border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10"
                     : issue.severity === "high"
@@ -115,7 +121,7 @@ const SystemHealthSection = ({ overview }) => {
               >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
 
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 relative">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {issue.title}
                   </CardTitle>

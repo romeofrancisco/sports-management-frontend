@@ -9,6 +9,7 @@ import {
   CoachEffectivenessChart,
   SystemHealthChart,
   TrainingTrendChart,
+  SportsDistributionChart,
 } from "@/components/charts/AdminDashboardCharts";
 
 const ChartsSection = ({ overview, analytics }) => {
@@ -16,7 +17,7 @@ const ChartsSection = ({ overview, analytics }) => {
     <div className="space-y-6">
       {/* Primary Charts Row - 4 Column Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* System Health Chart - 1 column */}{" "}
+        {/* System Health Chart - 1 column */}
         <div className="lg:col-span-1">
           <SystemHealthChart
             score={overview?.insights?.system_health_score || 50}
@@ -78,9 +79,11 @@ const ChartsSection = ({ overview, analytics }) => {
               analytics?.training_analytics?.overall_attendance_rate || 0,
           }}
         />
-      </div>{" "}
+      </div>
       {/* Coach Analytics Row */}
-      <div className="grid gap-6">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <SportsDistributionChart data={overview?.distribution_stats} />
+
         <CoachEffectivenessChart data={analytics?.coach_analytics || []} />
       </div>
     </div>

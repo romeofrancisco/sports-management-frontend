@@ -519,7 +519,7 @@ export const SystemHealthChart = ({ score }) => {
 
   return (
     <ChartCard
-      title="System Health"
+      title="System Health Score"
       description="Overall system health score"
       hasData={true}
       height={256}
@@ -816,6 +816,146 @@ export const TeamsByDivisionSportChart = ({ data }) => {
       height={256}
     >
       <Bar data={chartData} options={options} />
+    </ChartCard>
+  );
+};
+
+// Sports Distribution Chart
+export const SportsDistributionChart = ({ data }) => {
+  const prepareChartData = () => {
+    const sportsData = data?.teams_by_sport || [];
+    const playersData = data?.gender_stats?.players_by_gender_sport || [];
+    const teamsData = data?.gender_stats?.teams_by_division_sport || [];
+
+    if (sportsData.length === 0) return null;
+
+    const sports = sportsData.map(sport => sport.sport__name);
+    
+    // Prepare datasets
+    const malePlayersData = sports.map(sport => {
+      const playerData = playersData.find(p => p.team__sport__name === sport && p.user__sex === 'male');
+      return playerData?.count || 0;
+    });
+    
+    const femalePlayersData = sports.map(sport => {
+      const playerData = playersData.find(p => p.team__sport__name === sport && p.user__sex === 'female');
+      return playerData?.count || 0;
+    });
+    
+    const maleTeamsData = sports.map(sport => {
+      const teamData = teamsData.find(t => t.sport__name === sport && t.division === 'male');
+      return teamData?.count || 0;
+    });
+    
+    const femaleTeamsData = sports.map(sport => {
+      const teamData = teamsData.find(t => t.sport__name === sport && t.division === 'female');
+      return teamData?.count || 0;
+    });
+
+    return {
+      labels: sports,
+      datasets: [
+        {
+          label: 'Male Players',
+          data: malePlayersData,
+          backgroundColor: "#8B153890", // Maroon with transparency
+          borderColor: "#8B1538", // Maroon border
+          borderWidth: 2,
+        },
+        {
+          label: 'Female Players',
+          data: femalePlayersData,
+          backgroundColor: "#FFD70090", // Gold with transparency
+          borderColor: "#FFD700", // Gold border
+          borderWidth: 2,
+        },
+        {
+          label: 'Male Teams',
+          data: maleTeamsData,
+          backgroundColor: "#f59e0b90", // Amber with transparency
+          borderColor: "#f59e0b", // Amber border
+          borderWidth: 2,
+        },
+        {
+          label: 'Female Teams',
+          data: femaleTeamsData,
+          backgroundColor: "#7f1d1d90", // Dark red with transparency
+          borderColor: "#7f1d1d", // Dark red border
+          borderWidth: 2,
+        },
+      ],
+    };
+  };
+
+  const chartData = prepareChartData();
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    elements: {
+      bar: {
+        borderRadius: 4,
+        borderSkipped: false,
+        borderWidth: 2,
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+        },
+      },
+      title: {
+        display: true,
+        text: 'Sports Distribution by Gender',
+        font: {
+          size: 16,
+          weight: 'bold',
+        },
+      },
+      tooltip: {
+        callbacks: {
+          afterLabel: function(context) {
+            const datasetLabel = context.dataset.label;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? ((context.parsed.y / total) * 100).toFixed(1) : 0;
+            return `${percentage}% of total ${datasetLabel.toLowerCase()}`;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
+  };
+
+  if (!chartData) {
+    return (
+      <ChartCard
+        title="Sports Distribution"
+        description="Teams and players distribution by sport and gender"
+        hasData={false}
+        emptyMessage="No sports data available"
+        height={256}
+      />
+    );
+  }
+
+  return (
+    <ChartCard
+      title="Sports Distribution"
+      description="Teams and players distribution by sport and gender"
+      hasData={true}
+      height={256}
+    >
+      <Bar data={chartData} options={chartOptions} />
     </ChartCard>
   );
 };
