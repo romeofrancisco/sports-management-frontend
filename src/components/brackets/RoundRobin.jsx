@@ -2,7 +2,7 @@ import React from "react";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, Trophy } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"; 
 
 const TeamSeed = ({ seed, breakpoint }) => {
   const { home_team, away_team, winner, date } = seed;
@@ -34,12 +34,13 @@ const TeamSeed = ({ seed, breakpoint }) => {
         >
           {team ? (
             <>
-              <div className="size-7 flex-shrink-0 flex items-center justify-center bg-sidebar rounded-l">
-                <img
-                  className="size-5 object-cover"
-                  src={team.logo}
-                  alt={team.name}
-                />
+              <div className="size-7 flex-shrink-0 flex items-center justify-center rounded-l">
+                <Avatar className="size-7 border border-primary/20">
+                  <AvatarImage src={team.logo} alt={team.name} />
+                  <AvatarFallback className="bg-muted text-muted-foreground"> 
+                    {team.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <span className="truncate max-w-24">{team.name}</span>
             </>

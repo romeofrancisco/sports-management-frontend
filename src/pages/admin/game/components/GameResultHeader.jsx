@@ -1,4 +1,5 @@
 import React from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const GameBoxScoreHeader = ({ game }) => {
   const { home_team, away_team, score_summary } = game;
@@ -29,7 +30,13 @@ const GameBoxScoreHeader = ({ game }) => {
             clipPath: "polygon(0 100%, 0 0, 135px 0, 79px 100%)",
           }}
         >
-          <img src={home_team.logo} className="w-18" alt={home_team.name} />
+          <Avatar className="w-18 h-18 border-2 border-primary/20">
+            <AvatarImage src={home_team.logo} alt={home_team.name} />
+            <AvatarFallback className="bg-muted/50 text-2xl text-muted-foreground ">
+              {home_team.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {/* <img src={home_team.logo} className="w-18" alt={home_team.name} /> */}
         </div>
       </div>
 
@@ -54,7 +61,12 @@ const GameBoxScoreHeader = ({ game }) => {
             <span className="hidden md:block text-xl font-medium">
               {home_team.name}
             </span>
-            <img src={home_team.logo} alt={home_team.name} className="w-12" />
+            <Avatar className="w-12 h-12 border-2 border-primary/20 bg-muted/50">
+              <AvatarImage src={home_team.logo} alt={home_team.name} />
+              <AvatarFallback className="text-xl text-muted-foreground ">
+                {home_team.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
           </div>
           <div className="text-center">
             <span className="text-3xl font-black">{total.home}</span>
@@ -72,7 +84,9 @@ const GameBoxScoreHeader = ({ game }) => {
               <tr>
                 <th className="px-5"></th>
                 {periods.map((p, index) => (
-                  <th key={index} className="text-muted-foreground px-3">{p.label}</th>
+                  <th key={index} className="text-muted-foreground px-3">
+                    {p.label}
+                  </th>
                 ))}
                 <th className="px-3">T</th>
               </tr>
@@ -81,14 +95,18 @@ const GameBoxScoreHeader = ({ game }) => {
               <tr>
                 <td className="text-start py-1">{home_team.abbreviation}</td>
                 {periods.map((p, index) => (
-                  <td key={index} className="text-muted-foreground">{p.home}</td>
+                  <td key={index} className="text-muted-foreground">
+                    {p.home}
+                  </td>
                 ))}
                 <td className="font-bold">{total.home}</td>
               </tr>
               <tr>
                 <td className="text-start">{away_team.abbreviation}</td>
                 {periods.map((p, index) => (
-                  <td key={index} className="text-muted-foreground">{p.away}</td>
+                  <td key={index} className="text-muted-foreground">
+                    {p.away}
+                  </td>
                 ))}
                 <td className="font-bold">{total.away}</td>
               </tr>
@@ -118,7 +136,13 @@ const GameBoxScoreHeader = ({ game }) => {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <img src={away_team.logo} alt={away_team.name} className="w-12" />
+            <Avatar className="w-12 h-12 border-2 border-primary/20 bg-muted/50">
+              <AvatarImage src={away_team.logo} alt={away_team.name} />
+              <AvatarFallback className="text-xl text-muted-foreground ">
+                {away_team.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            {/* <img src={away_team.logo} alt={away_team.name} className="w-12" /> */}
             <span className="hidden md:block text-xl font-medium">
               {away_team.name}
             </span>
@@ -143,11 +167,17 @@ const GameBoxScoreHeader = ({ game }) => {
           className="h-full flex items-center justify-end pe-4"
           style={{
             backgroundColor: away_team.color,
-            clipPath: "polygon(100% 100%, 100% 0, calc(100% - 135px) 0, calc(100% - 79px) 100%)"
-
+            clipPath:
+              "polygon(100% 100%, 100% 0, calc(100% - 135px) 0, calc(100% - 79px) 100%)",
           }}
         >
-          <img src={away_team.logo} className="w-18" alt={away_team.name} />
+          <Avatar className="w-18 h-18 border-2 border-primary/20 bg-muted/50">
+            <AvatarImage src={away_team.logo} alt={away_team.name} />
+            <AvatarFallback className="bg-muted/50 border-2 border-primary/20 text-2xl text-muted-foreground ">
+              {away_team.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {/* <img src={away_team.logo} className="w-18" alt={away_team.name} /> */}
         </div>
       </div>
     </header>

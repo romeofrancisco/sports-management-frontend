@@ -91,7 +91,7 @@ const LeagueDetails = () => {
       case "teams":
         return <LeagueTeamsGrid />;
       case "seasons":
-        return <LeagueSeasons seasons={seasons} sport={sport} />;
+        return <LeagueSeasons league={leagueDetails} seasons={seasons} sport={sport} />;
       default:
         return <LeagueOverview league={league} sport={sport} />;
     }

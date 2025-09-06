@@ -9,7 +9,6 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 
 import ControlledInput from "@/components/common/ControlledInput";
-import ControlledCheckbox from "@/components/common/ControlledCheckbox";
 import { ControlledDateRangePicker } from "@/components/common/ControlledDateRangePicker";
 
 import { useCreateSeason, useUpdateSeason } from "@/hooks/useSeasons";
@@ -254,7 +253,7 @@ const TeamSelection = ({
 
     {/* Show validation message for teams */}
     {error && (
-      <p className="text-xs text-destructive mb-3 font-medium">
+      <p className="text-xs text-destructive mb-3">
         {error.message}
       </p>
     )}
@@ -286,7 +285,7 @@ const TeamSelection = ({
               disabled={disabled}
               tabIndex={disabled ? -1 : 0}
             />
-            <Avatar className="w-8 h-8">
+            <Avatar className="w-8 h-8 border border-primary/20">
               <AvatarImage src={team.logo} alt={team.name} />
               <AvatarFallback className="bg-muted text-muted-foreground">
                 {team.name.charAt(0).toUpperCase()}
@@ -305,11 +304,7 @@ const TeamSelection = ({
       name="teams"
       control={control}
       rules={{
-        required: "At least one team must be selected",
         validate: (value) => {
-          if (!value || value.length === 0) {
-            return "At least one team must be selected";
-          }
           if (value.length < 2) {
             return "At least 2 teams are required for a season";
           }
