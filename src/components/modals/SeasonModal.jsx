@@ -10,11 +10,19 @@ import SeasonForm from "../forms/SeasonForm";
 import { useSportTeams } from "@/hooks/useTeams";
 import { ScrollArea } from "../ui/scroll-area";
 import FullPageLoading from "../common/FullPageLoading";
+import { useParams } from "react-router";
+import { useLeagueDetails } from "@/hooks/useLeagues";
 
 const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
-  const { data, isLoading } = useSportTeams(sport?.slug);
+  const { league } = useParams();
+  const { data: leagueDetails, isLoading: isLeagueLoading } =
+    useLeagueDetails(league);
+  const { data: teams, isLoading: isTeamsLoading } = useSportTeams(
+    sport?.slug,
+    leagueDetails?.division
+  );
 
-  if (isLoading) return <FullPageLoading />;
+  if (isTeamsLoading || isLeagueLoading) return <FullPageLoading />;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -30,7 +38,7 @@ const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[75vh] pr-3">
-          <SeasonForm teams={data} onClose={onClose} season={season} />
+          <SeasonForm teams={teams} onClose={onClose} season={season} />
         </ScrollArea>
       </DialogContent>
     </Dialog>

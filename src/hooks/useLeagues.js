@@ -68,7 +68,7 @@ export const useCreateLeague = () => {
     mutationFn: (newLeague) => createLeague(newLeague),
     onSuccess: () => {
       queryClient.invalidateQueries(["leagues"]);
-      toast.success("League created successfully");
+      toast.success("League created successfully", { richColors: true });
     },
   });
 };
@@ -81,7 +81,7 @@ export const useUpdateLeague = () => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["leagues"]);
       queryClient.invalidateQueries(["league-details", variables.id]);
-      toast.success("League updated successfully");
+      toast.success("League updated successfully", { richColors: true });
     },
   });
 };
