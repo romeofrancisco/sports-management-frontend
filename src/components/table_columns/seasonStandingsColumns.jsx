@@ -1,6 +1,7 @@
 import { Medal, Trophy } from "lucide-react";
 import { HeaderWithTooltip } from "@/components/common/TableHelpers";
 import TeamStreakIndicator from "@/components/common/TeamStreakIndicator";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
   const { has_tie, scoring_type } = sport;
@@ -47,11 +48,12 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
               {rankStyle.icon || rank}
             </div>
             <div className="relative size-7 flex items-center justify-center">
-              <img
-                src={team_logo}
-                alt={team_name}
-                className="size-7 rounded-full border"
-              />
+              <Avatar className="size-7 border border-primary/20">
+                <AvatarImage src={team_logo} alt={team_name} />
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  {team_name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </div>
             <span className="">{team_name}</span>
           </div>

@@ -1,4 +1,4 @@
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PeriodSelector from "./PeriodSelector";
 
 const EventInfo = ({
@@ -19,23 +19,33 @@ const EventInfo = ({
     <>
       <div className="flex items-center justify-between border-b border-dashed pb-3 mb-3">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            <img
-              className="w-7"
-              src={game.home_team.logo}
-              alt={game.home_team.name}
-            />
+          <div className="flex items-center gap-1 text-xs">
+            <Avatar className="size-7 border-2 border-primary/20 bg-muted/50">
+              <AvatarImage
+                src={game.home_team.logo}
+                alt={game.home_team.name}
+                className="rounded-full"
+              />
+              <AvatarFallback className="bg-muted/50 text-muted-foreground rounded-full">
+                {game.home_team.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <span className={event.team_side === "home" ? "font-bold" : ""}>
               {homeTeam.abbreviation} {event.current_score.home}
             </span>
           </div>
           <span>-</span>
-          <div className="flex items-center gap-1">
-            <img
-              className="w-7"
-              src={game.away_team.logo}
-              alt={game.away_team.name}
-            />
+          <div className="flex items-center gap-1 text-xs">
+            <Avatar className="size-7 border-2 border-primary/20 bg-muted/50">
+              <AvatarImage
+                src={game.away_team.logo}
+                alt={game.away_team.name}
+                className="rounded-full"
+              />
+              <AvatarFallback className="bg-muted/50 text-muted-foreground rounded-full">
+                {game.away_team.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <span className={event.team_side === "away" ? "font-bold" : ""}>
               {awayTeam.abbreviation} {event.current_score.away}
             </span>
@@ -49,7 +59,7 @@ const EventInfo = ({
           />
         )}
       </div>
-      
+
       <div>
         <p className="text-xs font-medium mb-2">{event.period_label}</p>
         {event.id ? (

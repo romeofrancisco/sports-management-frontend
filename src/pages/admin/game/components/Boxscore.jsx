@@ -2,8 +2,6 @@ import React, { useMemo, useState } from "react";
 import { useBoxscore } from "@/hooks/useStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DataTable from "@/components/common/DataTable";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,9 +12,10 @@ import {
 import { useSelector } from "react-redux";
 import { getPeriodLabel, SCORING_TYPE_VALUES } from "@/constants/sport";
 import Loading from "@/components/common/FullLoading";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Boxscore = ({ game }) => {
-  const { scoring_type } = useSelector((state) => state.sport);
+  const scoring_type = game?.sport_scoring_type;
   const { data: boxscoreData, isLoading } = useBoxscore(game?.id);
   const [selectedPeriod, setSelectedPeriod] = useState("total");
 
@@ -184,7 +183,7 @@ const Boxscore = ({ game }) => {
                   {jersey_number}
                 </span>
               )}
-              <span className={isTeamTotal ? "font-bold" : ""}>{name}</span>
+              <span className={isTeamTotal ? "font-medium" : ""}>{name}</span>
             </div>
           );
         },
@@ -204,7 +203,7 @@ const Boxscore = ({ game }) => {
         return (
           <div
             className={`text-center ${
-              isTeamTotal ? "font-semibold" : "text-muted-foreground"
+              isTeamTotal ? "font-medium" : "text-muted-foreground"
             }`}
           >
             {value !== undefined ? value : "-"}
@@ -213,7 +212,7 @@ const Boxscore = ({ game }) => {
       },
       size: 50,
     }));
-
+    
     return [...baseColumns, ...statColumns];
   }, [allStatNames, selectedPeriod, scoring_type]);
 
@@ -230,14 +229,14 @@ const Boxscore = ({ game }) => {
               {scoring_type === SCORING_TYPE_VALUES.SETS &&
                 availablePeriods.length > 1 && (
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-muted-foreground uppercase">
                       {getPeriodLabel(scoring_type)}:
                     </span>
                     <Select
                       value={selectedPeriod}
                       onValueChange={setSelectedPeriod}
                     >
-                      <SelectTrigger className="w-[100px] text-xs">
+                      <SelectTrigger className="w-[100px] text-sm font-normal">
                         <SelectValue placeholder="Period" />
                       </SelectTrigger>
                       <SelectContent>
@@ -255,15 +254,19 @@ const Boxscore = ({ game }) => {
             </div>
           </CardTitle>
         </CardHeader>
-        <div className="flex flex-col mt-4">
+        <div className="flex flex-col">
           {/* Home Team Table */}
           <div>
             <div className="flex items-center gap-2 px-2">
-              <img
-                src={game.home_team.logo}
-                alt={game.home_team.name}
-                className="w-7"
-              />
+              <Avatar className="w-7 h-7 border-2 border-primary/20 my-2">
+                <AvatarImage
+                  src={game.home_team.logo}
+                  alt={game.home_team.name}
+                />
+                <AvatarFallback className="bg-muted/50 text-muted-foreground">
+                  {game.home_team.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <span className="font-semibold text-base">
                 {game.home_team.name}
               </span>
@@ -279,13 +282,17 @@ const Boxscore = ({ game }) => {
           </div>
 
           {/* Away Team Table */}
-          <div className="mt-4">
+          <div>
             <div className="flex items-center gap-2 px-2">
-              <img
-                src={game.away_team.logo}
-                alt={game.away_team.name}
-                className="w-7"
-              />
+              <Avatar className="w-7 h-7 border-2 border-primary/20 my-2">
+                <AvatarImage
+                  src={game.away_team.logo}
+                  alt={game.away_team.name}
+                />
+                <AvatarFallback className="bg-muted/50 text-muted-foreground">
+                  {game.away_team.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <span className="font-semibold text-base">
                 {game.away_team.name}
               </span>

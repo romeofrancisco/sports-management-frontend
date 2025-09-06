@@ -125,10 +125,10 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
           >
             <TabsList className="w-full justify-center sticky top-0 z-60 bg-muted border shadow-sm">
               <TabsTrigger value={TEAM_SIDES.HOME_TEAM}>
-                {home_team.name}
+                {home_team?.name || "Home Team"}
               </TabsTrigger>
               <TabsTrigger value={TEAM_SIDES.AWAY_TEAM}>
-                {away_team.name}
+                {away_team?.name || "Away Team"}
               </TabsTrigger>
               <TabsTrigger value="team_stats">Team Stats</TabsTrigger>
             </TabsList>
