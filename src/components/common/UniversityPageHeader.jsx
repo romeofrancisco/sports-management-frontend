@@ -11,7 +11,7 @@ const UniversityPageHeader = ({
   buttonText,
   buttonIcon: ButtonIcon,
   onButtonClick,
-  buttonClassName = "w-full sm:w-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl",
+  buttonClassName = "",
   buttonSize = "default",
   showOnlineStatus = false,
   showUniversityColors = false,
@@ -38,11 +38,10 @@ const UniversityPageHeader = ({
 
   return (
     <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-xl p-3 md:p-4 lg:p-6 shadow-lg border-2 border-primary/20 transition-all duration-300 animate-in fade-in-50 duration-500 relative overflow-hidden">
-      <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
+      <div className="relative flex flex-col md:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
           {/* University Logo with enhanced styling */}
           <div className="flex-shrink-0 relative">
-            {" "}
             {/* Back Button above logo with proper z-index and enhanced interactivity */}
             {showBackButton && (
               <button
@@ -77,7 +76,7 @@ const UniversityPageHeader = ({
             )}
           </div>
           <div className="sm:border-l-2 sm:border-primary/40 sm:pl-3 md:pl-4 lg:pl-6">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-gradient break-words">
+            <h1 className="text-lg sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-gradient break-words">
               {title}
             </h1>
             <p className="text-foreground mt-0.5 sm:mt-1 md:mt-2 text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
@@ -109,7 +108,7 @@ const UniversityPageHeader = ({
 
           {/* Online Status */}
           {showOnlineStatus && (
-            <div className="hidden lg:flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
+            <div className="hidden xl:flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
               <div className="h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 animate-pulse shadow-sm"></div>
               <span className="text-xs md:text-sm font-semibold text-foreground whitespace-nowrap">
                 {user?.role?.includes("Admin")

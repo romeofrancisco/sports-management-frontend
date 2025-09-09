@@ -21,7 +21,7 @@ const PlayersTab = ({ playersData, selectedPlayer, onPlayerSelect }) => {
         </div>
         <div>
           <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-foreground">
-            Player Attendance Statistics
+            Player Attendance
           </h2>
           <p className="text-sm text-muted-foreground">
             Click on a player to view their detailed dashboard

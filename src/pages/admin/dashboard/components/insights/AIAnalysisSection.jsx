@@ -187,8 +187,7 @@ const AIAnalysisSection = ({ insights }) => {
           </Badge>
         </CardTitle>
         <CardDescription>
-          Comprehensive system analysis with AI-generated insights and
-          predictions
+          Comprehensive system analysis with AI-generated insights
         </CardDescription>
       </CardHeader>
       <CardContent>

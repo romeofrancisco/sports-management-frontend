@@ -14,7 +14,7 @@ import {
   TrendingDown,
   ChevronDown,
   ChevronUp,
-  Sparkles,
+  Brain,
   Lightbulb,
 } from "lucide-react";
 
@@ -92,7 +92,7 @@ const RecommendationsSection = ({ recommendations }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+        <CheckCircle2 className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold">Recommendations</h3>
         <Badge variant="secondary" className="text-xs">
           {recommendations.length}
@@ -120,8 +120,8 @@ const RecommendationsSection = ({ recommendations }) => {
                       Recommendation
                     </CardTitle>
                     {recommendation.source === "ai" && (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
-                        <Sparkles className="h-3 w-3" />
+                      <div className="flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
+                        <Brain className="h-3 w-3" />
                         AI
                       </div>
                     )}

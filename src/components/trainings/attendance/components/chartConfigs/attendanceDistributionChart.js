@@ -5,9 +5,17 @@ export const createAttendanceDistributionChart = (data) => ({
   datasets: [
     {
       data: Object.values(data || {}),
-      backgroundColor: Object.keys(data || {}).map(getStatusColor),
+      backgroundColor: Object.keys(data || {}).map(status => {
+        const color = getStatusColor(status);
+        // Convert hex color to rgba with 0.7 transparency
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, 0.7)`;
+      }),
+      borderColor: Object.keys(data || {}).map(getStatusColor),
       borderWidth: 2,
-      borderColor: "#fff",
     },
   ],
 });
@@ -19,7 +27,7 @@ export const distributionChartOptions = {
     legend: {
       position: "bottom",
       labels: {
-        padding: 20,
+        padding: 16,
         font: {
           size: 12,
           family: "'Inter', sans-serif",
@@ -54,7 +62,7 @@ export const distributionChartOptions = {
       bodyColor: "#cbd5e1",
       borderColor: "rgba(139, 0, 0, 0.3)",
       borderWidth: 1,
-      cornerRadius: 12,
+      cornerRadius: 8,
       padding: 12,
       displayColors: true,
       titleFont: {
@@ -63,9 +71,9 @@ export const distributionChartOptions = {
         weight: "600",
       },
       bodyFont: {
-        size: 13,
+        size: 12,
         family: "'Inter', sans-serif",
-        weight: "500",
+        weight: "400",
       },
       callbacks: {
         title: function (context) {
@@ -79,15 +87,7 @@ export const distributionChartOptions = {
       },
     },
   },
-  elements: {
-    arc: {
-      borderWidth: 3,
-      borderColor: "#ffffff",
-      hoverBorderWidth: 4,
-      hoverBorderColor: "#ffffff",
-    },
-  },
-  animation: false,
+  animation: true,
   interaction: {
     intersect: false,
   },

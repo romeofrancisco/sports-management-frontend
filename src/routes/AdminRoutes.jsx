@@ -22,8 +22,9 @@ import PlayerProgressTeamPage from "@/pages/trainings/PlayerProgressTeamPage";
 import PlayerProgressIndividualSelectionPage from "@/pages/trainings/PlayerProgressIndividualSelectionPage";
 import PlayerProgressTeamSelectionPage from "@/pages/trainings/PlayerProgressTeamSelectionPage";
 import AttendanceAnalyticsPage from "@/pages/trainings/AttendanceAnalyticsPage";
-import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
+import PlayerAttendanceDetailPage from "@/pages/trainings/PlayerAttendanceDetailPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
+import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import SessionManagement from "@/components/trainings/sessions/SessionManagement";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
 import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
@@ -191,8 +192,8 @@ export const adminRoutes = [
     element: <AttendanceAnalyticsPage />,
   },
   {
-    path: "/trainings/attendance/players",
-    element: <AttendanceAnalyticsPage />,
+    path: "/trainings/attendance/player/:playerId",
+    element: <PlayerAttendanceDetailPage />,
   },
   {
     path: "/trainings/categories",

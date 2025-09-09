@@ -54,19 +54,19 @@ const PlayersContainer = () => {
   return (
     <Card className="border-2 border-primary/20">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <div className="bg-primary p-3 rounded-xl">
               <User className="size-7 text-primary-foreground" />
             </div>
             <div>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold text-foreground">
                   Student Athletes
                 </h2>
                 <Badge className="h-6 text-[11px]">{totalPlayers} players</Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground line-clamp-1">
                 Register, manage, and track student athlete profiles and statistics for your sports team.
               </p>
             </div>
