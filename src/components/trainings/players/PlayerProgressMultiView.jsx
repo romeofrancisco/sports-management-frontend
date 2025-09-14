@@ -391,6 +391,7 @@ const PlayerProgressMultiView = ({
         title="Player Improvements Analysis"
         description="Detailed improvement metrics and trends for selected players"
         icon={TrendingUp}
+        height={"auto"}
         className="border-primary/20"
         action={
           isLoading ? (

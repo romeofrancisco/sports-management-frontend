@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { NavbarNavUser } from "./navbar-nav-user";
 import { NavbarMessages } from "@/components/chat";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "@/hooks/useModal";
 import logo from "/perpetual_logo.png";
 
 const AppNavbar = ({ navItems = [] }) => {

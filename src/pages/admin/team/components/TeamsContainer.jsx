@@ -95,7 +95,6 @@ const TeamsContainer = () => {
         <TeamFiltersBar filter={filter} setFilter={handleFilterChange} />
       </CardHeader>
       <CardContent>
-        <Separator className="max-h-[0.5px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         {isLoading ? (
           <TeamsListSkeleton viewMode={viewMode} pageSize={pageSize} />
         ) : teams && teams.length > 0 ? (
