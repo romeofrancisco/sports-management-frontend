@@ -10,7 +10,8 @@ import {
   MoreHorizontal, 
   Users, 
   Trophy, 
-  Shield
+  Shield,
+  RotateCcw
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,6 +34,7 @@ const TeamsTableView = ({
   onPageSizeChange,
   onUpdateTeam,
   onDeleteTeam,
+  onReactivateTeam,
 }) => {
   const TeamActions = ({ team }) => (
     <DropdownMenu>
@@ -48,18 +50,30 @@ const TeamsTableView = ({
           <Eye className="mr-2 h-4 w-4" />
           View Team
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onUpdateTeam(team)}>
-          <Edit className="mr-2 h-4 w-4" />
-          Edit Team
-        </DropdownMenuItem>
+        {team.is_active && (
+          <DropdownMenuItem onClick={() => onUpdateTeam(team)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit Team
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          onClick={() => onDeleteTeam(team)}
-          className="text-destructive focus:text-destructive"
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete Team
-        </DropdownMenuItem>
+        {team.is_active ? (
+          <DropdownMenuItem 
+            onClick={() => onDeleteTeam(team)}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Team
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem 
+            onClick={() => onReactivateTeam(team)}
+            className="text-green-600 focus:text-green-600"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reactivate Team
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

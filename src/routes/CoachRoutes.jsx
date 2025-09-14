@@ -14,6 +14,7 @@ import PlayerProgressTeamPage from "@/pages/trainings/PlayerProgressTeamPage";
 import PlayerProgressIndividualSelectionPage from "@/pages/trainings/PlayerProgressIndividualSelectionPage";
 import PlayerProgressTeamSelectionPage from "@/pages/trainings/PlayerProgressTeamSelectionPage";
 import AttendanceAnalyticsPage from "@/pages/trainings/AttendanceAnalyticsPage";
+import PlayerAttendanceDetailPage from "@/pages/trainings/PlayerAttendanceDetailPage";
 import TrainingCategoriesPage from "@/pages/trainings/TrainingCategoriesPage";
 import TrainingMetricsPage from "@/pages/trainings/TrainingMetricsPage";
 import TrainingUnitsPage from "@/pages/trainings/TrainingUnitsPage";
@@ -100,6 +101,10 @@ export const coachRoutes = [
   {
     path: "/trainings/attendance/players",
     element: <AttendanceAnalyticsPage />,
+  },
+  {
+    path: "/trainings/attendance/player/:playerId",
+    element: <PlayerAttendanceDetailPage />,
   },
   {
     path: "/trainings/categories",

@@ -13,13 +13,15 @@ import {
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 import PlayerActions from "./PlayerActions";
 
-const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
+const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
   // Get player's first position for display
   const primaryPosition = player.positions?.[0]?.abbreviation || "N/A";
   const allPositions =
     player.positions?.map((pos) => pos.abbreviation).join(", ") || "N/A";
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30">
+    <Card className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 ${
+      !player.is_active ? 'opacity-70 border-gray-300' : ''
+    }`}>
       {/* University color indicator  */}
       <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
 
@@ -53,8 +55,12 @@ const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
                   {player.last_name?.[0]}
                 </AvatarFallback>
               </Avatar>
-              {/* Active status indicator */}
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full border-2 border-card shadow-sm"></div>
+              {/* Active/Inactive status indicator */}
+              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
+                !player.is_active 
+                  ? 'bg-gradient-to-r from-red-400 to-red-500' 
+                  : 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+              }`}></div>
             </div>
             <div className="flex-1 min-w-0">
               <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
@@ -76,28 +82,41 @@ const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
                     {player.sport.name}
                   </Badge>
                 )}
+                {/* Player active/inactive status badge */}
+                <Badge 
+                  variant={player.is_active ? "default" : "destructive"}
+                  className={`text-xs font-medium px-2 py-0.5 ${
+                    player.is_active 
+                      ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+                      : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                  }`}
+                >
+                  {player.is_active ? 'Active' : 'Inactive'}
+                </Badge>
               </div>
 
               {/* Player details */}
-              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                <div
-                  className="flex items-center gap-1"
-                  title={`Position: ${allPositions}`}
-                >
-                  <Target className="h-3 w-3" />
-                  <span className="font-medium">{primaryPosition}</span>
-                </div>
-                {player.team?.name && (
+              <div className="flex flex-col gap-2 mt-2">
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <div
                     className="flex items-center gap-1"
-                    title={`Team: ${player.team.name}`}
+                    title={`Position: ${allPositions}`}
                   >
-                    <Users className="h-3 w-3" />
-                    <span className="truncate max-w-20">
-                      {player.team.name}
-                    </span>
+                    <Target className="h-3 w-3" />
+                    <span className="font-medium">{primaryPosition}</span>
                   </div>
-                )}
+                  {player.team?.name && (
+                    <div
+                      className="flex items-center gap-1"
+                      title={`Team: ${player.team.name}`}
+                    >
+                      <Users className="h-3 w-3" />
+                      <span className="truncate max-w-20">
+                        {player.team.name}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -107,6 +126,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete }) => {
               onView={onView}
               onEdit={onEdit}
               onDelete={onDelete}
+              onReactivate={onReactivate}
             />
           </div>
         </div>

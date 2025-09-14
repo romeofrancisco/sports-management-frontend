@@ -6,7 +6,7 @@ const PlayerStatsCards = ({ data }) => {
   const stats = [
     {
       title: "Total Sessions",
-      value: `${data.total_sessions} / ${data.attendance_distribution.present || 0}`,
+      value: `${data.attendance_distribution.present + data.attendance_distribution.late || 0} / ${data.total_sessions}`,
       description: "Sessions attended out of total",
       icon: <CalendarDays className="h-5 w-5 text-primary-foreground" />,
       color: "from-primary via-primary/90 to-primary/80",
@@ -27,8 +27,8 @@ const PlayerStatsCards = ({ data }) => {
       textAccent: "text-secondary",
     },
     {
-      title: "Absent",
-      value: data.attendance_distribution.absent || 0,
+      title: "Absent / Excused",
+      value: data.attendance_distribution.absent + data.attendance_distribution.excused || 0,
       description: "Sessions missed",
       icon: <XCircle className="h-5 w-5 text-primary-foreground" />,
       color: "from-red-500 via-red-500/90 to-red-500/80",

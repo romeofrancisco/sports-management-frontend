@@ -46,6 +46,15 @@ export const deleteTeam = async (team) => {
   }
 };
 
+export const reactivateTeam = async (teamSlug) => {
+  try {
+    const { data } = await api.post(`teams/${teamSlug}/reactivate/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateTeam = async (teamData, team) => {
   try {
     const { data } = await api.patch(`teams/${team}/`, teamData);

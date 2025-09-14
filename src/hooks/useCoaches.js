@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchCoaches, fetchCoachById, createCoach, deleteCoach, updateCoach } from "@/api/coachesApi";
+import { fetchCoaches, fetchCoachById, createCoach, deleteCoach, updateCoach, reactivateCoach } from "@/api/coachesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
@@ -55,6 +55,18 @@ export const useDeleteCoach = () => {
     mutationFn: ({ id }) => deleteCoach(id),
     onSuccess: () => {
       toast.success("Coach Deleted", {
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["coaches"]);
+    },
+  });
+};
+
+export const useReactivateCoach = () => {
+  return useMutation({
+    mutationFn: ({ id }) => reactivateCoach(id),
+    onSuccess: () => {
+      toast.success("Coach Reactivated", {
         richColors: true,
       });
       queryClient.invalidateQueries(["coaches"]);

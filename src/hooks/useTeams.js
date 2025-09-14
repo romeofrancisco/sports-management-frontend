@@ -5,6 +5,7 @@ import {
   fetchSportTeams,
   createTeam,
   deleteTeam,
+  reactivateTeam,
   updateTeam,
   fetchTeamsInSeason,
   fetchTeamCoaches,
@@ -86,6 +87,21 @@ export const useDeleteTeam = () => {
       });
       // Refetch teams
       queryClient.invalidateQueries(["teams"]);
+    },
+  });
+};
+
+export const useReactivateTeam = () => {
+  return useMutation({
+    mutationFn: ({ teamSlug }) => reactivateTeam(teamSlug),
+    onSuccess: (_, { teamSlug }) => {
+      toast.success("Team reactivated!", {
+        description: "Team has been successfully reactivated.",
+        richColors: true,
+      });
+      // Refetch teams
+      queryClient.invalidateQueries(["teams"]);
+      queryClient.invalidateQueries(["teamDetails", teamSlug]);
     },
   });
 };

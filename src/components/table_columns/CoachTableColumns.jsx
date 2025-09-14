@@ -7,6 +7,7 @@ import {
   Volleyball,
   Users,
   Shield,
+  RotateCcw,
 } from "lucide-react";
 import React from "react";
 import {
@@ -21,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const getCoachTableColumns = ({ onEdit, onDelete }) => [
+const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
   {
     header: "Coach",
     accessorKey: "full_name",
@@ -63,6 +64,24 @@ const getCoachTableColumns = ({ onEdit, onDelete }) => [
         className="h-5 px-2 text-xs bg-primary/5 border-primary/20 text-primary capitalize"
       >
         {getValue()}
+      </Badge>
+    ),
+  },
+  {
+    header: "Status",
+    accessorKey: "is_active",
+    size: 80,
+    meta: { priority: "medium" },
+    cell: ({ getValue }) => (
+      <Badge 
+        variant={getValue() ? "default" : "destructive"}
+        className={`h-5 px-2 text-xs ${
+          getValue() 
+            ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+            : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+        }`}
+      >
+        {getValue() ? 'Active' : 'Inactive'}
       </Badge>
     ),
   },
@@ -183,13 +202,23 @@ const getCoachTableColumns = ({ onEdit, onDelete }) => [
               <Edit className="mr-2 h-4 w-4" />
               Update Coach
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => onDelete(coach)}
-              className="text-destructive text-xs md:text-sm cursor-pointer"
-            >
-              <Trash className="mr-2 h-4 w-4 text-destructive" />
-              Delete Coach
-            </DropdownMenuItem>
+            {coach.is_active ? (
+              <DropdownMenuItem
+                onClick={() => onDelete(coach)}
+                className="text-destructive text-xs md:text-sm cursor-pointer"
+              >
+                <Trash className="mr-2 h-4 w-4 text-destructive" />
+                Delete Coach
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => onReactivate(coach)}
+                className="text-green-600 dark:text-green-400 text-xs md:text-sm cursor-pointer"
+              >
+                <RotateCcw className="mr-2 h-4 w-4 text-green-600 dark:text-green-400" />
+                Reactivate Coach
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

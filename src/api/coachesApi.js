@@ -45,3 +45,12 @@ export const deleteCoach = async (coachId) => {
     throw error;
   }
 };
+
+export const reactivateCoach = async (coachId) => {
+  try {
+    const { data } = await api.post(`coaches/${coachId}/reactivate/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

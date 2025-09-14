@@ -81,11 +81,10 @@ const ChartsSection = ({ overview, analytics }) => {
         />
       </div>
       {/* Coach Analytics Row */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <SportsDistributionChart data={overview?.distribution_stats} />
 
-        <CoachEffectivenessChart data={analytics?.coach_analytics || []} />
-      </div>
+      <SportsDistributionChart data={overview?.distribution_stats} />
+
+      <CoachEffectivenessChart data={analytics?.coach_analytics || []} />
     </div>
   );
 };

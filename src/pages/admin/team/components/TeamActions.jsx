@@ -8,9 +8,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Trash, MoreHorizontal, Eye, Edit, Settings } from "lucide-react";
+import { Trash, MoreHorizontal, Eye, Edit, RotateCcw } from "lucide-react";
 
-const TeamActions = ({ onView, onEdit, onDelete }) => {
+const TeamActions = ({ team, onView, onEdit, onDelete, onReactivate }) => {
   const [open, setOpen] = useState(false);
   
   const handleAction = (action) => {
@@ -19,7 +19,8 @@ const TeamActions = ({ onView, onEdit, onDelete }) => {
   };
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>      <DropdownMenuTrigger asChild>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
           size="icon" 
@@ -36,22 +37,35 @@ const TeamActions = ({ onView, onEdit, onDelete }) => {
         <DropdownMenuLabel className="text-foreground font-semibold">
           Team Actions
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-primary/20" /><DropdownMenuItem onClick={() => handleAction(onView)}>
+        <DropdownMenuSeparator className="bg-primary/20" />
+        <DropdownMenuItem onClick={() => handleAction(onView)}>
           <Eye className="mr-2 h-4 w-4" />
           View Team
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction(onEdit)}>
-          <Edit className="mr-2 h-4 w-4" />
-          Update Team
-        </DropdownMenuItem>
+        {team?.is_active && (
+          <DropdownMenuItem onClick={() => handleAction(onEdit)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Update Team
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          onClick={() => handleAction(onDelete)} 
-          className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
-        >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete Team
-        </DropdownMenuItem>
+        {team?.is_active ? (
+          <DropdownMenuItem 
+            onClick={() => handleAction(onDelete)} 
+            className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete Team
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem 
+            onClick={() => handleAction(onReactivate)} 
+            className="text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reactivate Team
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

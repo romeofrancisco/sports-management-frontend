@@ -1,26 +1,38 @@
 import React from "react";
-import { Search, Grid3X3, LayoutGrid } from "lucide-react";
+import { Search, Grid3X3, LayoutGrid, Trophy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
-const LeaguesHeader = ({ 
-  filteredCount, 
-  viewMode, 
-  setViewMode, 
-  searchTerm, 
-  setSearchTerm 
+const LeaguesHeader = ({
+  filteredCount,
+  viewMode,
+  setViewMode,
+  searchTerm,
+  setSearchTerm,
 }) => {
+  const { isAdmin } = useRolePermissions();
+
   return (
     <>
       {/* Enhanced Header with View Toggle */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold text-foreground">Leagues</h2>
-          <div className="px-2 py-2 bg-primary/10 rounded-full flex">
-            <span className="text-xs font-medium text-primary">
-              {filteredCount} leagues
-            </span>
+          <div className="bg-primary p-3 rounded-xl">
+            <Trophy className="size-7 text-primary-foreground" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-foreground">Leagues</h2>
+              <Badge className="h-6 text-[11px]">{filteredCount} leagues</Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {isAdmin()
+                ? "Create and manage sports leagues"
+                : "Browse and explore available sports leagues"}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -46,19 +58,16 @@ const LeaguesHeader = ({
       </div>
 
       {/* Search Filter */}
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search leagues..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-background/50 border-primary/20 focus:border-primary/40 transition-all duration-300"
-          />
-        </div>
-      </div>
 
-      <Separator className="max-h-[0.5px] mb-6 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search leagues..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10 bg-background/50 border-primary/20 focus:border-primary/40 transition-all duration-300"
+        />
+      </div>
     </>
   );
 };

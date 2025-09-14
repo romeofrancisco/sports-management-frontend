@@ -5,6 +5,7 @@ import {
   deletePlayer,
   updatePlayer,
   fetchPlayerDetails,
+  reactivatePlayer,
 } from "@/api/playersApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -75,6 +76,21 @@ export const useDeletePlayer = () => {
         richColors: true,
       });
       queryClient.invalidateQueries(["player"]);
+    },
+  });
+};
+
+export const useReactivatePlayer = () => {
+  return useMutation({
+    mutationFn: ({ playerId }) => reactivatePlayer(playerId),
+    onSuccess: (_, { playerId }) => {
+      toast.success("Player reactivated!", {
+        description: "Player account has been successfully reactivated.",
+        richColors: true,
+      });
+      // Refetch players
+      queryClient.invalidateQueries(["players"]);
+      queryClient.invalidateQueries(["player-details", playerId]);
     },
   });
 };

@@ -32,7 +32,7 @@ export const getAllTeamsAttendanceColumns = (attendanceData) => {
     ...dateKeys.map((date) => ({
       id: date,
       accessorKey: date,
-      header: formatShortDate(date),
+      header: (<span className="text-xs ">{formatShortDate(date)}</span>),
       meta: {
         // This will be used as the TableCell className
         getBg: (row) => {
@@ -132,7 +132,7 @@ export const getAllTeamsAttendanceColumns = (attendanceData) => {
   });
 };
 
-export const getPlayerAttendanceColumns = (attendanceData) => {
+export const getPlayerAttendanceColumns = (attendanceData, navigate) => {
   // When team is selected or coach has only one team, attendanceData will be an array with one team containing players
   const teamData = attendanceData?.[0];
   const players = teamData?.players || [];
@@ -144,23 +144,6 @@ export const getPlayerAttendanceColumns = (attendanceData) => {
   // Get all unique date keys from the first player's attendance
   const firstPlayer = players[0];
   const dateKeys = firstPlayer ? Object.keys(firstPlayer.attendance) : [];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "present":
-        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100";
-      case "late":
-        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100";
-      case "absent":
-        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100";
-      case "excused":
-        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100";
-      case "not_enrolled":
-        return "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400";
-      default:
-        return "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400";
-    }
-  };
 
   const getCellBgColor = (status) => {
     switch (status) {
@@ -204,8 +187,19 @@ export const getPlayerAttendanceColumns = (attendanceData) => {
         const playerName = row.getValue("name");
         const playerProfile = row.original.profile;
         const jerseyNumber = row.original.jersey_number;
+        const playerId = row.original.id;
+        
+        const handlePlayerClick = () => {
+          if (playerId) {
+            navigate(`/trainings/attendance/player/${playerId}`);
+          }
+        };
+        
         return (
-          <span className="flex items-center gap-2 font-semibold">
+          <span 
+            className="flex items-center gap-2 font-semibold cursor-pointer hover:text-primary transition-colors"
+            onClick={handlePlayerClick}
+          >
             <Avatar className="w-8 h-8">
               <AvatarImage src={playerProfile} alt={playerName} />
               <AvatarFallback className="text-xs font-semibold">
@@ -220,7 +214,7 @@ export const getPlayerAttendanceColumns = (attendanceData) => {
     ...dateKeys.map((date) => ({
       id: date,
       accessorKey: date,
-      header: formatShortDate(date),
+      header: () => <span className="text-xs ">{formatShortDate(date)}</span>,
       meta: {
         className: (cellContext) => {
           const entry = cellContext.row.original.attendance[date];
@@ -253,7 +247,7 @@ export const getPlayerAttendanceColumns = (attendanceData) => {
           <div
             className={`absolute inset-0 w-full h-full min-h-16 min-w-1 flex items-center justify-center ${bgColor}`}
           >
-            <span className="text-xs font-medium">
+            <span className="text-xs">
               {statusDisplay}
             </span>
           </div>

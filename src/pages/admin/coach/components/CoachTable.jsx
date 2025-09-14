@@ -14,9 +14,10 @@ const CoachTable = ({
   onPageChange,
   onPageSizeChange,
   onUpdate, 
-  onDelete 
+  onDelete,
+  onReactivate 
 }) => {
-  const columns = getCoachTableColumns({ onEdit: onUpdate, onDelete });
+  const columns = getCoachTableColumns({ onEdit: onUpdate, onDelete, onReactivate });
 
   return (
     <div className="space-y-4">

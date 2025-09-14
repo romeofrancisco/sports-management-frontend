@@ -170,6 +170,7 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
       borderRadius: 4,
       borderSkipped: false,
       yAxisID: "percentage",
+      
     },
   ],
 });

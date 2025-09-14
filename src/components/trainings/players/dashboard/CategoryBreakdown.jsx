@@ -26,7 +26,7 @@ const CategoryBreakdown = ({
             No category data available
           </div>
         ) : (
-          <ScrollArea className="h-full">
+          <ScrollArea className="h-full w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categories.map((category, index) => {
                 const improvementPercentage = category.average_improvement;

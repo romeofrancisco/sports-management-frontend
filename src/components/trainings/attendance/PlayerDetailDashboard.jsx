@@ -1,20 +1,26 @@
-import React, { useState } from "react";
-import { createAttendanceDistributionChart, distributionChartOptions } from "./components/chartConfigs/attendanceDistributionChart";
-import { createPlayerTrendsChart, playerTrendsChartOptions } from "./components/chartConfigs/playerTrendsChart";
-import { createPlayerTimelineChart, playerTimelineChartOptions } from "./components/chartConfigs/playerTimelineChart";
-import PlayerDetailHeader from "@/components/trainings/attendance/components/player/PlayerDetailHeader";
+import React from "react";
+import {
+  createAttendanceDistributionChart,
+  distributionChartOptions,
+} from "./components/chartConfigs/attendanceDistributionChart";
+import {
+  createPlayerMonthlyTrendChart,
+  playerMonthlyTrendChartOptions,
+} from "./components/chartConfigs/playerMonthlyTrendChart";
 import PlayerStatsCards from "@/components/trainings/attendance/components/player/PlayerStatsCards";
-import PlayerAttendanceCharts from "@/components/trainings/attendance/components/player/PlayerAttendanceCharts";
-import PlayerRecentSessions from "@/components/trainings/attendance/components/player/PlayerRecentSessions";
+import PlayerInfoAndSessions from "@/components/trainings/attendance/components/player/PlayerInfoAndSessions";
+import { AlertCircle } from "lucide-react";
+import ChartCard from "@/components/charts/ChartCard";
+import { Doughnut, Line } from "react-chartjs-2";
+import { BarChart3, TrendingUp } from "lucide-react";
 
-const   PlayerDetailDashboard = ({
+const PlayerDetailDashboard = ({
   player,
   playerDetailData,
   playerDetailLoading,
   playerDetailError,
   onBack,
 }) => {
-  const [chartType, setChartType] = useState("summary"); // 'summary' or 'timeline'
   if (playerDetailLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 space-y-6">
@@ -49,39 +55,46 @@ const   PlayerDetailDashboard = ({
     data.attendance_distribution
   );
 
-  // Chart data for both summary and timeline views
-  const summaryChartData = createPlayerTrendsChart(data.trends);
-  const timelineChartData = createPlayerTimelineChart(data.trends);
-
-  const currentChartData =
-    chartType === "summary" ? summaryChartData : timelineChartData;
-  const currentChartOptions =
-    chartType === "summary"
-      ? playerTrendsChartOptions
-      : playerTimelineChartOptions;
+  // Monthly trend chart data
+  const monthlyTrendData = createPlayerMonthlyTrendChart(data.trends);
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Header with back button */}
-      <PlayerDetailHeader data={data} onBack={onBack} />
       {/* Overview Cards at the Top */}
       <PlayerStatsCards data={data} />
       {/* Main and Side Section Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Section: Charts Only */}
-        <div className="lg:col-span-2 space-y-6">
-          <PlayerAttendanceCharts
-            attendanceDistribution={attendanceDistribution}
-            distributionChartOptions={distributionChartOptions}
-            currentChartData={currentChartData}
-            currentChartOptions={currentChartOptions}
-            chartType={chartType}
-            setChartType={setChartType}
+      <div className="grid grid-cols-1 xl:grid-cols-8 gap-6">
+        {/* Side Section: Combined Player Info and Recent Sessions */}
+        <div className="lg:col-span-2">
+          <PlayerInfoAndSessions
+            data={data}
+            onBack={onBack}
+            recentSessions={data.recent_sessions}
           />
         </div>
-        {/* Side Section: Recent Sessions */}
-        <div className="lg:col-span-1">
-          <PlayerRecentSessions recentSessions={data.recent_sessions} />
-        </div>
+        <ChartCard
+          title="Attendance Distribution"
+          description="Overall attendance breakdown"
+          icon={BarChart3}
+          hasData={attendanceDistribution}
+          className="md:col-span-2"
+        >
+          <Doughnut
+            data={attendanceDistribution}
+            options={distributionChartOptions}
+          />
+        </ChartCard>
+        <ChartCard
+          title="Monthly Progress"
+          description="Attendance trends over time"
+          icon={TrendingUp}
+          hasData={monthlyTrendData}
+          className="md:col-span-4"
+        >
+          <Line
+            data={monthlyTrendData}
+            options={playerMonthlyTrendChartOptions}
+          />
+        </ChartCard>
       </div>
     </div>
   );

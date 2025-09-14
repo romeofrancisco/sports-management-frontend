@@ -36,7 +36,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
 
-const SeasonActions = ({ season }) => {  const { league } = useParams();
+const SeasonActions = ({ season }) => {
+  const { league } = useParams();
   const navigate = useNavigate();
   const { isOpen, closeModal, openModal } = useModal();
   const editModal = useModal();
@@ -101,7 +102,8 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
         onSuccess: () => {
           setShowConfirm(false);
         },
-      }    );
+      }
+    );
   };
 
   const canStart = season.status === "upcoming" || season.status === "paused";
@@ -111,7 +113,8 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
   const isOngoing = season.status === "ongoing";
   const isPaused = season.status === "paused";
   const isCompleted = season.status === "completed";
-  const isCanceled = season.status === "canceled";  return (
+  const isCanceled = season.status === "canceled";
+  return (
     <>
       <div className="flex items-center gap-3">
         {/* Season actions based on status */}
@@ -160,8 +163,9 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Season Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />            {/* Modify season actions - Edit, Export */}
-            <DropdownMenuItem 
+            <DropdownMenuSeparator />{" "}
+            {/* Modify season actions - Edit, Export */}
+            <DropdownMenuItem
               className="flex items-center gap-2"
               onClick={() => {
                 setDropdownOpen(false);
@@ -171,11 +175,11 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
               <Settings size={14} />
               <span>Edit Season</span>
             </DropdownMenuItem>
-
             <DropdownMenuItem className="flex items-center gap-2">
               <Share2 size={14} />
               <span>Export Schedule</span>
-            </DropdownMenuItem>            {/* Generate Bracket moved to settings dropdown */}
+            </DropdownMenuItem>{" "}
+            {/* Generate Bracket moved to settings dropdown */}
             {!season.has_bracket && (
               <DropdownMenuItem
                 className="flex items-center gap-2"
@@ -188,7 +192,6 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
                 <span>Generate Bracket</span>
               </DropdownMenuItem>
             )}
-
             {/* Season status actions */}
             {(isOngoing || isPaused) && (
               <>
@@ -205,7 +208,6 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
                 </DropdownMenuItem>
               </>
             )}
-
             {(isUpcoming || isOngoing || isPaused) && (
               <>
                 <DropdownMenuSeparator />
@@ -223,7 +225,8 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>      {/* Generate Bracket Modal */}
+      </div>{" "}
+      {/* Generate Bracket Modal */}
       <GenerateBracketModal
         isOpen={isOpen}
         onClose={closeModal}
@@ -234,7 +237,6 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
           navigate(`/leagues/${league}/seasons/${season.id}/bracket`);
         }}
       />
-
       {/* Edit Season Modal */}
       <SeasonModal
         isOpen={editModal.isOpen}
@@ -242,7 +244,6 @@ const SeasonActions = ({ season }) => {  const { league } = useParams();
         season={season}
         sport={season?.league?.sport} // Pass sport data for the modal
       />
-
       {/* Confirmation Dialog for season management actions */}
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>

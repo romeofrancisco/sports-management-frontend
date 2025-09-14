@@ -773,14 +773,14 @@ export const TeamsByDivisionSportChart = ({ data }) => {
     labels: sports,
     datasets: [
       {
-        label: "Male Division",
+        label: "Men's Division",
         data: maleData,
         backgroundColor: "#8B153890", // Maroon with transparency
         borderColor: "#8B1538", // Maroon border
         borderWidth: 2,
       },
       {
-        label: "Female Division",
+        label: "Women's Division",
         data: femaleData,
         backgroundColor: "#FFD70090", // Gold with transparency
         borderColor: "#FFD700", // Gold border
@@ -829,26 +829,34 @@ export const SportsDistributionChart = ({ data }) => {
 
     if (sportsData.length === 0) return null;
 
-    const sports = sportsData.map(sport => sport.sport__name);
-    
+    const sports = sportsData.map((sport) => sport.sport__name);
+
     // Prepare datasets
-    const malePlayersData = sports.map(sport => {
-      const playerData = playersData.find(p => p.team__sport__name === sport && p.user__sex === 'male');
+    const malePlayersData = sports.map((sport) => {
+      const playerData = playersData.find(
+        (p) => p.team__sport__name === sport && p.user__sex === "male"
+      );
       return playerData?.count || 0;
     });
-    
-    const femalePlayersData = sports.map(sport => {
-      const playerData = playersData.find(p => p.team__sport__name === sport && p.user__sex === 'female');
+
+    const femalePlayersData = sports.map((sport) => {
+      const playerData = playersData.find(
+        (p) => p.team__sport__name === sport && p.user__sex === "female"
+      );
       return playerData?.count || 0;
     });
-    
-    const maleTeamsData = sports.map(sport => {
-      const teamData = teamsData.find(t => t.sport__name === sport && t.division === 'male');
+
+    const maleTeamsData = sports.map((sport) => {
+      const teamData = teamsData.find(
+        (t) => t.sport__name === sport && t.division === "male"
+      );
       return teamData?.count || 0;
     });
-    
-    const femaleTeamsData = sports.map(sport => {
-      const teamData = teamsData.find(t => t.sport__name === sport && t.division === 'female');
+
+    const femaleTeamsData = sports.map((sport) => {
+      const teamData = teamsData.find(
+        (t) => t.sport__name === sport && t.division === "female"
+      );
       return teamData?.count || 0;
     });
 
@@ -856,28 +864,28 @@ export const SportsDistributionChart = ({ data }) => {
       labels: sports,
       datasets: [
         {
-          label: 'Male Players',
+          label: "Male Players",
           data: malePlayersData,
           backgroundColor: "#8B153890", // Maroon with transparency
           borderColor: "#8B1538", // Maroon border
           borderWidth: 2,
         },
         {
-          label: 'Female Players',
+          label: "Female Players",
           data: femalePlayersData,
           backgroundColor: "#FFD70090", // Gold with transparency
           borderColor: "#FFD700", // Gold border
           borderWidth: 2,
         },
         {
-          label: 'Male Teams',
+          label: "Men's Teams",
           data: maleTeamsData,
           backgroundColor: "#f59e0b90", // Amber with transparency
           borderColor: "#f59e0b", // Amber border
           borderWidth: 2,
         },
         {
-          label: 'Female Teams',
+          label: "Women's Teams",
           data: femaleTeamsData,
           backgroundColor: "#7f1d1d90", // Dark red with transparency
           borderColor: "#7f1d1d", // Dark red border
@@ -901,26 +909,23 @@ export const SportsDistributionChart = ({ data }) => {
     },
     plugins: {
       legend: {
-        position: 'bottom',
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-        },
+        position: "bottom",
       },
       title: {
         display: true,
-        text: 'Sports Distribution by Gender',
+        text: "Sports Distribution by Gender",
         font: {
           size: 16,
-          weight: 'bold',
+          weight: "bold",
         },
       },
       tooltip: {
         callbacks: {
-          afterLabel: function(context) {
+          afterLabel: function (context) {
             const datasetLabel = context.dataset.label;
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
-            const percentage = total > 0 ? ((context.parsed.y / total) * 100).toFixed(1) : 0;
+            const percentage =
+              total > 0 ? ((context.parsed.y / total) * 100).toFixed(1) : 0;
             return `${percentage}% of total ${datasetLabel.toLowerCase()}`;
           },
         },

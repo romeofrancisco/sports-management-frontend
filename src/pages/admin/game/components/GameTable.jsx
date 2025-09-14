@@ -11,7 +11,15 @@ import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import TablePagination from "@/components/ui/table-pagination";
 import { Button } from "@/components/ui/button";
-import { Table2, LayoutGrid, Calendar, Filter, CalendarX } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table2,
+  LayoutGrid,
+  Calendar,
+  Filter,
+  CalendarX,
+  Volleyball,
+} from "lucide-react";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
 import { format, isSameDay, parseISO } from "date-fns";
 import GameFilterBar from "./GameFilterBar";
@@ -24,6 +32,7 @@ import {
   StatusSectionSkeleton,
 } from "@/components/games";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { Badge } from "@/components/ui/badge";
 
 const GameTable = () => {
   const navigate = useNavigate();
@@ -204,16 +213,26 @@ const GameTable = () => {
         )}
       </div>
 
-      <div className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl rounded-xl p-4 md:p-6 relative overflow-hidden">
-        <div className="min-h-[400px] space-y-6">
-          {/* View Mode Toggle Header */}
+      <Card className="shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl">
+        {/* View Mode Toggle Header */}
+        <CardHeader className="pb-4 border-b-2 border-primary/20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-semibold text-foreground">Games</h3>
-              <div className="px-2 py-1 bg-primary/10 rounded-full flex">
-                <span className="text-xs font-medium text-primary">
-                  {totalGames} games
-                </span>
+              <div className="bg-primary p-3 rounded-xl">
+                <Volleyball className="size-7 text-primary-foreground" />
+              </div>
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-foreground">
+                    Games
+                  </span>
+                  <Badge className="h-6 text-[11px]">{totalGames} games</Badge>
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  {isPlayer()
+                    ? "View upcoming and past games for your teams."
+                    : "Schedule, manage, and track games for your leagues."}
+                </p>
               </div>
             </div>
 
@@ -238,7 +257,8 @@ const GameTable = () => {
               </Button>
             </div>
           </div>
-
+        </CardHeader>
+        <CardContent>
           {/* Content based on view mode */}
           {viewMode === "table" ? (
             <>
@@ -292,7 +312,11 @@ const GameTable = () => {
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                       {scheduledGames.map((game) => (
-                        <GameCard key={game.id} game={game} onEditGame={handleEditGame} />
+                        <GameCard
+                          key={game.id}
+                          game={game}
+                          onEditGame={handleEditGame}
+                        />
                       ))}
                     </div>
                   </StatusSection>
@@ -345,7 +369,8 @@ const GameTable = () => {
                       )}
                       {isPlayer() && !isAdmin() && !isCoach() && (
                         <p className="text-sm">
-                          No games available. Please check back later or contact your coach for more information.
+                          No games available. Please check back later or contact
+                          your coach for more information.
                         </p>
                       )}
                     </div>
@@ -369,8 +394,8 @@ const GameTable = () => {
               }
             />
           )}
-        </div>
-      </div>
+        </CardContent>{" "}
+      </Card>
 
       <GameModal
         isOpen={modals.update.isOpen}

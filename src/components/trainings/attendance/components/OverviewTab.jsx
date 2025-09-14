@@ -6,7 +6,7 @@ import {
   useAttendanceTrends,
 } from "@/hooks/useAttendanceAnalytics";
 import { format, subDays, parseISO } from "date-fns";
-import { Doughnut, Line } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
 import OverviewCards from "./OverviewCards";
 import {
   Card,
@@ -27,6 +27,8 @@ import {
 } from "./chartConfigs/trendsChart";
 import DataTable from "@/components/common/DataTable";
 import { useAttendanceTracker } from "@/hooks/useAttendanceAnalytics";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 import {
   CalendarDays,
@@ -36,15 +38,23 @@ import {
   AlertCircle,
   Activity,
 } from "lucide-react";
-import { getAllTeamsAttendanceColumns, getPlayerAttendanceColumns } from "./AttendanceTrackerColumns";
+import {
+  getAllTeamsAttendanceColumns,
+  getPlayerAttendanceColumns,
+} from "./AttendanceTrackerColumns";
+import { Chart } from "chart.js";
+import ChartCard from "@/components/charts/ChartCard";
 
 const OverviewTab = () => {
+  const navigate = useNavigate();
+  
   // Local filter state
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [dateRange, setDateRange] = useState({
     from: subDays(new Date(), 90),
     to: new Date(),
   });
+  const [selectedPeriod, setSelectedPeriod] = useState("weekly");
 
   // Defensive fallback for dateRange
   const safeDateRange = {
@@ -64,6 +74,12 @@ const OverviewTab = () => {
     end_date: safeDateRange.to
       ? format(safeDateRange.to, "yyyy-MM-dd")
       : undefined,
+  };
+
+  // Build filters for trends with period parameter
+  const trendsFilters = {
+    ...filters,
+    period: selectedPeriod,
   };
 
   // Build filters for attendance tracker (includes team parameter for player data)
@@ -87,7 +103,7 @@ const OverviewTab = () => {
     data: trendsData,
     isLoading: trendsLoading,
     error: trendsError,
-  } = useAttendanceTrends(filters);
+  } = useAttendanceTrends(trendsFilters);
   const {
     data: attendanceTracker,
     isLoading: attendanceTrackerLoading,
@@ -96,16 +112,40 @@ const OverviewTab = () => {
 
   // Determine which columns and data to use based on whether response contains player data
   const isTeamSelected = selectedTeam !== "all";
-  const hasPlayerData = attendanceTracker?.[0]?.players && attendanceTracker[0].players.length > 0;
-  
-  const attendanceColumns = (isTeamSelected || hasPlayerData)
-    ? getPlayerAttendanceColumns(attendanceTracker)
-    : getAllTeamsAttendanceColumns(attendanceTracker);
-  
+  const hasPlayerData =
+    attendanceTracker?.[0]?.players && attendanceTracker[0].players.length > 0;
+
+  // Check if there's actual attendance data (not just empty objects)
+  const hasAttendanceData = () => {
+    if (!attendanceTracker || attendanceTracker.length === 0) return false;
+
+    if (hasPlayerData) {
+      // For player data, check if any player has attendance records
+      const players = attendanceTracker[0].players;
+      return players.some(
+        (player) =>
+          player.attendance && Object.keys(player.attendance).length > 0
+      );
+    } else {
+      // For team data, check if any team has attendance records
+      return attendanceTracker.some(
+        (team) => team.attendance && Object.keys(team.attendance).length > 0
+      );
+    }
+  };
+
+  const shouldShowAttendanceTable = hasAttendanceData();
+
+  const attendanceColumns =
+    isTeamSelected || hasPlayerData
+      ? getPlayerAttendanceColumns(attendanceTracker, navigate)
+      : getAllTeamsAttendanceColumns(attendanceTracker);
+
   // Transform data for player view when team is selected or when response contains player data
-  const attendanceTableData = (isTeamSelected || hasPlayerData) && attendanceTracker?.[0]?.players 
-    ? attendanceTracker[0].players 
-    : attendanceTracker;
+  const attendanceTableData =
+    (isTeamSelected || hasPlayerData) && attendanceTracker?.[0]?.players
+      ? attendanceTracker[0].players
+      : attendanceTracker;
 
   if (overviewLoading || trendsLoading || attendanceTrackerLoading) {
     return (
@@ -147,9 +187,42 @@ const OverviewTab = () => {
   const attendanceDistribution = createAttendanceDistributionChart(
     overviewData.attendance_distribution
   );
-  const trendsChartData = createTrendsChart(trendsData, (date) =>
-    format(parseISO(date), "MMM dd")
+  const trendsChartData = createTrendsChart(trendsData);
+
+  // Period toggle component for the trends chart
+  const PeriodToggle = () => (
+    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+      <Button
+        variant={selectedPeriod === "monthly" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setSelectedPeriod("monthly")}
+        className="h-8 px-3 text-xs font-medium"
+      >
+        Monthly
+      </Button>
+      <Button
+        variant={selectedPeriod === "weekly" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setSelectedPeriod("weekly")}
+        className="h-8 px-3 text-xs font-medium"
+      >
+        Weekly
+      </Button>
+    </div>
   );
+
+  // Dynamic chart title and description based on period
+  const getChartTitle = () => {
+    return selectedPeriod === "monthly"
+      ? "Training Sessions Trends"
+      : "Weekly Training Sessions";
+  };
+
+  const getChartDescription = () => {
+    return selectedPeriod === "monthly"
+      ? "Number of training sessions per month"
+      : "Number of training sessions per week";
+  };
 
   // Overview stats cards data (styled like PlayerDetailDashboard)
   const overviewStats = [
@@ -239,154 +312,79 @@ const OverviewTab = () => {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid gap-6 lg:grid-cols-5">
-        {/* Attendance Distribution Chart */}
-        <Card className="relative overflow-hidden col-span-2 border-2 border-primary/20">
-          <CardHeader className="relative z-10">
-            <div className="flex items-center gap-2">
-              <div className="p-3 rounded-lg bg-primary shadow-lg">
-                <BarChart3 className="size-5 text-primary-foreground" />
-              </div>
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  Attendance Distribution
-                </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
-                  Overall attendance patterns
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="h-80">
-              {attendanceDistribution &&
-              attendanceDistribution.datasets &&
-              attendanceDistribution.datasets[0] &&
-              attendanceDistribution.datasets[0].data &&
-              attendanceDistribution.datasets[0].data.length > 0 &&
-              attendanceDistribution.datasets[0].data.some((val) => val > 0) ? (
-                <Doughnut
-                  data={attendanceDistribution}
-                  options={distributionChartOptions}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full space-y-4">
-                  <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
-                    <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
-                  </div>
-                  <div className="text-center space-y-1">
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">
-                      No attendance distribution data available
-                    </p>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">
-                      Check back once more attendance data is recorded
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        {/* Trends Chart */}
-        <Card className="relative overflow-hidden col-span-3 border-2 border-primary/20">
-          <CardHeader className="relative z-10">
-            <div className="flex items-center gap-2">
-              <div className="p-3 rounded-lg bg-primary shadow-lg">
-                <Activity className="size-5 text-primary-foreground" />
-              </div>
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  Attendance Trends
-                </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
-                  Performance over time
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="h-80">
-              {trendsChartData ? (
-                <Line
-                  className="h-full w-full"
-                  data={trendsChartData}
-                  options={trendsChartOptions}
-                  plugins={[verticalLinePlugin]}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full space-y-4">
-                  <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
-                    <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
-                  </div>
-                  <div className="text-center space-y-1">
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">
-                      No trends data available
-                    </p>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">
-                      Check back once more attendance data is recorded
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-6 lg:grid-cols-8">
+        <ChartCard
+          title="Attendance Distribution"
+          description="Proportion of attendance statuses"
+          icon={Users}
+          className="col-span-3"
+          hasData={attendanceDistribution?.datasets?.[0]?.data?.some(
+            (val) => val > 0
+          )}
+        >
+          <div className="h-80 flex items-center justify-center">
+            <Doughnut
+              data={attendanceDistribution}
+              options={distributionChartOptions}
+            />
+          </div>
+        </ChartCard>
+        <ChartCard
+          title={getChartTitle()}
+          description={getChartDescription()}
+          icon={TrendingUp}
+          className="col-span-5"
+          action={<PeriodToggle />}
+          hasData={trendsChartData}
+        >
+          <Bar
+            className="h-full w-full"
+            data={trendsChartData}
+            options={trendsChartOptions}
+          />
+        </ChartCard>
 
-        {/* Attendance Tracker Table */}
-        <Card className="relative overflow-hidden col-span-5 border-2 border-primary/20">
-          <CardHeader className="relative z-10">
-            <div className="flex items-center gap-2">
-              <div className="p-3 rounded-lg bg-primary shadow-lg">
-                <BarChart3 className="size-5 text-primary-foreground" />
+        {/* Attendance Tracker Table - Only show if there's actual attendance data */}
+
+        <ChartCard
+          title={
+            isTeamSelected
+              ? "Player Attendance Tracker"
+              : "Team Attendance Tracker"
+          }
+          description={
+            isTeamSelected
+              ? "Detailed attendance status for each player"
+              : "Overall attendance status for the team"
+          }
+          icon={BarChart3}
+          className="col-span-8"
+          hasData={shouldShowAttendanceTable}
+        >
+          <div className="overflow-x-auto">
+            {attendanceTrackerLoading ? (
+              <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">
+                  Loading attendance tracker...
+                </p>
               </div>
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  {isTeamSelected ? "Player Attendance Tracker" : "Team Attendance Tracker"}
-                </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
-                  {isTeamSelected 
-                    ? "Individual player attendance by session" 
-                    : "Daily attendance by team and session"}
-                </CardDescription>
+            ) : attendanceTrackerError ? (
+              <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                <AlertCircle className="h-6 w-6 text-red-600" />
+                <p className="text-red-800 dark:text-red-200 font-medium">
+                  Failed to load attendance tracker data
+                </p>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="overflow-x-auto">
-              {attendanceTrackerLoading ? (
-                <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                  <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                  <p className="text-slate-600 dark:text-slate-400 font-medium">
-                    Loading attendance tracker...
-                  </p>
-                </div>
-              ) : attendanceTrackerError ? (
-                <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                  <AlertCircle className="h-6 w-6 text-red-600" />
-                  <p className="text-red-800 dark:text-red-200 font-medium">
-                    Failed to load attendance tracker data
-                  </p>
-                </div>
-              ) : attendanceTableData &&
-                attendanceTableData.length > 0 ? (
-                <DataTable
-                  unlimited={true}
-                  columns={attendanceColumns}
-                  data={attendanceTableData}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                  <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500" />
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">
-                    {isTeamSelected 
-                      ? "No player attendance data available for selected team"
-                      : "No attendance tracker data available"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            ) : (
+              <DataTable
+                unlimited={true}
+                columns={attendanceColumns}
+                data={attendanceTableData}
+              />
+            )}
+          </div>
+        </ChartCard>
       </div>
     </div>
   );

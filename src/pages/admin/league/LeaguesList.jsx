@@ -18,7 +18,6 @@ const LeaguesList = () => {
           <UniversityPageHeader
             title="League Management"
             description="Create and manage sports leagues and competitions"
-            showUniversityColors={true}
             {...(isAdmin() && {
               buttonText: "Create League",
               buttonIcon: Plus,
@@ -27,10 +26,7 @@ const LeaguesList = () => {
           />
         </div>
 
-        {/* Leagues Container */}
-        <div className="animate-in fade-in-50 duration-500 delay-100">
-          <LeaguesContainer />
-        </div>
+        <LeaguesContainer />
       </div>
 
       {isAdmin && <LeagueModal isOpen={isOpen} onClose={closeModal} />}

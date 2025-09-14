@@ -119,7 +119,7 @@ const InsightsListSection = ({ insights }) => {
                     </CardTitle>
                     {insight.source === "ai" && (
                       <div className="flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
-                        <Brain className="h-3 w-3" />
+                        <Brain className="size-3" />
                         AI
                       </div>
                     )}
@@ -147,7 +147,7 @@ const InsightsListSection = ({ insights }) => {
                   {insight.action && (
                     <div className="text-xs text-muted-foreground">
                       <span className="font-medium">
-                        Recommended Action:
+                        Recommended Action: {" "}
                       </span>
                       {insight.action}
                     </div>

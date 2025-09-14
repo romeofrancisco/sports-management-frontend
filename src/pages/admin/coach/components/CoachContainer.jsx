@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDebounce } from "use-debounce";
 import CoachFilterBar from "./CoachFilterBar";
-import { useCoaches } from "@/hooks/useCoaches";
+import { useCoaches, useReactivateCoach } from "@/hooks/useCoaches";
 import PageError from "@/pages/PageError";
 import ContentLoading from "@/components/common/ContentLoading";
 import DeleteCoachModal from "@/components/modals/DeleteCoachModal";
@@ -38,6 +38,8 @@ const CoachContainer = () => {
     update: useModal(),
   };
 
+  const reactivateCoachMutation = useReactivateCoach();
+
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     setCurrentPage(1); // Reset to first page when filtering
@@ -51,6 +53,10 @@ const CoachContainer = () => {
   const handleUpdateCoach = (coach) => {
     setSelectedCoach(coach);
     modals.update.openModal();
+  };
+
+  const handleReactivateCoach = (coach) => {
+    reactivateCoachMutation.mutate({ id: coach.id });
   };
 
   if (isError) return <PageError />;
@@ -118,6 +124,7 @@ const CoachContainer = () => {
                         coach={coach}
                         onDelete={handleDeleteCoach}
                         onUpdate={handleUpdateCoach}
+                        onReactivate={handleReactivateCoach}
                       />
                     </div>
                   ))}
@@ -151,6 +158,7 @@ const CoachContainer = () => {
                 }}
                 onDelete={handleDeleteCoach}
                 onUpdate={handleUpdateCoach}
+                onReactivate={handleReactivateCoach}
               />
             )}
           </>

@@ -4,7 +4,7 @@ import {
   FilterSport,
   FilterDivision,
 } from "@/components/common/Filters";
-import { Search, X, Volleyball, Shield } from "lucide-react";
+import { Search, X, Volleyball, Shield, VenusAndMars } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSports } from "@/hooks/useSports";

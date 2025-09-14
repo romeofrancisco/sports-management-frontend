@@ -21,7 +21,6 @@ const InsightsHeader = ({ aiEnabled, onAiToggle }) => {
       </div>
 
       <div className="flex flex-col sm:flex-row xl:flex-col gap-3">
-        {" "}
         {/* AI Toggle Control - Compact for sidebar */}
         <div className="flex items-center justify-between gap-1 p-2 xl:p-2 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
           <div className="flex items-center gap-2 min-w-0">

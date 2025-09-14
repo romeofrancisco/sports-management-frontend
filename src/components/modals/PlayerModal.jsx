@@ -14,8 +14,6 @@ import { ScrollArea } from "../ui/scroll-area";
 const PlayerModal = ({ isOpen, onClose, player }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
 
-  const isLoading = isSportsLoading;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-[800px] max-h-[90vh] overflow-hidden p-0">

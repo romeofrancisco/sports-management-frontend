@@ -45,3 +45,12 @@ export const fetchPlayerDetails = async (player) => {
     throw error;
   }
 };
+
+export const reactivatePlayer = async (playerId) => {
+  try {
+    const { data } = await api.post(`players/${playerId}/reactivate/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

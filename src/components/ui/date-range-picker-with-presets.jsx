@@ -1,6 +1,6 @@
 import * as React from "react";
 import { addDays, subDays, subMonths, subYears, format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,13 @@ export function DateRangePickerWithPresets({
       const daysDiff = Math.ceil((today - from) / (1000 * 60 * 60 * 24));
 
       // Check if it matches common presets (allowing for some tolerance)
-      if (daysDiff >= 85 && daysDiff <= 95) {
+      if (daysDiff >= 6 && daysDiff <= 8) {
+        // ~7 days (6-8 days)
+        setSelectedPreset("7days");
+      } else if (daysDiff >= 28 && daysDiff <= 32) {
+        // ~30 days (28-32 days)
+        setSelectedPreset("30days");
+      } else if (daysDiff >= 85 && daysDiff <= 95) {
         // ~3 months (85-95 days)
         setSelectedPreset("3months");
       } else if (daysDiff >= 175 && daysDiff <= 190) {
@@ -100,6 +106,18 @@ export function DateRangePickerWithPresets({
     let newRange = { from: null, to: null };
 
     switch (preset) {
+      case "7days":
+        newRange = {
+          from: subDays(today, 7),
+          to: today,
+        };
+        break;
+      case "30days":
+        newRange = {
+          from: subDays(today, 30),
+          to: today,
+        };
+        break;
       case "3months":
         newRange = {
           from: subMonths(today, 3),
@@ -136,6 +154,10 @@ export function DateRangePickerWithPresets({
     // If a preset is selected, show the preset name instead of date range
     if (selectedPreset) {
       switch (selectedPreset) {
+        case "7days":
+          return "Last 7 Days";
+        case "30days":
+          return "Last 30 Days";
         case "3months":
           return "Last 3 Months";
         case "6months":
@@ -168,6 +190,12 @@ export function DateRangePickerWithPresets({
     return <span className="text-muted-foreground">{placeholder}</span>;
   };
 
+  const handleClear = () => {
+    const clearedRange = { from: null, to: null };
+    setSelectedPreset("overall");
+    handleDateChange(clearedRange);
+  };
+
   return (
     <div className={cn("grid gap-2")} {...props}>
       <Popover>
@@ -176,13 +204,13 @@ export function DateRangePickerWithPresets({
             variant="outline"
             size={size}
             className={cn(
-              "justify-start text-left font-normal",
+              "justify-start text-left font-normal relative",
               !date?.from && selectedPreset !== "overall" && "text-muted-foreground",
               className
             )}
           >
-            <CalendarIcon className="h-4 w-4" />
-            {formatDateRange()}
+            <CalendarIcon />
+            <span className="flex-1">{formatDateRange()}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -194,6 +222,8 @@ export function DateRangePickerWithPresets({
               <SelectValue placeholder={selectedPreset || "Custom Range"} />
             </SelectTrigger>
             <SelectContent position="popper">
+              <SelectItem value="7days">Last 7 Days</SelectItem>
+              <SelectItem value="30days">Last 30 Days</SelectItem>
               <SelectItem value="3months">Last 3 Months</SelectItem>
               <SelectItem value="6months">Last 6 Months</SelectItem>
               <SelectItem value="1year">Last Year</SelectItem>

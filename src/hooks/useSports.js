@@ -11,6 +11,7 @@ import {
   updatePosition,
   deletePosition,
   deleteSport,
+  reactivateSport,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -49,11 +50,63 @@ export const useUpdateSport = () => {
 export const useDeleteSport = () => {
   return useMutation({
     mutationFn: (sport) => deleteSport(sport),
-    onSuccess: () => {
-      toast.info("Sport Deleted", {
+    onSuccess: (data) => {
+      // Handle both soft delete and hard delete responses
+      if (data?.status === 'deactivated') {
+        toast.warning("Sport Deactivated", {
+          description: "Sport has been deactivated due to existing games/data. It won't appear in new game creation.",
+          richColors: true,
+        });
+      } else if (data?.status === 'deleted') {
+        toast.success("Sport Deleted", {
+          description: "Sport has been permanently deleted.",
+          richColors: true,
+        });
+      } else {
+        // Fallback for older API responses
+        toast.info("Sport Deleted", {
+          richColors: true,
+        });
+      }
+      queryClient.invalidateQueries(["sports"]);
+    },
+    onError: (error) => {
+      console.error('Delete sport error:', error);
+      toast.error("Failed to Delete Sport", {
+        description: "There was an error deleting the sport. It may have associated data that prevents deletion.",
         richColors: true,
       });
+    },
+  });
+};
+
+export const useReactivateSport = () => {
+  return useMutation({
+    mutationFn: (sportSlug) => reactivateSport(sportSlug),
+    onSuccess: (data) => {
+      if (data?.status === 'reactivated') {
+        toast.success("Sport Reactivated", {
+          description: `${data.sport_name} has been reactivated and is now available for new games.`,
+          richColors: true,
+        });
+      } else if (data?.status === 'already_active') {
+        toast.info("Sport Already Active", {
+          description: `${data.sport_name} is already active.`,
+          richColors: true,
+        });
+      } else {
+        toast.success("Sport Reactivated", {
+          richColors: true,
+        });
+      }
       queryClient.invalidateQueries(["sports"]);
+    },
+    onError: (error) => {
+      console.error('Reactivate sport error:', error);
+      toast.error("Failed to Reactivate Sport", {
+        description: "There was an error reactivating the sport.",
+        richColors: true,
+      });
     },
   });
 };
