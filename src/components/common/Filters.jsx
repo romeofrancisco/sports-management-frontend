@@ -14,6 +14,7 @@ import { YEAR_LEVEL_CHOICES, COURSE_CHOICES } from "@/constants/player";
 import { DIVISIONS } from "@/constants/team";
 import { SEX } from "@/constants/player";
 import { useSports } from "@/hooks/useSports";
+import { useAllTeams } from "@/hooks/useTeams";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useLeagues } from "@/hooks/useLeagues";
@@ -22,10 +23,18 @@ import { GAME_TYPES, GAME_TYPE_VALUES, GAME_STATUS } from "@/constants/game";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Button } from "../ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronsUpDown, Check } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { STAT_TYPE } from "@/constants/sport";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 export const FilterYearLevel = ({ value, onChange, className = "", hideLabel = false }) => {
   if (hideLabel) {
@@ -271,6 +280,207 @@ export const FilterSport = ({ value, onChange, className = "", hideLabel = false
           </SelectGroup>
         </SelectContent>
       </Select>
+    </div>
+  );
+};
+
+export const FilterTeam = ({ value, onChange, className = "", hideLabel = false, sportFilter = null }) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const { data: teams } = useAllTeams(true, sportFilter ? { sport: sportFilter } : {});
+
+  // Filter teams based on search
+  const filteredTeams = teams?.filter(team =>
+    team?.name?.toLowerCase().includes(search.toLowerCase())
+  ) || [];
+
+  // Find selected team
+  const selectedTeam = teams?.find(team => String(team?.id) === String(value));
+
+  // Team logo component with fallback
+  const TeamLogo = ({ team, size = "w-4 h-4" }) => {
+    const [imageError, setImageError] = useState(false);
+    if (!team.logo || imageError) {
+      const initials = team.name
+        .split(' ')
+        .map(word => word.charAt(0))
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+      return (
+        <div className={`${size} rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary`}>
+          {initials}
+        </div>
+      );
+    }
+    return (
+      <img
+        src={team.logo}
+        alt={`${team.name} logo`}
+        className={`${size} rounded-full object-cover`}
+        onError={() => setImageError(true)}
+      />
+    );
+  };
+
+  if (hideLabel) {
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={`text-xs h-8 justify-between font-normal ${className}`}
+          >
+            {selectedTeam ? (
+              <div className="flex items-center gap-1.5">
+                <TeamLogo team={selectedTeam} size="size-4.5" />
+                <span className="truncate">{selectedTeam.name}</span>
+              </div>
+            ) : (
+              "All Teams"
+            )}
+            <ChevronsUpDown className="h-3 w-3 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0" align="start">
+          <Command>
+            <CommandInput
+              placeholder="Search teams..."
+              value={search}
+              onValueChange={setSearch}
+              className="text-xs"
+            />
+            <CommandList>
+              <CommandEmpty className="text-xs py-2">No teams found.</CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  value="all-teams"
+                  onSelect={() => {
+                    onChange(null);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                  className="text-xs"
+                >
+                  <Check
+                    className={cn(
+                      "h-3 w-3",
+                      !value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  All Teams
+                </CommandItem>
+                {filteredTeams.map((team) => (
+                  <CommandItem
+                    key={team.id}
+                    value={`${team.name}`}
+                    onSelect={() => {
+                      onChange(String(team.id));
+                      setOpen(false);
+                      setSearch("");
+                    }}
+                    className="text-xs"
+                  >
+                    <Check
+                      className={cn(
+                        "h-3 w-3",
+                        String(value) === String(team.id) ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <div className="flex items-center gap-1.5">
+                      <TeamLogo team={team} size="size-4.5" />
+                      <span className="truncate">{team.name}</span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+  
+  return (
+    <div className={`grid gap-0.5 ${className}`}>
+      <Label className="text-xs text-muted-foreground">Team</Label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="text-xs h-8 justify-between font-normal"
+          >
+            {selectedTeam ? (
+              <div className="flex items-center gap-2">
+                <TeamLogo team={selectedTeam} />
+                <span className="truncate">{selectedTeam.name}</span>
+              </div>
+            ) : (
+              "Select Team"
+            )}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[250px] p-0" align="start">
+          <Command>
+            <CommandInput
+              placeholder="Search teams..."
+              value={search}
+              onValueChange={setSearch}
+              className="text-xs"
+            />
+            <CommandList>
+              <CommandEmpty className="text-xs py-2">No teams found.</CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  value="all-teams"
+                  onSelect={() => {
+                    onChange(null);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                  className="text-xs"
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      !value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  All Teams
+                </CommandItem>
+                {filteredTeams.map((team) => (
+                  <CommandItem
+                    key={team.id}
+                    value={`${team.name}`}
+                    onSelect={() => {
+                      onChange(String(team.id));
+                      setOpen(false);
+                      setSearch("");
+                    }}
+                    className="text-xs"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        String(value) === String(team.id) ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <div className="flex items-center gap-2">
+                      <TeamLogo team={team} />
+                      <span className="truncate">{team.name}</span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

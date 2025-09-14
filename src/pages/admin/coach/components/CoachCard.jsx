@@ -6,12 +6,16 @@ import CoachActions from "./CoachActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
-const CoachCard = ({ coach, onDelete, onUpdate }) => {
+const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
   const navigate = useNavigate();
 
   return (
     <Card 
-      className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30"
+      className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card shadow-sm hover:border-primary/30 ${
+        !coach.is_active 
+          ? 'border-red-200 dark:border-red-800/30 bg-red-50/30 dark:bg-red-950/10' 
+          : 'border-border'
+      }`}
     >
       {/* Primary color bar */}
       <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
@@ -29,10 +33,12 @@ const CoachCard = ({ coach, onDelete, onUpdate }) => {
                   {coach.last_name?.[0]}
                 </AvatarFallback>
               </Avatar>
-              {/* Status indicator: green if has teams, amber if none */}
+              {/* Status indicator: red if inactive, green if has teams, amber if none */}
               <div
                 className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
-                  coach.team_count > 0
+                  !coach.is_active
+                    ? "bg-gradient-to-r from-red-400 to-red-500"
+                    : coach.team_count > 0
                     ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
                     : "bg-gradient-to-r from-amber-400 to-amber-500"
                 }`}
@@ -56,6 +62,17 @@ const CoachCard = ({ coach, onDelete, onUpdate }) => {
                 >
                   {coach.sex || "N/A"}
                 </Badge>
+                {/* Coach active/inactive status badge */}
+                <Badge 
+                  variant={coach.is_active ? "default" : "destructive"}
+                  className={`text-xs font-medium px-2 py-0.5 ${
+                    coach.is_active 
+                      ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+                      : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                  }`}
+                >
+                  {coach.is_active ? 'Active' : 'Inactive'}
+                </Badge>
               </div>
             </div>
           </div>
@@ -65,6 +82,7 @@ const CoachCard = ({ coach, onDelete, onUpdate }) => {
                 coach={coach}
                 onDelete={onDelete}
                 onUpdate={onUpdate}
+                onReactivate={onReactivate}
               />
             </div>
           </div>

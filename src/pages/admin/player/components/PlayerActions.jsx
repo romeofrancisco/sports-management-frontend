@@ -8,9 +8,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Trash, MoreHorizontal, Eye, Edit, UserCog } from "lucide-react";
+import { Trash, MoreHorizontal, Eye, Edit, UserCog, RotateCcw } from "lucide-react";
 
-const PlayerActions = ({ player, onView, onEdit, onDelete }) => {
+const PlayerActions = ({ player, onView, onEdit, onDelete, onReactivate }) => {
   const [open, setOpen] = useState(false);
   
   const handleAction = (action) => {
@@ -43,22 +43,34 @@ const PlayerActions = ({ player, onView, onEdit, onDelete }) => {
           <Eye className="mr-2 h-4 w-4" />
           View Player
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction(() => onEdit && onEdit(player))}>
-          <Edit className="mr-2 h-4 w-4" />
-          Update Player
-        </DropdownMenuItem>
+        {player?.is_active && (
+          <DropdownMenuItem onClick={() => handleAction(() => onEdit && onEdit(player))}>
+            <Edit className="mr-2 h-4 w-4" />
+            Update Player
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem>
           <UserCog className="mr-2 h-4 w-4" />
           Player Profile
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          onClick={() => handleAction(() => onDelete && onDelete(player))} 
-          className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
-        >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete Player
-        </DropdownMenuItem>
+        {player?.is_active ? (
+          <DropdownMenuItem 
+            onClick={() => handleAction(() => onDelete && onDelete(player))} 
+            className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete Player
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem 
+            onClick={() => handleAction(() => onReactivate && onReactivate(player))} 
+            className="text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reactivate Player
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

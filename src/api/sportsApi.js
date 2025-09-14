@@ -41,6 +41,19 @@ export const deleteSport = async (sportId) => {
     const { data } = await api.delete(`sports/${sportId}/`);
     return data;
   } catch (error) {
+    // If it's a 500 error with foreign key constraints, 
+    // the backend should handle this gracefully
+    console.error('Delete sport error:', error);
+    throw error;
+  }
+};
+
+export const reactivateSport = async (sportSlug) => {
+  try {
+    const { data } = await api.post(`sports/${sportSlug}/reactivate/`);
+    return data;
+  } catch (error) {
+    console.error('Reactivate sport error:', error);
     throw error;
   }
 };

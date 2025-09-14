@@ -13,10 +13,11 @@ import {
   MoreHorizontal,
   ClipboardPenLine,
   SquarePen,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 
-const SportActions = ({ onEdit, onDelete, sport }) => {
+const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   
@@ -24,6 +25,8 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
     action();
     setOpen(false);
   };
+
+  const isActive = sport.is_active !== false; // Default to true if undefined
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -48,13 +51,27 @@ const SportActions = ({ onEdit, onDelete, sport }) => {
           <SquarePen className="mr-2 h-4 w-4" />
           Update Sport
         </DropdownMenuItem>
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={() => handleAction(() => onDelete(sport))}
-        >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete Sport
-        </DropdownMenuItem>
+        
+        {/* Conditional rendering based on sport status */}
+        {!isActive ? (
+          // Show reactivate option for inactive sports
+          <DropdownMenuItem 
+            onClick={() => handleAction(() => onReactivate(sport))}
+            className="text-green-600 focus:text-green-600"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reactivate Sport
+          </DropdownMenuItem>
+        ) : (
+          // Show delete option for active sports only
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => handleAction(() => onDelete(sport))}
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete Sport
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

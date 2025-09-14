@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Users, Trophy, Target, Settings } from "lucide-react";
 import SportActions from "./SportActions";
 
-const SportCard = ({ sport, onEdit, onDelete }) => {
+const SportCard = ({ sport, onEdit, onDelete, onReactivate }) => {
   // Format scoring type for display
   const getScoringTypeLabel = (type) => {
     switch (type) {
@@ -24,11 +24,16 @@ const SportCard = ({ sport, onEdit, onDelete }) => {
   };
 
   const ScoringIcon = getScoringIcon(sport.scoring_type);
+  const isActive = sport.is_active !== false; // Default to true if undefined
 
   return (
-    <Card className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30">
+    <Card className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group bg-card border-border shadow-sm hover:border-primary/30 ${
+      !isActive ? 'opacity-60' : ''
+    }`}>
       {/* Sport color indicator */}
-      <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
+      <div className={`absolute top-0 right-0 w-3 h-full opacity-80 ${
+        isActive ? 'bg-primary' : 'bg-gray-400'
+      }`}></div>
       
       {/* Hover effects */}
       <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
@@ -45,7 +50,11 @@ const SportCard = ({ sport, onEdit, onDelete }) => {
                 </AvatarFallback>
               </Avatar>
               {/* Sport status indicator */}
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full border-2 border-card shadow-sm"></div>
+              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
+                isActive 
+                  ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' 
+                  : 'bg-gradient-to-r from-gray-400 to-gray-500'
+              }`}></div>
             </div>
 
             <div className="flex-1 min-w-0">
@@ -61,6 +70,14 @@ const SportCard = ({ sport, onEdit, onDelete }) => {
                 >
                   {getScoringTypeLabel(sport.scoring_type)}
                 </Badge>
+                {!isActive && (
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs font-medium px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700"
+                  >
+                    Inactive
+                  </Badge>
+                )}
               </div>
 
               {/* Sport details */}
@@ -88,7 +105,12 @@ const SportCard = ({ sport, onEdit, onDelete }) => {
           </div>
           
           <div className="ml-2">
-            <SportActions sport={sport} onDelete={onDelete} onEdit={onEdit} />
+            <SportActions 
+              sport={sport} 
+              onDelete={onDelete} 
+              onEdit={onEdit} 
+              onReactivate={onReactivate}
+            />
           </div>
         </div>
 

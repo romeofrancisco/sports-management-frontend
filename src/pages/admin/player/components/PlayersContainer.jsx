@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
-import { usePlayers } from "@/hooks/usePlayers";
+import { usePlayers, useReactivatePlayer } from "@/hooks/usePlayers";
 import { useModal } from "@/hooks/useModal";
 import PageError from "@/pages/PageError";
 import DeletePlayerModal from "@/components/modals/DeletePlayerModal";
@@ -44,10 +44,16 @@ const PlayersContainer = () => {
   const deleteModal = useModal();
   const updateModal = useModal();
   const navigate = useNavigate();
+  
+  const reactivatePlayerMutation = useReactivatePlayer();
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     setCurrentPage(1);
+  };
+  
+  const handleReactivatePlayer = (player) => {
+    reactivatePlayerMutation.mutate({ playerId: player.id });
   };
 
   if (isError) return <PageError />;
@@ -115,6 +121,7 @@ const PlayersContainer = () => {
                       setSelectedPlayer(player);
                       deleteModal.openModal();
                     }}
+                    onReactivate={() => handleReactivatePlayer(player)}
                   />
                 ))}
               </div>
@@ -153,6 +160,7 @@ const PlayersContainer = () => {
                 setSelectedPlayer(player);
                 deleteModal.openModal();
               }}
+              onReactivatePlayer={handleReactivatePlayer}
             />
           )
         ) : (
