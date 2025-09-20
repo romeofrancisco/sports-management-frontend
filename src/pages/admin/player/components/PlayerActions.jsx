@@ -49,10 +49,6 @@ const PlayerActions = ({ player, onView, onEdit, onDelete, onReactivate }) => {
             Update Player
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem>
-          <UserCog className="mr-2 h-4 w-4" />
-          Player Profile
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         {player?.is_active ? (
           <DropdownMenuItem 

@@ -18,6 +18,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   createAttendanceDistributionChart,
   distributionChartOptions,
@@ -163,15 +164,116 @@ const AttendanceAnalyticsPage = () => {
             backButtonText="Back to Training"
             backButtonPath="/trainings"
           />
-          <div className="flex flex-col items-center justify-center py-16 space-y-6">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <div className="text-center space-y-2">
-              <p className="text-slate-600 dark:text-slate-400 font-medium">
-                Loading attendance data...
-              </p>
-              <p className="text-slate-500 dark:text-slate-500 text-sm">
-                Please wait while we process your analytics
-              </p>
+          
+          {/* Loading Skeletons */}
+          <div className="space-y-6 sm:space-y-8">
+            {/* Header Section Skeleton */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl">
+              <div className="flex items-center gap-4 flex-1">
+                <Skeleton className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-4 w-72" />
+                </div>
+              </div>
+              <div className="sm:ml-auto">
+                <Skeleton className="h-10 w-64" />
+              </div>
+            </div>
+
+            {/* Overview Cards Skeleton */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="p-6 h-40 rounded-xl border bg-card">
+                  <div className="flex items-center justify-between mb-8">
+                    <Skeleton className="h-8 w-8 rounded-lg" />
+                    <Skeleton className="h-6 w-16" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Charts Grid Skeleton */}
+            <div className="grid gap-6 lg:grid-cols-8">
+              {/* Attendance Distribution Chart Skeleton */}
+              <div className="xl:col-span-2 lg:col-span-3 p-6 rounded-xl border bg-card">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-8 w-8 rounded-lg" />
+                    <div className="space-y-1">
+                      <Skeleton className="h-5 w-40" />
+                      <Skeleton className="h-3 w-48" />
+                    </div>
+                  </div>
+                  <div className="h-80 flex items-center justify-center">
+                    <Skeleton className="h-48 w-48 rounded-full" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Trends Chart Skeleton */}
+              <div className="xl:col-span-6 lg:col-span-5 p-6 rounded-xl border bg-card">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-8 w-8 rounded-lg" />
+                      <div className="space-y-1">
+                        <Skeleton className="h-5 w-40" />
+                        <Skeleton className="h-3 w-56" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-8 w-32 rounded-lg" />
+                  </div>
+                  <div className="h-80">
+                    <div className="flex items-end justify-between h-full space-x-2 px-4">
+                      {[...Array(8)].map((_, index) => (
+                        <Skeleton 
+                          key={index} 
+                          className="w-full rounded-t-sm" 
+                          style={{ height: `${Math.random() * 60 + 20}%` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Attendance Tracker Table Skeleton */}
+              <div className="col-span-8 p-6 rounded-xl border bg-card">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-8 w-8 rounded-lg" />
+                    <div className="space-y-1">
+                      <Skeleton className="h-5 w-48" />
+                      <Skeleton className="h-3 w-64" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {/* Table header */}
+                    <div className="flex gap-4 pb-2 border-b">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    {/* Table rows */}
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index} className="flex gap-4 py-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -428,11 +530,25 @@ const AttendanceAnalyticsPage = () => {
                 <CardContent className="relative z-10 p-0">
                   <div className="overflow-x-auto w-full">
                     {attendanceTrackerLoading ? (
-                      <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                        <p className="text-slate-600 dark:text-slate-400 font-medium">
-                          Loading attendance tracker...
-                        </p>
+                      <div className="p-6 space-y-3">
+                        {/* Table header skeleton */}
+                        <div className="flex gap-4 pb-2 border-b">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-20" />
+                        </div>
+                        {/* Table rows skeleton */}
+                        {[...Array(5)].map((_, index) => (
+                          <div key={index} className="flex gap-4 py-2">
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-4 w-20" />
+                            <Skeleton className="h-4 w-20" />
+                            <Skeleton className="h-4 w-20" />
+                          </div>
+                        ))}
                       </div>
                     ) : attendanceTrackerError ? (
                       <div className="flex flex-col items-center justify-center h-40 space-y-2">
