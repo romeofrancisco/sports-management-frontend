@@ -44,7 +44,6 @@ const PlayerRadarChart = ({
           </div>
     );
   }
-  console.log(radarData)
 
   // Prepare chart data
   const chartData = {
@@ -62,22 +61,6 @@ const PlayerRadarChart = ({
         pointHoverBorderColor: "rgba(139, 21, 56, 1)",
         pointRadius: 4,
         pointHoverRadius: 7,
-      },
-      {
-        label: "Improvement %",
-        data: radarData.improvement_percentages.map((val) =>
-          Math.max(0, 50 + val)
-        ), // Normalize to 0-100 scale
-        backgroundColor: "rgba(255, 215, 0, 0.2)", // Perpetual Gold with transparency
-        borderColor: "rgba(255, 215, 0, 1)",
-        borderWidth: 2,
-        pointBackgroundColor: "rgba(255, 215, 0, 1)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255, 215, 0, 1)",
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        borderDash: [5, 5],
       },
     ],
   };
@@ -125,8 +108,6 @@ const PlayerRadarChart = ({
             size: 11,
             family: "'Inter', sans-serif",
           },
-          usePointStyle: true,
-          pointStyle: "circle",
         },
       },
       tooltip: {
@@ -147,13 +128,10 @@ const PlayerRadarChart = ({
         callbacks: {
           label: function (context) {
             const categoryData = radarData.categories[context.dataIndex];
-            if (context.datasetIndex === 0) {
-              return `Performance: ${context.parsed.r.toFixed(1)}/100`;
-            } else {
-              return `Improvement: ${categoryData.average_improvement.toFixed(
-                1
-              )}%`;
-            }
+            return [
+              `Performance: ${context.parsed.r.toFixed(1)}/100`,
+              `Improvement: ${categoryData.average_improvement.toFixed(1)}%`
+            ];
           },
           afterLabel: function (context) {
             const categoryData = radarData.categories[context.dataIndex];

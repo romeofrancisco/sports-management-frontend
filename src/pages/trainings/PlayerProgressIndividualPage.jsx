@@ -36,7 +36,7 @@ const PlayerProgressIndividualPage = () => {
 
   // Handle back navigation
   const handleBackClick = () => {
-    navigate("/trainings/progress");
+    navigate("/trainings/progress/individual");
   };
 
   // Format date range for API requests
