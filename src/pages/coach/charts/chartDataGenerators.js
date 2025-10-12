@@ -132,7 +132,7 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
       data:
         playerProgress?.player_progress
           ?.slice(0, 10)
-          .map((player) => player.total_sessions || 0) || [],
+          .map((player) => player?.total_sessions || 0) || [],
       backgroundColor: "#ffd70090", // Gold with transparency
       borderColor: "#ffd700", // Gold
       borderWidth: 2,
@@ -145,7 +145,7 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
       data:
         playerProgress?.player_progress
           ?.slice(0, 10)
-          .map((player) => player.recent_improvement.metric_count || 0) || [],
+          .map((player) => player?.recent_improvement?.metric_count || 0) || [],
       backgroundColor: "#f59e0b90", // Amber with transparency (same as Point Differential)
       borderColor: "#f59e0b", // Amber
       borderWidth: 2,
@@ -160,7 +160,7 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
           ?.slice(0, 10)
           .map(
             (player) => {
-              const perc = player.recent_improvement?.percentage;
+              const perc = player?.recent_improvement?.percentage;
               return !isNaN(perc) && perc !== null ? parseFloat(perc.toFixed(1)) : 0;
             }
           ) || [],

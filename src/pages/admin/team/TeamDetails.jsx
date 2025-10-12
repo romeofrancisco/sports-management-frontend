@@ -45,17 +45,6 @@ import { ArrowLeft, Edit } from "lucide-react";
 // Constants
 const ANALYTICS_PERIOD = 90;
 
-// Utility functions
-const getDateRange = (days = ANALYTICS_PERIOD) => {
-  const to = new Date();
-  const from = new Date();
-  from.setDate(from.getDate() - days);
-  return {
-    date_from: from.toISOString().split("T")[0],
-    date_to: to.toISOString().split("T")[0],
-  };
-};
-
 const processLastGamesForScoring = (games, maxGames = 10) => {
   if (!games?.results && !Array.isArray(games)) return [];
 

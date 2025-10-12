@@ -160,7 +160,7 @@ const GameTable = () => {
       {/* Filter Mode Toggle and Filter/Date Bar */}
       <div className="space-y-4">
         {/* Mode Toggle */}
-        {isAdmin() && (
+        {!isPlayer() && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button

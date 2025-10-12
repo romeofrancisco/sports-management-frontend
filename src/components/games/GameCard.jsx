@@ -23,14 +23,10 @@ export const GameCard = React.memo(
     const isLive = liveGameData.status === "in_progress";
     const isScheduled = liveGameData.status === "scheduled";
 
-    const homeScore =
-      liveGameData.score_summary?.total?.home ||
-      liveGameData.home_team_score ||
-      0;
-    const awayScore =
-      liveGameData.score_summary?.total?.away ||
-      liveGameData.away_team_score ||
-      0;
+    console.log(liveGameData)
+
+    const homeScore = liveGameData.sport_scoring_type === "points" ? liveGameData.home_team_score || 0 : liveGameData.score_summary?.total?.home || 0;
+    const awayScore = liveGameData.sport_scoring_type === "points" ? liveGameData.away_team_score || 0 : liveGameData.score_summary?.total?.away || 0;
     const winnerTeamId = liveGameData.winner; // WebSocket connection for real-time updates (connect for live and scheduled games)
     const shouldConnect = isLive || isScheduled;
     const { isConnected } = useGameScoreWebSocket(

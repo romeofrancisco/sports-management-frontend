@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Target } from "lucide-react";
 import { getDefaultChartOptions, getChartTheme } from "./utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ChartCard from "../ChartCard";
 
 export const TeamScoringBarChart = ({
   data,
@@ -18,32 +19,6 @@ export const TeamScoringBarChart = ({
   subtitle = "Points scored vs conceded over time",
 }) => {
   const isMobile = useIsMobile();
-
-  if (!data || data.length === 0) {
-    return (
-      <Card className="border-2 border-primary/20">
-        <CardHeader className="relative">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
-              <BarChart3 className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {title}
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                {subtitle}
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="flex items-center justify-center h-[300px]">
-          <p className="text-muted-foreground">No scoring data available</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   // Calculate offensive efficiency trend
   const calculateOffensiveEfficiency = () => {
     if (data.length < 2) return { direction: "neutral", value: 0 };
@@ -195,64 +170,15 @@ export const TeamScoringBarChart = ({
   };
 
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="relative">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-110 hover:shadow-xl">
-              <BarChart3 className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {title}
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                {subtitle}
-              </CardDescription>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {" "}
-            {/* Offensive Efficiency Badge */}
-            {offensiveEff.direction !== "neutral" && (
-              <Badge
-                variant="outline"
-                className={`${
-                  offensiveEff.direction === "up"
-                    ? "text-amber-600 border-amber-600"
-                    : "text-red-900 border-red-900"
-                }`}
-              >
-                <Target className="mr-1 h-3 w-3" />
-                Off: {offensiveEff.direction === "up" ? "+" : "-"}
-                {offensiveEff.percentage.toFixed(1)}%
-              </Badge>
-            )}
-            {/* Defensive Efficiency Badge */}
-            {defensiveEff.direction !== "neutral" && (
-              <Badge
-                variant="outline"
-                className={`${
-                  defensiveEff.direction === "up"
-                    ? "text-amber-600 border-amber-600"
-                    : "text-red-900 border-red-900"
-                }`}
-              >
-                <Target className="mr-1 h-3 w-3" />
-                Def: {defensiveEff.direction === "up" ? "+" : "-"}
-                {defensiveEff.percentage.toFixed(1)}%
-              </Badge>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
-          <Bar data={chartData} options={chartOptions} />
-        </div>
-
-        {/* Summary Stats */}
-      </CardContent>
-    </Card>
+    <ChartCard
+      title={title}
+      subtitle={subtitle}
+      icon={BarChart3}
+      hasData={data.length > 0}
+    >
+      <div className="h-[300px]">
+        <Bar data={chartData} options={chartOptions} />
+      </div>
+    </ChartCard>
   );
 };
