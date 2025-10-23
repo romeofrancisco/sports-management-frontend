@@ -8,19 +8,16 @@ import { useCreateSportStats, useUpdateSportStats } from "@/hooks/useStats";
 import ControlledSelect from "../common/ControlledSelect";
 import { is } from "date-fns/locale";
 
-const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
+const SportStatsForm = ({
+  onClose,
+  formulas,
+  stat = null,
+  sport,
+  categories,
+}) => {
   const isEdit = !!stat;
   const { mutate: createStat, isPending: isCreating } = useCreateSportStats();
   const { mutate: updateStat, isPending: isUpdating } = useUpdateSportStats();
-
-  // Define category options
-  const categoryOptions = [
-    { id: "scoring", name: "Scoring" },
-    { id: "performance", name: "Performance" },
-    { id: "offensive", name: "Offensive" },
-    { id: "defensive", name: "Defensive" },
-    { id: "other", name: "Other" },
-  ];
 
   const {
     control,
@@ -35,7 +32,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
-      category: stat?.category || "other",
+      category: stat?.category || "",
 
       is_player_summary: stat?.is_player_summary || false,
       is_team_summary: stat?.is_team_summary || false,
@@ -142,7 +139,7 @@ const SportStatsForm = ({ onClose, formulas, stat = null, sport }) => {
         label="Category"
         help_text="Select the category for organizing this stat in the UI"
         placeholder="Select Category"
-        options={categoryOptions}
+        options={[...(categories || []), { id: null, name: "Other" }]}
         valueKey="id"
         labelKey="name"
         errors={errors}

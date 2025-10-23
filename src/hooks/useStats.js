@@ -13,28 +13,31 @@ import {
 } from "@/api/statsApi";
 import {
   createSportStats,
-  createStatCategories,
+  createStatCategory,
   deleteSportStat,
   deleteStatCategories,
   fetchSportStats,
   fetchSportStatsOverview,
   fetchStatCategories,
   updateSportStats,
-  updateStatCategories,
+  updateStatCategory,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 
 // Helper function to extract error message from Django REST Framework response
-const extractErrorMessage = (response, defaultMessage = "An error occurred") => {
+const extractErrorMessage = (
+  response,
+  defaultMessage = "An error occurred"
+) => {
   if (!response?.data) return defaultMessage;
-  
+
   const data = response.data;
-  
+
   // Check for direct string error
-  if (typeof data === 'string') {
+  if (typeof data === "string") {
     // Handle string representation of ErrorDetail array like "[ErrorDetail(string='...', code='invalid')]"
-    if (data.includes('ErrorDetail(string=')) {
+    if (data.includes("ErrorDetail(string=")) {
       const match = data.match(/ErrorDetail\(string='([^']+)'/);
       if (match) {
         return match[1];
@@ -42,11 +45,11 @@ const extractErrorMessage = (response, defaultMessage = "An error occurred") => 
     }
     return data;
   }
-  
+
   // Check for error field (string)
-  if (typeof data.error === 'string') {
+  if (typeof data.error === "string") {
     // Handle case where error is a string representation of ErrorDetail array
-    if (data.error.includes('ErrorDetail(string=')) {
+    if (data.error.includes("ErrorDetail(string=")) {
       const match = data.error.match(/ErrorDetail\(string='([^']+)'/);
       if (match) {
         return match[1];
@@ -54,37 +57,43 @@ const extractErrorMessage = (response, defaultMessage = "An error occurred") => 
     }
     return data.error;
   }
-  
+
   // Check for detail field
   if (data.detail) {
     // Handle detail field that might be an ErrorDetail object or string representation
-    if (typeof data.detail === 'string' && data.detail.includes('ErrorDetail(string=')) {
+    if (
+      typeof data.detail === "string" &&
+      data.detail.includes("ErrorDetail(string=")
+    ) {
       const match = data.detail.match(/ErrorDetail\(string='([^']+)'/);
       if (match) {
         return match[1];
       }
     }
     // Handle ErrorDetail object
-    if (typeof data.detail === 'object' && data.detail.string) {
+    if (typeof data.detail === "object" && data.detail.string) {
       return data.detail.string;
     }
     return data.detail;
   }
-  
+
   // Check for message field
   if (data.message) {
     return data.message;
   }
-  
+
   // Handle non_field_errors array (common Django format)
-  if (Array.isArray(data.non_field_errors) && data.non_field_errors.length > 0) {
+  if (
+    Array.isArray(data.non_field_errors) &&
+    data.non_field_errors.length > 0
+  ) {
     const firstError = data.non_field_errors[0];
     // Handle ErrorDetail objects
-    if (typeof firstError === 'object' && firstError.string) {
+    if (typeof firstError === "object" && firstError.string) {
       return firstError.string;
-    } else if (typeof firstError === 'string') {
+    } else if (typeof firstError === "string") {
       // Handle string representation of ErrorDetail
-      if (firstError.includes('ErrorDetail(string=')) {
+      if (firstError.includes("ErrorDetail(string=")) {
         const match = firstError.match(/ErrorDetail\(string='([^']+)'/);
         if (match) {
           return match[1];
@@ -93,16 +102,16 @@ const extractErrorMessage = (response, defaultMessage = "An error occurred") => 
       return firstError;
     }
   }
-  
+
   // Handle direct array of ErrorDetail objects (when ValidationError is raised with string)
   if (Array.isArray(data) && data.length > 0) {
     const firstError = data[0];
     // Handle ErrorDetail objects
-    if (typeof firstError === 'object' && firstError.string) {
+    if (typeof firstError === "object" && firstError.string) {
       return firstError.string;
-    } else if (typeof firstError === 'string') {
+    } else if (typeof firstError === "string") {
       // Handle string representation of ErrorDetail
-      if (firstError.includes('ErrorDetail(string=')) {
+      if (firstError.includes("ErrorDetail(string=")) {
         const match = firstError.match(/ErrorDetail\(string='([^']+)'/);
         if (match) {
           return match[1];
@@ -111,7 +120,7 @@ const extractErrorMessage = (response, defaultMessage = "An error occurred") => 
       return firstError;
     }
   }
-  
+
   return defaultMessage;
 };
 
@@ -147,7 +156,8 @@ export const useRecordStat = (gameId) => {
           home_team_score: newHomeScore,
           away_team_score: newAwayScore,
         };
-      });      return { previousGame }; // for rollback if needed
+      });
+      return { previousGame }; // for rollback if needed
     },
 
     onError: ({ response }, newStat, context) => {
@@ -170,7 +180,7 @@ export const useRecordStat = (gameId) => {
   });
 };
 
-export const usePlayerStatsSummary = (gameId, team) => {  
+export const usePlayerStatsSummary = (gameId, team) => {
   return useQuery({
     queryKey: ["player-summary-stats", team, gameId],
     queryFn: () => fetchPlayerStatsSummary(gameId, team),
@@ -211,7 +221,7 @@ export const useStatCategories = (filter) => {
 
 export const useCreateCategory = () => {
   return useMutation({
-    mutationFn: (data) => createStatCategories(data),
+    mutationFn: (data) => createStatCategory(data),
     onSuccess: (data) => {
       toast.success(`Category Created: ${data.name}`, {
         richColors: true,
@@ -223,7 +233,7 @@ export const useCreateCategory = () => {
 
 export const useUpdateCategory = () => {
   return useMutation({
-    mutationFn: (data) => updateStatCategories(data),
+    mutationFn: ({ id, data }) => updateStatCategory(id, data),
     onSuccess: (data) => {
       toast.success(`Category Updated: ${data.name}`, {
         richColors: true,
@@ -235,7 +245,7 @@ export const useUpdateCategory = () => {
 
 export const useDeleteCategory = () => {
   return useMutation({
-    mutationFn: (data) => deleteStatCategories(data),
+    mutationFn: (id) => deleteStatCategories(id),
     onSuccess: (data) => {
       toast.success(`Category Deleted: ${data.name}`, {
         richColors: true,
@@ -335,7 +345,8 @@ export const useUndoLastStat = (gameId) => {
       }
 
       // Show error message
-      const errorMessage = error?.response?.data?.error || "Failed to undo stat";
+      const errorMessage =
+        error?.response?.data?.error || "Failed to undo stat";
       toast.error("Error", {
         description: errorMessage,
         richColors: true,
@@ -399,8 +410,12 @@ export const useRecordStatFast = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }      if (response?.data?.error) {
-        const errorMessage = extractErrorMessage(response, "Cannot record stat");
+      }
+      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(
+          response,
+          "Cannot record stat"
+        );
         toast.info("Cannot Record Stat", {
           description: errorMessage,
           richColors: true,
@@ -433,11 +448,11 @@ export const useBulkRecordStats = (gameId) => {
       // Calculate total points for each team from the stats
       const homeTeamId = previousGame?.home_team?.id;
       const awayTeamId = previousGame?.away_team?.id;
-      
+
       let homePoints = 0;
       let awayPoints = 0;
-      
-      statsArray.forEach(stat => {
+
+      statsArray.forEach((stat) => {
         const pointValue = stat.point_value || 0;
         if (stat.team === homeTeamId) {
           homePoints += pointValue;
@@ -473,8 +488,12 @@ export const useBulkRecordStats = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }      if (response?.data?.error) {
-        const errorMessage = extractErrorMessage(response, "Bulk recording failed");
+      }
+      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(
+          response,
+          "Bulk recording failed"
+        );
         toast.error("Bulk Recording Failed", {
           description: errorMessage,
           richColors: true,
@@ -507,11 +526,11 @@ export const useBulkRecordStatsOptimized = (gameId) => {
       // Calculate total points for each team from the stats
       const homeTeamId = previousGame?.home_team?.id;
       const awayTeamId = previousGame?.away_team?.id;
-      
+
       let homePoints = 0;
       let awayPoints = 0;
-      
-      statsArray.forEach(stat => {
+
+      statsArray.forEach((stat) => {
         const pointValue = stat.point_value || 0;
         if (stat.team === homeTeamId) {
           homePoints += pointValue;
@@ -547,8 +566,12 @@ export const useBulkRecordStatsOptimized = (gameId) => {
           ["game-details", gameId],
           context.previousGame
         );
-      }      if (response?.data?.error) {
-        const errorMessage = extractErrorMessage(response, "Optimized bulk recording failed");
+      }
+      if (response?.data?.error) {
+        const errorMessage = extractErrorMessage(
+          response,
+          "Optimized bulk recording failed"
+        );
         toast.error("Optimized Bulk Recording Failed", {
           description: errorMessage,
           richColors: true,

@@ -10,12 +10,13 @@ import EmptyStatsState from "./components/EmptyStatsState";
 import CategorySection from "./components/CategorySection";
 
 // Utility imports
-import { categorizeStats } from "./utils/statsCategories.jsx";
 import { getActiveFiltersCount } from "./utils/statsHelpers";
+import { useStatCategories } from "@/hooks/useStats";
 
 const SportStatsCardView = ({ stats, filter }) => {
   const [selectedStat, setSelectedStat] = React.useState(null);
   const [expandedCategories, setExpandedCategories] = useState({});
+  const { data: categories } = useStatCategories();
 
   const modals = {
     stat: useModal(),
@@ -37,14 +38,12 @@ const SportStatsCardView = ({ stats, filter }) => {
     modals.stat.openModal();
   };
 
-  const toggleCategory = (category) => {
+  const toggleCategory = (categoryId) => {
     setExpandedCategories((prev) => ({
       ...prev,
-      [category]: !prev[category],
+      [categoryId]: !prev[categoryId], // Use categoryId instead of category object
     }));
   };
-
-  const categorizedStats = categorizeStats(stats);
 
   // No stats - show empty state
   if (!stats || stats.length === 0) {
@@ -84,21 +83,61 @@ const SportStatsCardView = ({ stats, filter }) => {
       </div>
 
       <div className="space-y-8">
-        {Object.entries(categorizedStats).map(([category, categoryStats]) => {
-          const isExpanded = expandedCategories[category] !== false; // default to expanded
+        {/* Regular Categories */}
+        {categories
+          ?.filter((category) => 
+            filter.category === "all" || category.id === filter.category
+          )
+          ?.map((category) => {
+            const categoryStats = stats.filter(
+              (stat) => stat.category === category.id
+            );
+            const isExpanded = expandedCategories[category.id] !== false;
+
+            return (
+              <CategorySection
+                key={category.id}
+                category={category.name}
+                categoryId={category.id}
+                categoryStats={categoryStats}
+                isExpanded={isExpanded}
+                onToggle={() => toggleCategory(category.id)}
+                onEditStat={handleEditStat}
+                onDeleteStat={handleDeleteStat}
+              />
+            );
+          })}
+
+        {/* Other Category - for stats with null category */}
+        {(() => {
+          // Only show "Other" category if no specific category is filtered or if "other" is selected
+          if (filter.category !== "all" && filter.category !== "other") {
+            return null;
+          }
+
+          const otherStats = stats.filter(
+            (stat) => stat.category === null || stat.category === undefined
+          );
+          
+          if (otherStats.length === 0) {
+            return null;
+          }
+
+          const isExpanded = expandedCategories["other"] !== false;
 
           return (
             <CategorySection
-              key={category}
-              category={category}
-              categoryStats={categoryStats}
+              key="other"
+              category="Other"
+              categoryId="other"
+              categoryStats={otherStats}
               isExpanded={isExpanded}
-              onToggle={() => toggleCategory(category)}
+              onToggle={() => toggleCategory("other")}
               onEditStat={handleEditStat}
               onDeleteStat={handleDeleteStat}
             />
           );
-        })}
+        })()}
       </div>
 
       <SportStatsModal

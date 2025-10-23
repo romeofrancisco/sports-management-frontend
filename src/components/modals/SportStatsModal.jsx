@@ -11,10 +11,12 @@ import { useFormula } from "@/hooks/useFormula";
 import { useParams } from "react-router";
 import ContentLoading from "../common/ContentLoading";
 import { ScrollArea } from "../ui/scroll-area";
+import { useStatCategories } from "@/hooks/useStats";
 
 const SportStatsModal = ({ isOpen, onClose, stat }) => {
   const { sport } = useParams();
-  const { data, isLoading } = useFormula(sport);
+  const { data: formulas, isLoading } = useFormula(sport);
+  const { data: categories } = useStatCategories();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -30,8 +32,9 @@ const SportStatsModal = ({ isOpen, onClose, stat }) => {
             <SportStatsForm
               onClose={onClose}
               stat={stat}
-              formulas={data}
+              formulas={formulas}
               sport={sport}
+              categories={categories}
             />
           )}
         </ScrollArea>

@@ -41,9 +41,9 @@ export const deleteSport = async (sportId) => {
     const { data } = await api.delete(`sports/${sportId}/`);
     return data;
   } catch (error) {
-    // If it's a 500 error with foreign key constraints, 
+    // If it's a 500 error with foreign key constraints,
     // the backend should handle this gracefully
-    console.error('Delete sport error:', error);
+    console.error("Delete sport error:", error);
     throw error;
   }
 };
@@ -53,7 +53,7 @@ export const reactivateSport = async (sportSlug) => {
     const { data } = await api.post(`sports/${sportSlug}/reactivate/`);
     return data;
   } catch (error) {
-    console.error('Reactivate sport error:', error);
+    console.error("Reactivate sport error:", error);
     throw error;
   }
 };
@@ -126,33 +126,32 @@ export const fetchStatCategories = async (filter) => {
   }
 };
 
-export const createStatCategories = async (sport, filter) => {
+export const createStatCategory = async (category) => {
+  console.log("Creating category:", category);
   try {
-    const { data } = await api.post(`sport-categories/`, {
-      params: filter,
-    });
+    const { data } = await api.post(`sport-categories/`, category);
     return data;
   } catch (error) {
     throw error;
   }
 };
 
-export const updateStatCategories = async (filter) => {
+export const updateStatCategory = async (categoryId, categoryData) => {
+  console.log("Updating category:", categoryId, categoryData);
   try {
-    const { data } = await api.patch(`sport-categories/`, {
-      params: filter,
-    });
+    const { data } = await api.patch(
+      `sport-categories/${categoryId}/`,
+      categoryData
+    );
     return data;
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteStatCategories = async (filter) => {
+export const deleteStatCategories = async (id) => {
   try {
-    const { data } = await api.delete(`sport-categories/`, {
-      params: filter,
-    });
+    const { data } = await api.delete(`sport-categories/${id}/`);
     return data;
   } catch (error) {
     throw error;
@@ -163,13 +162,12 @@ export const fetchSportStats = async (sport, filter) => {
   try {
     const { data } = await api.get(`sport-stats/?sport=${sport}`, {
       params: filter,
-    });       
+    });
     return data;
   } catch (error) {
     throw error;
   }
 };
-
 
 export const fetchSportStatsOverview = async (sport) => {
   try {
