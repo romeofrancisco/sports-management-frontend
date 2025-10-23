@@ -9,7 +9,8 @@ import {
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useSportDetails } from "@/hooks/useSports";
 import { cn } from "@/lib/utils";
-import { CheckCircle, Calculator, Users, Trophy } from "lucide-react";
+import { CheckCircle, Calculator, Users, Trophy, ChartBarStacked } from "lucide-react";
+import SportCategoriesView from "./components/categories/SportCategoriesView";
 
 const Sport = () => {
   const { sport } = useParams();
@@ -21,6 +22,7 @@ const Sport = () => {
 
   const getCurrentPage = () => {
     if (currentPath.includes("/stats")) return "stats";
+    if (currentPath.includes("/categories")) return "categories";
     if (currentPath.includes("/formulas")) return "formulas";
     if (currentPath.includes("/leaders")) return "leaders";
     if (currentPath.includes("/positions")) return "positions";
@@ -37,6 +39,13 @@ const Sport = () => {
       path: `/sports/${sport}/stats`,
       description: "Sport statistics and data",
       icon: CheckCircle,
+    },
+    {
+      key: "categories",
+      label: "Categories",
+      path: `/sports/${sport}/categories`,
+      description: "Sport categories and classifications",
+      icon: ChartBarStacked,
     },
     {
       key: "formulas",
@@ -66,6 +75,8 @@ const Sport = () => {
     switch (currentPage) {
       case "stats":
         return <SportStatsView />;
+      case "categories":
+        return <SportCategoriesView />;
       case "formulas":
         return <SportFormulasView />;
       case "leaders":

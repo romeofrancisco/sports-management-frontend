@@ -36,6 +36,7 @@ const ControlledTextarea = ({
             value={field.value ?? ""}
             onChange={field.onChange}
             {...rest}
+            className="max-h-52 resize-y"
           />
         )}
       />

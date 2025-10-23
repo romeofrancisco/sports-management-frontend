@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSportStats } from "@/hooks/useStats";
 import { useParams } from "react-router";
+import { useStatCategories } from "@/hooks/useStats";
 
 const SportStatsView = () => {
   const { sport } = useParams();
@@ -18,6 +19,8 @@ const SportStatsView = () => {
     category: "all",
     type: "all",
   });
+
+  const { data: categories } = useStatCategories();
 
   // Get stats data with the filter - now using backend filtering
   const { data: stats } = useSportStats(sport, {
@@ -74,7 +77,7 @@ const SportStatsView = () => {
 
       {/* Filter Section - Improved responsiveness */}
       <Card className="p-3 sm:p-4 lg:p-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-        <SportStatsFilterBar filter={statFilter} setFilter={setStatFilter} />
+        <SportStatsFilterBar filter={statFilter} setFilter={setStatFilter} categories={categories} />
       </Card>
 
       {/* Content Section - Better mobile spacing */}

@@ -2,45 +2,50 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { getCategoryIcon, getCategoryColors } from "../utils/statsCategories.jsx";
+import { ChevronDown, ChevronUp, ChartBarStacked } from "lucide-react";
 import StatCard from "./StatCard";
 
-const CategorySection = ({ 
-  category, 
-  categoryStats, 
-  isExpanded, 
-  onToggle, 
-  onEditStat, 
-  onDeleteStat 
+const CategorySection = ({
+  category,
+  categoryStats,
+  isExpanded,
+  onToggle,
+  onEditStat,
+  onDeleteStat,
 }) => {
-  const categoryColors = getCategoryColors(category);
 
   return (
-    <Card className={`relative pt-0 gap-0 overflow-hidden border-2 shadow-lg hover:shadow-xl transition-all duration-300 ${categoryColors.border} ${categoryColors.bg}`}>
-      
+    <Card
+      className={`relative p-0 gap-0 overflow-hidden border-2 shadow-lg hover:shadow-xl transition-all duration-300 border-primary/20 bg-primary/8`}
+    >
       <div
-        className={`flex justify-between items-center p-3 sm:p-4 lg:p-5 border-b-2 cursor-pointer transition-all duration-200 hover:bg-opacity-80 ${categoryColors.bg} ${categoryColors.border} relative z-10`}
+        className={`flex justify-between items-center p-3 sm:p-4 lg:p-5 border-b-2 cursor-pointer transition-all duration-200 hover:bg-opacity-80 bg-primary/8 border-primary/20 relative z-10`}
         onClick={onToggle}
       >
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className={`p-1.5 sm:p-2 rounded-lg ${categoryColors.iconBg} shadow-lg transition-transform duration-300 hover:scale-110`}>
-            {getCategoryIcon(category)}
+          <div
+            className={`p-1.5 sm:p-2 rounded-lg shadow-lg bg-primary transition-transform duration-300 hover:scale-110`}
+          >
+            <ChartBarStacked className="h-4 w-4 text-primary-foreground" />
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-            <h3 className={`text-lg sm:text-xl font-bold ${categoryColors.text}`}>
+            <h3 className={`text-lg sm:text-xl font-bold text-primary`}>
               {category}
             </h3>
-            <Badge variant="outline" className={`${categoryColors.badge} font-semibold px-2 py-1 text-xs sm:text-sm w-fit`}>
-              {categoryStats.length} {categoryStats.length === 1 ? 'stat' : 'stats'}
+            <Badge
+              variant="outline"
+              className={`bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary-foreground dark:border-primary/40 font-semibold px-2 py-1 text-xs sm:text-sm w-fit`}
+            >
+              {categoryStats.length}{" "}
+              {categoryStats.length === 1 ? "stat" : "stats"}
             </Badge>
           </div>
         </div>
-        
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-white/50 dark:hover:bg-black/30 transition-all duration-200 ${categoryColors.text}`}
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-white/50 dark:hover:bg-black/30 transition-all duration-200 text-primary`}
         >
           {isExpanded ? (
             <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5" />
