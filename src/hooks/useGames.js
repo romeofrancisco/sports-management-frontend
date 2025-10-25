@@ -12,6 +12,7 @@ import {
   removeCoachFromGame,
   fetchAvailableCoaches,
   fetchGameCoachAssignments,
+  updateGameScore,
 } from "@/api/gamesApi";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
@@ -184,6 +185,22 @@ export const useRemoveCoachFromGame = () => {
     },
     onError: (error) => {
       toast.error("Failed to remove coach", {
+        description: error?.response?.data?.error || "Something went wrong.",
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useUpdateGameScore = () => {
+  return useMutation({
+    mutationFn: ({ gameId, scoreData }) => updateGameScore(gameId, scoreData),
+    onSuccess: (_, { gameId }) => {
+      queryClient.invalidateQueries(["game", gameId]);
+      toast.success("Game score updated successfully!", { richColors: true });
+    },
+    onError: (error) => {
+      toast.error("Failed to update game score", {
         description: error?.response?.data?.error || "Something went wrong.",
         richColors: true,
       });

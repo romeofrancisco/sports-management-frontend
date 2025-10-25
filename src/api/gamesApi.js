@@ -182,3 +182,16 @@ export const checkCoachPermission = async (gameId) => {
     throw error;
   }
 };
+
+export const updateGameScore = async (gameId, scoreData) => {
+  try {
+    const { data } = await api.post(
+      `score-updates/${gameId}/`,
+      scoreData
+    );
+    return data;
+  } catch (error) {
+    console.error("Error updating game score:", error);
+    throw error;
+  }
+};

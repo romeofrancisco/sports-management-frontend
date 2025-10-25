@@ -5,21 +5,34 @@ const RollingDigit = ({ digit }) => {
 
   useEffect(() => {
     setIsAnimating(true);
-    const timeout = setTimeout(() => setIsAnimating(false), 300); // match transition duration
+    const timeout = setTimeout(() => setIsAnimating(false), 300);
     return () => clearTimeout(timeout);
   }, [digit]);
 
   return (
-    <div className="h-6 w-3.5 overflow-hidden relative">
+    <div
+      className="relative overflow-hidden inline-block align-baseline"
+      style={{
+        height: '1em', // scales with font size
+        width: '0.65em', // adjusts to digit width
+      }}
+    >
       <div
-        className={`transition-transform duration-300 ease-in-out flex flex-col`}
-        style={{ transform: `translateY(-${digit * 1.5}rem)` }}
+        className="flex flex-col transition-transform duration-300 ease-in-out"
+        style={{
+          transform: `translateY(-${digit * 10}%)`, // percent-based, scales automatically
+        }}
       >
         {Array.from({ length: 10 }).map((_, i) => (
           <div
             key={i}
-            className={`h-6 text-center font-bold leading-6 transition-all duration-300 
-              ${i === digit && isAnimating ? 'scale-110' : ''}`}
+            className={`text-center leading-none font-bold ${
+              i === digit && isAnimating ? 'scale-110' : ''
+            } transition-transform duration-300`}
+            style={{
+              height: '1em', // same as container
+              lineHeight: '1em', // vertically align digits
+            }}
           >
             {i}
           </div>
@@ -28,7 +41,6 @@ const RollingDigit = ({ digit }) => {
     </div>
   );
 };
-
 
 export const AnimatedScore = ({ value = 0, className = '' }) => {
   const [digits, setDigits] = useState([]);
@@ -39,10 +51,10 @@ export const AnimatedScore = ({ value = 0, className = '' }) => {
   }, [value]);
 
   return (
-    <div className={`flex ${className}`}>
+    <div className={`flex items-center gap-[0.05em] ${className}`}>
       {digits.map((digit, idx) =>
         isNaN(digit) ? (
-          <span key={idx} className="font-bold">
+          <span key={idx} className="font-bold leading-none">
             {digit}
           </span>
         ) : (
