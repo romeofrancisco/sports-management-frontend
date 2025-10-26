@@ -7,7 +7,6 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
   const { home_team: homeStats, away_team: awayStats } = teamStats || {};
   const { win_points_threshold } = useSelector((state) => state.sport);
   const { scoring_type } = useSelector((state) => state.sport);
-  console.log("TeamStatsSummary - teamStats:", teamStats);
 
   // Get stat names in order provided by backend
   const statNames = homeStats?.total_stats

@@ -6,7 +6,6 @@ import { useScoreboard } from "./hooks/useScoreboard";
 
 const NoStatsRequiredGame = ({ sport, game }) => {
   const {
-    isPortrait,
     isUpdatingScore,
     home_team_score,
     away_team_score,
@@ -15,9 +14,6 @@ const NoStatsRequiredGame = ({ sport, game }) => {
     handleScoreUpdate,
   } = useScoreboard(game);
 
-  if (isPortrait) {
-    return <RequireRotation />;
-  }
 
   return (
     <div className="h-screen overflow-hidden">

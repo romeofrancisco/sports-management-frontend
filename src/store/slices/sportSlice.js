@@ -4,6 +4,7 @@ const initialState = {
   sport_id: null,
   name: null,
   scoring_type: null,
+  requires_stats: null,
   slug: null,
   max_players_per_team: null,
   max_players_on_field: null,
@@ -25,6 +26,7 @@ const sportSlice = createSlice({
         id,
         name,
         scoring_type,
+        requires_stats,
         slug,
         max_players_per_team,
         max_players_on_field,
@@ -39,6 +41,7 @@ const sportSlice = createSlice({
       state.sport_id = id;
       state.name = name;
       state.scoring_type = scoring_type;
+      state.requires_stats = requires_stats;
       state.slug = slug;
       state.max_players_per_team = max_players_per_team;
       state.max_players_on_field = max_players_on_field;

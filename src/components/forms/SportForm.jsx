@@ -18,7 +18,7 @@ const SportForm = ({ onClose, sport = null }) => {
   const createSport = useCreateSport();
   const updateSport = useUpdateSport();
   const [bannerPreview, setBannerPreview] = useState(sport?.banner || null);
-    const {
+  const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -29,6 +29,7 @@ const SportForm = ({ onClose, sport = null }) => {
     defaultValues: {
       name: sport?.name || "",
       scoring_type: sport?.scoring_type || "points",
+      requires_stats: sport?.requires_stats || false,
       banner: null,
       max_players_per_team: sport?.max_players_per_team || 12,
       max_players_on_field: sport?.max_players_on_field || 5,
@@ -54,11 +55,12 @@ const SportForm = ({ onClose, sport = null }) => {
       setValue("has_tie", false); // Sets-based sports typically don't have ties
       setValue("has_overtime", false); // Sets use deuce/advantage instead
       setValue("max_period", null); // Sets don't use periods
-      setValue("has_period", false);
+      setValue("has_period", true);
     } else if (scoringType === "points") {
       // For points-based sports (basketball, football)
       // Keep user selections but provide reasonable defaults
-      if (!sport) { // Only set defaults for new sports
+      if (!sport) {
+        // Only set defaults for new sports
         setValue("has_period", true);
         setValue("max_period", 4); // Default for basketball/football
       }
@@ -82,12 +84,13 @@ const SportForm = ({ onClose, sport = null }) => {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("scoring_type", data.scoring_type);
+      formData.append("requires_stats", data.requires_stats);
       formData.append("max_players_per_team", data.max_players_per_team);
       formData.append("max_players_on_field", data.max_players_on_field);
       formData.append("has_period", data.has_period);
       formData.append("has_tie", data.has_tie);
       formData.append("has_overtime", data.has_overtime);
-      
+
       // Only append numeric fields if they have values
       if (data.max_period) {
         formData.append("max_period", data.max_period);
@@ -101,13 +104,14 @@ const SportForm = ({ onClose, sport = null }) => {
       if (data.win_margin) {
         formData.append("win_margin", data.win_margin);
       }
-      
+
       if (data.banner) {
         formData.append("banner", data.banner);
-      }      if (isEdit) {
+      }
+      if (isEdit) {
         await updateSport.mutateAsync({
           id: sport.slug,
-          data: formData
+          data: formData,
         });
       } else {
         await createSport.mutateAsync(formData);
@@ -118,31 +122,34 @@ const SportForm = ({ onClose, sport = null }) => {
       const apiErrors = error.response?.data;
       if (apiErrors) {
         // Map API errors to form fields
-        Object.keys(apiErrors).forEach(field => {
+        Object.keys(apiErrors).forEach((field) => {
           const message = Array.isArray(apiErrors[field])
             ? apiErrors[field].join(", ")
             : apiErrors[field];
-            
+
           setError(field, {
             type: "manual",
             message: message,
           });
         });
-        
+
         toast.error("Please correct the errors in the form");
       } else {
         toast.error("An error occurred. Please try again.");
       }
     }
-  };  return (
+  };
+  return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-1">
       {/* Basic Information Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Info className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-primary">Basic Information</h3>
+          <h3 className="text-lg font-semibold text-primary">
+            Basic Information
+          </h3>
         </div>
-        
+
         <ControlledInput
           name="name"
           label="Sport Name"
@@ -162,20 +169,28 @@ const SportForm = ({ onClose, sport = null }) => {
           valueKey="id"
           labelKey="name"
           errors={errors}
+          disabled={isEdit}
         />
 
         {scoringType && (
           <Alert className="border-primary/20 bg-primary/5">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              {scoringType === "points" 
+              {scoringType === "points"
                 ? "Points-based sports like Basketball track cumulative scores throughout the game."
-                : "Sets-based sports like Volleyball use best-of-sets format with specific winning conditions."
-              }
+                : "Sets-based sports like Volleyball use best-of-sets format with specific winning conditions."}
             </AlertDescription>
           </Alert>
         )}
       </div>
+
+      <ControlledCheckbox
+        name="requires_stats"
+        control={control}
+        label="Requires Player Statistics"
+        help_text="Enable if this sport tracks individual player statistics"
+        errors={errors}
+      />
 
       <Separator className="bg-border/50" />
 
@@ -183,9 +198,11 @@ const SportForm = ({ onClose, sport = null }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Users className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-primary">Team Configuration</h3>
+          <h3 className="text-lg font-semibold text-primary">
+            Team Configuration
+          </h3>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ControlledInput
             name="max_players_per_team"
@@ -194,10 +211,10 @@ const SportForm = ({ onClose, sport = null }) => {
             type="number"
             placeholder="12"
             help_text="Maximum players allowed per team roster"
-            rules={{ 
+            rules={{
               required: "This field is required",
               min: { value: 1, message: "Must be at least 1" },
-              max: { value: 50, message: "Must be 50 or less" }
+              max: { value: 50, message: "Must be 50 or less" },
             }}
             errors={errors}
           />
@@ -209,10 +226,10 @@ const SportForm = ({ onClose, sport = null }) => {
             type="number"
             placeholder="5"
             help_text="Maximum players allowed on the field/court during play"
-            rules={{ 
+            rules={{
               required: "This field is required",
               min: { value: 1, message: "Must be at least 1" },
-              max: { value: 25, message: "Must be 25 or less" }
+              max: { value: 25, message: "Must be 25 or less" },
             }}
             errors={errors}
           />
@@ -226,9 +243,11 @@ const SportForm = ({ onClose, sport = null }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="h-4 w-4 text-primary" />
-              <h3 className="text-lg font-semibold text-primary">Game Structure</h3>
+              <h3 className="text-lg font-semibold text-primary">
+                Game Structure
+              </h3>
             </div>
-            
+
             <div className="space-y-4">
               <ControlledCheckbox
                 name="has_period"
@@ -246,18 +265,22 @@ const SportForm = ({ onClose, sport = null }) => {
                     control={control}
                     type="number"
                     help_text="Maximum periods/quarters possible in a game"
-                    rules={{ 
+                    rules={{
                       min: { value: 1, message: "Must be at least 1" },
-                      max: { value: 10, message: "Must be 10 or less" }
+                      max: { value: 10, message: "Must be 10 or less" },
                     }}
                     errors={errors}
                   />
-                  
+
                   <ControlledCheckbox
                     name="has_overtime"
                     control={control}
                     label="Has Overtime"
-                    help_text={hasTie ? "Overtime available when tie is allowed" : "Enable overtime periods for tie-breaking"}
+                    help_text={
+                      hasTie
+                        ? "Overtime available when tie is allowed"
+                        : "Enable overtime periods for tie-breaking"
+                    }
                     errors={errors}
                   />
                 </div>
@@ -282,9 +305,11 @@ const SportForm = ({ onClose, sport = null }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Target className="h-4 w-4 text-primary" />
-              <h3 className="text-lg font-semibold text-primary">Set-Based Winning Conditions</h3>
+              <h3 className="text-lg font-semibold text-primary">
+                Set-Based Winning Conditions
+              </h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <ControlledInput
                 name="win_threshold"
@@ -293,9 +318,9 @@ const SportForm = ({ onClose, sport = null }) => {
                 type="number"
                 placeholder="3"
                 help_text="Number of sets needed to win the match"
-                rules={{ 
+                rules={{
                   min: { value: 1, message: "Must be at least 1" },
-                  max: { value: 7, message: "Must be 7 or less" }
+                  max: { value: 7, message: "Must be 7 or less" },
                 }}
                 errors={errors}
               />
@@ -306,9 +331,9 @@ const SportForm = ({ onClose, sport = null }) => {
                 control={control}
                 type="number"
                 help_text="Points needed to win a single set"
-                rules={{ 
+                rules={{
                   min: { value: 1, message: "Must be at least 1" },
-                  max: { value: 50, message: "Must be 50 or less" }
+                  max: { value: 50, message: "Must be 50 or less" },
                 }}
                 errors={errors}
               />
@@ -319,9 +344,9 @@ const SportForm = ({ onClose, sport = null }) => {
                 control={control}
                 type="number"
                 help_text="Minimum point difference to win a set"
-                rules={{ 
+                rules={{
                   min: { value: 1, message: "Must be at least 1" },
-                  max: { value: 10, message: "Must be 10 or less" }
+                  max: { value: 10, message: "Must be 10 or less" },
                 }}
                 errors={errors}
               />
@@ -335,9 +360,11 @@ const SportForm = ({ onClose, sport = null }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Settings2 className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-primary">Visual Settings</h3>
+          <h3 className="text-lg font-semibold text-primary">
+            Visual Settings
+          </h3>
         </div>
-        
+
         <div className="space-y-2">
           <Label className="text-sm font-medium">Sport Banner Image</Label>
           <ImageUpload
@@ -373,9 +400,7 @@ const SportForm = ({ onClose, sport = null }) => {
               {isEdit ? "Updating..." : "Creating..."}
             </>
           ) : (
-            <>
-              {isEdit ? "Update Sport" : "Create Sport"}
-            </>
+            <>{isEdit ? "Update Sport" : "Create Sport"}</>
           )}
         </Button>
       </DialogFooter>

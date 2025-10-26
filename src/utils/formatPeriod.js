@@ -1,4 +1,7 @@
 const formatPeriod = (currentPeriod, maxPeriod) => {
+
+  if (maxPeriod == null) return currentPeriod;
+
   if (currentPeriod <= maxPeriod) {
     return currentPeriod;
   }

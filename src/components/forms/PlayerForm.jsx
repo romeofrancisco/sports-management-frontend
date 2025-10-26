@@ -36,15 +36,14 @@ const PlayerForm = ({ sports, onClose, player }) => {
       year_level: player?.year_level || "",
       course: player?.course || "",
       profile: null,
-      sport_slug: player?.sport.slug || "",
+      sport_slug: player?.sport?.slug || "",
       height: player?.height || "",
       weight: player?.weight || "",
       jersey_number: player?.jersey_number || "",
-      team_id: player?.team.id || "",
+      team_id: player?.team?.id || "",
       position_ids: player?.positions.map((pos) => pos.id) || [],
     },
   });
-
   const selectedSport = watch("sport_slug");
   const selectedSex = watch("sex");
 

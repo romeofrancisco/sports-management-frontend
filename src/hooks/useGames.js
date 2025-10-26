@@ -197,11 +197,25 @@ export const useUpdateGameScore = () => {
     mutationFn: ({ gameId, scoreData }) => updateGameScore(gameId, scoreData),
     onSuccess: (_, { gameId }) => {
       queryClient.invalidateQueries(["game", gameId]);
-      toast.success("Game score updated successfully!", { richColors: true });
     },
     onError: (error) => {
+      // Handle different error response formats
+      let errorMessage = "Something went wrong.";
+      
+      if (error?.response?.data) {
+        if (Array.isArray(error.response.data)) {
+          errorMessage = error.response.data[0] || errorMessage;
+        } else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+
       toast.error("Failed to update game score", {
-        description: error?.response?.data?.error || "Something went wrong.",
+        description: errorMessage,
         richColors: true,
       });
     },

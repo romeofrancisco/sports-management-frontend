@@ -16,7 +16,7 @@ const GameResult = () => {
   if (isGameLoading) return <FullPageLoading />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div className="bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       <div className="p-4 md:p-6 space-y-8">
         <UniversityPageHeader
           title="Game Result Analysis"
@@ -31,16 +31,18 @@ const GameResult = () => {
         <div className="animate-in fade-in-50 duration-500 delay-100">
           <div className="grid gap-5 mb-5">
             <GameResultHeader game={game} />
-            <div className="grid lg:grid-cols-[20rem_1fr] gap-5">
-              <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-5">
-                <GameLeaders game={game} />
-                <GameFlowChart game={game} />
-                <TeamStatsComparison game={game} />
+            {game.sport_requires_stats && (
+              <div className="grid lg:grid-cols-[20rem_1fr] gap-5">
+                <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-5">
+                  <GameLeaders game={game} />
+                  <GameFlowChart game={game} />
+                  <TeamStatsComparison game={game} />
+                </div>
+                <div className="order-first lg:order-last">
+                  <Boxscore game={game} />
+                </div>
               </div>
-              <div className="order-first lg:order-last">
-                <Boxscore game={game} />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
