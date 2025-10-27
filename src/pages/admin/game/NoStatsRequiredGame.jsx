@@ -1,7 +1,6 @@
 import React from "react";
 import ScoreboardHeader from "./components/scoreboard/ScoreboardHeader";
 import ScoreboardLayout from "./components/scoreboard/ScoreboardLayout";
-import RequireRotation from "./components/scoreboard/RequireRotation";
 import { useScoreboard } from "./hooks/useScoreboard";
 
 const NoStatsRequiredGame = ({ sport, game }) => {

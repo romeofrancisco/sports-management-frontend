@@ -9,7 +9,7 @@ import {
   Medal,
   Dumbbell,
   BarChart3,
-  MessageCircle,
+  FolderClosed,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -49,13 +49,19 @@ export const adminGroupedNavigation = () => {
           icon: ClipboardList,
           description: "Manage coaching staff and assignments",
         },
+        {
+          title: "Leagues",
+          href: "/leagues",
+          icon: Trophy,
+          description: "Manage league structures and seasons",
+        },
+        {
+          title: "Documents",
+          href: "/documents",
+          icon: FolderClosed,
+          description: "Manage shared documents and resources",
+        },
       ],
-    },
-    {
-      title: "Leagues",
-      href: "/leagues",
-      icon: Trophy,
-      description: "Manage league structures and seasons",
     },
     {
       title: "Scheduling",
@@ -86,7 +92,7 @@ export const coachGroupedNavigation = () => {
       icon: Gauge,
     },
     {
-      title: "Team Management",
+      title: "Management",
       icon: Users,
       items: [
         {
@@ -100,6 +106,12 @@ export const coachGroupedNavigation = () => {
           href: "/players",
           icon: User,
           description: "Manage team players and stats",
+        },
+        {
+          title: "Documents",
+          href: "/documents",
+          icon: FolderClosed,
+          description: "Access and manage shared documents",
         },
       ],
     },
@@ -144,6 +156,12 @@ export const playerGroupedNavigation = () => {
       href: `/teams/${team_slug}`,
       icon: Users,
       description: "View your team details",
+    },
+    {
+      title: "Documents",
+      href: "/documents",
+      icon: FolderClosed,
+      description: "Access and manage shared documents",
     },
     {
       title: "Activities",

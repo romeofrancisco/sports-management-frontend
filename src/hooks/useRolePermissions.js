@@ -448,6 +448,50 @@ export const useRolePermissions = () => {
           return isAdmin() && targetUser?.id !== user?.id;
         },
       },
+
+      // Documents management
+      documents: {
+        // Check if user can upload to a specific folder
+        canUpload: (currentFolder) => {
+          // Cannot upload at root level - documents must be in a folder
+          if (!currentFolder) {
+            return false;
+          }
+
+          const folderType = currentFolder.folder_type;
+
+          if (isAdmin()) return true;
+
+          if (folderType === "PUBLIC") {
+            return isAdmin();
+          } else if (folderType === "COACHES") {
+            return isAdmin();
+          } else if (folderType === "COACH_PERSONAL") {
+            return isCoach() && currentFolder.owner?.id === user?.id;
+          } else if (folderType === "PLAYERS") {
+            return isCoach();
+          } else if (folderType === "PLAYER_PERSONAL") {
+            return isPlayer() && currentFolder.owner?.id === user?.id;
+          } else if (folderType === "ADMIN_PRIVATE") {
+            return isAdmin();
+          }
+
+          return false;
+        },
+
+        // Check if user can delete a file
+        canDelete: (file) => {
+          if (!file) return false;
+          if (isAdmin()) return true;
+          return file.owner?.id === user?.id;
+        },
+
+        // Check if user can copy a file
+        canCopy: () => {
+          // Anyone who can see a file can copy it
+          return true;
+        },
+      },
     }),
     [user?.id, user?.role, user?.team_id]
   ); // Dependencies for memoization

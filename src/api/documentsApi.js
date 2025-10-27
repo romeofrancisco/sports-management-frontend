@@ -1,0 +1,103 @@
+import api from ".";
+
+export const fetchRootFolders = async () => {
+  try {
+    const { data } = await api.get(`/documents/folders/root_folders/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchFolderContents = async (folderId) => {
+  try {
+    const { data } = await api.get(`/documents/folders/${folderId}/contents/`);
+    return data;
+  } catch (error) {
+    throw error;
+  } 
+};
+
+export const uploadFile = async (fileData, onUploadProgress) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", fileData.file);
+    formData.append("title", fileData.title);
+    formData.append("folder", fileData.folder); // folder is required by backend
+    
+    if (fileData.description) {
+      formData.append("description", fileData.description);
+    }
+
+    const { data } = await api.post(`/documents/files/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onUploadProgress) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onUploadProgress(percentCompleted);
+        }
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const downloadFile = async (fileId) => {
+  try {
+    // First get the file details to get the Cloudinary URL
+    const { data } = await api.get(`/documents/files/${fileId}/`);
+    
+    // Return the file URL directly - browser will handle the download
+    // since we added fl_attachment flag in the backend
+    return data.file;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const copyFile = async (fileId, targetFolderId) => {
+  try {
+    const { data } = await api.post(`/documents/files/${fileId}/copy/`, {
+      target_folder: targetFolderId,
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteFile = async (fileId) => {
+  try {
+    await api.delete(`/documents/files/${fileId}/`);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMyDocuments = async () => {
+  try {
+    const { data } = await api.get(`/documents/files/my_documents/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserPersonalFolder = async () => {
+  try {
+    // Use the new personal_folder endpoint to get user's personal folder for copy operations
+    const { data } = await api.get(`/documents/folders/personal_folder/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+

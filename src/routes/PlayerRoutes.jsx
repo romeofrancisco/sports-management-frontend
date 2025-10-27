@@ -8,6 +8,7 @@ import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import { ChatPage } from "@/pages/chat";
+import DocumentsList from "@/pages/documents/DocumentsList";
 
 export const playerRoutes = [
   {
@@ -89,4 +90,8 @@ export const playerRoutes = [
     path: "/chat/team/:teamId",
     element: <ChatPage />,
   },
+    {
+    path: "documents",
+    element: <DocumentsList />,
+  }
 ];
