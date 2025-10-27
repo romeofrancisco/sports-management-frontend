@@ -23,8 +23,6 @@ export const GameCard = React.memo(
     const isLive = liveGameData.status === "in_progress";
     const isScheduled = liveGameData.status === "scheduled";
 
-    console.log(liveGameData)
-
     const homeScore = liveGameData.sport_scoring_type === "points" ? liveGameData.home_team_score || 0 : liveGameData.score_summary?.total?.home || 0;
     const awayScore = liveGameData.sport_scoring_type === "points" ? liveGameData.away_team_score || 0 : liveGameData.score_summary?.total?.away || 0;
     const winnerTeamId = liveGameData.winner; // WebSocket connection for real-time updates (connect for live and scheduled games)
@@ -71,15 +69,6 @@ export const GameCard = React.memo(
     const homeReady = lineupStatus.home_ready;
     const awayReady = lineupStatus.away_ready;
     const bothReady = homeReady && awayReady;
-
-    const formatTime = (timeString) => {
-      if (!timeString) return "TBA";
-      // timeString is expected to be in 'HH:mm:ss' or 'HH:mm' format
-      const [hours, minutes] = timeString.split(":");
-      const date = new Date();
-      date.setHours(Number(hours), Number(minutes), 0, 0);
-      return format(date, "h:mm a");
-    };
 
     const formatDate = (dateString) => {
       if (!dateString) return "TBA";

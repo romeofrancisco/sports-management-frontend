@@ -36,15 +36,14 @@ const PlayerForm = ({ sports, onClose, player }) => {
       year_level: player?.year_level || "",
       course: player?.course || "",
       profile: null,
-      sport_slug: player?.sport.slug || "",
+      sport_slug: player?.sport?.slug || "",
       height: player?.height || "",
       weight: player?.weight || "",
       jersey_number: player?.jersey_number || "",
-      team_id: player?.team.id || "",
+      team_id: player?.team?.id || "",
       position_ids: player?.positions.map((pos) => pos.id) || [],
     },
   });
-
   const selectedSport = watch("sport_slug");
   const selectedSex = watch("sex");
 
@@ -54,12 +53,20 @@ const PlayerForm = ({ sports, onClose, player }) => {
   const { data: positions } = useSportPositions(selectedSport);
   const { data: teams } = useSportTeams(selectedSport, division);
 
-  // Reset team selection when sex or sport changes
+  // Find the selected sport object to check if it requires stats
+  const selectedSportObj = sports?.find(sport => sport.slug === selectedSport);
+  const sportRequiresStats = selectedSportObj?.requires_stats ?? true;
+
+  // Reset team and position selection when sex or sport changes
   useEffect(() => {
     if (!isEdit) {
       setValue("team_id", "");
+      // Reset positions if sport doesn't require stats
+      if (!sportRequiresStats) {
+        setValue("position_ids", []);
+      }
     }
-  }, [selectedSex, selectedSport, setValue, isEdit]);
+  }, [selectedSex, selectedSport, sportRequiresStats, setValue, isEdit]);
 
   const onSubmit = (playerData) => {
     const formData = convertToFormData(playerData);
@@ -228,7 +235,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
             }
             teams={teams}
             disabled={!selectedSport || !selectedSex}
-            errorMessage={errors.team_id?.message}
+            errors={errors}
             helperText={
               !selectedSport 
                 ? "You must select a sport first to see available teams" 
@@ -244,7 +251,14 @@ const PlayerForm = ({ sports, onClose, player }) => {
             control={control}
             options={positions}
             max={3}
-            placeholder="Select player position..."
+            placeholder={
+              !selectedSport 
+                ? "Please select sport first" 
+                : !sportRequiresStats 
+                ? "Positions not required for this sport" 
+                : "Select player position..."
+            }
+            disabled={!selectedSport || !sportRequiresStats}
             className=""
           />
           

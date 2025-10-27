@@ -38,6 +38,14 @@ export const GameActions = ({
   const isLeagueGame = game?.type === "league";
   const isPracticeGame = game?.type === "practice";
   const canDeleteGame = permissions.games.delete(game);
+  
+  // Check if sport requires stats (for lineup requirements)
+  const sportRequiresStats = game?.sport_requires_stats ?? true;
+  
+  // Determine if game can be started
+  // For stat-tracking sports: need both teams ready
+  // For scoreboard-only sports: can start without lineup
+  const canStartGame = sportRequiresStats ? bothReady : true;
 
   const handleResultClick = () => {
     navigate(`/games/${game.id}/game-result`);
@@ -153,16 +161,19 @@ export const GameActions = ({
         {/* Scheduled Game Actions */}
         {isScheduled && (
           <>
-            <Button
-              onClick={handleLineupClick}
-              variant="outline"
-              size="sm"
-              className="border-secondary/50 text-secondary/70 hover:text-secondary hover:bg-secondary/10"
-            >
-              <Users />
-              Lineup
-            </Button>
-            {bothReady && (
+            {/* Only show lineup button for sports that require stats */}
+            {sportRequiresStats && (
+              <Button
+                onClick={handleLineupClick}
+                variant="outline"
+                size="sm"
+                className="border-secondary/50 text-secondary/70 hover:text-secondary hover:bg-secondary/10"
+              >
+                <Users />
+                Lineup
+              </Button>
+            )}
+            {canStartGame && (
               <Button onClick={handleStartGame} size="sm">
                 <Play />
                 Start Game

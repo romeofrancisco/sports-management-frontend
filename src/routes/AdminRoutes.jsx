@@ -31,6 +31,7 @@ import TrainingSummaryPage from "@/pages/trainings/TrainingSummaryPage";
 import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 import { ChatPage } from "@/pages/chat";
 import { Navigate, useParams } from "react-router-dom";
+import DocumentsList from "@/pages/documents/DocumentsList";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -219,4 +220,8 @@ export const adminRoutes = [
     path: "/chat/team/:teamId",
     element: <ChatPage />,
   },
+  {
+    path: "documents",
+    element: <DocumentsList />,
+  }
 ];

@@ -24,6 +24,7 @@ import LeaguesList from "@/pages/admin/league/LeaguesList";
 import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import { ChatPage } from "@/pages/chat";
+import DocumentsList from "@/pages/documents/DocumentsList";
 
 export const coachRoutes = [
   {
@@ -166,4 +167,8 @@ export const coachRoutes = [
     path: "/chat/team/:teamId",
     element: <ChatPage />,
   },
+    {
+    path: "documents",
+    element: <DocumentsList />,
+  }
 ];

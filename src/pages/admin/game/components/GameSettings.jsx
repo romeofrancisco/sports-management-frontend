@@ -31,7 +31,7 @@ import { useUndoLastStat } from "@/hooks/useStats";
 
 const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
   const dispatch = useDispatch();
-  const { scoring_type } = useSelector((state) => state.sport);
+  const { scoring_type, requires_stats } = useSelector((state) => state.sport);
   const { game_id } = useSelector((state) => state.game);
   const period = getPeriodLabel(scoring_type);
   const modals = {
@@ -39,7 +39,6 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
     substitute: useModal(),
     nextPeriod: useModal(),
     completeGame: useModal(),
-    // bulkRecording: useModal(),
   };
 
   const undoLastStatMutation = useUndoLastStat(game_id);
@@ -77,40 +76,42 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
           >
             <Settings className="h-5 w-5" />
           </Button>
-        </DropdownMenuTrigger>{" "}
+        </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Game Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleToggleLayoutMode}>
-            <Layout className="mr-2 h-4 w-4" />
-            <span>{isLayoutMode ? "Exit Layout Mode" : "Modify Layout"}</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => handleStatAction("stats")}>
-            <ChartColumn className="mr-2 h-4 w-4" />
-            <span>Summary Stats</span>
-          </DropdownMenuItem>
-          {/* <DropdownMenuItem onClick={() => handleStatAction("bulkRecording")}>
-            <BarChart3 className="mr-2 h-4 w-4" />
-            <span>Bulk Recording</span>
-          </DropdownMenuItem> */}
-          <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
-            <Replace className="mr-2 h-4 w-4" />
-            <span>Substitution</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={handleUndoLastStat}
-            disabled={undoLastStatMutation.isPending}
-          >
-            <Undo2 className="mr-2 h-4 w-4" />
-            <span>
-              {undoLastStatMutation.isPending
-                ? "Undoing..."
-                : "Undo Stat Record"}
-            </span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {requires_stats && (
+            <>
+              <DropdownMenuItem onClick={handleToggleLayoutMode}>
+                <Layout className="mr-2 h-4 w-4" />
+                <span>
+                  {isLayoutMode ? "Exit Layout Mode" : "Modify Layout"}
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleStatAction("stats")}>
+                <ChartColumn className="mr-2 h-4 w-4" />
+                <span>Summary Stats</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
+                <Replace className="mr-2 h-4 w-4" />
+                <span>Substitution</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleUndoLastStat}
+                disabled={undoLastStatMutation.isPending}
+              >
+                <Undo2 className="mr-2 h-4 w-4" />
+                <span>
+                  {undoLastStatMutation.isPending
+                    ? "Undoing..."
+                    : "Undo Stat Record"}
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem onClick={() => handleStatAction("nextPeriod")}>
             <Clock className="mr-2 h-4 w-4" />
             <span>Next {period}</span>
@@ -120,18 +121,19 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
             <span>Complete Game</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>      <SummaryStatsModal
-        isOpen={modals.stats.isOpen}
-        onClose={modals.stats.closeModal}
-      />
-      {/* <BulkStatRecordingModal
-        isOpen={modals.bulkRecording.isOpen}
-        onClose={modals.bulkRecording.closeModal}
-      /> */}
-      <SubstitutionModal
-        isOpen={modals.substitute.isOpen}
-        onClose={modals.substitute.closeModal}
-      />
+      </DropdownMenu>
+      {requires_stats && (
+        <>
+          <SummaryStatsModal
+            isOpen={modals.stats.isOpen}
+            onClose={modals.stats.closeModal}
+          />
+          <SubstitutionModal
+            isOpen={modals.substitute.isOpen}
+            onClose={modals.substitute.closeModal}
+          />
+        </>
+      )}
       <NextPeriodConfirmation
         isOpen={modals.nextPeriod.isOpen}
         onClose={modals.nextPeriod.closeModal}

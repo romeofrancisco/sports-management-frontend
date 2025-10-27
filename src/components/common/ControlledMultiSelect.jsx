@@ -32,6 +32,7 @@ const ControlledMultiSelect = ({
   valueKey = "id",
   labelKey = "name",
   secondaryKey = "",
+  disabled = false,
 }) => {
   return (
     <div className={cn("grid gap-0.5", className)}>
@@ -67,6 +68,7 @@ const ControlledMultiSelect = ({
                   variant="outline"
                   role="combobox"
                   className={cn("w-full justify-between h-auto min-h-10")}
+                  disabled={disabled}
                 >
                   <div className="flex flex-wrap gap-1 overflow-y-auto max-h-32">
                     {selected.length > 0 ? (

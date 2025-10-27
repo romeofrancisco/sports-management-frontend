@@ -20,7 +20,7 @@ import { useNavigate } from "react-router";
 const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  
+
   const handleAction = (action) => {
     action();
     setOpen(false);
@@ -43,19 +43,30 @@ const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleAction(() => navigate(`/sports/${sport.slug}`))}>
-          <ClipboardPenLine className="mr-2 h-4 w-4" />
-          Manage Sport
-        </DropdownMenuItem>
+        {sport.requires_stats ? (
+          <DropdownMenuItem
+            onClick={() =>
+              handleAction(() => navigate(`/sports/${sport.slug}`))
+            }
+          >
+            <ClipboardPenLine className="mr-2 h-4 w-4" />
+            Manage Sport
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem disabled>
+            <ClipboardPenLine className="mr-2 h-4 w-4" />
+            This sport does not require stats
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => handleAction(() => onEdit(sport))}>
           <SquarePen className="mr-2 h-4 w-4" />
           Update Sport
         </DropdownMenuItem>
-        
+
         {/* Conditional rendering based on sport status */}
         {!isActive ? (
           // Show reactivate option for inactive sports
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => handleAction(() => onReactivate(sport))}
             className="text-green-600 focus:text-green-600"
           >
