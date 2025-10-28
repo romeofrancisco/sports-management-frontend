@@ -37,6 +37,24 @@ const UploadFileDialog = ({ open, onOpenChange, onUpload, isUploading }) => {
   const handleFileChange = (files) => {
     if (files && files.length > 0) {
       const file = files[0];
+      
+      // Validate file extension
+      const allowedExtensions = [
+        // Images
+        'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp',
+        // Documents
+        'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'
+      ];
+      
+      const fileName = file.name.toLowerCase();
+      const fileExtension = fileName.split('.').pop();
+      
+      if (!allowedExtensions.includes(fileExtension)) {
+        setError(`Invalid file type. Only images and documents are allowed (${allowedExtensions.join(', ')})`);
+        return;
+      }
+      
+      setError("");
       setSelectedFile(file);
       setValue("file", file);
       
@@ -100,7 +118,7 @@ const UploadFileDialog = ({ open, onOpenChange, onUpload, isUploading }) => {
             control={control}
             label="File"
             type="file"
-            accept="*/*"
+            accept=".jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv"
             onChange={(e) => handleFileChange(e.target.files)}
             errors={errors}
             rules={{ required: "File is required" }}

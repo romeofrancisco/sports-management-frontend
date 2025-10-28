@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -8,9 +8,9 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Loader2, AlertTriangle } from 'lucide-react';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2, AlertTriangle } from "lucide-react";
 
 const DeleteModal = ({
   // Required props
@@ -19,7 +19,7 @@ const DeleteModal = ({
   onConfirm,
   title,
   children,
-  
+
   // Optional props
   description,
   confirmText = "Delete",
@@ -27,12 +27,12 @@ const DeleteModal = ({
   itemName,
   itemType = "item",
   isLoading = false,
-  
+
   // Styling props
   icon: Icon = AlertTriangle,
   destructive = true,
   size = "sm", // sm, md, lg
-  
+
   // Custom classes
   contentClassName = "",
   headerClassName = "",
@@ -40,14 +40,17 @@ const DeleteModal = ({
   // Size configurations
   const sizeClasses = {
     sm: "max-w-[400px]",
-    md: "max-w-[500px]", 
-    lg: "max-w-[600px]"
+    md: "max-w-[500px]",
+    lg: "max-w-[600px]",
   };
 
   // Default title and description based on itemName and itemType
   const defaultTitle = title || `Delete ${itemType}`;
-  const defaultDescription = description || 
-    `Are you sure you want to delete ${itemName ? `"${itemName}"` : `this ${itemType}`}? This action cannot be undone.`;
+  const defaultDescription =
+    description ||
+    `Are you sure you want to delete ${
+      itemName ? `"${itemName}"` : `this ${itemType}`
+    }? This action cannot be undone.`;
 
   const handleConfirm = () => {
     if (onConfirm) {
@@ -62,11 +65,14 @@ const DeleteModal = ({
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={!isLoading ? onOpenChange : undefined}>
-      <AlertDialogContent 
-        className={`${sizeClasses[size]} overflow-hidden p-0 ${contentClassName}`}
+    <AlertDialog
+      open={open}
+      onOpenChange={!isLoading ? onOpenChange : undefined}
+    >
+      <AlertDialogContent
+        className={`${sizeClasses[size]} overflow-hidden p-0 gap-0 ${contentClassName}`}
       >
-        <AlertDialogHeader 
+        <AlertDialogHeader
           className={`px-6 pt-6 pb-4 border-b border-border/50 bg-gradient-to-r from-background via-destructive/5 to-background ${headerClassName}`}
         >
           <div className="flex items-center gap-3">
@@ -86,14 +92,10 @@ const DeleteModal = ({
           </div>
         </AlertDialogHeader>
 
-        {children && (
-          <div className="px-6 py-4">
-            {children}
-          </div>
-        )}
+        {children && <div className="px-6 py-4">{defaultDescription}</div>}
 
         <AlertDialogFooter className="px-6 pb-6 pt-4 border-t border-border/50 bg-muted/20">
-          <AlertDialogCancel 
+          <AlertDialogCancel
             onClick={handleCancel}
             disabled={isLoading}
             className="mr-3"
@@ -104,9 +106,9 @@ const DeleteModal = ({
             onClick={handleConfirm}
             disabled={isLoading}
             className={`min-w-[100px] ${
-              destructive 
-                ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground' 
-                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+              destructive
+                ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                : "bg-primary hover:bg-primary/90 text-primary-foreground"
             }`}
           >
             {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}

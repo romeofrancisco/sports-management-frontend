@@ -6,12 +6,45 @@ import {
   downloadFile,
   copyFile,
   deleteFile,
+  renameFile,
   getMyDocuments,
   getUserPersonalFolder,
+  createFolder,
+  renameFolder,
+  deleteFolder,
 } from "@/api/documentsApi";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRolePermissions } from "./useRolePermissions";
+
+export const useCreateFolder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (folderData) => createFolder(folderData),
+    onSuccess: (data, variables) => {
+      // Invalidate the parent folder contents or root folders
+      if (variables.parent) {
+        queryClient.invalidateQueries({
+          queryKey: ["folder-contents", variables.parent],
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["root-folders"],
+        });
+      }
+      
+      toast.success("Folder created successfully", {
+        description: `${data.name} has been created.`
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to create folder", {
+        description: error?.response?.data?.message || error.message || "An error occurred"
+      });
+    }
+  }); 
+};
 
 export const useRootFolders = () => {
   return useQuery({
@@ -210,9 +243,80 @@ export const useDeleteFile = () => {
   });
 };
 
+export const useRenameFile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ fileId, newTitle }) => renameFile(fileId, newTitle),
+    onSuccess: () => {
+      // Invalidate all folder queries to refresh the list
+      queryClient.invalidateQueries({
+        queryKey: ["folder-contents"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["root-folders"],
+      });
+
+      toast.success("File renamed successfully", {
+        description: "The file name has been updated.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Rename failed", {
+        description:
+          error?.response?.data?.error ||
+          error.message ||
+          "Failed to rename file",
+      });
+    },
+  });
+};
+
 export const useMyDocuments = () => {
   return useQuery({
     queryKey: ["my-documents"],
     queryFn: getMyDocuments,
+  });
+};
+
+export const useRenameFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ folderId, newName }) => renameFolder(folderId, newName),
+    onSuccess: (data) => {
+      // Invalidate queries to refresh the folder list
+      queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folder-contents"] });
+
+      toast.success("Folder renamed successfully", {
+        description: `Folder renamed to "${data.name}"`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to rename folder", {
+        description: error?.response?.data?.message || error.message || "An error occurred"
+      });
+    },
+  });
+};
+
+export const useDeleteFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (folderId) => deleteFolder(folderId),
+    onSuccess: () => {
+      // Invalidate queries to refresh the folder list
+      queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folder-contents"] });
+
+      toast.success("Folder deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete folder", {
+        description: error?.response?.data?.message || error.message || "An error occurred"
+      });
+    },
   });
 };

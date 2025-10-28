@@ -1,5 +1,14 @@
 import api from ".";
 
+export const createFolder = async (folderData) => {
+  try {
+    const { data } = await api.post(`/documents/folders/`, folderData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchRootFolders = async () => {
   try {
     const { data } = await api.get(`/documents/folders/root_folders/`);
@@ -82,6 +91,18 @@ export const deleteFile = async (fileId) => {
   }
 };
 
+export const renameFile = async (fileId, newTitle) => {
+  try {
+    const { data } = await api.patch(`/documents/files/${fileId}/rename/`, {
+      title: newTitle,
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const getMyDocuments = async () => {
   try {
     const { data } = await api.get(`/documents/files/my_documents/`);
@@ -101,3 +122,21 @@ export const getUserPersonalFolder = async () => {
   }
 };
 
+export const renameFolder = async (folderId, newName) => {
+  try {
+    const { data } = await api.patch(`/documents/folders/${folderId}/`, {
+      name: newName,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteFolder = async (folderId) => {
+  try {
+    await api.delete(`/documents/folders/${folderId}/`);
+  } catch (error) {
+    throw error;
+  }
+};

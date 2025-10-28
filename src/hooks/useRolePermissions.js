@@ -453,9 +453,12 @@ export const useRolePermissions = () => {
       documents: {
         // Check if user can upload to a specific folder
         canUpload: (currentFolder) => {
-          // Cannot upload at root level - documents must be in a folder
+          // At root level:
+          // - Admins can upload (to admin_private folder)
+          // - Coaches can upload (to their personal folder)
+          // - Players can upload (to their personal folder)
           if (!currentFolder) {
-            return false;
+            return isAdmin() || isCoach() || isPlayer();
           }
 
           const folderType = currentFolder.folder_type;
