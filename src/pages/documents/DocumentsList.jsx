@@ -26,6 +26,8 @@ import {
   FolderClosed,
   icons,
   Search,
+  FolderPlus,
+  RotateCw,
 } from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
@@ -44,11 +46,19 @@ const DocumentsList = () => {
   const isRoot = !currentFolder;
 
   // Fetch data based on current location
-  const { data: rootData, isLoading: rootLoading } = useRootFolders();
+  const { 
+    data: rootData, 
+    isLoading: rootLoading, 
+    isFetching: rootFetching,
+    refetch: refetchRoot 
+  } = useRootFolders();
 
-  const { data: folderData, isLoading: folderLoading } = useFolderContents(
-    currentFolder?.id
-  );
+  const { 
+    data: folderData, 
+    isLoading: folderLoading,
+    isFetching: folderFetching,
+    refetch: refetchFolder 
+  } = useFolderContents(currentFolder?.id);
 
   // Mutations
   const downloadMutation = useDownloadFile();
@@ -58,9 +68,10 @@ const DocumentsList = () => {
   const renameFolderMutation = useRenameFolder();
   const deleteFolderMutation = useDeleteFolder();
 
-  // Get current data
+  // Get current data and loading states
   const currentData = isRoot ? rootData : folderData;
   const isLoading = isRoot ? rootLoading : folderLoading;
+  const isFetching = isRoot ? rootFetching : folderFetching;
 
   // Backend returns 'folders' for root, but 'subfolders' for folder contents
   const folders = isRoot
@@ -134,6 +145,14 @@ const DocumentsList = () => {
     }
   };
 
+  const handleRefresh = () => {
+    if (isRoot) {
+      refetchRoot();
+    } else {
+      refetchFolder();
+    }
+  };
+
   return (
     <div className="container mx-auto p-1 md:p-6 space-y-6">
       {/* Header */}
@@ -172,7 +191,15 @@ const DocumentsList = () => {
               </Button>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handleRefresh}
+              disabled={isFetching}
+            >
+              <RotateCw className={isFetching ? "animate-spin" : ""} />
+            </Button>
             <div className="w-full">
               <Search className="absolute ml-2 mt-2.5 h-4 w-4 text-muted-foreground" />
               <Input className="pl-7" placeholder="Search documents..." />
@@ -181,10 +208,9 @@ const DocumentsList = () => {
             <Button
               variant="outline"
               onClick={() => setIsCreateFolderOpen(true)}
-              disabled={!permissions.documents.canUpload(currentFolder)}
             >
-              <Folder />
-              New Folder
+              <FolderPlus />
+              <span className="hidden md:block">New Folder</span>
             </Button>
 
             <Button
@@ -192,13 +218,13 @@ const DocumentsList = () => {
               disabled={!permissions.documents.canUpload(currentFolder)}
             >
               <Upload />
-              Upload File
+              <span className="hidden md:block">Upload File</span>
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           {/* Loading State */}
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <LoadingState />
           ) : (
             <>

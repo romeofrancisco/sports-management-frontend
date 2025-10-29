@@ -458,11 +458,10 @@ export const useRolePermissions = () => {
           // - Coaches can upload (to their personal folder)
           // - Players can upload (to their personal folder)
           if (!currentFolder) {
-            return isAdmin() || isCoach() || isPlayer();
+            return false
           }
 
           const folderType = currentFolder.folder_type;
-          console.log("Folder type:", folderType);
 
           if (isAdmin()) return true;
 

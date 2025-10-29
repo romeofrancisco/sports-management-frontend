@@ -69,10 +69,37 @@ const PlayerForm = ({ sports, onClose, player }) => {
   }, [selectedSex, selectedSport, sportRequiresStats, setValue, isEdit]);
 
   const onSubmit = (playerData) => {
-    const formData = convertToFormData(playerData);
+    // Remove position_ids if sport doesn't require stats
+    const dataToSend = { ...playerData };
+    
+    // Ensure position_ids is always an array
+    if (dataToSend.position_ids && !Array.isArray(dataToSend.position_ids)) {
+      dataToSend.position_ids = [dataToSend.position_ids];
+    }
+    
+    // If sport doesn't require stats or positions array is empty, remove position_ids
+    if (!sportRequiresStats || !dataToSend.position_ids || dataToSend.position_ids.length === 0) {
+      delete dataToSend.position_ids;
+    }
+    
+    // Check if there's a file to upload
+    const hasFile = dataToSend.profile instanceof File || dataToSend.profile instanceof FileList;
+    
+    let payload;
+    if (hasFile) {
+      // Use FormData when there's a file
+      const formData = convertToFormData(dataToSend);
+      
+      payload = isEdit ? { player: player.slug, data: formData } : formData;
+    } else {
+      // Use JSON when there's no file - DRF handles arrays correctly with JSON
+      const jsonData = { ...dataToSend };
+      delete jsonData.profile; // Remove null/undefined profile field
+      
+      payload = isEdit ? { player: player.slug, data: jsonData } : jsonData;
+    }
 
     const mutationFn = isEdit ? updatePlayer : createPlayer;
-    const payload = isEdit ? { player: player.slug, data: formData } : formData;
 
     mutationFn(payload, {
       onSuccess: () => {

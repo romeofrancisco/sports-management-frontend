@@ -43,7 +43,7 @@ export const uploadFile = async (fileData, onUploadProgress) => {
         "Content-Type": "multipart/form-data",
       },
       onUploadProgress: (progressEvent) => {
-        if (onUploadProgress) {
+        if (onUploadProgress && progressEvent.total) {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );

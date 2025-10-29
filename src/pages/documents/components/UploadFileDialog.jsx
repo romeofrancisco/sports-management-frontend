@@ -40,27 +40,45 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
   const handleFileChange = (files) => {
     if (files && files.length > 0) {
       const file = files[0];
-      
+
       // Validate file extension
       const allowedExtensions = [
         // Images
-        'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp',
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "bmp",
+        "svg",
+        "webp",
         // Documents
-        'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'
+        "pdf",
+        "doc",
+        "docx",
+        "xls",
+        "xlsx",
+        "ppt",
+        "pptx",
+        "txt",
+        "csv",
       ];
-      
+
       const fileName = file.name.toLowerCase();
-      const fileExtension = fileName.split('.').pop();
-      
+      const fileExtension = fileName.split(".").pop();
+
       if (!allowedExtensions.includes(fileExtension)) {
-        setError(`Invalid file type. Only images and documents are allowed (${allowedExtensions.join(', ')})`);
+        setError(
+          `Invalid file type. Only images and documents are allowed (${allowedExtensions.join(
+            ", "
+          )})`
+        );
         return;
       }
-      
+
       setError("");
       setSelectedFile(file);
       setValue("file", file);
-      
+
       // Auto-fill title if empty
       if (!control._formValues.title) {
         setValue("title", file.name.replace(/\.[^/.]+$/, ""));
@@ -96,16 +114,16 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
         onError: (e) => {
           console.log("Error response:", e.response);
           const errorData = e.response?.data;
-          
+
           if (errorData) {
             console.log("Error data:", errorData);
-            
+
             // Check if error is a string (non-field error)
-            if (typeof errorData === 'string') {
+            if (typeof errorData === "string") {
               setError(errorData);
               return;
             }
-            
+
             // Check for non_field_errors
             if (errorData.non_field_errors) {
               const errorMessage = Array.isArray(errorData.non_field_errors)
@@ -114,23 +132,28 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
               setError(errorMessage);
               return;
             }
-            
+
             // Handle field-specific errors
             Object.keys(errorData).forEach((fieldName) => {
               // Skip if the key looks like it's part of a split string (numeric keys)
               if (!isNaN(fieldName)) {
                 return;
               }
-              
+
               // Handle both string and array error formats
               let errorMessage = errorData[fieldName];
               if (Array.isArray(errorMessage)) {
                 errorMessage = errorMessage[0]; // Take the first error message
               }
               console.log(`Setting error for ${fieldName}:`, errorMessage);
-              
+
               // Set error for form fields, or show general error
-              if (fieldName === 'file' || fieldName === 'title' || fieldName === 'description' || fieldName === 'folder') {
+              if (
+                fieldName === "file" ||
+                fieldName === "title" ||
+                fieldName === "description" ||
+                fieldName === "folder"
+              ) {
                 setFormError(fieldName, {
                   type: "server",
                   message: errorMessage,
@@ -182,11 +205,11 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
             rules={{ required: "File is required" }}
             className="hidden"
           />
-          
+
           <div className="flex items-center justify-center w-full">
             <label
               htmlFor="file"
-              className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center justify-center w-full h-32 border-2 border-muted border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/70 transition-colors"
             >
               {selectedFile ? (
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">

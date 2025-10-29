@@ -23,7 +23,7 @@ import txt from "@/assets/documents/txt.png"
 import csv from "@/assets/documents/csv.png"
 import defaultFile from "@/assets/documents/default.png"
 
-const FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, canDelete }) => {
+const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, canDelete }) => {
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newFileName, setNewFileName] = useState(file.title);

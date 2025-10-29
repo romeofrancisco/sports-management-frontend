@@ -14,7 +14,7 @@ import {
   deleteFolder,
 } from "@/api/documentsApi";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRolePermissions } from "./useRolePermissions";
 
 export const useRootFolders = () => {
@@ -56,7 +56,7 @@ export const useCreateFolder = () => {
 export const useUploadFile = () => {
   const queryClient = useQueryClient();
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [toastId, setToastId] = useState(null);
+  const toastIdRef = useRef(null);
 
   const mutation = useMutation({
     mutationFn: (fileData) =>
@@ -65,20 +65,42 @@ export const useUploadFile = () => {
 
         if (progress === 100) {
           // Upload complete, show processing message
-          if (toastId) {
-            toast.loading("Processing file...", { id: toastId });
+          if (toastIdRef.current) {
+            toast.loading("Processing file...", {
+              description: "Your file is being processed.",
+              id: toastIdRef.current,
+            });
           }
-        } else {
-          // Show/update progress toast
-          const id = toastId || toast.loading(`Uploading... ${progress}%`);
-          if (!toastId) setToastId(id);
-          else toast.loading(`Uploading... ${progress}%`, { id: toastId });
+        } else if (progress > 0) {
+          // Show/update progress toast with progress bar
+          if (toastIdRef.current) {
+            toast.loading(
+              <div className="flex flex-col gap-2 w-full min-w-[280px] md:min-w-[300px]">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Uploading file...</span>
+                  <span className="text-sm text-muted-foreground">
+                    {progress}%
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>,
+              {
+                id: toastIdRef.current,
+                duration: Infinity, // Don't auto-dismiss during upload
+              }
+            );
+          }
         }
       }),
     onMutate: () => {
-      // Initialize toast
+      // Initialize toast and store ID in ref (synchronous, available immediately)
       const id = toast.loading("Preparing upload...");
-      setToastId(id);
+      toastIdRef.current = id;
     },
     onSuccess: (data, variables) => {
       // Invalidate the folder contents for the uploaded folder
@@ -91,24 +113,26 @@ export const useUploadFile = () => {
       });
 
       // Dismiss progress toast and show success
-      if (toastId) {
+      if (toastIdRef.current) {
         toast.success("File uploaded successfully", {
-          id: toastId,
+          richColors: true,
+          id: toastIdRef.current,
           description: data?.title + " has been uploaded.",
         });
       }
 
       // Reset state
       setUploadProgress(0);
-      setToastId(null);
+      toastIdRef.current = null;
     },
     onError: (error) => {
       // Dismiss progress toast and show error
-      if (toastId) {
+      if (toastIdRef.current) {
         toast.error("Upload failed", {
-          id: toastId,
+          richColors: true,
+          id: toastIdRef.current,
           description:
-            error?.response?.data?.message ||
+            error?.response?.data?.detail ||
             error.message ||
             "Failed to upload file",
         });
@@ -116,7 +140,7 @@ export const useUploadFile = () => {
 
       // Reset state
       setUploadProgress(0);
-      setToastId(null);
+      toastIdRef.current = null;
     },
   });
 
@@ -141,12 +165,16 @@ export const useDownloadFile = () => {
       document.body.removeChild(link);
     },
     onSuccess: () => {
-      toast.success("Download started");
+      toast.success("Download started", {
+        richColors: true,
+        description: "Your file download has started.",
+      });
     },
     onError: (error) => {
       toast.error("Download failed", {
+        richColors: true,
         description:
-          error?.response?.data?.message ||
+          error?.response?.data?.detail ||
           error.message ||
           "Failed to download file",
       });
@@ -198,11 +226,13 @@ export const useCopyFile = () => {
       });
 
       toast.success("File copied successfully", {
+        richColors: true,
         description: "The file has been copied to your folder.",
       });
     },
     onError: (error) => {
       toast.error("Cannot copy file", {
+        richColors: true,
         description: error.message,
       });
     },
@@ -229,8 +259,9 @@ export const useDeleteFile = () => {
     },
     onError: (error) => {
       toast.error("Delete failed", {
+        richColors: true,
         description:
-          error?.response?.data?.message ||
+          error?.response?.data?.detail ||
           error.message ||
           "Failed to delete file",
       });
@@ -253,13 +284,15 @@ export const useRenameFile = () => {
       });
 
       toast.success("File renamed successfully", {
+        richColors: true,
         description: "The file name has been updated.",
       });
     },
     onError: (error) => {
       toast.error("Rename failed", {
+        richColors: true,
         description:
-          error?.response?.data?.error ||
+          error?.response?.data?.detail ||
           error.message ||
           "Failed to rename file",
       });
@@ -285,15 +318,15 @@ export const useRenameFolder = () => {
       queryClient.invalidateQueries({ queryKey: ["folder-contents"] });
 
       toast.success("Folder renamed successfully", {
+        richColors: true,
         description: `Folder renamed to "${data.name}"`,
       });
     },
     onError: (error) => {
       toast.error("Failed to rename folder", {
+        richColors: true,
         description:
-          error?.response?.data?.message ||
-          error.message ||
-          "An error occurred",
+          error?.response?.data?.detail || error.message || "An error occurred",
       });
     },
   });
@@ -313,10 +346,9 @@ export const useDeleteFolder = () => {
     },
     onError: (error) => {
       toast.error("Failed to delete folder", {
+        richColors: true,
         description:
-          error?.response?.data?.message ||
-          error.message ||
-          "An error occurred",
+          error?.response?.data?.detail || error.message || "An error occurred",
       });
     },
   });
