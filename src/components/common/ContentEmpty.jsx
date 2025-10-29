@@ -26,12 +26,20 @@ const ContentEmpty = ({
         <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        {action ? (
-          <Button onClick={action.onClick}>
-            <action.logo />
-            {action.label}
-          </Button>
-        ) : null}
+        <div className="flex gap-2">
+          {action ? (
+            <Button onClick={action.onClick}>
+              {action.logo && <action.logo />}
+              {action.label}
+            </Button>
+          ) : null}
+          {action?.extra ? (
+            <Button variant="outline" onClick={action.extra.onClick}>
+              {action.extra.logo && <action.extra.logo />}
+              {action.extra.label}
+            </Button>
+          ) : null}
+        </div>
       </EmptyContent>
     </Empty>
   );

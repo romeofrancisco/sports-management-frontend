@@ -453,26 +453,29 @@ export const useRolePermissions = () => {
       documents: {
         // Check if user can upload to a specific folder
         canUpload: (currentFolder) => {
-          // Cannot upload at root level - documents must be in a folder
+          // At root level:
+          // - Admins can upload (to admin_private folder)
+          // - Coaches can upload (to their personal folder)
+          // - Players can upload (to their personal folder)
           if (!currentFolder) {
-            return false;
+            return false
           }
 
           const folderType = currentFolder.folder_type;
 
           if (isAdmin()) return true;
 
-          if (folderType === "PUBLIC") {
+          if (folderType.toUpperCase() === "PUBLIC") {
             return isAdmin();
-          } else if (folderType === "COACHES") {
+          } else if (folderType.toUpperCase() === "COACHES") {
             return isAdmin();
-          } else if (folderType === "COACH_PERSONAL") {
+          } else if (folderType.toUpperCase() === "COACH_PERSONAL") {
             return isCoach() && currentFolder.owner?.id === user?.id;
-          } else if (folderType === "PLAYERS") {
+          } else if (folderType.toUpperCase() === "PLAYERS") {
             return isCoach();
-          } else if (folderType === "PLAYER_PERSONAL") {
+          } else if (folderType.toUpperCase() === "PLAYER_PERSONAL") {
             return isPlayer() && currentFolder.owner?.id === user?.id;
-          } else if (folderType === "ADMIN_PRIVATE") {
+          } else if (folderType.toUpperCase() === "ADMIN_PRIVATE") {
             return isAdmin();
           }
 

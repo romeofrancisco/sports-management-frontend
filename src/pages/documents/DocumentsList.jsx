@@ -4,16 +4,20 @@ import { Button } from "@/components/ui/button";
 import {
   useRootFolders,
   useFolderContents,
-  useUploadFile,
   useDownloadFile,
   useCopyFile,
   useDeleteFile,
+  useRenameFile,
+  useRenameFolder,
+  useDeleteFolder,
 } from "@/hooks/useDocuments";
 import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
 import Breadcrumbs from "./components/Breadcrumbs";
 import UploadFileDialog from "./components/UploadFileDialog";
+import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
+import DeleteModal from "@/components/common/DeleteModal";
 import {
   Upload,
   Folder,
@@ -22,6 +26,8 @@ import {
   FolderClosed,
   icons,
   Search,
+  FolderPlus,
+  RotateCw,
 } from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
@@ -29,40 +35,43 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 const DocumentsList = () => {
-  const { user, isAdmin, isCoach, isPlayer, permissions } =
-    useRolePermissions();
+  const { permissions } = useRolePermissions();
   const [navigationStack, setNavigationStack] = useState([]);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
+  const [deleteFile, setDeleteFile] = useState(null);
+  const [deleteFolder, setDeleteFolder] = useState(null);
 
   const currentFolder = navigationStack[navigationStack.length - 1];
   const isRoot = !currentFolder;
 
   // Fetch data based on current location
-  const {
-    data: rootData,
-    isLoading: rootLoading,
-    error: rootError,
+  const { 
+    data: rootData, 
+    isLoading: rootLoading, 
+    isFetching: rootFetching,
+    refetch: refetchRoot 
   } = useRootFolders();
 
-  const {
-    data: folderData,
+  const { 
+    data: folderData, 
     isLoading: folderLoading,
-    error: folderError,
+    isFetching: folderFetching,
+    refetch: refetchFolder 
   } = useFolderContents(currentFolder?.id);
 
   // Mutations
-  const {
-    mutate: uploadFile,
-    isPending: isUploading,
-    uploadProgress,
-  } = useUploadFile();
   const downloadMutation = useDownloadFile();
   const copyMutation = useCopyFile();
   const deleteMutation = useDeleteFile();
+  const renameMutation = useRenameFile();
+  const renameFolderMutation = useRenameFolder();
+  const deleteFolderMutation = useDeleteFolder();
 
-  // Get current data
+  // Get current data and loading states
   const currentData = isRoot ? rootData : folderData;
   const isLoading = isRoot ? rootLoading : folderLoading;
+  const isFetching = isRoot ? rootFetching : folderFetching;
 
   // Backend returns 'folders' for root, but 'subfolders' for folder contents
   const folders = isRoot
@@ -85,21 +94,6 @@ const DocumentsList = () => {
     }
   };
 
-  // File action handlers
-  const handleUpload = (fileData) => {
-    uploadFile(
-      {
-        ...fileData,
-        folder: currentFolder?.id || null,
-      },
-      {
-        onSuccess: () => {
-          setIsUploadOpen(false);
-        },
-      }
-    );
-  };
-
   const handleDownload = (file) => {
     downloadMutation.mutate({
       fileId: file.id,
@@ -115,25 +109,58 @@ const DocumentsList = () => {
     });
   };
 
-  const handleDelete = (fileId) => {
-    if (window.confirm("Are you sure you want to delete this file?")) {
-      deleteMutation.mutate(fileId);
+  const handleDelete = (file) => {
+    setDeleteFile(file);
+  };
+
+  const confirmDelete = () => {
+    if (deleteFile) {
+      deleteMutation.mutate(deleteFile.id);
+      setDeleteFile(null);
+    }
+  };
+
+  const handleRename = (fileId, newTitle) => {
+    renameMutation.mutate({
+      fileId,
+      newTitle,
+    });
+  };
+
+  const handleFolderRename = (folderId, newName) => {
+    renameFolderMutation.mutate({
+      folderId,
+      newName,
+    });
+  };
+
+  const handleFolderDelete = (folder) => {
+    setDeleteFolder(folder);
+  };
+
+  const confirmFolderDelete = () => {
+    if (deleteFolder) {
+      deleteFolderMutation.mutate(deleteFolder.id);
+      setDeleteFolder(null);
+    }
+  };
+
+  const handleRefresh = () => {
+    if (isRoot) {
+      refetchRoot();
+    } else {
+      refetchFolder();
     }
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-1 md:p-6 space-y-6">
       {/* Header */}
       <UniversityPageHeader
         title="Documents Management"
         description="Manage and organize your files and folders"
+        showUniversityColors={true}
       />
-      {permissions.documents.canUpload(currentFolder) && (
-        <Button onClick={() => setIsUploadOpen(true)}>
-          <Upload className="mr-2 h-4 w-4" />
-          Upload File
-        </Button>
-      )}
 
       <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 ">
         <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
@@ -156,10 +183,6 @@ const DocumentsList = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div>
-                <Search className="absolute ml-2 mt-2.5 h-4 w-4 text-muted-foreground" />
-                <Input className="pl-7" placeholder="Search documents..." />
-              </div>
               <Button variant="outline" size="icon">
                 <Table2 className="h-4 w-4" />
               </Button>
@@ -168,11 +191,40 @@ const DocumentsList = () => {
               </Button>
             </div>
           </div>
-          {/* <TeamFiltersBar filter={filter} setFilter={handleFilterChange} /> */}
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handleRefresh}
+              disabled={isFetching}
+            >
+              <RotateCw className={isFetching ? "animate-spin" : ""} />
+            </Button>
+            <div className="w-full">
+              <Search className="absolute ml-2 mt-2.5 h-4 w-4 text-muted-foreground" />
+              <Input className="pl-7" placeholder="Search documents..." />
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateFolderOpen(true)}
+            >
+              <FolderPlus />
+              <span className="hidden md:block">New Folder</span>
+            </Button>
+
+            <Button
+              onClick={() => setIsUploadOpen(true)}
+              disabled={!permissions.documents.canUpload(currentFolder)}
+            >
+              <Upload />
+              <span className="hidden md:block">Upload File</span>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {/* Loading State */}
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <LoadingState />
           ) : (
             <>
@@ -183,12 +235,29 @@ const DocumentsList = () => {
                     <Folder />
                     <h2 className="">Folders</h2>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
                     {folders.map((folder) => (
                       <FolderCard
                         key={folder.id}
                         folder={folder}
                         onClick={() => handleFolderClick(folder)}
+                        onRename={
+                          permissions.documents.canDelete({
+                            owner: folder.owner,
+                          })
+                            ? handleFolderRename
+                            : undefined
+                        }
+                        onDelete={
+                          permissions.documents.canDelete({
+                            owner: folder.owner,
+                          })
+                            ? () => handleFolderDelete(folder)
+                            : undefined
+                        }
+                        canDelete={permissions.documents.canDelete({
+                          owner: folder.owner,
+                        })}
                       />
                     ))}
                   </div>
@@ -199,7 +268,7 @@ const DocumentsList = () => {
               {documents.length > 0 && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Files</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
                     {documents.map((file) => (
                       <FileCard
                         key={file.id}
@@ -210,9 +279,14 @@ const DocumentsList = () => {
                             ? () => handleCopy(file.id)
                             : undefined
                         }
+                        onRename={
+                          permissions.documents.canDelete(file)
+                            ? handleRename
+                            : undefined
+                        }
                         onDelete={
                           permissions.documents.canDelete(file)
-                            ? () => handleDelete(file.id)
+                            ? () => handleDelete(file)
                             : undefined
                         }
                         canDelete={permissions.documents.canDelete(file)}
@@ -233,6 +307,11 @@ const DocumentsList = () => {
                       label: "Upload File",
                       logo: Upload,
                       onClick: () => setIsUploadOpen(true),
+                      extra: {
+                        label: "Create Folder",
+                        logo: Folder,
+                        onClick: () => setIsCreateFolderOpen(true),
+                      },
                     }
                   }
                 />
@@ -246,8 +325,44 @@ const DocumentsList = () => {
       <UploadFileDialog
         open={isUploadOpen}
         onOpenChange={setIsUploadOpen}
-        onUpload={handleUpload}
-        isUploading={isUploading}
+        currentFolder={currentFolder}
+        rootData={rootData}
+      />
+
+      {/* Create Folder Dialog */}
+      <CreateFolderDialog
+        open={isCreateFolderOpen}
+        onOpenChange={setIsCreateFolderOpen}
+        currentFolder={currentFolder}
+        rootData={rootData}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        open={!!deleteFile}
+        onOpenChange={(open) => {
+          if (!open) setDeleteFile(null);
+        }}
+        onConfirm={confirmDelete}
+        itemName={deleteFile?.title}
+        itemType="document"
+        isLoading={deleteMutation.isPending}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+
+      {/* Delete Folder Confirmation Modal */}
+      <DeleteModal
+        open={!!deleteFolder}
+        onOpenChange={(open) => {
+          if (!open) setDeleteFolder(null);
+        }}
+        onConfirm={confirmFolderDelete}
+        itemName={deleteFolder?.name}
+        itemType="folder"
+        isLoading={deleteFolderMutation.isPending}
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </div>
   );

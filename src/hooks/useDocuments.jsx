@@ -6,11 +6,15 @@ import {
   downloadFile,
   copyFile,
   deleteFile,
+  renameFile,
   getMyDocuments,
   getUserPersonalFolder,
+  createFolder,
+  renameFolder,
+  deleteFolder,
 } from "@/api/documentsApi";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRolePermissions } from "./useRolePermissions";
 
 export const useRootFolders = () => {
@@ -28,10 +32,31 @@ export const useFolderContents = (folderId) => {
   });
 };
 
+export const useCreateFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (folderData) => createFolder(folderData),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["folder-contents", variables.parent],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["root-folders"],
+      });
+
+      toast.success("Folder created successfully", {
+        description: `${data.name} has been created.`,
+      });
+    },
+  });
+};
+
 export const useUploadFile = () => {
   const queryClient = useQueryClient();
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [toastId, setToastId] = useState(null);
+  const toastIdRef = useRef(null);
 
   const mutation = useMutation({
     mutationFn: (fileData) =>
@@ -40,20 +65,42 @@ export const useUploadFile = () => {
 
         if (progress === 100) {
           // Upload complete, show processing message
-          if (toastId) {
-            toast.loading("Processing file...", { id: toastId });
+          if (toastIdRef.current) {
+            toast.loading("Processing file...", {
+              description: "Your file is being processed.",
+              id: toastIdRef.current,
+            });
           }
-        } else {
-          // Show/update progress toast
-          const id = toastId || toast.loading(`Uploading... ${progress}%`);
-          if (!toastId) setToastId(id);
-          else toast.loading(`Uploading... ${progress}%`, { id: toastId });
+        } else if (progress > 0) {
+          // Show/update progress toast with progress bar
+          if (toastIdRef.current) {
+            toast.loading(
+              <div className="flex flex-col gap-2 w-full min-w-[280px] md:min-w-[300px]">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Uploading file...</span>
+                  <span className="text-sm text-muted-foreground">
+                    {progress}%
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>,
+              {
+                id: toastIdRef.current,
+                duration: Infinity, // Don't auto-dismiss during upload
+              }
+            );
+          }
         }
       }),
     onMutate: () => {
-      // Initialize toast
+      // Initialize toast and store ID in ref (synchronous, available immediately)
       const id = toast.loading("Preparing upload...");
-      setToastId(id);
+      toastIdRef.current = id;
     },
     onSuccess: (data, variables) => {
       // Invalidate the folder contents for the uploaded folder
@@ -66,24 +113,26 @@ export const useUploadFile = () => {
       });
 
       // Dismiss progress toast and show success
-      if (toastId) {
+      if (toastIdRef.current) {
         toast.success("File uploaded successfully", {
-          id: toastId,
+          richColors: true,
+          id: toastIdRef.current,
           description: data?.title + " has been uploaded.",
         });
       }
 
       // Reset state
       setUploadProgress(0);
-      setToastId(null);
+      toastIdRef.current = null;
     },
     onError: (error) => {
       // Dismiss progress toast and show error
-      if (toastId) {
+      if (toastIdRef.current) {
         toast.error("Upload failed", {
-          id: toastId,
+          richColors: true,
+          id: toastIdRef.current,
           description:
-            error?.response?.data?.message ||
+            error?.response?.data?.detail ||
             error.message ||
             "Failed to upload file",
         });
@@ -91,7 +140,7 @@ export const useUploadFile = () => {
 
       // Reset state
       setUploadProgress(0);
-      setToastId(null);
+      toastIdRef.current = null;
     },
   });
 
@@ -105,7 +154,7 @@ export const useDownloadFile = () => {
   return useMutation({
     mutationFn: async ({ fileId, fileName }) => {
       const fileUrl = await downloadFile(fileId);
-      
+
       // Open the Cloudinary URL directly - it will download due to fl_attachment flag
       const link = document.createElement("a");
       link.href = fileUrl;
@@ -116,11 +165,18 @@ export const useDownloadFile = () => {
       document.body.removeChild(link);
     },
     onSuccess: () => {
-      toast.success("Download started");
+      toast.success("Download started", {
+        richColors: true,
+        description: "Your file download has started.",
+      });
     },
     onError: (error) => {
       toast.error("Download failed", {
-        description: error?.response?.data?.message || error.message || "Failed to download file",
+        richColors: true,
+        description:
+          error?.response?.data?.detail ||
+          error.message ||
+          "Failed to download file",
       });
     },
   });
@@ -133,7 +189,7 @@ export const useCopyFile = () => {
   return useMutation({
     mutationFn: async ({ fileId, currentFolder, rootData }) => {
       let targetFolderId = null;
-      
+
       try {
         if (isCoach() || isPlayer()) {
           // For coaches and players, get their personal folder from the dedicated API endpoint
@@ -153,9 +209,9 @@ export const useCopyFile = () => {
       } catch (error) {
         // Re-throw with better error message
         throw new Error(
-          error.response?.data?.error || 
-          error.message || 
-          "Error finding your personal folder to copy to."
+          error.response?.data?.error ||
+            error.message ||
+            "Error finding your personal folder to copy to."
         );
       }
     },
@@ -170,11 +226,13 @@ export const useCopyFile = () => {
       });
 
       toast.success("File copied successfully", {
+        richColors: true,
         description: "The file has been copied to your folder.",
       });
     },
     onError: (error) => {
       toast.error("Cannot copy file", {
+        richColors: true,
         description: error.message,
       });
     },
@@ -201,10 +259,42 @@ export const useDeleteFile = () => {
     },
     onError: (error) => {
       toast.error("Delete failed", {
+        richColors: true,
         description:
-          error?.response?.data?.message ||
+          error?.response?.data?.detail ||
           error.message ||
           "Failed to delete file",
+      });
+    },
+  });
+};
+
+export const useRenameFile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ fileId, newTitle }) => renameFile(fileId, newTitle),
+    onSuccess: () => {
+      // Invalidate all folder queries to refresh the list
+      queryClient.invalidateQueries({
+        queryKey: ["folder-contents"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["root-folders"],
+      });
+
+      toast.success("File renamed successfully", {
+        richColors: true,
+        description: "The file name has been updated.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Rename failed", {
+        richColors: true,
+        description:
+          error?.response?.data?.detail ||
+          error.message ||
+          "Failed to rename file",
       });
     },
   });
@@ -214,5 +304,52 @@ export const useMyDocuments = () => {
   return useQuery({
     queryKey: ["my-documents"],
     queryFn: getMyDocuments,
+  });
+};
+
+export const useRenameFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ folderId, newName }) => renameFolder(folderId, newName),
+    onSuccess: (data) => {
+      // Invalidate queries to refresh the folder list
+      queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folder-contents"] });
+
+      toast.success("Folder renamed successfully", {
+        richColors: true,
+        description: `Folder renamed to "${data.name}"`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to rename folder", {
+        richColors: true,
+        description:
+          error?.response?.data?.detail || error.message || "An error occurred",
+      });
+    },
+  });
+};
+
+export const useDeleteFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (folderId) => deleteFolder(folderId),
+    onSuccess: () => {
+      // Invalidate queries to refresh the folder list
+      queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folder-contents"] });
+
+      toast.success("Folder deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete folder", {
+        richColors: true,
+        description:
+          error?.response?.data?.detail || error.message || "An error occurred",
+      });
+    },
   });
 };

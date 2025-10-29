@@ -2,7 +2,7 @@ export const convertToFormData = (data) => {
   const formData = new FormData();
 
   // Define fields that are file fields and should be omitted when null
-  const fileFields = ['logo', 'image', 'profile', 'avatar', 'photo'];
+  const fileFields = ['logo', 'image', 'profile', 'avatar', 'photo', 'file'];
 
   Object.entries(data).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -16,9 +16,15 @@ export const convertToFormData = (data) => {
       } else if (value instanceof Date) {
         formData.append(key, value.toISOString());
       } else if (Array.isArray(value)) {
-        value.forEach((item) => {
-          formData.append(`${key}[]`, item);
-        });
+        // For arrays, append each item separately with the same key
+        // DRF will automatically parse multiple values with the same key as a list
+        // Only append if array has items
+        if (value.length > 0) {
+          value.forEach((item) => {
+            formData.append(key, item);
+          });
+        }
+        // If array is empty, don't append anything (field will be omitted)
       } else if (value instanceof FileList) {
         if (value.length > 0) {
           formData.append(key, value[0]);
