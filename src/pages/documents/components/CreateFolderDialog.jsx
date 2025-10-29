@@ -47,6 +47,7 @@ const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, cu
     if (isCoach()) {
       return [
         { value: "coach_personal", label: "Personal Folder" },
+        { value: "players", label: "Players Folder" },
       ];
     }
 

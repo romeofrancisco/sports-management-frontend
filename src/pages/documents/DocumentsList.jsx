@@ -90,8 +90,9 @@ const DocumentsList = () => {
   // File action handlers
   const handleUpload = (fileData) => {
     // Use personal_folder_id from rootData if at root (for coaches/players)
-    const targetFolderId = currentFolder?.id || rootData?.personal_folder_id || null;
-    
+    const targetFolderId =
+      currentFolder?.id || rootData?.personal_folder_id || null;
+
     uploadFile(
       {
         ...fileData,
@@ -107,8 +108,9 @@ const DocumentsList = () => {
 
   const handleCreateFolder = (folderData) => {
     // Use personal_folder_id from rootData if at root (for coaches/players)
-    const parentFolderId = currentFolder?.id || rootData?.personal_folder_id || null;
-    
+    const parentFolderId =
+      currentFolder?.id || rootData?.personal_folder_id || null;
+
     createFolder(
       {
         ...folderData,
@@ -255,16 +257,22 @@ const DocumentsList = () => {
                         folder={folder}
                         onClick={() => handleFolderClick(folder)}
                         onRename={
-                          permissions.documents.canDelete({ owner: folder.owner })
+                          permissions.documents.canDelete({
+                            owner: folder.owner,
+                          })
                             ? handleFolderRename
                             : undefined
                         }
                         onDelete={
-                          permissions.documents.canDelete({ owner: folder.owner })
+                          permissions.documents.canDelete({
+                            owner: folder.owner,
+                          })
                             ? () => handleFolderDelete(folder)
                             : undefined
                         }
-                        canDelete={permissions.documents.canDelete({ owner: folder.owner })}
+                        canDelete={permissions.documents.canDelete({
+                          owner: folder.owner,
+                        })}
                       />
                     ))}
                   </div>

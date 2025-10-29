@@ -462,20 +462,21 @@ export const useRolePermissions = () => {
           }
 
           const folderType = currentFolder.folder_type;
+          console.log("Folder type:", folderType);
 
           if (isAdmin()) return true;
 
-          if (folderType === "PUBLIC") {
+          if (folderType.toUpperCase() === "PUBLIC") {
             return isAdmin();
-          } else if (folderType === "COACHES") {
+          } else if (folderType.toUpperCase() === "COACHES") {
             return isAdmin();
-          } else if (folderType === "COACH_PERSONAL") {
+          } else if (folderType.toUpperCase() === "COACH_PERSONAL") {
             return isCoach() && currentFolder.owner?.id === user?.id;
-          } else if (folderType === "PLAYERS") {
+          } else if (folderType.toUpperCase() === "PLAYERS") {
             return isCoach();
-          } else if (folderType === "PLAYER_PERSONAL") {
+          } else if (folderType.toUpperCase() === "PLAYER_PERSONAL") {
             return isPlayer() && currentFolder.owner?.id === user?.id;
-          } else if (folderType === "ADMIN_PRIVATE") {
+          } else if (folderType.toUpperCase() === "ADMIN_PRIVATE") {
             return isAdmin();
           }
 

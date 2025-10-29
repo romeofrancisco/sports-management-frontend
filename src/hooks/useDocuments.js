@@ -17,35 +17,6 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRolePermissions } from "./useRolePermissions";
 
-export const useCreateFolder = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: (folderData) => createFolder(folderData),
-    onSuccess: (data, variables) => {
-      // Invalidate the parent folder contents or root folders
-      if (variables.parent) {
-        queryClient.invalidateQueries({
-          queryKey: ["folder-contents", variables.parent],
-        });
-      } else {
-        queryClient.invalidateQueries({
-          queryKey: ["root-folders"],
-        });
-      }
-      
-      toast.success("Folder created successfully", {
-        description: `${data.name} has been created.`
-      });
-    },
-    onError: (error) => {
-      toast.error("Failed to create folder", {
-        description: error?.response?.data?.message || error.message || "An error occurred"
-      });
-    }
-  }); 
-};
-
 export const useRootFolders = () => {
   return useQuery({
     queryKey: ["root-folders"],
@@ -58,6 +29,35 @@ export const useFolderContents = (folderId) => {
     queryKey: ["folder-contents", folderId],
     queryFn: () => fetchFolderContents(folderId),
     enabled: !!folderId,
+  });
+};
+
+export const useCreateFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (folderData) => createFolder(folderData),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["folder-contents", variables.parent],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["root-folders"],
+      });
+
+      toast.success("Folder created successfully", {
+        description: `${data.name} has been created.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to create folder", {
+        description:
+          error?.response?.data?.message ||
+          error.message ||
+          "An error occurred",
+      });
+    },
   });
 };
 
@@ -138,7 +138,7 @@ export const useDownloadFile = () => {
   return useMutation({
     mutationFn: async ({ fileId, fileName }) => {
       const fileUrl = await downloadFile(fileId);
-      
+
       // Open the Cloudinary URL directly - it will download due to fl_attachment flag
       const link = document.createElement("a");
       link.href = fileUrl;
@@ -153,7 +153,10 @@ export const useDownloadFile = () => {
     },
     onError: (error) => {
       toast.error("Download failed", {
-        description: error?.response?.data?.message || error.message || "Failed to download file",
+        description:
+          error?.response?.data?.message ||
+          error.message ||
+          "Failed to download file",
       });
     },
   });
@@ -166,7 +169,7 @@ export const useCopyFile = () => {
   return useMutation({
     mutationFn: async ({ fileId, currentFolder, rootData }) => {
       let targetFolderId = null;
-      
+
       try {
         if (isCoach() || isPlayer()) {
           // For coaches and players, get their personal folder from the dedicated API endpoint
@@ -186,9 +189,9 @@ export const useCopyFile = () => {
       } catch (error) {
         // Re-throw with better error message
         throw new Error(
-          error.response?.data?.error || 
-          error.message || 
-          "Error finding your personal folder to copy to."
+          error.response?.data?.error ||
+            error.message ||
+            "Error finding your personal folder to copy to."
         );
       }
     },
@@ -295,7 +298,10 @@ export const useRenameFolder = () => {
     },
     onError: (error) => {
       toast.error("Failed to rename folder", {
-        description: error?.response?.data?.message || error.message || "An error occurred"
+        description:
+          error?.response?.data?.message ||
+          error.message ||
+          "An error occurred",
       });
     },
   });
@@ -315,7 +321,10 @@ export const useDeleteFolder = () => {
     },
     onError: (error) => {
       toast.error("Failed to delete folder", {
-        description: error?.response?.data?.message || error.message || "An error occurred"
+        description:
+          error?.response?.data?.message ||
+          error.message ||
+          "An error occurred",
       });
     },
   });
