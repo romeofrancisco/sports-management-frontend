@@ -50,14 +50,6 @@ export const useCreateFolder = () => {
         description: `${data.name} has been created.`,
       });
     },
-    onError: (error) => {
-      toast.error("Failed to create folder", {
-        description:
-          error?.response?.data?.message ||
-          error.message ||
-          "An error occurred",
-      });
-    },
   });
 };
 

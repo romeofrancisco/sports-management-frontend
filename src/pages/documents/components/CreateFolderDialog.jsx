@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { useCreateFolder } from "@/hooks/useDocuments";
 import Modal from "@/components/common/Modal";
 import ControlledInput from "@/components/common/ControlledInput";
 import ControlledTextarea from "@/components/common/ControlledTextarea";
@@ -9,14 +10,21 @@ import { Button } from "@/components/ui/button";
 import { FolderPlus } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, currentFolder }) => {
+const CreateFolderDialog = ({
+  open,
+  onOpenChange,
+  currentFolder,
+  rootData,
+}) => {
   const { isAdmin, isCoach } = useRolePermissions();
-  
+  const { mutate: createFolder, isPending: isCreating } = useCreateFolder();
+
   const {
     control,
     handleSubmit,
     reset,
     watch,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -28,7 +36,7 @@ const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, cu
 
   // Watch if we're at root (currentFolder is null)
   const isAtRoot = !currentFolder;
-  
+
   // Get available folder type options based on user role
   const getFolderTypeOptions = () => {
     if (!isAtRoot) {
@@ -65,25 +73,89 @@ const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, cu
   }, [open, reset]);
 
   const onSubmit = async (data) => {
-    try {
-      const folderData = {
-        name: data.name.trim(),
-        description: data.description?.trim() || "",
-      };
+    // Use personal_folder_id from rootData if at root (for coaches/players)
+    const parentFolderId =
+      currentFolder?.id || rootData?.personal_folder_id || null;
 
-      // Include folder_type only if at root and type is selected
-      if (showFolderTypeSelect && data.folder_type) {
-        folderData.folder_type = data.folder_type;
-      }
+    const folderData = {
+      name: data.name.trim(),
+      description: data.description?.trim() || "",
+      parent: parentFolderId,
+    };
 
-      await onCreateFolder(folderData);
-
-      // Reset form and close
-      reset();
-      onOpenChange(false);
-    } catch (err) {
-      // Error handled by parent component
+    // Include folder_type only if at root and type is selected
+    if (showFolderTypeSelect && data.folder_type) {
+      folderData.folder_type = data.folder_type;
     }
+
+    createFolder(folderData, {
+      onSuccess: () => {
+        reset();
+        onOpenChange(false);
+      },
+      onError: (e) => {        
+        const error = e.response?.data;
+        
+        // If response is HTML (server error), show a generic message
+        if (typeof error === 'string' && error.includes('<!DOCTYPE')) {
+          setError('name', {
+            type: 'server',
+            message: 'This folder name already exists.',
+          });
+          return;
+        }
+        
+        if (error) {
+          
+          // Check if error is a string (non-field error)
+          if (typeof error === 'string') {
+            setError('name', {
+              type: 'server',
+              message: error,
+            });
+            return;
+          }
+          
+          // Check for non_field_errors
+          if (error.non_field_errors) {
+            const errorMessage = Array.isArray(error.non_field_errors)
+              ? error.non_field_errors[0]
+              : error.non_field_errors;
+            setError('name', {
+              type: 'server',
+              message: errorMessage,
+            });
+            return;
+          }
+          
+          // Handle field-specific errors
+          Object.keys(error).forEach((fieldName) => {
+            // Skip if the key looks like it's part of a split string (numeric keys)
+            if (!isNaN(fieldName)) {
+              return;
+            }
+            
+            // Handle both string and array error formats
+            let errorMessage = error[fieldName];
+            if (Array.isArray(errorMessage)) {
+              errorMessage = errorMessage[0]; // Take the first error message
+            }
+            
+            console.log(`Setting error for ${fieldName}:`, errorMessage);
+            setError(fieldName, {
+              type: "server",
+              message: errorMessage,
+            });
+          });
+        } else {
+          // Fallback error message
+          setError('name', {
+            type: 'server',
+            message: 'Failed to create folder. Please try again.',
+          });
+        }
+      },
+    });
   };
 
   return (
@@ -118,16 +190,16 @@ const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, cu
           label="Folder Name"
           placeholder="Enter folder name"
           errors={errors}
-          rules={{ 
+          rules={{
             required: "Folder name is required",
             minLength: {
               value: 2,
-              message: "Folder name must be at least 2 characters"
+              message: "Folder name must be at least 2 characters",
             },
             maxLength: {
               value: 100,
-              message: "Folder name must not exceed 100 characters"
-            }
+              message: "Folder name must not exceed 100 characters",
+            },
           }}
           disabled={isCreating}
         />
@@ -156,12 +228,12 @@ const CreateFolderDialog = ({ open, onOpenChange, onCreateFolder, isCreating, cu
           <Button type="submit" disabled={isCreating}>
             {isCreating ? (
               <>
-                <FolderPlus className="mr-2 h-4 w-4 animate-pulse" />
+                <FolderPlus className="animate-pulse" />
                 Creating...
               </>
             ) : (
               <>
-                <FolderPlus className="mr-2 h-4 w-4" />
+                <FolderPlus />
                 Create Folder
               </>
             )}

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   useRootFolders,
   useFolderContents,
-  useUploadFile,
   useDownloadFile,
   useCopyFile,
   useDeleteFile,
@@ -32,7 +31,6 @@ import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useCreateFolder } from "@/hooks/useDocuments";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
@@ -53,8 +51,6 @@ const DocumentsList = () => {
   );
 
   // Mutations
-  const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
-  const { mutate: createFolder, isPending: isCreatingFolder } = useCreateFolder();
   const downloadMutation = useDownloadFile();
   const copyMutation = useCopyFile();
   const deleteMutation = useDeleteFile();
@@ -85,43 +81,6 @@ const DocumentsList = () => {
       // Go to specific folder in path
       setNavigationStack(navigationStack.slice(0, index + 1));
     }
-  };
-
-  // File action handlers
-  const handleUpload = (fileData) => {
-    // Use personal_folder_id from rootData if at root (for coaches/players)
-    const targetFolderId =
-      currentFolder?.id || rootData?.personal_folder_id || null;
-
-    uploadFile(
-      {
-        ...fileData,
-        folder: targetFolderId,
-      },
-      {
-        onSuccess: () => {
-          setIsUploadOpen(false);
-        },
-      }
-    );
-  };
-
-  const handleCreateFolder = (folderData) => {
-    // Use personal_folder_id from rootData if at root (for coaches/players)
-    const parentFolderId =
-      currentFolder?.id || rootData?.personal_folder_id || null;
-
-    createFolder(
-      {
-        ...folderData,
-        parent: parentFolderId,
-      },
-      {
-        onSuccess: () => {
-          setIsCreateFolderOpen(false);
-        },
-      }
-    );
   };
 
   const handleDownload = (file) => {
@@ -340,17 +299,16 @@ const DocumentsList = () => {
       <UploadFileDialog
         open={isUploadOpen}
         onOpenChange={setIsUploadOpen}
-        onUpload={handleUpload}
-        isUploading={isUploading}
+        currentFolder={currentFolder}
+        rootData={rootData}
       />
 
       {/* Create Folder Dialog */}
       <CreateFolderDialog
         open={isCreateFolderOpen}
         onOpenChange={setIsCreateFolderOpen}
-        onCreateFolder={handleCreateFolder}
-        isCreating={isCreatingFolder}
         currentFolder={currentFolder}
+        rootData={rootData}
       />
 
       {/* Delete Confirmation Modal */}
