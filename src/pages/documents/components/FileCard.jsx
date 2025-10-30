@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy }) => {
+const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy, viewMode = "grid" }) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -51,6 +51,186 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy 
 
   const fileIcon = getFileIcon();
 
+  // List view rendering
+  if (viewMode === "list") {
+    return (
+      <TooltipProvider>
+        <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
+          <ContextMenuTrigger asChild>
+            <div
+              className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchMove}
+            >
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                {fileIcon.type === 'image' ? (
+                  <img 
+                    src={fileIcon.src} 
+                    alt={displayName}
+                    className="h-10 w-10 object-cover rounded"
+                  />
+                ) : (
+                  <img 
+                    src={fileIcon.src} 
+                    alt={getFileExtension()}
+                    className="h-10 w-10 object-contain"
+                  />
+                )}
+              </div>
+
+              {/* Name and details */}
+              <div className="flex-1 min-w-0">
+                {isRenaming ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      ref={inputRef}
+                      value={newFileName}
+                      onChange={(e) => setNewFileName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRenameConfirm();
+                        } else if (e.key === "Escape") {
+                          handleRenameCancel();
+                        }
+                      }}
+                      className="h-8 text-sm max-w-xs"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameConfirm();
+                      }}
+                    >
+                      <Check className="h-4 w-4 text-green-500" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameCancel();
+                      }}
+                    >
+                      <X className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {displayName}
+                    </p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                      <span>{formatFileSize(file.file_size)}</span>
+                      <span>{formatDate(file.uploaded_at)}</span>
+                      {showLocation && file.location && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span className="truncate">{file.location}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex-shrink-0 flex items-center gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownload();
+                  }}
+                >
+                  <DownloadIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </ContextMenuTrigger>
+
+          {/* Right-Click Context Menu */}
+          <ContextMenuContent className="w-48">
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handleDownload(), 0);
+              }}
+            >
+              <DownloadIcon className="mr-2 h-4 w-4" />
+              Download
+            </ContextMenuItem>
+            {canCopy && file.status !== "copy" && (
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleCopy(), 0);
+                }}
+              >
+                <CopyIcon className="mr-2 h-4 w-4" />
+                Copy
+              </ContextMenuItem>
+            )}
+            {canEdit && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleRenameStart(), 0);
+                  }}
+                >
+                  <Edit2 className="mr-2 h-4 w-4" />
+                  Rename
+                </ContextMenuItem>
+              </>
+            )}
+            {canDelete && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleDeleteClick(), 0);
+                  }}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  Delete
+                </ContextMenuItem>
+              </>
+            )}
+          </ContextMenuContent>
+        </ContextMenu>
+
+        {/* Delete Confirmation Modal */}
+        <DeleteModal
+          open={showDeleteModal}
+          onOpenChange={setShowDeleteModal}
+          onConfirm={confirmDelete}
+          itemName={file.title}
+          itemType="document"
+          isLoading={deleteMutation.isPending}
+          confirmText="Delete"
+          cancelText="Cancel"
+        />
+      </TooltipProvider>
+    );
+  }
+
+  // Grid view rendering (original code)
   return (
     <TooltipProvider>
       <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>

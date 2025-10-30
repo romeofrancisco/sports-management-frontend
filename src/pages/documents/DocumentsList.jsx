@@ -39,6 +39,7 @@ const DocumentsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [clipboardFile, setClipboardFile] = useState(null);
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const longPressTimerRef = useRef(null);
   const copyMutation = useCopyFile();
 
@@ -211,6 +212,8 @@ const DocumentsList = () => {
             currentFolder={currentFolder}
             onUploadFile={() => setIsUploadOpen(true)}
             onCreateFolder={() => setIsCreateFolderOpen(true)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
           />
         </CardHeader>
         <ContextMenu
@@ -226,7 +229,7 @@ const DocumentsList = () => {
             >
               {/* Loading State */}
               {isLoading ? (
-                <LoadingState />
+                <LoadingState viewMode={viewMode} />
               ) : (
                 <>
                   {/* Folders Grid */}
@@ -242,7 +245,11 @@ const DocumentsList = () => {
                           </span>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                      <div className={
+                        viewMode === "grid"
+                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                          : "flex flex-col gap-2"
+                      }>
                         {folders.map((folder) => (
                           <FolderCard
                             key={folder.id}
@@ -255,6 +262,7 @@ const DocumentsList = () => {
                               }
                             }}
                             showLocation={isSearching}
+                            viewMode={viewMode}
                           />
                         ))}
                       </div>
@@ -274,7 +282,11 @@ const DocumentsList = () => {
                           </span>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                      <div className={
+                        viewMode === "grid"
+                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                          : "flex flex-col gap-2"
+                      }>
                         {documents.map((file) => (
                           <FileCard
                             key={file.id}
@@ -283,6 +295,7 @@ const DocumentsList = () => {
                             rootData={rootData}
                             showLocation={isSearching}
                             onCopy={setClipboardFile}
+                            viewMode={viewMode}
                           />
                         ))}
                       </div>

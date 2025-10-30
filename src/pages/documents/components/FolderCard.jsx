@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getFolderTypeLabel } from "../constants/folderTypes";
 
-const FolderCard = ({ folder, onClick, showLocation = false }) => {
+const FolderCard = ({ folder, onClick, showLocation = false, viewMode = "grid" }) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -52,6 +52,165 @@ const FolderCard = ({ folder, onClick, showLocation = false }) => {
     deleteMutation,
   } = useFolderCard(folder);
 
+  // List view rendering
+  if (viewMode === "list") {
+    return (
+      <TooltipProvider>
+        <ContextMenu
+          modal={false}
+          open={contextMenuOpen}
+          onOpenChange={setContextMenuOpen}
+        >
+          <ContextMenuTrigger asChild>
+            <div
+              className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              onClick={() => !isRenaming && onClick(folder)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchMove}
+            >
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                <FolderIcon
+                  className="h-10 w-10 text-primary"
+                  fill="currentColor"
+                  strokeWidth={1}
+                />
+              </div>
+
+              {/* Name and details */}
+              <div className="flex-1 min-w-0">
+                {isRenaming ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      ref={inputRef}
+                      value={newFolderName}
+                      onChange={(e) => setNewFolderName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRenameConfirm();
+                        } else if (e.key === "Escape") {
+                          handleRenameCancel();
+                        }
+                      }}
+                      className="h-8 text-sm max-w-xs"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameConfirm();
+                      }}
+                    >
+                      <Check className="h-4 w-4 text-green-500" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameCancel();
+                      }}
+                    >
+                      <X className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {displayName}
+                    </p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                      <span>
+                        {folder.subfolder_count || 0} folders • {folder.document_count || 0} files
+                      </span>
+                      <span>Type: {getFolderTypeLabel(folder.folder_type)}</span>
+                      {showLocation && folder.location && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span className="truncate">{folder.location}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Owner avatar */}
+              {folder.owner && (
+                <div className="flex-shrink-0">
+                  <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild>
+                      <Avatar className="w-8 h-8 border-2 border-primary bg-muted">
+                        <AvatarImage src={folder.owner?.profile} alt={folder.name} />
+                        <AvatarFallback>
+                          <User className="h-4 w-4 text-muted-foreground" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">
+                      <p className="text-xs">
+                        Owner: {folder.owner.first_name} {folder.owner.last_name}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+          </ContextMenuTrigger>
+
+          {/* Right-Click Context Menu */}
+          <ContextMenuContent className="w-48">
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handleRenameStart(), 0);
+              }}
+              disabled={!canEdit}
+            >
+              <Edit2 className="mr-2 h-4 w-4" />
+              Rename
+            </ContextMenuItem>
+
+            <>
+              <ContextMenuSeparator />
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleDeleteClick(), 0);
+                }}
+                disabled={!canDelete}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                Delete
+              </ContextMenuItem>
+            </>
+          </ContextMenuContent>
+        </ContextMenu>
+
+        {/* Delete Confirmation Modal */}
+        <DeleteModal
+          open={showDeleteModal}
+          onOpenChange={setShowDeleteModal}
+          onConfirm={confirmDelete}
+          itemName={folder.name}
+          itemType="folder"
+          isLoading={deleteMutation.isPending}
+          confirmText="Delete"
+          cancelText="Cancel"
+        />
+      </TooltipProvider>
+    );
+  }
+
+  // Grid view rendering (original code)
   return (
     <TooltipProvider>
       <ContextMenu

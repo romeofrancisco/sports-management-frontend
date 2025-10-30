@@ -32,6 +32,8 @@ const DocumentsHeader = ({
   onCreateFolder,
   onUploadFile,
   currentFolder,
+  viewMode,
+  onViewModeChange,
 }) => {
   const isMobile = useIsMobile();
   const { permissions } = useRolePermissions();
@@ -69,10 +71,18 @@ const DocumentsHeader = ({
         {/* View buttons - Desktop only */}
         {!isMobile && (
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon">
+            <Button
+              variant={viewMode === "list" ? "default" : "outline"}
+              size="icon"
+              onClick={() => onViewModeChange("list")}
+            >
               <Table2 className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon">
+            <Button
+              variant={viewMode === "grid" ? "default" : "outline"}
+              size="icon"
+              onClick={() => onViewModeChange("grid")}
+            >
               <LayoutGrid className="h-4 w-4" />
             </Button>
           </div>
@@ -137,11 +147,11 @@ const DocumentsHeader = ({
                 New Folder
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onViewModeChange("list")}>
                 <Table2 />
                 List View
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onViewModeChange("grid")}>
                 <LayoutGrid />
                 Grid View
               </DropdownMenuItem>
