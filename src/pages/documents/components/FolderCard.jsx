@@ -28,7 +28,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getFolderTypeLabel } from "../constants/folderTypes";
 
-const FolderCard = ({ folder, onClick, showLocation = false, viewMode = "grid" }) => {
+const FolderCard = ({
+  folder,
+  onClick,
+  showLocation = false,
+  viewMode = "grid",
+}) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -124,16 +129,19 @@ const FolderCard = ({ folder, onClick, showLocation = false, viewMode = "grid" }
                     <p className="text-sm font-medium text-foreground truncate">
                       {displayName}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                    <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
                       <span>
-                        {folder.subfolder_count || 0} folders • {folder.document_count || 0} files
+                        {folder.subfolder_count || 0} folders •{" "}
+                        {folder.document_count || 0} files
                       </span>
-                      <span>Type: {getFolderTypeLabel(folder.folder_type)}</span>
+                      <span>
+                        Type: {getFolderTypeLabel(folder.folder_type)}
+                      </span>
                       {showLocation && folder.location && (
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          <span className="truncate">{folder.location}</span>
-                        </div>
+                        <span className="truncate">
+                          Path: {" "}
+                          {folder.location}
+                        </span>
                       )}
                     </div>
                   </>
@@ -146,7 +154,10 @@ const FolderCard = ({ folder, onClick, showLocation = false, viewMode = "grid" }
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger asChild>
                       <Avatar className="w-8 h-8 border-2 border-primary bg-muted">
-                        <AvatarImage src={folder.owner?.profile} alt={folder.name} />
+                        <AvatarImage
+                          src={folder.owner?.profile}
+                          alt={folder.name}
+                        />
                         <AvatarFallback>
                           <User className="h-4 w-4 text-muted-foreground" />
                         </AvatarFallback>
@@ -154,7 +165,8 @@ const FolderCard = ({ folder, onClick, showLocation = false, viewMode = "grid" }
                     </TooltipTrigger>
                     <TooltipContent side="left">
                       <p className="text-xs">
-                        Owner: {folder.owner.first_name} {folder.owner.last_name}
+                        Owner: {folder.owner.first_name}{" "}
+                        {folder.owner.last_name}
                       </p>
                     </TooltipContent>
                   </Tooltip>

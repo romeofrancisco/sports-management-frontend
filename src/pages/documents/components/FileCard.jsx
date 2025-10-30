@@ -1,5 +1,13 @@
 import React from "react";
-import { DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X, MapPin } from "lucide-react";
+import {
+  DownloadIcon,
+  CopyIcon,
+  Trash2Icon,
+  Edit2,
+  Check,
+  X,
+  MapPin,
+} from "lucide-react";
 import { useFileCard } from "../hooks/useFileCard";
 import DeleteModal from "@/components/common/DeleteModal";
 import {
@@ -18,7 +26,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy, viewMode = "grid" }) => {
+const FileCard = ({
+  file,
+  currentFolder,
+  rootData,
+  showLocation = false,
+  onCopy,
+  viewMode = "grid",
+}) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -55,7 +70,11 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
   if (viewMode === "list") {
     return (
       <TooltipProvider>
-        <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
+        <ContextMenu
+          modal={false}
+          open={contextMenuOpen}
+          onOpenChange={setContextMenuOpen}
+        >
           <ContextMenuTrigger asChild>
             <div
               className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
@@ -65,15 +84,15 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
             >
               {/* Icon */}
               <div className="flex-shrink-0">
-                {fileIcon.type === 'image' ? (
-                  <img 
-                    src={fileIcon.src} 
+                {fileIcon.type === "image" ? (
+                  <img
+                    src={fileIcon.src}
                     alt={displayName}
                     className="h-10 w-10 object-cover rounded"
                   />
                 ) : (
-                  <img 
-                    src={fileIcon.src} 
+                  <img
+                    src={fileIcon.src}
                     alt={getFileExtension()}
                     className="h-10 w-10 object-contain"
                   />
@@ -126,14 +145,11 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
                     <p className="text-sm font-medium text-foreground truncate">
                       {displayName}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                    <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
                       <span>{formatFileSize(file.file_size)}</span>
                       <span>{formatDate(file.uploaded_at)}</span>
                       {showLocation && file.location && (
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          <span className="truncate">{file.location}</span>
-                        </div>
+                        <span className="truncate">Path: {file.location}</span>
                       )}
                     </div>
                   </>
@@ -233,12 +249,16 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
   // Grid view rendering (original code)
   return (
     <TooltipProvider>
-      <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
+      <ContextMenu
+        modal={false}
+        open={contextMenuOpen}
+        onOpenChange={setContextMenuOpen}
+      >
         <ContextMenuTrigger asChild>
           <div className="relative group">
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
-                <div 
+                <div
                   className="flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
@@ -246,21 +266,21 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
                 >
                   {/* Icon with extension badge */}
                   <div className="flex items-center justify-center mb-3 relative">
-                    {fileIcon.type === 'image' ? (
-                      <img 
-                        src={fileIcon.src} 
+                    {fileIcon.type === "image" ? (
+                      <img
+                        src={fileIcon.src}
                         alt={displayName}
                         className="h-16 w-16 object-cover rounded group-hover:scale-110 transition-transform"
                       />
                     ) : (
-                      <img 
-                        src={fileIcon.src} 
+                      <img
+                        src={fileIcon.src}
                         alt={getFileExtension()}
                         className="h-16 w-16 object-contain group-hover:scale-110 transition-transform"
                       />
                     )}
                   </div>
-                  
+
                   {/* Name with line clamp or input for renaming */}
                   <div className="flex flex-col items-center w-full gap-1">
                     {isRenaming ? (
@@ -320,7 +340,7 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy,
                   </div>
                 </div>
               </TooltipTrigger>
-              
+
               <TooltipContent side="bottom" className="max-w-xs">
                 <div className="space-y-1">
                   <p className="font-semibold">{displayName}</p>

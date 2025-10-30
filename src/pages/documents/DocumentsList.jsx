@@ -236,10 +236,10 @@ const DocumentsList = () => {
                   {folders.length > 0 && (
                     <div>
                       <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                        <Folder />
-                        <h2 className="">Folders</h2>
+                        <Folder className="size-4 md:size-6" />
+                        <h2 className="text-lg md:text-xl">Folders</h2>
                         {isSearching && (
-                          <span className="text-sm text-muted-foreground font-normal">
+                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
                             ({folders.length} result
                             {folders.length !== 1 ? "s" : ""})
                           </span>
@@ -272,11 +272,11 @@ const DocumentsList = () => {
                   {/* Files Grid */}
                   {documents.length > 0 && (
                     <div>
-                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                        <File />
-                        <h2 className="">Files</h2>
+                      <div className="flex items-center gap-1 my-4 text-xl font-semibold text-primary">
+                        <File className="size-4 md:size-6" />
+                        <h2 className="text-lg md:text-xl">Files</h2>
                         {isSearching && (
-                          <span className="text-sm text-muted-foreground font-normal">
+                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
                             ({documents.length} result
                             {documents.length !== 1 ? "s" : ""})
                           </span>

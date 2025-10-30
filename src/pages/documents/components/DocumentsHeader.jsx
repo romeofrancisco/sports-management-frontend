@@ -54,11 +54,11 @@ const DocumentsHeader = ({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div className="bg-primary p-3 rounded-xl">
-            <FolderClosed className="size-7 text-primary-foreground" />
+            <FolderClosed className="size-5 md:size-7 text-primary-foreground" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-foreground">Documents</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">Documents</h2>
             </div>
 
             <Breadcrumbs
