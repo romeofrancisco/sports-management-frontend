@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const FileCard = ({ file, currentFolder, rootData, showLocation = false }) => {
+const FileCard = ({ file, currentFolder, rootData, showLocation = false, onCopy }) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -47,7 +47,7 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false }) => {
     getFileExtension,
     getFileIcon,
     deleteMutation,
-  } = useFileCard(file, currentFolder, rootData);
+  } = useFileCard(file, currentFolder, rootData, onCopy);
 
   const fileIcon = getFileIcon();
 
@@ -187,7 +187,7 @@ const FileCard = ({ file, currentFolder, rootData, showLocation = false }) => {
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
-              Copy to My Folder
+              Copy
             </ContextMenuItem>
           )}
           {canEdit && (

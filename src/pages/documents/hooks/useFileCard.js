@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useDownloadFile, useCopyFile, useRenameFile, useDeleteFile } from "@/hooks/useDocuments";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { toast } from "sonner";
 import docx from "@/assets/documents/docx.png";
 import pdf from "@/assets/documents/pdf.png";
 import pptx from "@/assets/documents/pptx.png";
@@ -9,7 +10,7 @@ import txt from "@/assets/documents/txt.png";
 import csv from "@/assets/documents/csv.png";
 import defaultFile from "@/assets/documents/default.png";
 
-export const useFileCard = (file, currentFolder, rootData) => {
+export const useFileCard = (file, currentFolder, rootData, onCopy) => {
   const { permissions } = useRolePermissions();
   const downloadMutation = useDownloadFile();
   const copyMutation = useCopyFile();
@@ -79,11 +80,13 @@ export const useFileCard = (file, currentFolder, rootData) => {
   };
 
   const handleCopy = () => {
-    copyMutation.mutate({
-      fileId: file.id,
-      currentFolder,
-      rootData,
-    });
+    // Use callback to set clipboard instead of directly copying
+    if (onCopy) {
+      onCopy(file);
+      toast.info("File copied to clipboard", {
+        richColors: true,
+      });
+    }
   };
 
   // Rename handlers

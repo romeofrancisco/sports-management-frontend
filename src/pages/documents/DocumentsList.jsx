@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import {
   useRootFolders,
   useFolderContents,
   useSearchDocuments,
+  useCopyFile,
 } from "@/hooks/useDocuments";
 import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
 import FolderCard from "./components/FolderCard";
@@ -12,16 +13,34 @@ import DocumentsHeader from "./components/DocumentsHeader";
 import UploadFileDialog from "./components/UploadFileDialog";
 import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
-import { Upload, Folder, Search, File } from "lucide-react";
+import {
+  Upload,
+  Folder,
+  Search,
+  File,
+  ClipboardPaste,
+  FolderPlus,
+} from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [clipboardFile, setClipboardFile] = useState(null);
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const longPressTimerRef = useRef(null);
+  const copyMutation = useCopyFile();
 
   // Navigation
   const {
@@ -126,6 +145,51 @@ const DocumentsList = () => {
     }
   };
 
+  // Cleanup long press timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Touch handlers for long press
+  const handleTouchStart = () => {
+    longPressTimerRef.current = setTimeout(() => {
+      setContextMenuOpen(true);
+    }, 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
+
+  const handlePaste = () => {
+    if (clipboardFile) {
+      copyMutation.mutate(
+        {
+          fileId: clipboardFile.id,
+          currentFolder,
+          rootData,
+        },
+        {
+          onSuccess: () => {
+            setClipboardFile(null); // Clear clipboard after successful paste
+          },
+        }
+      );
+    }
+  };
+
   return (
     <div className="container mx-auto p-1 md:p-6 space-y-6">
       {/* Header */}
@@ -149,101 +213,144 @@ const DocumentsList = () => {
             onCreateFolder={() => setIsCreateFolderOpen(true)}
           />
         </CardHeader>
-        <CardContent>
-          {/* Loading State */}
-          {isLoading ? (
-            <LoadingState />
-          ) : (
-            <>
-              {/* Folders Grid */}
-              {folders.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                    <Folder />
-                    <h2 className="">Folders</h2>
-                    {isSearching && (
-                      <span className="text-sm text-muted-foreground font-normal">
-                        ({folders.length} result
-                        {folders.length !== 1 ? "s" : ""})
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
-                    {folders.map((folder) => (
-                      <FolderCard
-                        key={folder.id}
-                        folder={folder}
-                        onClick={() => {
-                          if (isSearching) {
-                            handleSearchFolderClick(folder);
-                          } else {
-                            handleFolderClick(folder);
-                          }
-                        }}
-                        showLocation={isSearching}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+        <ContextMenu
+          modal={false}
+          open={contextMenuOpen}
+          onOpenChange={setContextMenuOpen}
+        >
+          <ContextMenuTrigger asChild>
+            <CardContent
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchMove}
+            >
+              {/* Loading State */}
+              {isLoading ? (
+                <LoadingState />
+              ) : (
+                <>
+                  {/* Folders Grid */}
+                  {folders.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                        <Folder />
+                        <h2 className="">Folders</h2>
+                        {isSearching && (
+                          <span className="text-sm text-muted-foreground font-normal">
+                            ({folders.length} result
+                            {folders.length !== 1 ? "s" : ""})
+                          </span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                        {folders.map((folder) => (
+                          <FolderCard
+                            key={folder.id}
+                            folder={folder}
+                            onClick={() => {
+                              if (isSearching) {
+                                handleSearchFolderClick(folder);
+                              } else {
+                                handleFolderClick(folder);
+                              }
+                            }}
+                            showLocation={isSearching}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Files Grid */}
-              {documents.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                    <File />
-                    <h2 className="">Files</h2>
-                    {isSearching && (
-                      <span className="text-sm text-muted-foreground font-normal">
-                        ({documents.length} result
-                        {documents.length !== 1 ? "s" : ""})
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
-                    {documents.map((file) => (
-                      <FileCard
-                        key={file.id}
-                        file={file}
-                        currentFolder={currentFolder}
-                        rootData={rootData}
-                        showLocation={isSearching}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+                  {/* Files Grid */}
+                  {documents.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                        <File />
+                        <h2 className="">Files</h2>
+                        {isSearching && (
+                          <span className="text-sm text-muted-foreground font-normal">
+                            ({documents.length} result
+                            {documents.length !== 1 ? "s" : ""})
+                          </span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                        {documents.map((file) => (
+                          <FileCard
+                            key={file.id}
+                            file={file}
+                            currentFolder={currentFolder}
+                            rootData={rootData}
+                            showLocation={isSearching}
+                            onCopy={setClipboardFile}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Empty State */}
-              {folders.length === 0 && documents.length === 0 && (
-                <ContentEmpty
-                  title={
-                    isSearching ? "No Results Found" : "No Documents Found"
-                  }
-                  icon={isSearching ? Search : Folder}
-                  description={
-                    isSearching
-                      ? `No files or folders match "${searchQuery}"`
-                      : "Upload your documents to get started."
-                  }
-                  action={
-                    !isSearching &&
-                    permissions.documents.canUpload(currentFolder) && {
-                      label: "Upload File",
-                      logo: Upload,
-                      onClick: () => setIsUploadOpen(true),
-                      extra: {
-                        label: "Create Folder",
-                        logo: Folder,
-                        onClick: () => setIsCreateFolderOpen(true),
-                      },
-                    }
-                  }
-                />
+                  {/* Empty State */}
+                  {folders.length === 0 && documents.length === 0 && (
+                    <ContentEmpty
+                      title={
+                        isSearching ? "No Results Found" : "No Documents Found"
+                      }
+                      icon={isSearching ? Search : Folder}
+                      description={
+                        isSearching
+                          ? `No files or folders match "${searchQuery}"`
+                          : "Upload your documents to get started."
+                      }
+                      action={
+                        !isSearching &&
+                        permissions.documents.canUpload(currentFolder) && {
+                          label: "Upload File",
+                          logo: Upload,
+                          onClick: () => setIsUploadOpen(true),
+                          extra: {
+                            label: "Create Folder",
+                            logo: Folder,
+                            onClick: () => setIsCreateFolderOpen(true),
+                          },
+                        }
+                      }
+                    />
+                  )}
+                </>
               )}
-            </>
-          )}
-        </CardContent>
+            </CardContent>
+          </ContextMenuTrigger>
+
+          {/* Right-Click/Long-Press Context Menu for Paste */}
+          <ContextMenuContent className="w-48">
+            <ContextMenuItem onClick={() => setIsCreateFolderOpen(true)}>
+              <span className="flex items-center gap-1">
+                <FolderPlus className="h-4 w-4" />
+                New Folder
+              </span>
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => setIsUploadOpen(true)}>
+              <span className="flex items-center gap-1">
+                <Upload className="h-4 w-4" />
+                Upload File
+              </span>
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handlePaste(), 0);
+              }}
+              disabled={!clipboardFile}
+            >
+              <span className="flex items-center gap-1">
+                <ClipboardPaste className="h-4 w-4" />
+                Paste
+              </span>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       </Card>
 
       {/* Upload Dialog */}

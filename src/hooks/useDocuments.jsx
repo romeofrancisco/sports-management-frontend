@@ -202,17 +202,24 @@ export const useCopyFile = () => {
       let targetFolderId = null;
 
       try {
-        if (isCoach() || isPlayer()) {
-          // For coaches and players, get their personal folder from the dedicated API endpoint
-          const personalFolder = await getUserPersonalFolder();
-          targetFolderId = personalFolder.id;
-          
-          if (!targetFolderId) {
-            throw new Error("Unable to find your personal folder to copy to.");
+        // Everyone pastes to their current folder
+        if (currentFolder) {
+          // If in a folder, paste to that folder
+          targetFolderId = currentFolder.id;
+        } else {
+          // If at root level
+          if (isAdmin()) {
+            // Admin at root pastes to null (root level)
+            targetFolderId = null;
+          } else if (isCoach() || isPlayer()) {
+            // Coach/Player at root pastes to their personal folder
+            const personalFolder = await getUserPersonalFolder();
+            targetFolderId = personalFolder.id;
+            
+            if (!targetFolderId) {
+              throw new Error("Unable to find your personal folder to copy to.");
+            }
           }
-        } else if (isAdmin()) {
-          // Admin copies to null (root level) - files appear at admin's root
-          targetFolderId = null;
         }
 
         // Perform the copy operation
