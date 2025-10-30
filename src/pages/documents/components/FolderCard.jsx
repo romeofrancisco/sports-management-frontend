@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FolderIcon, Edit2, Trash2Icon, Check, X } from "lucide-react";
+import React from "react";
+import { FolderIcon, Edit2, Trash2Icon, Check, X, User } from "lucide-react";
+import { useFolderCard } from "../hooks/useFolderCard";
+import DeleteModal from "@/components/common/DeleteModal";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -16,75 +18,31 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
 
-const FolderCard = ({ folder, onClick, onRename, onDelete, canEdit, canDelete }) => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [newFolderName, setNewFolderName] = useState(folder.name);
-  const [displayName, setDisplayName] = useState(folder.name);
-  const inputRef = useRef(null);
-  const longPressTimerRef = useRef(null);
+const FolderCard = ({ folder, onClick }) => {
+  const {
+    contextMenuOpen,
+    setContextMenuOpen,
+    isRenaming,
+    newFolderName,
+    setNewFolderName,
+    displayName,
+    showDeleteModal,
+    setShowDeleteModal,
+    inputRef,
+    canEdit,
+    canDelete,
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchMove,
+    handleRenameStart,
+    handleRenameConfirm,
+    handleRenameCancel,
+    handleDeleteClick,
+    confirmDelete,
+    deleteMutation,
+  } = useFolderCard(folder);
 
-  // Update displayName when folder.name changes (after successful mutation)
-  useEffect(() => {
-    setDisplayName(folder.name);
-    setNewFolderName(folder.name);
-  }, [folder.name]);
-
-  // Long press handlers for mobile
-  const handleTouchStart = (e) => {
-    longPressTimerRef.current = setTimeout(() => {
-      setContextMenuOpen(true);
-    }, 500); // 500ms long press
-  };
-
-  const handleTouchEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-
-  const handleTouchMove = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-
-  const handleRenameStart = () => {
-    setIsRenaming(true);
-    setNewFolderName(displayName);
-  };
-
-  const handleRenameConfirm = () => {
-    if (newFolderName.trim() && newFolderName !== displayName) {
-      setDisplayName(newFolderName.trim()); // Update display immediately
-      onRename(folder.id, newFolderName.trim());
-    }
-    setIsRenaming(false);
-  };
-
-  const handleRenameCancel = () => {
-    setIsRenaming(false);
-    setNewFolderName(displayName);
-  };
-
-  // Focus input when rename mode starts
-  useEffect(() => {
-    if (isRenaming && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isRenaming]);
-
-  // Cleanup long press timer on unmount
-  useEffect(() => {
-    return () => {
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-      }
-    };
-  }, []);
   return (
     <TooltipProvider>
       <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
@@ -194,7 +152,7 @@ const FolderCard = ({ folder, onClick, onRename, onDelete, canEdit, canDelete })
 
         {/* Right-Click Context Menu */}
         <ContextMenuContent className="w-48">
-          {onRename && (
+          {canEdit && (
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
@@ -206,14 +164,14 @@ const FolderCard = ({ folder, onClick, onRename, onDelete, canEdit, canDelete })
               Rename
             </ContextMenuItem>
           )}
-          {canDelete && onDelete && (
+          {canDelete && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
                   setContextMenuOpen(false);
-                  setTimeout(() => onDelete(folder), 0);
+                  setTimeout(() => handleDeleteClick(), 0);
                 }}
                 className="text-destructive focus:text-destructive"
               >
@@ -224,6 +182,18 @@ const FolderCard = ({ folder, onClick, onRename, onDelete, canEdit, canDelete })
           )}
         </ContextMenuContent>
       </ContextMenu>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        open={showDeleteModal}
+        onOpenChange={setShowDeleteModal}
+        onConfirm={confirmDelete}
+        itemName={folder.name}
+        itemType="folder"
+        isLoading={deleteMutation.isPending}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </TooltipProvider>
   );
 };

@@ -1,30 +1,20 @@
 import { useState } from "react";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { Button } from "@/components/ui/button";
-import {
-  useRootFolders,
-  useFolderContents,
-  useDownloadFile,
-  useCopyFile,
-  useDeleteFile,
-  useRenameFile,
-  useRenameFolder,
-  useDeleteFolder,
-} from "@/hooks/useDocuments";
+import { useRootFolders, useFolderContents } from "@/hooks/useDocuments";
+import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
 import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
 import Breadcrumbs from "./components/Breadcrumbs";
 import UploadFileDialog from "./components/UploadFileDialog";
 import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
-import DeleteModal from "@/components/common/DeleteModal";
 import {
   Upload,
   Folder,
   Table2,
   LayoutGrid,
   FolderClosed,
-  icons,
   Search,
   FolderPlus,
   RotateCw,
@@ -36,37 +26,32 @@ import { Input } from "@/components/ui/input";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
-  const [navigationStack, setNavigationStack] = useState([]);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
-  const [deleteFile, setDeleteFile] = useState(null);
-  const [deleteFolder, setDeleteFolder] = useState(null);
 
-  const currentFolder = navigationStack[navigationStack.length - 1];
-  const isRoot = !currentFolder;
+  // Navigation
+  const {
+    navigationStack,
+    currentFolder,
+    isRoot,
+    handleFolderClick,
+    handleBreadcrumbClick,
+  } = useDocumentNavigation();
 
   // Fetch data based on current location
-  const { 
-    data: rootData, 
-    isLoading: rootLoading, 
+  const {
+    data: rootData,
+    isLoading: rootLoading,
     isFetching: rootFetching,
-    refetch: refetchRoot 
+    refetch: refetchRoot,
   } = useRootFolders();
 
-  const { 
-    data: folderData, 
+  const {
+    data: folderData,
     isLoading: folderLoading,
     isFetching: folderFetching,
-    refetch: refetchFolder 
+    refetch: refetchFolder,
   } = useFolderContents(currentFolder?.id);
-
-  // Mutations
-  const downloadMutation = useDownloadFile();
-  const copyMutation = useCopyFile();
-  const deleteMutation = useDeleteFile();
-  const renameMutation = useRenameFile();
-  const renameFolderMutation = useRenameFolder();
-  const deleteFolderMutation = useDeleteFolder();
 
   // Get current data and loading states
   const currentData = isRoot ? rootData : folderData;
@@ -78,72 +63,6 @@ const DocumentsList = () => {
     ? currentData?.folders || []
     : currentData?.subfolders || [];
   const documents = currentData?.documents || [];
-
-  // Navigation handlers
-  const handleFolderClick = (folder) => {
-    setNavigationStack([...navigationStack, folder]);
-  };
-
-  const handleBreadcrumbClick = (index) => {
-    if (index === -1) {
-      // Go to root
-      setNavigationStack([]);
-    } else {
-      // Go to specific folder in path
-      setNavigationStack(navigationStack.slice(0, index + 1));
-    }
-  };
-
-  const handleDownload = (file) => {
-    downloadMutation.mutate({
-      fileId: file.id,
-      fileName: file.title,
-    });
-  };
-
-  const handleCopy = (fileId) => {
-    copyMutation.mutate({
-      fileId,
-      currentFolder,
-      rootData,
-    });
-  };
-
-  const handleDelete = (file) => {
-    setDeleteFile(file);
-  };
-
-  const confirmDelete = () => {
-    if (deleteFile) {
-      deleteMutation.mutate(deleteFile.id);
-      setDeleteFile(null);
-    }
-  };
-
-  const handleRename = (fileId, newTitle) => {
-    renameMutation.mutate({
-      fileId,
-      newTitle,
-    });
-  };
-
-  const handleFolderRename = (folderId, newName) => {
-    renameFolderMutation.mutate({
-      folderId,
-      newName,
-    });
-  };
-
-  const handleFolderDelete = (folder) => {
-    setDeleteFolder(folder);
-  };
-
-  const confirmFolderDelete = () => {
-    if (deleteFolder) {
-      deleteFolderMutation.mutate(deleteFolder.id);
-      setDeleteFolder(null);
-    }
-  };
 
   const handleRefresh = () => {
     if (isRoot) {
@@ -192,8 +111,8 @@ const DocumentsList = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={handleRefresh}
               disabled={isFetching}
@@ -224,7 +143,7 @@ const DocumentsList = () => {
         </CardHeader>
         <CardContent>
           {/* Loading State */}
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <LoadingState />
           ) : (
             <>
@@ -241,23 +160,6 @@ const DocumentsList = () => {
                         key={folder.id}
                         folder={folder}
                         onClick={() => handleFolderClick(folder)}
-                        onRename={
-                          permissions.documents.canDelete({
-                            owner: folder.owner,
-                          })
-                            ? handleFolderRename
-                            : undefined
-                        }
-                        onDelete={
-                          permissions.documents.canDelete({
-                            owner: folder.owner,
-                          })
-                            ? () => handleFolderDelete(folder)
-                            : undefined
-                        }
-                        canDelete={permissions.documents.canDelete({
-                          owner: folder.owner,
-                        })}
                       />
                     ))}
                   </div>
@@ -273,23 +175,8 @@ const DocumentsList = () => {
                       <FileCard
                         key={file.id}
                         file={file}
-                        onDownload={() => handleDownload(file)}
-                        onCopy={
-                          permissions.documents.canCopy()
-                            ? () => handleCopy(file.id)
-                            : undefined
-                        }
-                        onRename={
-                          permissions.documents.canDelete(file)
-                            ? handleRename
-                            : undefined
-                        }
-                        onDelete={
-                          permissions.documents.canDelete(file)
-                            ? () => handleDelete(file)
-                            : undefined
-                        }
-                        canDelete={permissions.documents.canDelete(file)}
+                        currentFolder={currentFolder}
+                        rootData={rootData}
                       />
                     ))}
                   </div>
@@ -335,34 +222,6 @@ const DocumentsList = () => {
         onOpenChange={setIsCreateFolderOpen}
         currentFolder={currentFolder}
         rootData={rootData}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <DeleteModal
-        open={!!deleteFile}
-        onOpenChange={(open) => {
-          if (!open) setDeleteFile(null);
-        }}
-        onConfirm={confirmDelete}
-        itemName={deleteFile?.title}
-        itemType="document"
-        isLoading={deleteMutation.isPending}
-        confirmText="Delete"
-        cancelText="Cancel"
-      />
-
-      {/* Delete Folder Confirmation Modal */}
-      <DeleteModal
-        open={!!deleteFolder}
-        onOpenChange={(open) => {
-          if (!open) setDeleteFolder(null);
-        }}
-        onConfirm={confirmFolderDelete}
-        itemName={deleteFolder?.name}
-        itemType="folder"
-        isLoading={deleteFolderMutation.isPending}
-        confirmText="Delete"
-        cancelText="Cancel"
       />
     </div>
   );

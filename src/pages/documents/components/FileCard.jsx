@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FileTextIcon, DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X } from "lucide-react";
+import React from "react";
+import { DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X } from "lucide-react";
+import { useFileCard } from "../hooks/useFileCard";
+import DeleteModal from "@/components/common/DeleteModal";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -15,144 +17,39 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import docx from "@/assets/documents/docx.png"
-import pdf from "@/assets/documents/pdf.png"
-import pptx from "@/assets/documents/pptx.png"
-import xlsx from "@/assets/documents/xlsx.png"
-import txt from "@/assets/documents/txt.png"
-import csv from "@/assets/documents/csv.png"
-import defaultFile from "@/assets/documents/default.png"
 
-const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, canDelete }) => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [newFileName, setNewFileName] = useState(file.title);
-  const [displayName, setDisplayName] = useState(file.title);
-  const inputRef = useRef(null);
-  const longPressTimerRef = useRef(null);
-
-  // Update displayName when file.title changes (after successful mutation)
-  useEffect(() => {
-    setDisplayName(file.title);
-    setNewFileName(file.title);
-  }, [file.title]);
-
-  // Long press handlers for mobile
-  const handleTouchStart = (e) => {
-    longPressTimerRef.current = setTimeout(() => {
-      setContextMenuOpen(true);
-    }, 500); // 500ms long press
-  };
-
-  const handleTouchEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-
-  const handleTouchMove = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-  
-  const formatFileSize = (bytes) => {
-    if (!bytes) return "Unknown size";
-    const kb = bytes / 1024;
-    if (kb < 1024) return `${kb.toFixed(2)} KB`;
-    const mb = kb / 1024;
-    return `${mb.toFixed(2)} MB`;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  // Get file extension from title
-  const getFileExtension = () => {
-    // Use the file_extension from backend if available
-    if (file.file_extension) {
-      return file.file_extension;
-    }
-    // Fallback to extracting from title if needed
-    const parts = file.title.split(".");
-    return parts.length > 1 ? parts.pop().toUpperCase() : "FILE";
-  };
-
-  // Get icon based on file extension
-  const getFileIcon = () => {
-    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
-    
-    // Check if it's an image
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
-    if (imageExtensions.includes(extension)) {
-      return { type: 'image', src: file.file };
-    }
-    
-    // Return appropriate icon for document types
-    switch (extension) {
-      case 'pdf':
-        return { type: 'icon', src: pdf };
-      case 'doc':
-      case 'docx':
-        return { type: 'icon', src: docx };
-      case 'xls':
-      case 'xlsx':
-        return { type: 'icon', src: xlsx };
-      case 'ppt':
-      case 'pptx':
-        return { type: 'icon', src: pptx };
-      case 'txt':
-        return { type: 'icon', src: txt };
-      case 'csv':
-        return { type: 'icon', src: csv };
-      default:
-        return { type: 'icon', src: defaultFile };
-    }
-  };
+const FileCard = ({ file, currentFolder, rootData }) => {
+  const {
+    contextMenuOpen,
+    setContextMenuOpen,
+    isRenaming,
+    newFileName,
+    setNewFileName,
+    displayName,
+    showDeleteModal,
+    setShowDeleteModal,
+    inputRef,
+    canEdit,
+    canDelete,
+    canCopy,
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchMove,
+    handleDownload,
+    handleCopy,
+    handleRenameStart,
+    handleRenameConfirm,
+    handleRenameCancel,
+    handleDeleteClick,
+    confirmDelete,
+    formatFileSize,
+    formatDate,
+    getFileExtension,
+    getFileIcon,
+    deleteMutation,
+  } = useFileCard(file, currentFolder, rootData);
 
   const fileIcon = getFileIcon();
-
-  const handleRenameStart = () => {
-    setIsRenaming(true);
-    setNewFileName(displayName);
-  };
-
-  const handleRenameConfirm = () => {
-    if (newFileName.trim() && newFileName !== displayName) {
-      setDisplayName(newFileName.trim()); // Update display immediately
-      onRename(file.id, newFileName.trim());
-    }
-    setIsRenaming(false);
-  };
-
-  const handleRenameCancel = () => {
-    setIsRenaming(false);
-    setNewFileName(displayName);
-  };
-
-  // Focus input when rename mode starts
-  useEffect(() => {
-    if (isRenaming && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isRenaming]);
-
-  // Cleanup long press timer on unmount
-  useEffect(() => {
-    return () => {
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <TooltipProvider>
@@ -268,25 +165,25 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
             onSelect={(e) => {
               e.preventDefault();
               setContextMenuOpen(false);
-              setTimeout(() => onDownload(file), 0);
+              setTimeout(() => handleDownload(), 0);
             }}
           >
             <DownloadIcon className="mr-2 h-4 w-4" />
             Download
           </ContextMenuItem>
-          {onCopy && file.status !== "copy" && (
+          {canCopy && file.status !== "copy" && (
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
                 setContextMenuOpen(false);
-                setTimeout(() => onCopy(file), 0);
+                setTimeout(() => handleCopy(), 0);
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
               Copy to My Folder
             </ContextMenuItem>
           )}
-          {onRename && (
+          {canEdit && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem
@@ -301,14 +198,14 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
               </ContextMenuItem>
             </>
           )}
-          {canDelete && onDelete && (
+          {canDelete && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
                   setContextMenuOpen(false);
-                  setTimeout(() => onDelete(file), 0);
+                  setTimeout(() => handleDeleteClick(), 0);
                 }}
                 className="text-destructive focus:text-destructive"
               >
@@ -319,6 +216,18 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
           )}
         </ContextMenuContent>
       </ContextMenu>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        open={showDeleteModal}
+        onOpenChange={setShowDeleteModal}
+        onConfirm={confirmDelete}
+        itemName={file.title}
+        itemType="document"
+        isLoading={deleteMutation.isPending}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </TooltipProvider>
   );
 };
