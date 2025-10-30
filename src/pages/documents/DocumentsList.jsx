@@ -1,155 +1,193 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
-import { Button } from "@/components/ui/button";
 import {
   useRootFolders,
   useFolderContents,
-  useDownloadFile,
+  useSearchDocuments,
   useCopyFile,
-  useDeleteFile,
-  useRenameFile,
-  useRenameFolder,
-  useDeleteFolder,
 } from "@/hooks/useDocuments";
+import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
 import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
-import Breadcrumbs from "./components/Breadcrumbs";
+import DocumentsHeader from "./components/DocumentsHeader";
 import UploadFileDialog from "./components/UploadFileDialog";
 import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
-import DeleteModal from "@/components/common/DeleteModal";
 import {
   Upload,
   Folder,
-  Table2,
-  LayoutGrid,
-  FolderClosed,
-  icons,
   Search,
+  File,
+  ClipboardPaste,
   FolderPlus,
-  RotateCw,
 } from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
-  const [navigationStack, setNavigationStack] = useState([]);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
-  const [deleteFile, setDeleteFile] = useState(null);
-  const [deleteFolder, setDeleteFolder] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [clipboardFile, setClipboardFile] = useState(null);
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const longPressTimerRef = useRef(null);
+  const copyMutation = useCopyFile();
 
-  const currentFolder = navigationStack[navigationStack.length - 1];
-  const isRoot = !currentFolder;
+  // Navigation
+  const {
+    navigationStack,
+    currentFolder,
+    isRoot,
+    handleFolderClick,
+    handleBreadcrumbClick,
+    navigateToFolder,
+    setNavigationPath,
+  } = useDocumentNavigation();
 
   // Fetch data based on current location
-  const { 
-    data: rootData, 
-    isLoading: rootLoading, 
+  const {
+    data: rootData,
+    isLoading: rootLoading,
     isFetching: rootFetching,
-    refetch: refetchRoot 
+    refetch: refetchRoot,
   } = useRootFolders();
 
-  const { 
-    data: folderData, 
+  const {
+    data: folderData,
     isLoading: folderLoading,
     isFetching: folderFetching,
-    refetch: refetchFolder 
+    refetch: refetchFolder,
   } = useFolderContents(currentFolder?.id);
 
-  // Mutations
-  const downloadMutation = useDownloadFile();
-  const copyMutation = useCopyFile();
-  const deleteMutation = useDeleteFile();
-  const renameMutation = useRenameFile();
-  const renameFolderMutation = useRenameFolder();
-  const deleteFolderMutation = useDeleteFolder();
+  // Search
+  const { data: searchResults, isLoading: searchLoading } = useSearchDocuments(
+    searchQuery,
+    searchQuery.length >= 2
+  );
 
   // Get current data and loading states
-  const currentData = isRoot ? rootData : folderData;
-  const isLoading = isRoot ? rootLoading : folderLoading;
+  const isSearching = searchQuery.length >= 2;
+  const currentData = isSearching
+    ? searchResults
+    : isRoot
+    ? rootData
+    : folderData;
+  const isLoading = isSearching
+    ? searchLoading
+    : isRoot
+    ? rootLoading
+    : folderLoading;
   const isFetching = isRoot ? rootFetching : folderFetching;
 
   // Backend returns 'folders' for root, but 'subfolders' for folder contents
-  const folders = isRoot
+  // For search results, we get a unified 'results' array
+  const folders = isSearching
+    ? currentData?.results?.filter((item) => item.type === "folder") || []
+    : isRoot
     ? currentData?.folders || []
     : currentData?.subfolders || [];
-  const documents = currentData?.documents || [];
 
-  // Navigation handlers
-  const handleFolderClick = (folder) => {
-    setNavigationStack([...navigationStack, folder]);
-  };
-
-  const handleBreadcrumbClick = (index) => {
-    if (index === -1) {
-      // Go to root
-      setNavigationStack([]);
-    } else {
-      // Go to specific folder in path
-      setNavigationStack(navigationStack.slice(0, index + 1));
-    }
-  };
-
-  const handleDownload = (file) => {
-    downloadMutation.mutate({
-      fileId: file.id,
-      fileName: file.title,
-    });
-  };
-
-  const handleCopy = (fileId) => {
-    copyMutation.mutate({
-      fileId,
-      currentFolder,
-      rootData,
-    });
-  };
-
-  const handleDelete = (file) => {
-    setDeleteFile(file);
-  };
-
-  const confirmDelete = () => {
-    if (deleteFile) {
-      deleteMutation.mutate(deleteFile.id);
-      setDeleteFile(null);
-    }
-  };
-
-  const handleRename = (fileId, newTitle) => {
-    renameMutation.mutate({
-      fileId,
-      newTitle,
-    });
-  };
-
-  const handleFolderRename = (folderId, newName) => {
-    renameFolderMutation.mutate({
-      folderId,
-      newName,
-    });
-  };
-
-  const handleFolderDelete = (folder) => {
-    setDeleteFolder(folder);
-  };
-
-  const confirmFolderDelete = () => {
-    if (deleteFolder) {
-      deleteFolderMutation.mutate(deleteFolder.id);
-      setDeleteFolder(null);
-    }
-  };
+  const documents = isSearching
+    ? currentData?.results?.filter((item) => item.type === "document") || []
+    : currentData?.documents || [];
 
   const handleRefresh = () => {
     if (isRoot) {
       refetchRoot();
     } else {
       refetchFolder();
+    }
+  };
+
+  const handleBreadcrumbNavigation = (index) => {
+    // Clear search when navigating via breadcrumb
+    setSearchQuery("");
+    handleBreadcrumbClick(index);
+  };
+
+  const handleSearchFolderClick = (folder) => {
+    // Clear search first
+    setSearchQuery("");
+
+    // If the folder has location info, parse it to build the full breadcrumb path
+    if (folder.location) {
+      // Location format: "Coaches > Ittetsu Takeda > Players > Caitlin Antetokounmpo"
+      // Using " > " as separator to avoid conflicts with folder names containing "/"
+      const pathParts = folder.location.split(" > ");
+
+      // Create folder objects for each part of the path for breadcrumb display
+      const pathFolders = pathParts.map((name, index) => {
+        // Only the last item in the path has the real folder ID
+        if (index === pathParts.length - 1) {
+          return folder; // Use the actual folder object
+        }
+        // For parent folders, create temporary objects for breadcrumb display
+        return {
+          id: `breadcrumb-${index}-${name}`,
+          name: name,
+        };
+      });
+
+      // Set the full navigation path for proper breadcrumb display
+      setNavigationPath(pathFolders);
+    } else {
+      // No location means it's a root folder
+      navigateToFolder(folder);
+    }
+  };
+
+  // Cleanup long press timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Touch handlers for long press
+  const handleTouchStart = () => {
+    longPressTimerRef.current = setTimeout(() => {
+      setContextMenuOpen(true);
+    }, 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
+
+  const handlePaste = () => {
+    if (clipboardFile) {
+      copyMutation.mutate(
+        {
+          fileId: clipboardFile.id,
+          currentFolder,
+          rootData,
+        },
+        {
+          onSuccess: () => {
+            setClipboardFile(null); // Clear clipboard after successful paste
+          },
+        }
+      );
     }
   };
 
@@ -164,161 +202,168 @@ const DocumentsList = () => {
 
       <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 ">
         <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="bg-primary p-3 rounded-xl">
-                <FolderClosed className="size-7 text-primary-foreground" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Documents
-                  </h2>
-                </div>
-
-                <Breadcrumbs
-                  path={navigationStack}
-                  onNavigate={handleBreadcrumbClick}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon">
-                <Table2 className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={handleRefresh}
-              disabled={isFetching}
-            >
-              <RotateCw className={isFetching ? "animate-spin" : ""} />
-            </Button>
-            <div className="w-full">
-              <Search className="absolute ml-2 mt-2.5 h-4 w-4 text-muted-foreground" />
-              <Input className="pl-7" placeholder="Search documents..." />
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={() => setIsCreateFolderOpen(true)}
-            >
-              <FolderPlus />
-              <span className="hidden md:block">New Folder</span>
-            </Button>
-
-            <Button
-              onClick={() => setIsUploadOpen(true)}
-              disabled={!permissions.documents.canUpload(currentFolder)}
-            >
-              <Upload />
-              <span className="hidden md:block">Upload File</span>
-            </Button>
-          </div>
+          <DocumentsHeader
+            navigationStack={navigationStack}
+            onBreadcrumbNavigate={handleBreadcrumbNavigation}
+            isFetching={isFetching}
+            onRefresh={handleRefresh}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            currentFolder={currentFolder}
+            onUploadFile={() => setIsUploadOpen(true)}
+            onCreateFolder={() => setIsCreateFolderOpen(true)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
         </CardHeader>
-        <CardContent>
-          {/* Loading State */}
-          {isLoading || isFetching ? (
-            <LoadingState />
-          ) : (
-            <>
-              {/* Folders Grid */}
-              {folders.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold">
-                    <Folder />
-                    <h2 className="">Folders</h2>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
-                    {folders.map((folder) => (
-                      <FolderCard
-                        key={folder.id}
-                        folder={folder}
-                        onClick={() => handleFolderClick(folder)}
-                        onRename={
-                          permissions.documents.canDelete({
-                            owner: folder.owner,
-                          })
-                            ? handleFolderRename
-                            : undefined
-                        }
-                        onDelete={
-                          permissions.documents.canDelete({
-                            owner: folder.owner,
-                          })
-                            ? () => handleFolderDelete(folder)
-                            : undefined
-                        }
-                        canDelete={permissions.documents.canDelete({
-                          owner: folder.owner,
-                        })}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+        <ContextMenu
+          modal={false}
+          open={contextMenuOpen}
+          onOpenChange={setContextMenuOpen}
+        >
+          <ContextMenuTrigger asChild>
+            <CardContent
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchMove}
+            >
+              {/* Loading State */}
+              {isLoading ? (
+                <LoadingState viewMode={viewMode} />
+              ) : (
+                <>
+                  {/* Folders Grid */}
+                  {folders.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                        <Folder className="size-4 md:size-6" />
+                        <h2 className="text-lg md:text-xl">Folders</h2>
+                        {isSearching && (
+                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
+                            ({folders.length} result
+                            {folders.length !== 1 ? "s" : ""})
+                          </span>
+                        )}
+                      </div>
+                      <div className={
+                        viewMode === "grid"
+                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                          : "flex flex-col gap-2"
+                      }>
+                        {folders.map((folder) => (
+                          <FolderCard
+                            key={folder.id}
+                            folder={folder}
+                            onClick={() => {
+                              if (isSearching) {
+                                handleSearchFolderClick(folder);
+                              } else {
+                                handleFolderClick(folder);
+                              }
+                            }}
+                            showLocation={isSearching}
+                            viewMode={viewMode}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Files Grid */}
-              {documents.length > 0 && (
-                <div>
-                  <h2 className="text-xl font-semibold mb-4">Files</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
-                    {documents.map((file) => (
-                      <FileCard
-                        key={file.id}
-                        file={file}
-                        onDownload={() => handleDownload(file)}
-                        onCopy={
-                          permissions.documents.canCopy()
-                            ? () => handleCopy(file.id)
-                            : undefined
-                        }
-                        onRename={
-                          permissions.documents.canDelete(file)
-                            ? handleRename
-                            : undefined
-                        }
-                        onDelete={
-                          permissions.documents.canDelete(file)
-                            ? () => handleDelete(file)
-                            : undefined
-                        }
-                        canDelete={permissions.documents.canDelete(file)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+                  {/* Files Grid */}
+                  {documents.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1 my-4 text-xl font-semibold text-primary">
+                        <File className="size-4 md:size-6" />
+                        <h2 className="text-lg md:text-xl">Files</h2>
+                        {isSearching && (
+                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
+                            ({documents.length} result
+                            {documents.length !== 1 ? "s" : ""})
+                          </span>
+                        )}
+                      </div>
+                      <div className={
+                        viewMode === "grid"
+                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                          : "flex flex-col gap-2"
+                      }>
+                        {documents.map((file) => (
+                          <FileCard
+                            key={file.id}
+                            file={file}
+                            currentFolder={currentFolder}
+                            rootData={rootData}
+                            showLocation={isSearching}
+                            onCopy={setClipboardFile}
+                            viewMode={viewMode}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Empty State */}
-              {folders.length === 0 && documents.length === 0 && (
-                <ContentEmpty
-                  title="No Documents Found"
-                  icon={Folder}
-                  description="Upload your documents to get started."
-                  action={
-                    permissions.documents.canUpload(currentFolder) && {
-                      label: "Upload File",
-                      logo: Upload,
-                      onClick: () => setIsUploadOpen(true),
-                      extra: {
-                        label: "Create Folder",
-                        logo: Folder,
-                        onClick: () => setIsCreateFolderOpen(true),
-                      },
-                    }
-                  }
-                />
+                  {/* Empty State */}
+                  {folders.length === 0 && documents.length === 0 && (
+                    <ContentEmpty
+                      title={
+                        isSearching ? "No Results Found" : "No Documents Found"
+                      }
+                      icon={isSearching ? Search : Folder}
+                      description={
+                        isSearching
+                          ? `No files or folders match "${searchQuery}"`
+                          : "Upload your documents to get started."
+                      }
+                      action={
+                        !isSearching &&
+                        permissions.documents.canUpload(currentFolder) && {
+                          label: "Upload File",
+                          logo: Upload,
+                          onClick: () => setIsUploadOpen(true),
+                          extra: {
+                            label: "Create Folder",
+                            logo: Folder,
+                            onClick: () => setIsCreateFolderOpen(true),
+                          },
+                        }
+                      }
+                    />
+                  )}
+                </>
               )}
-            </>
-          )}
-        </CardContent>
+            </CardContent>
+          </ContextMenuTrigger>
+
+          {/* Right-Click/Long-Press Context Menu for Paste */}
+          <ContextMenuContent className="w-48">
+            <ContextMenuItem onClick={() => setIsCreateFolderOpen(true)}>
+              <span className="flex items-center gap-1">
+                <FolderPlus className="h-4 w-4" />
+                New Folder
+              </span>
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => setIsUploadOpen(true)}>
+              <span className="flex items-center gap-1">
+                <Upload className="h-4 w-4" />
+                Upload File
+              </span>
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handlePaste(), 0);
+              }}
+              disabled={!clipboardFile}
+            >
+              <span className="flex items-center gap-1">
+                <ClipboardPaste className="h-4 w-4" />
+                Paste
+              </span>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       </Card>
 
       {/* Upload Dialog */}
@@ -335,34 +380,6 @@ const DocumentsList = () => {
         onOpenChange={setIsCreateFolderOpen}
         currentFolder={currentFolder}
         rootData={rootData}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <DeleteModal
-        open={!!deleteFile}
-        onOpenChange={(open) => {
-          if (!open) setDeleteFile(null);
-        }}
-        onConfirm={confirmDelete}
-        itemName={deleteFile?.title}
-        itemType="document"
-        isLoading={deleteMutation.isPending}
-        confirmText="Delete"
-        cancelText="Cancel"
-      />
-
-      {/* Delete Folder Confirmation Modal */}
-      <DeleteModal
-        open={!!deleteFolder}
-        onOpenChange={(open) => {
-          if (!open) setDeleteFolder(null);
-        }}
-        onConfirm={confirmFolderDelete}
-        itemName={deleteFolder?.name}
-        itemType="folder"
-        isLoading={deleteFolderMutation.isPending}
-        confirmText="Delete"
-        cancelText="Cancel"
       />
     </div>
   );

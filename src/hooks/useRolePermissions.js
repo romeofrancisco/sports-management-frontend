@@ -457,25 +457,25 @@ export const useRolePermissions = () => {
           // - Admins can upload (to admin_private folder)
           // - Coaches can upload (to their personal folder)
           // - Players can upload (to their personal folder)
+          if (isAdmin()) return true;
+
           if (!currentFolder) {
-            return false
+            return true
           }
 
           const folderType = currentFolder.folder_type;
 
-          if (isAdmin()) return true;
-
-          if (folderType.toUpperCase() === "PUBLIC") {
+          if (folderType === "public") {
             return isAdmin();
-          } else if (folderType.toUpperCase() === "COACHES") {
+          } else if (folderType === "coaches") {
             return isAdmin();
-          } else if (folderType.toUpperCase() === "COACH_PERSONAL") {
+          } else if (folderType === "coach_personal") {
             return isCoach() && currentFolder.owner?.id === user?.id;
-          } else if (folderType.toUpperCase() === "PLAYERS") {
+          } else if (folderType === "players") {
             return isCoach();
-          } else if (folderType.toUpperCase() === "PLAYER_PERSONAL") {
+          } else if (folderType === "player_personal") {
             return isPlayer() && currentFolder.owner?.id === user?.id;
-          } else if (folderType.toUpperCase() === "ADMIN_PRIVATE") {
+          } else if (folderType === "admin_private") {
             return isAdmin();
           }
 

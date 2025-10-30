@@ -1,5 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FileTextIcon, DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X } from "lucide-react";
+import React from "react";
+import {
+  DownloadIcon,
+  CopyIcon,
+  Trash2Icon,
+  Edit2,
+  Check,
+  X,
+  MapPin,
+} from "lucide-react";
+import { useFileCard } from "../hooks/useFileCard";
+import DeleteModal from "@/components/common/DeleteModal";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -15,153 +25,240 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import docx from "@/assets/documents/docx.png"
-import pdf from "@/assets/documents/pdf.png"
-import pptx from "@/assets/documents/pptx.png"
-import xlsx from "@/assets/documents/xlsx.png"
-import txt from "@/assets/documents/txt.png"
-import csv from "@/assets/documents/csv.png"
-import defaultFile from "@/assets/documents/default.png"
 
-const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, canDelete }) => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [newFileName, setNewFileName] = useState(file.title);
-  const [displayName, setDisplayName] = useState(file.title);
-  const inputRef = useRef(null);
-  const longPressTimerRef = useRef(null);
-
-  // Update displayName when file.title changes (after successful mutation)
-  useEffect(() => {
-    setDisplayName(file.title);
-    setNewFileName(file.title);
-  }, [file.title]);
-
-  // Long press handlers for mobile
-  const handleTouchStart = (e) => {
-    longPressTimerRef.current = setTimeout(() => {
-      setContextMenuOpen(true);
-    }, 500); // 500ms long press
-  };
-
-  const handleTouchEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-
-  const handleTouchMove = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-  };
-  
-  const formatFileSize = (bytes) => {
-    if (!bytes) return "Unknown size";
-    const kb = bytes / 1024;
-    if (kb < 1024) return `${kb.toFixed(2)} KB`;
-    const mb = kb / 1024;
-    return `${mb.toFixed(2)} MB`;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  // Get file extension from title
-  const getFileExtension = () => {
-    // Use the file_extension from backend if available
-    if (file.file_extension) {
-      return file.file_extension;
-    }
-    // Fallback to extracting from title if needed
-    const parts = file.title.split(".");
-    return parts.length > 1 ? parts.pop().toUpperCase() : "FILE";
-  };
-
-  // Get icon based on file extension
-  const getFileIcon = () => {
-    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
-    
-    // Check if it's an image
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
-    if (imageExtensions.includes(extension)) {
-      return { type: 'image', src: file.file };
-    }
-    
-    // Return appropriate icon for document types
-    switch (extension) {
-      case 'pdf':
-        return { type: 'icon', src: pdf };
-      case 'doc':
-      case 'docx':
-        return { type: 'icon', src: docx };
-      case 'xls':
-      case 'xlsx':
-        return { type: 'icon', src: xlsx };
-      case 'ppt':
-      case 'pptx':
-        return { type: 'icon', src: pptx };
-      case 'txt':
-        return { type: 'icon', src: txt };
-      case 'csv':
-        return { type: 'icon', src: csv };
-      default:
-        return { type: 'icon', src: defaultFile };
-    }
-  };
+const FileCard = ({
+  file,
+  currentFolder,
+  rootData,
+  showLocation = false,
+  onCopy,
+  viewMode = "grid",
+}) => {
+  const {
+    contextMenuOpen,
+    setContextMenuOpen,
+    isRenaming,
+    newFileName,
+    setNewFileName,
+    displayName,
+    showDeleteModal,
+    setShowDeleteModal,
+    inputRef,
+    canEdit,
+    canDelete,
+    canCopy,
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchMove,
+    handleDownload,
+    handleCopy,
+    handleRenameStart,
+    handleRenameConfirm,
+    handleRenameCancel,
+    handleDeleteClick,
+    confirmDelete,
+    formatFileSize,
+    formatDate,
+    getFileExtension,
+    getFileIcon,
+    deleteMutation,
+  } = useFileCard(file, currentFolder, rootData, onCopy);
 
   const fileIcon = getFileIcon();
 
-  const handleRenameStart = () => {
-    setIsRenaming(true);
-    setNewFileName(displayName);
-  };
+  // List view rendering
+  if (viewMode === "list") {
+    return (
+      <TooltipProvider>
+        <ContextMenu
+          modal={false}
+          open={contextMenuOpen}
+          onOpenChange={setContextMenuOpen}
+        >
+          <ContextMenuTrigger asChild>
+            <div
+              className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchMove={handleTouchMove}
+            >
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                {fileIcon.type === "image" ? (
+                  <img
+                    src={fileIcon.src}
+                    alt={displayName}
+                    className="h-10 w-10 object-cover rounded"
+                  />
+                ) : (
+                  <img
+                    src={fileIcon.src}
+                    alt={getFileExtension()}
+                    className="h-10 w-10 object-contain"
+                  />
+                )}
+              </div>
 
-  const handleRenameConfirm = () => {
-    if (newFileName.trim() && newFileName !== displayName) {
-      setDisplayName(newFileName.trim()); // Update display immediately
-      onRename(file.id, newFileName.trim());
-    }
-    setIsRenaming(false);
-  };
+              {/* Name and details */}
+              <div className="flex-1 min-w-0">
+                {isRenaming ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      ref={inputRef}
+                      value={newFileName}
+                      onChange={(e) => setNewFileName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRenameConfirm();
+                        } else if (e.key === "Escape") {
+                          handleRenameCancel();
+                        }
+                      }}
+                      className="h-8 text-sm max-w-xs"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameConfirm();
+                      }}
+                    >
+                      <Check className="h-4 w-4 text-green-500" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRenameCancel();
+                      }}
+                    >
+                      <X className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {displayName}
+                    </p>
+                    <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
+                      <span>{formatFileSize(file.file_size)}</span>
+                      <span>{formatDate(file.uploaded_at)}</span>
+                      {showLocation && file.location && (
+                        <span className="truncate">Path: {file.location}</span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
 
-  const handleRenameCancel = () => {
-    setIsRenaming(false);
-    setNewFileName(displayName);
-  };
+              {/* Action buttons */}
+              <div className="flex-shrink-0 flex items-center gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownload();
+                  }}
+                >
+                  <DownloadIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </ContextMenuTrigger>
 
-  // Focus input when rename mode starts
-  useEffect(() => {
-    if (isRenaming && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isRenaming]);
+          {/* Right-Click Context Menu */}
+          <ContextMenuContent className="w-48">
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handleDownload(), 0);
+              }}
+            >
+              <DownloadIcon className="mr-2 h-4 w-4" />
+              Download
+            </ContextMenuItem>
+            {canCopy && file.status !== "copy" && (
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleCopy(), 0);
+                }}
+              >
+                <CopyIcon className="mr-2 h-4 w-4" />
+                Copy
+              </ContextMenuItem>
+            )}
+            {canEdit && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleRenameStart(), 0);
+                  }}
+                >
+                  <Edit2 className="mr-2 h-4 w-4" />
+                  Rename
+                </ContextMenuItem>
+              </>
+            )}
+            {canDelete && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleDeleteClick(), 0);
+                  }}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  Delete
+                </ContextMenuItem>
+              </>
+            )}
+          </ContextMenuContent>
+        </ContextMenu>
 
-  // Cleanup long press timer on unmount
-  useEffect(() => {
-    return () => {
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-      }
-    };
-  }, []);
+        {/* Delete Confirmation Modal */}
+        <DeleteModal
+          open={showDeleteModal}
+          onOpenChange={setShowDeleteModal}
+          onConfirm={confirmDelete}
+          itemName={file.title}
+          itemType="document"
+          isLoading={deleteMutation.isPending}
+          confirmText="Delete"
+          cancelText="Cancel"
+        />
+      </TooltipProvider>
+    );
+  }
 
+  // Grid view rendering (original code)
   return (
     <TooltipProvider>
-      <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
+      <ContextMenu
+        modal={false}
+        open={contextMenuOpen}
+        onOpenChange={setContextMenuOpen}
+      >
         <ContextMenuTrigger asChild>
           <div className="relative group">
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
-                <div 
+                <div
                   className="flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
@@ -169,21 +266,21 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
                 >
                   {/* Icon with extension badge */}
                   <div className="flex items-center justify-center mb-3 relative">
-                    {fileIcon.type === 'image' ? (
-                      <img 
-                        src={fileIcon.src} 
+                    {fileIcon.type === "image" ? (
+                      <img
+                        src={fileIcon.src}
                         alt={displayName}
                         className="h-16 w-16 object-cover rounded group-hover:scale-110 transition-transform"
                       />
                     ) : (
-                      <img 
-                        src={fileIcon.src} 
+                      <img
+                        src={fileIcon.src}
                         alt={getFileExtension()}
                         className="h-16 w-16 object-contain group-hover:scale-110 transition-transform"
                       />
                     )}
                   </div>
-                  
+
                   {/* Name with line clamp or input for renaming */}
                   <div className="flex flex-col items-center w-full gap-1">
                     {isRenaming ? (
@@ -228,18 +325,22 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
-                        {displayName}
-                      </p>
-                    )}
-                    
-                    {file.status === "copy" && (
-                      <span className="mt-1 text-[10px] text-orange-500 font-medium">COPY</span>
+                      <>
+                        <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
+                          {displayName}
+                        </p>
+                        {showLocation && file.location && (
+                          <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground w-full px-1 mt-1">
+                            <MapPin className="size-3 flex-shrink-0" />
+                            <span className="truncate">{file.location}</span>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
               </TooltipTrigger>
-              
+
               <TooltipContent side="bottom" className="max-w-xs">
                 <div className="space-y-1">
                   <p className="font-semibold">{displayName}</p>
@@ -249,11 +350,14 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
                   <div className="text-xs text-gray-300 space-y-0.5 pt-1 border-t">
                     <p>Size: {formatFileSize(file.file_size)}</p>
                     <p>Modified: {formatDate(file.uploaded_at)}</p>
-                    {file.uploaded_by && (
-                      <p>By: {file.uploaded_by.first_name} {file.uploaded_by.last_name}</p>
+                    {showLocation && file.location && (
+                      <p>Path: {file.location}</p>
                     )}
-                    {file.status === "copy" && (
-                      <p className="text-orange-500">Status: Copy</p>
+                    {file.uploaded_by && (
+                      <p>
+                        By: {file.uploaded_by.first_name}{" "}
+                        {file.uploaded_by.last_name}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -268,25 +372,25 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
             onSelect={(e) => {
               e.preventDefault();
               setContextMenuOpen(false);
-              setTimeout(() => onDownload(file), 0);
+              setTimeout(() => handleDownload(), 0);
             }}
           >
             <DownloadIcon className="mr-2 h-4 w-4" />
             Download
           </ContextMenuItem>
-          {onCopy && file.status !== "copy" && (
+          {canCopy && file.status !== "copy" && (
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
                 setContextMenuOpen(false);
-                setTimeout(() => onCopy(file), 0);
+                setTimeout(() => handleCopy(), 0);
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
-              Copy to My Folder
+              Copy
             </ContextMenuItem>
           )}
-          {onRename && (
+          {canEdit && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem
@@ -301,14 +405,14 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
               </ContextMenuItem>
             </>
           )}
-          {canDelete && onDelete && (
+          {canDelete && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
                   setContextMenuOpen(false);
-                  setTimeout(() => onDelete(file), 0);
+                  setTimeout(() => handleDeleteClick(), 0);
                 }}
                 className="text-destructive focus:text-destructive"
               >
@@ -319,6 +423,18 @@ const   FileCard = ({ file, onDownload, onCopy, onRename, onDelete, canEdit, can
           )}
         </ContextMenuContent>
       </ContextMenu>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        open={showDeleteModal}
+        onOpenChange={setShowDeleteModal}
+        onConfirm={confirmDelete}
+        itemName={file.title}
+        itemType="document"
+        isLoading={deleteMutation.isPending}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </TooltipProvider>
   );
 };

@@ -12,6 +12,9 @@ import {
   createFolder,
   renameFolder,
   deleteFolder,
+  searchAll,
+  searchFolders,
+  searchDocuments,
 } from "@/api/documentsApi";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
@@ -47,6 +50,7 @@ export const useCreateFolder = () => {
       });
 
       toast.success("Folder created successfully", {
+        richColors: true,
         description: `${data.name} has been created.`,
       });
     },
@@ -67,7 +71,12 @@ export const useUploadFile = () => {
           // Upload complete, show processing message
           if (toastIdRef.current) {
             toast.loading("Processing file...", {
-              description: "Your file is being processed.",
+              richColors: true,
+              description: (
+                <span className="text-muted-foreground">
+                  Your file is being processed.
+                </span>
+              ),
               id: toastIdRef.current,
             });
           }
@@ -82,7 +91,7 @@ export const useUploadFile = () => {
                     {progress}%
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary transition-all duration-300 ease-out"
                     style={{ width: `${progress}%` }}
@@ -90,6 +99,7 @@ export const useUploadFile = () => {
                 </div>
               </div>,
               {
+                richColors: true,
                 id: toastIdRef.current,
                 duration: Infinity, // Don't auto-dismiss during upload
               }
@@ -185,23 +195,31 @@ export const useDownloadFile = () => {
 export const useCopyFile = () => {
   const queryClient = useQueryClient();
   const { isAdmin, isCoach, isPlayer } = useRolePermissions();
+  const toastIdRef = useRef(null);
 
   return useMutation({
     mutationFn: async ({ fileId, currentFolder, rootData }) => {
       let targetFolderId = null;
 
       try {
-        if (isCoach() || isPlayer()) {
-          // For coaches and players, get their personal folder from the dedicated API endpoint
-          const personalFolder = await getUserPersonalFolder();
-          targetFolderId = personalFolder.id;
-        } else if (isAdmin()) {
-          // Admin can copy to current folder (if exists) or first available folder
-          targetFolderId = currentFolder?.id || rootData?.folders?.[0]?.id;
-        }
-
-        if (!targetFolderId) {
-          throw new Error("Unable to find your personal folder to copy to.");
+        // Everyone pastes to their current folder
+        if (currentFolder) {
+          // If in a folder, paste to that folder
+          targetFolderId = currentFolder.id;
+        } else {
+          // If at root level
+          if (isAdmin()) {
+            // Admin at root pastes to null (root level)
+            targetFolderId = null;
+          } else if (isCoach() || isPlayer()) {
+            // Coach/Player at root pastes to their personal folder
+            const personalFolder = await getUserPersonalFolder();
+            targetFolderId = personalFolder.id;
+            
+            if (!targetFolderId) {
+              throw new Error("Unable to find your personal folder to copy to.");
+            }
+          }
         }
 
         // Perform the copy operation
@@ -215,6 +233,18 @@ export const useCopyFile = () => {
         );
       }
     },
+    onMutate: () => {
+      // Show loading toast
+      const id = toast.loading("Copying file...", {
+        richColors: true,
+        description: (
+          <span className="text-muted-foreground">
+            Your file is being processed.
+          </span>
+        ),
+      });
+      toastIdRef.current = id;
+    },
     onSuccess: (data, variables) => {
       // Invalidate queries to refresh the data
       queryClient.invalidateQueries({
@@ -225,16 +255,30 @@ export const useCopyFile = () => {
         queryKey: ["root-folders"],
       });
 
-      toast.success("File copied successfully", {
-        richColors: true,
-        description: "The file has been copied to your folder.",
-      });
+      // Update the loading toast to success
+      if (toastIdRef.current) {
+        toast.success("File copied successfully", {
+          richColors: true,
+          description: "The file has been copied to your folder.",
+          id: toastIdRef.current,
+        });
+      }
+
+      // Reset toast ref
+      toastIdRef.current = null;
     },
     onError: (error) => {
-      toast.error("Cannot copy file", {
-        richColors: true,
-        description: error.message,
-      });
+      // Update the loading toast to error
+      if (toastIdRef.current) {
+        toast.error("Cannot copy file", {
+          richColors: true,
+          description: error.message,
+          id: toastIdRef.current,
+        });
+      }
+
+      // Reset toast ref
+      toastIdRef.current = null;
     },
   });
 };
@@ -254,6 +298,7 @@ export const useDeleteFile = () => {
       });
 
       toast.success("File deleted successfully", {
+        richColors: true,
         description: "The file has been removed.",
       });
     },
@@ -351,5 +396,14 @@ export const useDeleteFolder = () => {
           error?.response?.data?.detail || error.message || "An error occurred",
       });
     },
+  });
+};
+
+export const useSearchDocuments = (query, enabled = true) => {
+  return useQuery({
+    queryKey: ["search-documents", query],
+    queryFn: () => searchAll(query),
+    enabled: enabled && !!query && query.length > 0,
+    staleTime: 30000, // Cache results for 30 seconds
   });
 };
