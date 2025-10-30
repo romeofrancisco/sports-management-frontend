@@ -20,11 +20,23 @@ export const useDocumentNavigation = () => {
     }
   };
 
+  const navigateToFolder = (folder) => {
+    // Navigate directly to a folder, resetting the navigation stack
+    setNavigationStack([folder]);
+  };
+
+  const setNavigationPath = (path) => {
+    // Set the entire navigation path (for search results with location info)
+    setNavigationStack(path);
+  };
+
   return {
     navigationStack,
     currentFolder,
     isRoot,
     handleFolderClick,
     handleBreadcrumbClick,
+    navigateToFolder,
+    setNavigationPath,
   };
 };

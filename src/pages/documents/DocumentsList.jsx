@@ -1,33 +1,27 @@
 import { useState } from "react";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
-import { Button } from "@/components/ui/button";
-import { useRootFolders, useFolderContents } from "@/hooks/useDocuments";
+import {
+  useRootFolders,
+  useFolderContents,
+  useSearchDocuments,
+} from "@/hooks/useDocuments";
 import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
 import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
-import Breadcrumbs from "./components/Breadcrumbs";
+import DocumentsHeader from "./components/DocumentsHeader";
 import UploadFileDialog from "./components/UploadFileDialog";
 import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
-import {
-  Upload,
-  Folder,
-  Table2,
-  LayoutGrid,
-  FolderClosed,
-  Search,
-  FolderPlus,
-  RotateCw,
-} from "lucide-react";
+import { Upload, Folder, Search, File } from "lucide-react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import ContentEmpty from "@/components/common/ContentEmpty";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Navigation
   const {
@@ -36,6 +30,8 @@ const DocumentsList = () => {
     isRoot,
     handleFolderClick,
     handleBreadcrumbClick,
+    navigateToFolder,
+    setNavigationPath,
   } = useDocumentNavigation();
 
   // Fetch data based on current location
@@ -53,22 +49,80 @@ const DocumentsList = () => {
     refetch: refetchFolder,
   } = useFolderContents(currentFolder?.id);
 
+  // Search
+  const { data: searchResults, isLoading: searchLoading } = useSearchDocuments(
+    searchQuery,
+    searchQuery.length >= 2
+  );
+
   // Get current data and loading states
-  const currentData = isRoot ? rootData : folderData;
-  const isLoading = isRoot ? rootLoading : folderLoading;
+  const isSearching = searchQuery.length >= 2;
+  const currentData = isSearching
+    ? searchResults
+    : isRoot
+    ? rootData
+    : folderData;
+  const isLoading = isSearching
+    ? searchLoading
+    : isRoot
+    ? rootLoading
+    : folderLoading;
   const isFetching = isRoot ? rootFetching : folderFetching;
 
   // Backend returns 'folders' for root, but 'subfolders' for folder contents
-  const folders = isRoot
+  // For search results, we get a unified 'results' array
+  const folders = isSearching
+    ? currentData?.results?.filter((item) => item.type === "folder") || []
+    : isRoot
     ? currentData?.folders || []
     : currentData?.subfolders || [];
-  const documents = currentData?.documents || [];
+
+  const documents = isSearching
+    ? currentData?.results?.filter((item) => item.type === "document") || []
+    : currentData?.documents || [];
 
   const handleRefresh = () => {
     if (isRoot) {
       refetchRoot();
     } else {
       refetchFolder();
+    }
+  };
+
+  const handleBreadcrumbNavigation = (index) => {
+    // Clear search when navigating via breadcrumb
+    setSearchQuery("");
+    handleBreadcrumbClick(index);
+  };
+
+  const handleSearchFolderClick = (folder) => {
+    // Clear search first
+    setSearchQuery("");
+
+    // If the folder has location info, parse it to build the full breadcrumb path
+    if (folder.location) {
+      // Location format: "Coaches > Ittetsu Takeda > Players > Caitlin Antetokounmpo"
+      // Using " > " as separator to avoid conflicts with folder names containing "/"
+      const pathParts = folder.location.split(" > ");
+
+      // Create folder objects for each part of the path for breadcrumb display
+      const pathFolders = pathParts.map((name, index) => {
+        // Only the last item in the path has the real folder ID
+        if (index === pathParts.length - 1) {
+          return folder; // Use the actual folder object
+        }
+        // For parent folders, create temporary objects for breadcrumb display
+        return {
+          id: `breadcrumb-${index}-${name}`,
+          name: name,
+        };
+      });
+
+      // Set the full navigation path for proper breadcrumb display
+      setNavigationPath(pathFolders);
+    } else {
+      // No location means it's a root folder
+      navigateToFolder(folder);
     }
   };
 
@@ -83,63 +137,17 @@ const DocumentsList = () => {
 
       <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 ">
         <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="bg-primary p-3 rounded-xl">
-                <FolderClosed className="size-7 text-primary-foreground" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Documents
-                  </h2>
-                </div>
-
-                <Breadcrumbs
-                  path={navigationStack}
-                  onNavigate={handleBreadcrumbClick}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon">
-                <Table2 className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleRefresh}
-              disabled={isFetching}
-            >
-              <RotateCw className={isFetching ? "animate-spin" : ""} />
-            </Button>
-            <div className="w-full">
-              <Search className="absolute ml-2 mt-2.5 h-4 w-4 text-muted-foreground" />
-              <Input className="pl-7" placeholder="Search documents..." />
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={() => setIsCreateFolderOpen(true)}
-            >
-              <FolderPlus />
-              <span className="hidden md:block">New Folder</span>
-            </Button>
-
-            <Button
-              onClick={() => setIsUploadOpen(true)}
-              disabled={!permissions.documents.canUpload(currentFolder)}
-            >
-              <Upload />
-              <span className="hidden md:block">Upload File</span>
-            </Button>
-          </div>
+          <DocumentsHeader
+            navigationStack={navigationStack}
+            onBreadcrumbNavigate={handleBreadcrumbNavigation}
+            isFetching={isFetching}
+            onRefresh={handleRefresh}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            currentFolder={currentFolder}
+            onUploadFile={() => setIsUploadOpen(true)}
+            onCreateFolder={() => setIsCreateFolderOpen(true)}
+          />
         </CardHeader>
         <CardContent>
           {/* Loading State */}
@@ -150,16 +158,29 @@ const DocumentsList = () => {
               {/* Folders Grid */}
               {folders.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold">
+                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
                     <Folder />
                     <h2 className="">Folders</h2>
+                    {isSearching && (
+                      <span className="text-sm text-muted-foreground font-normal">
+                        ({folders.length} result
+                        {folders.length !== 1 ? "s" : ""})
+                      </span>
+                    )}
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
                     {folders.map((folder) => (
                       <FolderCard
                         key={folder.id}
                         folder={folder}
-                        onClick={() => handleFolderClick(folder)}
+                        onClick={() => {
+                          if (isSearching) {
+                            handleSearchFolderClick(folder);
+                          } else {
+                            handleFolderClick(folder);
+                          }
+                        }}
+                        showLocation={isSearching}
                       />
                     ))}
                   </div>
@@ -169,7 +190,16 @@ const DocumentsList = () => {
               {/* Files Grid */}
               {documents.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">Files</h2>
+                  <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                    <File />
+                    <h2 className="">Files</h2>
+                    {isSearching && (
+                      <span className="text-sm text-muted-foreground font-normal">
+                        ({documents.length} result
+                        {documents.length !== 1 ? "s" : ""})
+                      </span>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
                     {documents.map((file) => (
                       <FileCard
@@ -177,6 +207,7 @@ const DocumentsList = () => {
                         file={file}
                         currentFolder={currentFolder}
                         rootData={rootData}
+                        showLocation={isSearching}
                       />
                     ))}
                   </div>
@@ -186,10 +217,17 @@ const DocumentsList = () => {
               {/* Empty State */}
               {folders.length === 0 && documents.length === 0 && (
                 <ContentEmpty
-                  title="No Documents Found"
-                  icon={Folder}
-                  description="Upload your documents to get started."
+                  title={
+                    isSearching ? "No Results Found" : "No Documents Found"
+                  }
+                  icon={isSearching ? Search : Folder}
+                  description={
+                    isSearching
+                      ? `No files or folders match "${searchQuery}"`
+                      : "Upload your documents to get started."
+                  }
                   action={
+                    !isSearching &&
                     permissions.documents.canUpload(currentFolder) && {
                       label: "Upload File",
                       logo: Upload,

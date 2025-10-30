@@ -1,5 +1,5 @@
 import React from "react";
-import { DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X } from "lucide-react";
+import { DownloadIcon, CopyIcon, Trash2Icon, Edit2, Check, X, MapPin } from "lucide-react";
 import { useFileCard } from "../hooks/useFileCard";
 import DeleteModal from "@/components/common/DeleteModal";
 import {
@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const FileCard = ({ file, currentFolder, rootData }) => {
+const FileCard = ({ file, currentFolder, rootData, showLocation = false }) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -125,13 +125,17 @@ const FileCard = ({ file, currentFolder, rootData }) => {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
-                        {displayName}
-                      </p>
-                    )}
-                    
-                    {file.status === "copy" && (
-                      <span className="mt-1 text-[10px] text-orange-500 font-medium">COPY</span>
+                      <>
+                        <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
+                          {displayName}
+                        </p>
+                        {showLocation && file.location && (
+                          <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground w-full px-1 mt-1">
+                            <MapPin className="size-3 flex-shrink-0" />
+                            <span className="truncate">{file.location}</span>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -146,11 +150,14 @@ const FileCard = ({ file, currentFolder, rootData }) => {
                   <div className="text-xs text-gray-300 space-y-0.5 pt-1 border-t">
                     <p>Size: {formatFileSize(file.file_size)}</p>
                     <p>Modified: {formatDate(file.uploaded_at)}</p>
-                    {file.uploaded_by && (
-                      <p>By: {file.uploaded_by.first_name} {file.uploaded_by.last_name}</p>
+                    {showLocation && file.location && (
+                      <p>Path: {file.location}</p>
                     )}
-                    {file.status === "copy" && (
-                      <p className="text-orange-500">Status: Copy</p>
+                    {file.uploaded_by && (
+                      <p>
+                        By: {file.uploaded_by.first_name}{" "}
+                        {file.uploaded_by.last_name}
+                      </p>
                     )}
                   </div>
                 </div>

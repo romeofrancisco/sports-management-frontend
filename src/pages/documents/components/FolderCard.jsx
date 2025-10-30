@@ -1,5 +1,13 @@
 import React from "react";
-import { FolderIcon, Edit2, Trash2Icon, Check, X, User } from "lucide-react";
+import {
+  FolderIcon,
+  Edit2,
+  Trash2Icon,
+  Check,
+  X,
+  User,
+  MapPin,
+} from "lucide-react";
 import { useFolderCard } from "../hooks/useFolderCard";
 import DeleteModal from "@/components/common/DeleteModal";
 import {
@@ -18,8 +26,9 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getFolderTypeLabel } from "../constants/folderTypes";
 
-const FolderCard = ({ folder, onClick }) => {
+const FolderCard = ({ folder, onClick, showLocation = false }) => {
   const {
     contextMenuOpen,
     setContextMenuOpen,
@@ -45,7 +54,11 @@ const FolderCard = ({ folder, onClick }) => {
 
   return (
     <TooltipProvider>
-      <ContextMenu modal={false} open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
+      <ContextMenu
+        modal={false}
+        open={contextMenuOpen}
+        onOpenChange={setContextMenuOpen}
+      >
         <ContextMenuTrigger asChild>
           <div className="relative group">
             <Tooltip delayDuration={300}>
@@ -66,7 +79,10 @@ const FolderCard = ({ folder, onClick }) => {
                     />
                     {folder.owner && (
                       <Avatar className="absolute -bottom-0 -right-1 w-6 h-6 border-2 border-primary bg-muted z-10 group-hover:scale-110 transition-transform">
-                        <AvatarImage src={folder.owner?.profile} alt={folder.name} />
+                        <AvatarImage
+                          src={folder.owner?.profile}
+                          alt={folder.name}
+                        />
                         <AvatarFallback>
                           <User className="h-4 w-4 text-muted-foreground" />
                         </AvatarFallback>
@@ -118,9 +134,17 @@ const FolderCard = ({ folder, onClick }) => {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
-                        {displayName}
-                      </p>
+                      <>
+                        <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
+                          {displayName}
+                        </p>
+                        {showLocation && folder.location && (
+                          <div className="flex items-center justify-center text-[10px] text-muted-foreground w-full px-1 mt-1">
+                            <MapPin className="size-3 flex-shrink-0" />
+                            <span className="truncate">{folder.location}</span>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -133,14 +157,20 @@ const FolderCard = ({ folder, onClick }) => {
                       {folder.subfolder_count || 0} folders •{" "}
                       {folder.document_count || 0} files
                     </p>
+                    <p>Type: {getFolderTypeLabel(folder.folder_type)}</p>
+                    {showLocation && folder.location && (
+                      <p>Path: {folder.location}</p>
+                    )}
                     {folder.owner && (
                       <p>
-                        Owner: {folder.owner.first_name} {folder.owner.last_name}
+                        Owner: {folder.owner.first_name}{" "}
+                        {folder.owner.last_name}
                       </p>
                     )}
                     {folder.created_at && (
                       <p>
-                        Created: {new Date(folder.created_at).toLocaleDateString()}
+                        Created:{" "}
+                        {new Date(folder.created_at).toLocaleDateString()}
                       </p>
                     )}
                   </div>
@@ -152,34 +182,33 @@ const FolderCard = ({ folder, onClick }) => {
 
         {/* Right-Click Context Menu */}
         <ContextMenuContent className="w-48">
-          {canEdit && (
+          <ContextMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setContextMenuOpen(false);
+              setTimeout(() => handleRenameStart(), 0);
+            }}
+            disabled={!canEdit}
+          >
+            <Edit2 className="mr-2 h-4 w-4" />
+            Rename
+          </ContextMenuItem>
+
+          <>
+            <ContextMenuSeparator />
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
                 setContextMenuOpen(false);
-                setTimeout(() => handleRenameStart(), 0);
+                setTimeout(() => handleDeleteClick(), 0);
               }}
+              disabled={!canDelete}
+              className="text-destructive focus:text-destructive"
             >
-              <Edit2 className="mr-2 h-4 w-4" />
-              Rename
+              <Trash2Icon className="mr-2 h-4 w-4" />
+              Delete
             </ContextMenuItem>
-          )}
-          {canDelete && (
-            <>
-              <ContextMenuSeparator />
-              <ContextMenuItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                  setContextMenuOpen(false);
-                  setTimeout(() => handleDeleteClick(), 0);
-                }}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2Icon className="mr-2 h-4 w-4" />
-                Delete
-              </ContextMenuItem>
-            </>
-          )}
+          </>
         </ContextMenuContent>
       </ContextMenu>
 

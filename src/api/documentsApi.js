@@ -32,7 +32,11 @@ export const uploadFile = async (fileData, onUploadProgress) => {
     const formData = new FormData();
     formData.append("file", fileData.file);
     formData.append("title", fileData.title);
-    formData.append("folder", fileData.folder); // folder is required by backend
+    
+    // Only append folder if it's not null/undefined (admins can upload without a folder)
+    if (fileData.folder !== null && fileData.folder !== undefined) {
+      formData.append("folder", fileData.folder);
+    }
     
     if (fileData.description) {
       formData.append("description", fileData.description);
@@ -136,6 +140,47 @@ export const renameFolder = async (folderId, newName) => {
 export const deleteFolder = async (folderId) => {
   try {
     await api.delete(`/documents/folders/${folderId}/`);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchFolders = async (query) => {
+  try {
+    const { data } = await api.get(`/documents/folders/search/`, {
+      params: { q: query },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchDocuments = async (query) => {
+  try {
+    const { data } = await api.get(`/documents/files/search/`, {
+      params: { q: query },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchAll = async (query) => {
+  try {
+    const [foldersResponse, documentsResponse] = await Promise.all([
+      searchFolders(query),
+      searchDocuments(query),
+    ]);
+    
+    return {
+      results: [
+        ...foldersResponse.results,
+        ...documentsResponse.results,
+      ],
+      count: foldersResponse.count + documentsResponse.count,
+    };
   } catch (error) {
     throw error;
   }
