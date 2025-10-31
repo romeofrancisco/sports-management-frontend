@@ -1,5 +1,6 @@
 import React from "react";
 import SingleElimination from "@/components/brackets/SingleElimination";
+import DoubleElimination from "./DoubleElimination";
 import RoundRobin from "@/components/brackets/RoundRobin";
 import { BRACKET_TYPES } from "@/constants/bracket";
 
@@ -13,7 +14,7 @@ const BracketDisplay = ({ bracket }) => {
   // Map bracket types to their corresponding display components
   const bracketComponentMap = {
     [BRACKET_TYPES.SINGLE]: SingleElimination,
-    [BRACKET_TYPES.DOUBLE]: SingleElimination, // We can use SingleElimination for now
+    [BRACKET_TYPES.DOUBLE]: DoubleElimination,
     [BRACKET_TYPES.ROUND_ROBIN]: RoundRobin,
   };
 

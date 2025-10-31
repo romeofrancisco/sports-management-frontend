@@ -2,7 +2,7 @@ import React from "react";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, Trophy } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"; 
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 const TeamSeed = ({ seed, breakpoint }) => {
   const { home_team, away_team, winner, date } = seed;
@@ -37,7 +37,7 @@ const TeamSeed = ({ seed, breakpoint }) => {
               <div className="size-7 flex-shrink-0 flex items-center justify-center rounded-l">
                 <Avatar className="size-7 border border-primary/20">
                   <AvatarImage src={team.logo} alt={team.name} />
-                  <AvatarFallback className="bg-muted text-muted-foreground"> 
+                  <AvatarFallback className="bg-muted text-muted-foreground">
                     {team.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -64,7 +64,7 @@ const TeamSeed = ({ seed, breakpoint }) => {
     <Seed mobileBreakpoint={breakpoint} className="after:hidden before:hidden">
       <SeedItem className="bg-card overflow-hidden border-0 shadow-sm">
         {renderTeam(home_team)}
-        <div className="border-t border-border/50"></div>
+
         {renderTeam(away_team)}
       </SeedItem>
       <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
@@ -78,7 +78,7 @@ const TeamSeed = ({ seed, breakpoint }) => {
 const RoundRobin = ({ bracket }) => {
   // Set mobile breakpoint value - default from react-brackets is 992
   const mobileBreakpoint = 640; // You can adjust this value based on your needs
-  
+
   const rounds = bracket.rounds.map((round) => ({
     title: `Round ${round.round_number}`,
     seeds: round.matches.map((match) => ({
@@ -102,24 +102,22 @@ const RoundRobin = ({ bracket }) => {
     })),
   }));
   return (
-    <div className="space-y-6">
-      <div className="overflow-x-auto">
-        <Bracket
-          bracketClassName="flex flex-wrap justify-center gap-y-6 gap-x-4"
-          roundClassName="mb-6 min-w-[300px] max-w-[300px] flex flex-col items-center"
-          rounds={rounds}
-          mobileBreakpoint={mobileBreakpoint}
-          renderSeedComponent={(seedProps) => <TeamSeed {...seedProps} breakpoint={mobileBreakpoint} />}
-          roundTitleClassName="font-semibold text-xs mb-3 text-center"
-          swipeableProps={{ 
-            slideClassName: "flex items-center justify-center h-auto",
-            containerStyle: {
-              maxWidth: "100vw",
-            },
-          }}
-        />
-      </div>
-    </div>
+    <Bracket
+      bracketClassName="flex flex-wrap justify-center gap-y-6 gap-x-4"
+      roundClassName="mb-6 min-w-[270px] flex flex-col items-center"
+      rounds={rounds}
+      mobileBreakpoint={mobileBreakpoint}
+      renderSeedComponent={(seedProps) => (
+        <TeamSeed {...seedProps} breakpoint={mobileBreakpoint} />
+      )}
+      roundTitleClassName="font-semibold text-xs mb-3 text-center"
+      swipeableProps={{
+        slideClassName: "flex items-center justify-center h-auto",
+        containerStyle: {
+          maxWidth: "100vw",
+        },
+      }}
+    />
   );
 };
 

@@ -154,7 +154,7 @@ const SeasonDetails = () => {
   );
 
   return (
-    <div className="md:p-6">
+    <div className="p-3 md:p-6">
       <UniversityPageHeader
         title={titleWithBadge}
         subtitle={`${sport?.name} League`}
