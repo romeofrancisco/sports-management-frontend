@@ -1,114 +1,191 @@
-import React from "react";
-import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
-import { formatDate } from "@/utils/formatDate";
+import React, { useEffect, useState } from 'react'
+import { SingleEliminationBracket, SVGViewer } from '@g-loot/react-tournament-brackets';
+import { formatDate } from '@/utils/formatDate';
+import { Calendar } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 
-const TeamSeed = ({ seed, breakpoint }) => {
-  const { home_team, away_team, winner, date } = seed;
+// small hook to get window size for SVG viewport (match the double-elim file)
+function useWindowSize() {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
+  useEffect(() => {
+    function onResize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return size;
+}
 
-  const getResult = (teamId) => {
-    if (!winner || !teamId) return "";
-    return winner === teamId ? "WON" : "LOST";
+// Expanded sample single-elimination matches (8 teams — quarters, semis, final)
+// Styled to match DoubleElimination's UI
+const sampleMatches = [
+  // Quarterfinals
+  {
+    id: 1,
+    name: 'QF1',
+    nextMatchId: 5,
+    startTime: '2021-05-30T09:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-1', name: 'GlootOne', isWinner: true, resultText: 'WON' },
+      { id: 'team-8', name: 'BTC', isWinner: false, resultText: 'LOST' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'QF2',
+    nextMatchId: 5,
+    startTime: '2021-05-30T10:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-4', name: 'Alex', isWinner: false, resultText: 'LOST' },
+      { id: 'team-5', name: 'SeatloN', isWinner: true, resultText: 'WON' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'QF3',
+    nextMatchId: 6,
+    startTime: '2021-05-30T11:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-3', name: 'Towby', isWinner: true, resultText: 'WON' },
+      { id: 'team-6', name: 'jackieboi', isWinner: false, resultText: 'LOST' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'QF4',
+    nextMatchId: 6,
+    startTime: '2021-05-30T12:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-2', name: 'spacefudg3', isWinner: false, resultText: 'LOST' },
+      { id: 'team-7', name: 'OmarDev', isWinner: true, resultText: 'WON' },
+    ],
+  },
+
+  // Semifinals
+  {
+    id: 5,
+    name: 'SF1',
+    nextMatchId: 7,
+    startTime: '2021-05-31T09:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-1', name: 'GlootOne', isWinner: true, resultText: 'WON' },
+      { id: 'team-5', name: 'SeatloN', isWinner: false, resultText: 'LOST' },
+    ],
+  },
+  {
+    id: 6,
+    name: 'SF2',
+    nextMatchId: 7,
+    startTime: '2021-05-31T10:00:00Z',
+    state: 'DONE',
+    participants: [
+      { id: 'team-3', name: 'Towby', isWinner: false, resultText: 'LOST' },
+      { id: 'team-7', name: 'OmarDev', isWinner: true, resultText: 'WON' },
+    ],
+  },
+
+  // Final
+  {
+    id: 7,
+    name: 'Final',
+    nextMatchId: null,
+    startTime: '2021-06-01T12:00:00Z',
+    state: 'SCHEDULED',
+    participants: [
+      { id: 'team-1', name: 'GlootOne', isWinner: null, resultText: null },
+      { id: 'team-7', name: 'OmarDev', isWinner: null, resultText: null },
+    ],
+  },
+];
+
+// Reuse the same visual style as DoubleElimination's CustomMatch
+const CustomMatch = ({ match }) => {
+  const participants = match?.participants || [];
+  const home = participants[0] || null;
+  const away = participants[1] || null;
+
+  const getResult = (team) => {
+    if (!match || !team) return '';
+    if (team.isWinner) return 'WON';
+    return 'LOST';
   };
 
-  const getResultStyle = (teamId) => {
-    if (!winner || !teamId) return "";
-    return winner === teamId 
-      ? "bg-sidebar-primary text-sidebar-primary-foreground" 
-      : "text-muted-foreground";
-  };
+  const renderTeamRow = (team) => {
+    const result = getResult(team);
+    const opacity = !team
+      ? 'opacity-70 italic'
+      : team.isWinner
+      ? 'opacity-100'
+      : 'opacity-70';
 
-  const getOpacity = (team) => {
-    if (!team) return "opacity-70 italic";
-    if (winner && team.id !== winner) return "opacity-70";
-    return "opacity-100";
-  };
-
-  const renderTeam = (team) => {
-    const result = getResult(team?.id);
-    
     return (
-      <SeedTeam>
-        <div
-          className={`flex items-center dark:text-foreground text-xs p-0 gap-2 h-7 w-full 
-            ${getOpacity(team)}`}
+      <div className={`flex items-center text-xs p-0 gap-2 h-7 w-full ${opacity}`}>
+        {team ? (
+          <>
+            <div className="size-7 flex-shrink-0 flex items-center justify-center rounded-l">
+              <Avatar className="size-7 border border-primary/20">
+                <AvatarImage src={team.logo} alt={team.name} />
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  {team.name?.charAt(0)?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            <span className="truncate text-white">{team.name}</span>
+          </>
+        ) : (
+          <span className="text-muted-foreground ml-2">TBD</span>
+        )}
+
+        <span
+          className={`h-5 w-10 ml-auto text-[0.65rem] font-medium flex items-center justify-center ${
+            result === 'WON' ? 'bg-secondary rounded' : 'text-muted-foreground'
+          }`}
         >
-          {team ? (
-            <>
-              <div className="size-7 flex-shrink-0 flex items-center justify-center bg-sidebar rounded-l">
-                <img
-                  className="size-5 object-cover"
-                  src={team.logo}
-                  alt={team.name}
-                />
-              </div>
-              <span className="truncate max-w-24">{team.name}</span>
-            </>
-          ) : (
-            <span className="text-muted-foreground ml-2">TBD</span>
-          )}
-          <span className={`h-5 w-10 ml-auto text-[0.65rem] font-medium flex items-center justify-center ${getResultStyle(team?.id, result)}`}>
-            {result}
-          </span>
-        </div>
-      </SeedTeam>
+          {result}
+        </span>
+      </div>
     );
   };
 
   return (
-    <Seed mobileBreakpoint={breakpoint}>
-      <SeedItem className="bg-card overflow-hidden border-0 shadow-sm">
-        {renderTeam(home_team)}
-        <div className="border-t border-border/50"></div>
-        {renderTeam(away_team)}
-      </SeedItem>
-      <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days">
-          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-          <line x1="16" x2="16" y1="2" y2="6"></line>
-          <line x1="8" x2="8" y1="2" y2="6"></line>
-          <line x1="3" x2="21" y1="10" y2="10"></line>
-        </svg>
-        {formatDate(date)}
+    <div className="inline-block w-full mt-3">
+      <div className="bg-gray-900 overflow-hidden border-0 shadow-sm p-2 rounded">
+        <div>{renderTeamRow(home)}</div>
+        <div className="border-t border-border/50 my-1"></div>
+        <div>{renderTeamRow(away)}</div>
       </div>
-    </Seed>
+      <div className="text-[10px] justify-center text-muted-foreground mt-1 flex items-center gap-1">
+        <Calendar size={12} className="text-muted-foreground" />
+        {formatDate(match?.startTime)}
+      </div>
+    </div>
   );
 };
 
-const SingleElimination = ({ bracket }) => {
-  const rounds = bracket.rounds.map((round) => ({
-    title: `Round ${round.round_number}`,
-    seeds: round.matches.map((match) => ({
-      id: match.id,
-      winner: match.winner,
-      date: match.date,
-      home_team: match.home_team_details
-        ? {
-            id: match.home_team_details.id,
-            name: match.home_team_details.name,
-            logo: match.home_team_details.logo,
-          }
-        : null,
-      away_team: match.away_team_details
-        ? {
-            id: match.away_team_details.id,
-            name: match.away_team_details.name,
-            logo: match.away_team_details.logo,
-          }
-        : null,
-    })),
-  }));
+const SingleElimination = () => {
+  const [width, height] = useWindowSize();
+  const finalWidth = Math.max(width - 80, 900);
+  const finalHeight = Math.max(height - 160, 600);
 
   return (
-    <div className="overflow-x-auto pb-6">
-      <Bracket 
-        rounds={rounds} 
-        renderSeedComponent={TeamSeed}
-        roundClassName="min-w-[180px] mx-2"
-        roundTitleClassName="font-semibold text-xs mb-4 text-center"
-        swipeableProps={{ enableMouseEvents: true }}
+    <div style={{ width: '100%', overflowX: 'auto' }}>
+      <SingleEliminationBracket
+        matches={sampleMatches}
+        matchComponent={CustomMatch}
+        svgWrapper={({ children, ...props }) => (
+          <SVGViewer width={finalWidth} height={finalHeight} SVGBackground="var(--background)" {...props}>
+            {children}
+          </SVGViewer>
+        )}
       />
     </div>
   );
 };
 
-export default SingleElimination;
+export default SingleElimination
