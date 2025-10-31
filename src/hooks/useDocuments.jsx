@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchRootFolders,
   fetchFolderContents,
+  fetchFolderDetails,
   uploadFile,
   downloadFile,
   copyFile,
@@ -31,6 +32,14 @@ export const useFolderContents = (folderId) => {
   return useQuery({
     queryKey: ["folder-contents", folderId],
     queryFn: () => fetchFolderContents(folderId),
+    enabled: !!folderId,
+  });
+};
+
+export const useFolderDetails = (folderId) => {
+  return useQuery({
+    queryKey: ["folder-details", folderId],
+    queryFn: () => fetchFolderDetails(folderId),
     enabled: !!folderId,
   });
 };

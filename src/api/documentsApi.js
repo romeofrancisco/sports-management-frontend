@@ -27,6 +27,15 @@ export const fetchFolderContents = async (folderId) => {
   } 
 };
 
+export const fetchFolderDetails = async (folderId) => {
+  try {
+    const { data } = await api.get(`/documents/folders/${folderId}/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const uploadFile = async (fileData, onUploadProgress) => {
   try {
     const formData = new FormData();

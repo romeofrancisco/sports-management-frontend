@@ -5,6 +5,7 @@ import {
   useFolderContents,
   useSearchDocuments,
   useCopyFile,
+  useFolderDetails,
 } from "@/hooks/useDocuments";
 import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
 import FolderCard from "./components/FolderCard";
@@ -52,6 +53,7 @@ const DocumentsList = () => {
     handleBreadcrumbClick,
     navigateToFolder,
     setNavigationPath,
+    folderIdFromUrl,
   } = useDocumentNavigation();
 
   // Fetch data based on current location
@@ -74,6 +76,24 @@ const DocumentsList = () => {
     searchQuery,
     searchQuery.length >= 2
   );
+
+  // Fetch folder details when loading from URL
+  const { data: folderDetailsData } = useFolderDetails(
+    folderIdFromUrl && navigationStack.length === 0 ? folderIdFromUrl : null
+  );
+
+  // Restore navigation from URL on mount
+  useEffect(() => {
+    if (folderIdFromUrl && folderDetailsData && navigationStack.length === 0) {
+      // Build navigation stack from breadcrumbs if available
+      if (folderDetailsData.breadcrumbs && folderDetailsData.breadcrumbs.length > 0) {
+        setNavigationPath(folderDetailsData.breadcrumbs);
+      } else {
+        // No breadcrumbs, just navigate to this folder
+        navigateToFolder(folderDetailsData);
+      }
+    }
+  }, [folderIdFromUrl, folderDetailsData, navigationStack.length]);
 
   // Get current data and loading states
   const isSearching = searchQuery.length >= 2;
