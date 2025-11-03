@@ -64,7 +64,7 @@ const TeamSeed = ({ seed, breakpoint }) => {
     <Seed mobileBreakpoint={breakpoint} className="after:hidden before:hidden">
       <SeedItem className="bg-card overflow-hidden border-0 shadow-sm">
         {renderTeam(home_team)}
-
+        <div className="border-t border-border/50"></div>
         {renderTeam(away_team)}
       </SeedItem>
       <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">

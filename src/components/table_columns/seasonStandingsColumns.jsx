@@ -2,8 +2,13 @@ import { Medal, Trophy } from "lucide-react";
 import { HeaderWithTooltip } from "@/components/common/TableHelpers";
 import TeamStreakIndicator from "@/components/common/TeamStreakIndicator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { BRACKET_TYPES } from "@/constants/bracket";
 
-export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
+export const getSeasonStandingsColumns = ({
+  seasonDetails,
+  sport,
+  teamFormData = {},
+}) => {
   const { has_tie, scoring_type } = sport;
   const isSetBased = scoring_type === "sets";
 
@@ -361,27 +366,6 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           mobileSize: 55,
           tabletSize: 60,
         },
-      },
-      {
-        accessorKey: "points",
-        header: () => (
-          <div className="text-center w-auto">
-            <HeaderWithTooltip
-              label="PTS"
-              tooltipText="Points that determine rankings"
-            />
-          </div>
-        ),
-        cell: ({ getValue }) => (
-          <div className="text-center w-auto">{getValue() || 0}</div>
-        ),
-        size: 45, // Reduced from original
-        minWidth: 40,
-        meta: {
-          priority: "high",
-          mobileSize: 40,
-          tabletSize: 45,
-        },
       }
     );
   } else {
@@ -459,7 +443,7 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
           mobileSize: 45,
           tabletSize: 50,
         },
-      },
+      }
       // {
       //   accessorKey: "point_differential",
       //   header: () => (
@@ -491,30 +475,33 @@ export const getSeasonStandingsColumns = ({ sport, teamFormData = {} }) => {
       //     mobileSize: 45,
       //     tabletSize: 50,
       //   },
-      // },
-      {
-        accessorKey: "points",
-        header: () => (
-          <div className="text-center w-auto">
-            <HeaderWithTooltip
-              label="PTS"
-              tooltipText="Points that determine rankings"
-            />
-          </div>
-        ),
-        cell: ({ getValue }) => (
-          <div className="text-center w-auto">{getValue() || 0}</div>
-        ),
-        size: 50,
-        minWidth: 45,
-        meta: {
-          priority: "medium",
-          mobileSize: 45,
-          tabletSize: 50,
-        },
-      }
+      // }
     );
   }
 
+  // Add points column only for round robin
+  if (seasonDetails?.bracket_type === BRACKET_TYPES.ROUND_ROBIN) {
+    baseColumns.push({
+      accessorKey: "points",
+      header: () => (
+        <div className="text-center w-auto">
+          <HeaderWithTooltip
+            label="PTS"
+            tooltipText="Points that determine rankings"
+          />
+        </div>
+      ),
+      cell: ({ getValue }) => (
+        <div className="text-center w-auto">{getValue() || 0}</div>
+      ),
+      size: 50,
+      minWidth: 45,
+      meta: {
+        priority: "medium",
+        mobileSize: 45,
+        tabletSize: 50,
+      },
+    });
+  }
   return baseColumns;
 };

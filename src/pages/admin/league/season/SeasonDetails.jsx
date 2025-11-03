@@ -102,7 +102,7 @@ const SeasonDetails = () => {
       case "overview":
         return <SeasonOverview seasonDetails={seasonDetails} sport={sport} />;
       case "standings":
-        return <SeasonStandings standings={seasonStandings} sport={sport} />;
+        return <SeasonStandings seasonDetails={seasonDetails} standings={seasonStandings} sport={sport} />;
       case "games":
         return <SeasonGames seasonId={season} leagueId={league} />;
       case "teams":

@@ -234,7 +234,7 @@ const BracketView = ({ season, leagueId }) => {
   const completionPercentage =
     totalMatches > 0 ? Math.round((completedMatches / totalMatches) * 100) : 0;
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
       <CardHeader className="relative">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
@@ -253,7 +253,6 @@ const BracketView = ({ season, leagueId }) => {
       <CardContent className="relative p-0">
         {/* Tournament Overview Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 px-3 md:px-6">
-          {" "}
           {[
             {
               title: "Tournament Format",

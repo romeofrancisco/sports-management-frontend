@@ -6,7 +6,7 @@ import { useParams } from "react-router";
 import { useSeasonTeamForm } from "@/hooks/useSeasons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const SeasonStandings = ({ standings, sport }) => {
+const SeasonStandings = ({ seasonDetails, standings, sport }) => {
   const { league, season } = useParams();
   const { data: teamFormData, isLoading: isFormLoading } = useSeasonTeamForm(
     league,
@@ -19,7 +19,7 @@ const SeasonStandings = ({ standings, sport }) => {
   const isSetBased = scoring_type === "sets";
 
   // Get columns from the extracted module with teamFormData passed in
-  const columns = getSeasonStandingsColumns({ sport, teamFormData });
+  const columns = getSeasonStandingsColumns({ seasonDetails, sport, teamFormData });
 
   return (
     <div className="animate-in fade-in-50 duration-500">
