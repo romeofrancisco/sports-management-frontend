@@ -17,92 +17,6 @@ function useWindowSize() {
   return size;
 }
 
-// Expanded sample single-elimination matches (8 teams — quarters, semis, final)
-// Styled to match DoubleElimination's UI
-const sampleMatches = [
-  // Quarterfinals
-  {
-    id: 1,
-    name: 'QF1',
-    nextMatchId: 5,
-    startTime: '2021-05-30T09:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-1', name: 'GlootOne', isWinner: true, resultText: 'WON' },
-      { id: 'team-8', name: 'BTC', isWinner: false, resultText: 'LOST' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'QF2',
-    nextMatchId: 5,
-    startTime: '2021-05-30T10:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-4', name: 'Alex', isWinner: false, resultText: 'LOST' },
-      { id: 'team-5', name: 'SeatloN', isWinner: true, resultText: 'WON' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'QF3',
-    nextMatchId: 6,
-    startTime: '2021-05-30T11:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-3', name: 'Towby', isWinner: true, resultText: 'WON' },
-      { id: 'team-6', name: 'jackieboi', isWinner: false, resultText: 'LOST' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'QF4',
-    nextMatchId: 6,
-    startTime: '2021-05-30T12:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-2', name: 'spacefudg3', isWinner: false, resultText: 'LOST' },
-      { id: 'team-7', name: 'OmarDev', isWinner: true, resultText: 'WON' },
-    ],
-  },
-
-  // Semifinals
-  {
-    id: 5,
-    name: 'SF1',
-    nextMatchId: 7,
-    startTime: '2021-05-31T09:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-1', name: 'GlootOne', isWinner: true, resultText: 'WON' },
-      { id: 'team-5', name: 'SeatloN', isWinner: false, resultText: 'LOST' },
-    ],
-  },
-  {
-    id: 6,
-    name: 'SF2',
-    nextMatchId: 7,
-    startTime: '2021-05-31T10:00:00Z',
-    state: 'DONE',
-    participants: [
-      { id: 'team-3', name: 'Towby', isWinner: false, resultText: 'LOST' },
-      { id: 'team-7', name: 'OmarDev', isWinner: true, resultText: 'WON' },
-    ],
-  },
-
-  // Final
-  {
-    id: 7,
-    name: 'Final',
-    nextMatchId: null,
-    startTime: '2021-06-01T12:00:00Z',
-    state: 'SCHEDULED',
-    participants: [
-      { id: 'team-1', name: 'GlootOne', isWinner: null, resultText: null },
-      { id: 'team-7', name: 'OmarDev', isWinner: null, resultText: null },
-    ],
-  },
-];
 
 // Reuse the same visual style as DoubleElimination's CustomMatch
 const CustomMatch = ({ match }) => {
@@ -168,15 +82,18 @@ const CustomMatch = ({ match }) => {
   );
 };
 
-const SingleElimination = () => {
+const SingleElimination = ({ bracket }) => {
   const [width, height] = useWindowSize();
   const finalWidth = Math.max(width - 80, 900);
   const finalHeight = Math.max(height - 160, 600);
 
+  // Use matches from bracket prop, or empty array if not available
+  const matches = bracket?.matches || [];
+
   return (
     <div style={{ width: '100%', overflowX: 'auto' }}>
       <SingleEliminationBracket
-        matches={sampleMatches}
+        matches={matches}
         matchComponent={CustomMatch}
         svgWrapper={({ children, ...props }) => (
           <SVGViewer width={finalWidth} height={finalHeight} SVGBackground="var(--background)" {...props}>
