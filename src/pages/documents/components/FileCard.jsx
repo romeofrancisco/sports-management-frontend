@@ -2,6 +2,7 @@ import React from "react";
 import {
   DownloadIcon,
   CopyIcon,
+  Scissors,
   Trash2Icon,
   Edit2,
   Check,
@@ -32,7 +33,10 @@ const FileCard = ({
   rootData,
   showLocation = false,
   onCopy,
+  onCut,
   viewMode = "grid",
+  onDragStart,
+  onDragEnd,
 }) => {
   const {
     contextMenuOpen,
@@ -51,7 +55,9 @@ const FileCard = ({
     handleTouchEnd,
     handleTouchMove,
     handleDownload,
+    handleEdit,
     handleCopy,
+    handleCut,
     handleRenameStart,
     handleRenameConfirm,
     handleRenameCancel,
@@ -61,10 +67,34 @@ const FileCard = ({
     formatDate,
     getFileExtension,
     getFileIcon,
+    isEditable,
     deleteMutation,
-  } = useFileCard(file, currentFolder, rootData, onCopy);
+  } = useFileCard(file, currentFolder, rootData, onCopy, onCut);
 
   const fileIcon = getFileIcon();
+
+
+  // Drag handlers for moving files
+  const handleDragStart = (e) => {
+    if (!canEdit) return; // Only owner/admin can move files
+    
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("application/x-file-card", JSON.stringify({
+      fileId: file.id,
+      fileName: file.title,
+      type: "file"
+    }));
+    
+    if (onDragStart) {
+      onDragStart(file);
+    }
+  };
+
+  const handleDragEnd = (e) => {
+    if (onDragEnd) {
+      onDragEnd();
+    }
+  };
 
   // List view rendering
   if (viewMode === "list") {
@@ -78,6 +108,9 @@ const FileCard = ({
           <ContextMenuTrigger asChild>
             <div
               className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              draggable={canEdit}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onTouchMove={handleTouchMove}
@@ -89,12 +122,14 @@ const FileCard = ({
                     src={fileIcon.src}
                     alt={displayName}
                     className="h-10 w-10 object-cover rounded"
+                    draggable={false}
                   />
                 ) : (
                   <img
                     src={fileIcon.src}
                     alt={getFileExtension()}
                     className="h-10 w-10 object-contain"
+                    draggable={false}
                   />
                 )}
               </div>
@@ -185,6 +220,18 @@ const FileCard = ({
               <DownloadIcon className="mr-2 h-4 w-4" />
               Download
             </ContextMenuItem>
+            {isEditable() && canEdit && (
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleEdit(), 0);
+                }}
+              >
+                <Edit2 className="mr-2 h-4 w-4" />
+                Open in Editor
+              </ContextMenuItem>
+            )}
             {canCopy && file.status !== "copy" && (
               <ContextMenuItem
                 onSelect={(e) => {
@@ -195,6 +242,18 @@ const FileCard = ({
               >
                 <CopyIcon className="mr-2 h-4 w-4" />
                 Copy
+              </ContextMenuItem>
+            )}
+            {canEdit && (
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleCut(), 0);
+                }}
+              >
+                <Scissors className="mr-2 h-4 w-4" />
+                Cut
               </ContextMenuItem>
             )}
             {canEdit && (
@@ -260,6 +319,9 @@ const FileCard = ({
               <TooltipTrigger asChild>
                 <div
                   className="flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
+                  draggable={canEdit}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
                   onTouchMove={handleTouchMove}
@@ -271,12 +333,14 @@ const FileCard = ({
                         src={fileIcon.src}
                         alt={displayName}
                         className="h-16 w-16 object-cover rounded group-hover:scale-110 transition-transform"
+                        draggable={false}
                       />
                     ) : (
                       <img
                         src={fileIcon.src}
                         alt={getFileExtension()}
                         className="h-16 w-16 object-contain group-hover:scale-110 transition-transform"
+                        draggable={false}
                       />
                     )}
                   </div>
@@ -378,6 +442,18 @@ const FileCard = ({
             <DownloadIcon className="mr-2 h-4 w-4" />
             Download
           </ContextMenuItem>
+          {isEditable() && (
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handleEdit(), 0);
+              }}
+            >
+              <Edit2 className="mr-2 h-4 w-4" />
+              Open in Editor
+            </ContextMenuItem>
+          )}
           {canCopy && file.status !== "copy" && (
             <ContextMenuItem
               onSelect={(e) => {
@@ -388,6 +464,18 @@ const FileCard = ({
             >
               <CopyIcon className="mr-2 h-4 w-4" />
               Copy
+            </ContextMenuItem>
+          )}
+          {canEdit && (
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setContextMenuOpen(false);
+                setTimeout(() => handleCut(), 0);
+              }}
+            >
+              <Scissors className="mr-2 h-4 w-4" />
+              Cut
             </ContextMenuItem>
           )}
           {canEdit && (

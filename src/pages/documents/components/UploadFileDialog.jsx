@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, FileIcon, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
+const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, draggedFiles = [] }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
@@ -27,6 +27,13 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData }) => {
       file: null,
     },
   });
+
+  // Handle dragged files
+  useEffect(() => {
+    if (draggedFiles.length > 0 && open) {
+      handleFileChange(draggedFiles);
+    }
+  }, [draggedFiles.length, open]); // Use length instead of array reference
 
   // Reset form when dialog closes
   useEffect(() => {

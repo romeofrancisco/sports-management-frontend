@@ -58,7 +58,9 @@ const DocumentsHeader = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">Documents</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                Documents
+              </h2>
             </div>
 
             <Breadcrumbs
@@ -111,7 +113,11 @@ const DocumentsHeader = ({
         {/* Desktop buttons */}
         {!isMobile && (
           <>
-            <Button variant="outline" onClick={onCreateFolder}>
+            <Button
+              variant="outline"
+              disabled={!permissions.documents.canUpload(currentFolder)}
+              onClick={onCreateFolder}
+            >
               <FolderPlus />
               <span className="hidden md:block">New Folder</span>
             </Button>

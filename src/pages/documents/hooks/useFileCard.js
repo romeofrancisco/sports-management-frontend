@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDownloadFile, useCopyFile, useRenameFile, useDeleteFile } from "@/hooks/useDocuments";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { toast } from "sonner";
@@ -10,7 +11,8 @@ import txt from "@/assets/documents/txt.png";
 import csv from "@/assets/documents/csv.png";
 import defaultFile from "@/assets/documents/default.png";
 
-export const useFileCard = (file, currentFolder, rootData, onCopy) => {
+export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
+  const navigate = useNavigate();
   const { permissions } = useRolePermissions();
   const downloadMutation = useDownloadFile();
   const copyMutation = useCopyFile();
@@ -25,7 +27,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy) => {
   const inputRef = useRef(null);
   const longPressTimerRef = useRef(null);
 
-  const canEdit = permissions.documents.canDelete(file);
+  const canEdit = permissions.documents.canEdit(file);
   const canDelete = permissions.documents.canDelete(file);
   const canCopy = permissions.documents.canCopy();
 
@@ -79,12 +81,37 @@ export const useFileCard = (file, currentFolder, rootData, onCopy) => {
     });
   };
 
+  const handleEdit = () => {
+    // Check if file is editable (docx, doc files)
+    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
+    const editableExtensions = ['doc', 'docx'];
+    
+    if (!editableExtensions.includes(extension)) {
+      toast.error("Only Word documents (.doc, .docx) can be edited in the editor");
+      return;
+    }
+    
+    // Navigate to document editor
+    navigate(`/documents/editor/${file.id}`);
+  };
+
   const handleCopy = () => {
     // Use callback to set clipboard instead of directly copying
     if (onCopy) {
-      onCopy(file);
+      onCopy(file, 'copy');
       toast.info("File copied to clipboard", {
         richColors: true,
+      });
+    }
+  };
+
+  const handleCut = () => {
+    // Use callback to set clipboard for cut action
+    if (onCut) {
+      onCut(file, 'cut');
+      toast.info("File cut to clipboard", {
+        richColors: true,
+        description: "File will be moved when pasted",
       });
     }
   };
@@ -171,6 +198,12 @@ export const useFileCard = (file, currentFolder, rootData, onCopy) => {
     return { type: 'icon', src: iconMap[extension] || defaultFile };
   };
 
+  const isEditable = () => {
+    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
+
+    return ['doc', 'docx'].includes(extension);
+  };
+
   return {
     // State
     contextMenuOpen,
@@ -195,7 +228,9 @@ export const useFileCard = (file, currentFolder, rootData, onCopy) => {
     
     // File operations
     handleDownload,
+    handleEdit,
     handleCopy,
+    handleCut,
     
     // Rename handlers
     handleRenameStart,
@@ -211,6 +246,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy) => {
     formatDate,
     getFileExtension,
     getFileIcon,
+    isEditable,
     
     // Mutations
     deleteMutation,

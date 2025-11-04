@@ -5,6 +5,7 @@ export const createFolder = async (folderData) => {
     const { data } = await api.post(`/documents/folders/`, folderData);
     return data;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
@@ -92,6 +93,18 @@ export const copyFile = async (fileId, targetFolderId) => {
     return data;
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+
+export const moveFile = async (fileId, targetFolderId) => {
+  try {
+    const { data } = await api.patch(`/documents/files/${fileId}/move/`, {
+      target_folder: targetFolderId,
+    });
+    return data;
+  } catch (error) {
+    console.log(error.response.data);
     throw error;
   }
 };

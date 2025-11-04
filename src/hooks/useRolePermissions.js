@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
+import { FolderTypes } from "@/pages/documents/constants/folderTypes";
 
 /**
  * Custom hook for role-based permissions in the application
@@ -460,7 +461,7 @@ export const useRolePermissions = () => {
           if (isAdmin()) return true;
 
           if (!currentFolder) {
-            return true
+            return true;
           }
 
           const folderType = currentFolder.folder_type;
@@ -485,6 +486,14 @@ export const useRolePermissions = () => {
         // Check if user can delete a file
         canDelete: (file) => {
           if (!file) return false;
+          if (isAdmin()) return true;
+          return file.owner?.id === user?.id;
+        },
+
+        canEdit: (file) => {
+  
+          if (!file) return false;
+          if (file.folder?.folder_type === FolderTypes.PUBLIC) return true;
           if (isAdmin()) return true;
           return file.owner?.id === user?.id;
         },
