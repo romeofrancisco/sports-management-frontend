@@ -1,6 +1,7 @@
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Trophy,
   Medal,
@@ -115,53 +116,21 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
     goal_difference = 0,
   } = team;
 
-  // Get position styling
-  const getPositionStyling = (pos) => {
+  // Get position icon only
+  const getPositionIcon = (pos) => {
     switch (pos) {
       case 1:
-        return {
-          icon: Crown,
-          iconClass: "text-secondary",
-          bgClass: "from-secondary/30 to-secondary/40 border-secondary/50",
-          badgeClass:
-            "bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-lg",
-          darkBgClass:
-            "dark:from-secondary/20 dark:to-secondary/30 dark:border-secondary/40",
-        };
+        return Crown;
       case 2:
-        return {
-          icon: Medal,
-          iconClass: "text-secondary",
-          bgClass: "from-secondary/20 to-secondary/30 border-secondary/40",
-          badgeClass:
-            "bg-gradient-to-r from-secondary/70 to-secondary/60 text-secondary-foreground shadow-lg",
-          darkBgClass:
-            "dark:from-secondary/15 dark:to-secondary/25 dark:border-secondary/30",
-        };
+        return Medal;
       case 3:
-        return {
-          icon: Award,
-          iconClass: "text-secondary",
-          bgClass: "from-secondary/10 to-secondary/20 border-secondary/30",
-          badgeClass:
-            "bg-gradient-to-r from-secondary/40 to-secondary/30 text-secondary-foreground shadow-lg",
-          darkBgClass:
-            "dark:from-secondary/10 dark:to-secondary/15 dark:border-secondary/25",
-        };
+        return Award;
       default:
-        return {
-          icon: Shield,
-          iconClass: "text-primary/70",
-          bgClass: "from-card via-muted/10 to-card border-primary/40",
-          badgeClass:
-            "bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground shadow-sm",
-          darkBgClass: "",
-        };
+        return Shield;
     }
   };
 
-  const positionStyle = getPositionStyling(position);
-  const PositionIcon = positionStyle.icon;
+  const PositionIcon = getPositionIcon(position);
 
   // Win ratio color
   const getWinRatioColor = (ratio) => {
@@ -173,41 +142,38 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
 
   return (
     <Card
-      className={`overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r ${positionStyle.bgClass} ${positionStyle.darkBgClass}`}
+      className={`overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20`}
       onClick={onClick}
     >
-      <CardContent className="p-4">
+      <CardContent>
         {/* Main Team Info */}
         <div className="flex items-center gap-3 mb-3">
           {/* Position Badge */}
           <div className="relative">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${positionStyle.badgeClass} font-bold text-sm`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm`}
             >
               #{position}
             </div>
             <div
               className={`absolute -bottom-1 -right-2 w-5 h-5 rounded-full bg-background border-2 border-background flex items-center justify-center`}
             >
-              <PositionIcon className={`h-3 w-3 ${positionStyle.iconClass}`} />
+              <PositionIcon className={`h-3 w-3 text-primary`} />
             </div>
           </div>
 
           {/* Team Logo */}
           <div className="relative">
-            <div className="w-12 h-12 rounded-full bg-primary/20 border-2 border-primary/20 shadow-sm flex items-center justify-center overflow-hidden group-hover:border-primary/40 transition-colors">
-              {team_logo ? (
-                <img
-                  src={team_logo}
-                  alt={team_name}
-                  className="w-10 h-10 object-contain"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-sm">
-                  {team_name?.charAt(0) || "T"}
-                </div>
-              )}
-            </div>
+            <Avatar className="w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
+              <AvatarImage 
+                src={team_logo} 
+                alt={team_name}
+                className="object-contain"
+              />
+              <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                {team_name?.charAt(0) || "T"}
+              </AvatarFallback>
+            </Avatar>
 
             {/* Championship indicator */}
             {championships > 0 && (
@@ -246,7 +212,7 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground font-medium">
-                Form:
+                STRK:
               </span>
               <div className="flex items-center gap-1">
                 {formData.slice(0, 5).map((gameResult, idx) => {

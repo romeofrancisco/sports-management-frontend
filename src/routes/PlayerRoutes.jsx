@@ -9,6 +9,8 @@ import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
+import TournamentsList from "@/pages/admin/tournament/TournamentsList";
+import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 
 export const playerRoutes = [
   {
@@ -23,7 +25,7 @@ export const playerRoutes = [
     path: "/games/:gameId/game-result",
     element: <GameResult />,
   },
-    {
+  {
     path: "/teams",
     element: <TeamsList />,
   },
@@ -82,16 +84,25 @@ export const playerRoutes = [
   {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
-  },  {
+  },
+  {
     path: "/leagues/:league/seasons/:season/bracket",
     element: <SeasonDetails />,
+  },
+  {
+    path: "/tournaments",
+    element: <TournamentsList />,
+  },
+    {
+    path: "/tournaments/:tournamentId",
+    element: <TournamentDetails />,
   },
   {
     path: "/chat/team/:teamId",
     element: <ChatPage />,
   },
-    {
+  {
     path: "documents",
     element: <DocumentsList />,
-  }
+  },
 ];

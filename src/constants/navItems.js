@@ -56,6 +56,12 @@ export const adminGroupedNavigation = () => {
           description: "Manage league structures and seasons",
         },
         {
+          title: "Tournaments",
+          href: "/tournaments",
+          icon: Medal,
+          description: "Organize and manage tournaments",
+        },
+        {
           title: "Documents",
           href: "/documents",
           icon: FolderClosed,
@@ -137,6 +143,12 @@ export const coachGroupedNavigation = () => {
           icon: Trophy,
           description: "View league structures and seasons",
         },
+        {
+          title: "Tournaments",
+          href: "/tournaments",
+          icon: Medal,
+          description: "View tournament details and schedules",
+        },
       ],
     },
   ];
@@ -184,6 +196,12 @@ export const playerGroupedNavigation = () => {
           href: "/leagues",
           icon: Trophy,
           description: "View league structures and seasons",
+        },
+        {
+          title: "Tournaments",
+          href: "/tournaments",
+          icon: Medal,
+          description: "View tournament details and schedules",
         },
       ],
     },

@@ -3,11 +3,18 @@ import { toast } from "sonner";
 import { createBracket, fetchBracket } from "@/api/seasonsApi";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useCreateBracket = (leagueId, seasonId) => {
+export const useCreateBracket = (leagueId, seasonId, tournamentId = null) => {
   return useMutation({
     mutationFn: (data) => createBracket(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["season-details", leagueId, seasonId]);
+      // Invalidate appropriate queries based on whether it's a season or tournament bracket
+      if (tournamentId) {
+        queryClient.invalidateQueries(["tournament-details", tournamentId]);
+        queryClient.invalidateQueries(["tournament-bracket", tournamentId]);
+      } else if (seasonId) {
+        queryClient.invalidateQueries(["season-details", leagueId, seasonId]);
+        queryClient.invalidateQueries(["bracket", leagueId, seasonId]);
+      }
       toast.success("Bracket Generated", {
         richColors: true,
       });

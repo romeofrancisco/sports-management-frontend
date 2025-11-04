@@ -87,14 +87,22 @@ export const getSeasonStandingsColumns = ({
         // Check if teamFormData exists and has the expected structure
         let formData = [];
 
-        if (teamFormData && teamFormData.form && teamId) {
-          // Convert to number if teamId is a string but form keys are numbers
-          const formKey =
-            typeof teamId === "string" ? parseInt(teamId, 10) : teamId;
+        if (teamFormData) {
+          // Handle array format (tournaments) - find team by team_id
+          if (Array.isArray(teamFormData)) {
+            const teamForm = teamFormData.find(t => t.team_id === teamId);
+            formData = teamForm?.form || [];
+          } 
+          // Handle object format (seasons) - direct lookup by team_id
+          else if (teamFormData.form && teamId) {
+            // Convert to number if teamId is a string but form keys are numbers
+            const formKey =
+              typeof teamId === "string" ? parseInt(teamId, 10) : teamId;
 
-          // Try both string and number keys to handle different API formats
-          formData =
-            teamFormData.form[teamId] || teamFormData.form[formKey] || [];
+            // Try both string and number keys to handle different API formats
+            formData =
+              teamFormData.form[teamId] || teamFormData.form[formKey] || [];
+          }
         }
 
         return (

@@ -12,11 +12,13 @@ import CategorySection from "./components/CategorySection";
 // Utility imports
 import { getActiveFiltersCount } from "./utils/statsHelpers";
 import { useStatCategories } from "@/hooks/useStats";
+import { useParams } from "react-router";
 
 const SportStatsCardView = ({ stats, filter }) => {
+  const { sport } = useParams();
   const [selectedStat, setSelectedStat] = React.useState(null);
   const [expandedCategories, setExpandedCategories] = useState({});
-  const { data: categories } = useStatCategories();
+  const { data: categories } = useStatCategories({sport});
 
   const modals = {
     stat: useModal(),
@@ -84,9 +86,11 @@ const SportStatsCardView = ({ stats, filter }) => {
 
       <div className="space-y-8">
         {/* Regular Categories */}
+        {console.log(categories)}
         {categories
-          ?.filter((category) => 
-            filter.category === "all" || category.id === filter.category
+          ?.filter(
+            (category) =>
+              (filter.category === "all" || category.id === filter.category) && category.stats_count > 0
           )
           ?.map((category) => {
             const categoryStats = stats.filter(
@@ -118,7 +122,7 @@ const SportStatsCardView = ({ stats, filter }) => {
           const otherStats = stats.filter(
             (stat) => stat.category === null || stat.category === undefined
           );
-          
+
           if (otherStats.length === 0) {
             return null;
           }

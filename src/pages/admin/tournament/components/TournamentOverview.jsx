@@ -1,28 +1,27 @@
 import React, { useMemo } from "react";
-import { useParams } from "react-router";
-import { useSeasonTeamPerformance } from "@/hooks/useSeasons";
+import { useTournamentStatistics } from "@/hooks/useTournaments";
 import { useSportScoringType } from "@/hooks/useSports";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import SeasonOverviewStats from "./SeasonOverviewStats";
-import SeasonOverviewSidebar from "./SeasonOverviewSidebar";
-import { SeasonCharts } from "./SeasonCharts";
-import { prepareChartData } from "./charts/utils";
+import TournamentOverviewStats from "./TournamentOverviewStats";
+import TournamentOverviewSidebar from "./TournamentOverviewSidebar";
+import TournamentCharts from "./TournamentCharts";
+import { prepareTournamentChartData } from "./charts/utils";
 
-const SeasonOverview = ({ seasonDetails, sport }) => {
-  const { league, season } = useParams();
+const TournamentOverview = ({ tournament, standings }) => {
+  const { data: statistics, isLoading: statsLoading } = useTournamentStatistics(
+    tournament.id
+  );
+  const { isSetsScoring, isLoading: isSportLoading } = useSportScoringType(
+    tournament.sport?.slug
+  );
 
-  // Fetch team performance data for charts
-  const { data: teamPerformance, isLoading: isTeamDataLoading } =
-    useSeasonTeamPerformance(league, season);
-  const { isSetsScoring, isLoading: isSportLoading } =
-    useSportScoringType(sport);
-  // Prepare chart data using the utility function
+  // Prepare chart data using standings data (which contains team performance)
   const { pointsData, streakData, differentialData } = useMemo(() => {
-    return prepareChartData(teamPerformance, isSetsScoring);
-  }, [teamPerformance, isSetsScoring]);
+    return prepareTournamentChartData(standings, isSetsScoring);
+  }, [standings, isSetsScoring]);
 
-  const isLoading = isTeamDataLoading || isSportLoading;
+  const isLoading = statsLoading || isSportLoading;
 
   if (isLoading) {
     return (
@@ -59,21 +58,22 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
     );
   }
 
-  if (!seasonDetails) return null;
+  if (!tournament) return null;
+
   return (
     <div className="animate-in fade-in-50 duration-500">
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
         <div className="space-y-8">
-          {/* Season Overview Stats */}
-          <SeasonOverviewStats seasonDetails={seasonDetails} />
+          {/* Tournament Overview Stats */}
+          <TournamentOverviewStats tournament={tournament} />
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Left Column - Primary Content */}
             <div className="xl:col-span-2 space-y-6">
-              {/* Season Statistics Charts */}
+              {/* Tournament Statistics Charts */}
               <div className="animate-in fade-in-50 duration-500 delay-200">
-                <SeasonCharts
+                <TournamentCharts
                   pointsData={pointsData}
                   streakData={streakData}
                   differentialData={differentialData}
@@ -82,7 +82,10 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
               </div>
             </div>
             {/* Right Column - Secondary Content */}
-            <SeasonOverviewSidebar leagueId={league} seasonId={season} />
+            <TournamentOverviewSidebar
+              tournamentId={tournament.id}
+              standings={standings}
+            />
           </div>
         </div>
       </div>
@@ -90,4 +93,4 @@ const SeasonOverview = ({ seasonDetails, sport }) => {
   );
 };
 
-export default SeasonOverview;
+export default TournamentOverview;
