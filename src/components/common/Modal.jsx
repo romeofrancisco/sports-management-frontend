@@ -116,9 +116,9 @@ const Modal = ({
         >
           {scrollable ? (
             <ScrollArea
-              className={`px-6 pb-6 ${
+              className={`px-6 pb-6 w-full ${
                 showHeader
-                  ? `h-[calc(90vh-96px)]`
+                  ? `max-h-[calc(90vh-96px)]`
                   : `h-[calc(90vh-96px)]`
               }`}
             >

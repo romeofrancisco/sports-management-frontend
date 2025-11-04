@@ -6,6 +6,7 @@ import {
   uploadFile,
   downloadFile,
   copyFile,
+  moveFile,
   deleteFile,
   renameFile,
   getMyDocuments,
@@ -147,13 +148,30 @@ export const useUploadFile = () => {
     onError: (error) => {
       // Dismiss progress toast and show error
       if (toastIdRef.current) {
+        // Extract error message from various possible error structures
+        let errorMessage = "Failed to upload file";
+        
+        if (error?.response?.data) {
+          const errorData = error.response.data;
+          
+          // Check for field-specific errors (like folder: ['error message'])
+          if (errorData.folder && Array.isArray(errorData.folder)) {
+            errorMessage = errorData.folder[0];
+          } else if (errorData.detail) {
+            errorMessage = errorData.detail;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          } else if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          }
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
         toast.error("Upload failed", {
           richColors: true,
           id: toastIdRef.current,
-          description:
-            error?.response?.data?.detail ||
-            error.message ||
-            "Failed to upload file",
+          description: errorMessage,
         });
       }
 
@@ -288,6 +306,37 @@ export const useCopyFile = () => {
 
       // Reset toast ref
       toastIdRef.current = null;
+    },
+  });
+};
+
+export const useMoveFile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ fileId, targetFolderId }) => {
+      return await moveFile(fileId, targetFolderId);
+    },
+    onSuccess: (data) => {
+      // Invalidate queries to refresh the data
+      queryClient.invalidateQueries({
+        queryKey: ["folder-contents"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["root-folders"],
+      });
+
+      toast.success("File moved successfully", {
+        richColors: true,
+        description: "The file has been moved to the target folder.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Cannot move file", {
+        richColors: true,
+        description: error.response?.data?.error || error.message || "Failed to move file",
+      });
     },
   });
 };

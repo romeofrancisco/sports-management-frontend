@@ -5,6 +5,7 @@ import {
   useFolderContents,
   useSearchDocuments,
   useCopyFile,
+  useMoveFile,
   useFolderDetails,
 } from "@/hooks/useDocuments";
 import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
@@ -12,6 +13,7 @@ import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
 import DocumentsHeader from "./components/DocumentsHeader";
 import UploadFileDialog from "./components/UploadFileDialog";
+import MultipleUploadDialog from "./components/MultipleUploadDialog";
 import CreateFolderDialog from "./components/CreateFolderDialog";
 import LoadingState from "./components/LoadingState";
 import {
@@ -36,13 +38,19 @@ import {
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isMultipleUploadOpen, setIsMultipleUploadOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [clipboardFile, setClipboardFile] = useState(null);
+  const [clipboardAction, setClipboardAction] = useState(null); // 'copy' or 'cut'
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [draggedFiles, setDraggedFiles] = useState([]);
+  const [draggedFileCard, setDraggedFileCard] = useState(null);
   const longPressTimerRef = useRef(null);
   const copyMutation = useCopyFile();
+  const moveMutation = useMoveFile();
 
   // Navigation
   const {
@@ -86,7 +94,10 @@ const DocumentsList = () => {
   useEffect(() => {
     if (folderIdFromUrl && folderDetailsData && navigationStack.length === 0) {
       // Build navigation stack from breadcrumbs if available
-      if (folderDetailsData.breadcrumbs && folderDetailsData.breadcrumbs.length > 0) {
+      if (
+        folderDetailsData.breadcrumbs &&
+        folderDetailsData.breadcrumbs.length > 0
+      ) {
         setNavigationPath(folderDetailsData.breadcrumbs);
       } else {
         // No breadcrumbs, just navigate to this folder
@@ -196,18 +207,149 @@ const DocumentsList = () => {
 
   const handlePaste = () => {
     if (clipboardFile) {
-      copyMutation.mutate(
-        {
-          fileId: clipboardFile.id,
-          currentFolder,
-          rootData,
-        },
-        {
-          onSuccess: () => {
-            setClipboardFile(null); // Clear clipboard after successful paste
-          },
+      if (clipboardAction === 'cut') {
+        // Move the file
+        let targetFolderId = null;
+        
+        if (currentFolder) {
+          targetFolderId = currentFolder.id;
+        } else if (rootData) {
+          // At root level, admin can paste to null
+          targetFolderId = null;
         }
-      );
+        
+        moveMutation.mutate(
+          {
+            fileId: clipboardFile.id,
+            targetFolderId: targetFolderId,
+          },
+          {
+            onSuccess: () => {
+              setClipboardFile(null);
+              setClipboardAction(null);
+            },
+          }
+        );
+      } else {
+        // Copy the file
+        copyMutation.mutate(
+          {
+            fileId: clipboardFile.id,
+            currentFolder,
+            rootData,
+          },
+          {
+            onSuccess: () => {
+              setClipboardFile(null);
+              setClipboardAction(null);
+            },
+          }
+        );
+      }
+    }
+  };
+
+  // File card drag handlers
+  const handleFileCardDragStart = (file) => {
+    setDraggedFileCard(file);
+  };
+
+  const handleFileCardDragEnd = () => {
+    setDraggedFileCard(null);
+  };
+
+  // Handle file drop on folder
+  const handleFileDrop = (fileData, targetFolder) => {
+    if (!fileData || !fileData.fileId) {
+      return;
+    }
+    
+    moveMutation.mutate({
+      fileId: fileData.fileId,
+      targetFolderId: targetFolder.id,
+    });
+  };
+
+  // Drag and drop file upload handlers
+  const handleDragOver = (e) => {
+    // Check if we're dragging a file card (internal) or files from outside
+    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
+    
+    if (isFileCard) {
+      // Don't show upload overlay for internal file card dragging
+      return;
+    }
+    
+    // Check if we're dragging actual files (not just any drag event)
+    const hasFiles = Array.from(e.dataTransfer.items || []).some(
+      item => item.kind === 'file'
+    );
+    
+    if (!hasFiles) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = "copy";
+    
+    if (!isDraggingOver) {
+      setIsDraggingOver(true);
+    }
+  };
+
+  const handleDragEnter = (e) => {
+    // Check if we're dragging a file card (internal)
+    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
+    
+    if (isFileCard) {
+      return;
+    }
+    
+    // Check if we're dragging actual files
+    const hasFiles = Array.from(e.dataTransfer.items || []).some(
+      item => item.kind === 'file'
+    );
+    
+    if (!hasFiles) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Only process if we were showing the upload overlay
+    if (!isDraggingOver) return;
+    
+    // Only set to false if we're leaving the CardContent area
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // Check if mouse is outside the bounds
+    if (
+      x <= rect.left ||
+      x >= rect.right ||
+      y <= rect.top ||
+      y >= rect.bottom
+    ) {
+      setIsDraggingOver(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+
+    // Only handle if it's files from outside (not internal drag)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const files = Array.from(e.dataTransfer.files);
+      setDraggedFiles(files);
+      // Use multiple upload dialog for drag and drop
+      setIsMultipleUploadOpen(true);
     }
   };
 
@@ -230,7 +372,7 @@ const DocumentsList = () => {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             currentFolder={currentFolder}
-            onUploadFile={() => setIsUploadOpen(true)}
+            onUploadFile={() => setIsMultipleUploadOpen(true)}
             onCreateFolder={() => setIsCreateFolderOpen(true)}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
@@ -246,7 +388,28 @@ const DocumentsList = () => {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onTouchMove={handleTouchMove}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className="relative"
             >
+              {/* Drag overlay */}
+              {isDraggingOver && (
+                <div className=" absolute inset-0 mx-4 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-xs  rounded-lg pointer-events-none">
+                  <div className="text-center bg-background/90 rounded-lg shadow-lg border-primary/20 border-2 p-4 border-dashed">
+                    <Upload className="w-16 h-16 mx-auto mb-4 text-primary animate-bounce" />
+                    <h3 className="text-xl font-semibold text-primary mb-2">
+                      Drop files here
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Release to upload to{" "}
+                      {currentFolder ? currentFolder.name : "root folder"}
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Loading State */}
               {isLoading ? (
                 <LoadingState viewMode={viewMode} />
@@ -265,11 +428,13 @@ const DocumentsList = () => {
                           </span>
                         )}
                       </div>
-                      <div className={
-                        viewMode === "grid"
-                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
-                          : "flex flex-col gap-2"
-                      }>
+                      <div
+                        className={
+                          viewMode === "grid"
+                            ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                            : "flex flex-col gap-2"
+                        }
+                      >
                         {folders.map((folder) => (
                           <FolderCard
                             key={folder.id}
@@ -283,6 +448,7 @@ const DocumentsList = () => {
                             }}
                             showLocation={isSearching}
                             viewMode={viewMode}
+                            onFileDrop={handleFileDrop}
                           />
                         ))}
                       </div>
@@ -302,11 +468,13 @@ const DocumentsList = () => {
                           </span>
                         )}
                       </div>
-                      <div className={
-                        viewMode === "grid"
-                          ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
-                          : "flex flex-col gap-2"
-                      }>
+                      <div
+                        className={
+                          viewMode === "grid"
+                            ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2"
+                            : "flex flex-col gap-2"
+                        }
+                      >
                         {documents.map((file) => (
                           <FileCard
                             key={file.id}
@@ -314,8 +482,17 @@ const DocumentsList = () => {
                             currentFolder={currentFolder}
                             rootData={rootData}
                             showLocation={isSearching}
-                            onCopy={setClipboardFile}
+                            onCopy={(file, action) => {
+                              setClipboardFile(file);
+                              setClipboardAction(action);
+                            }}
+                            onCut={(file, action) => {
+                              setClipboardFile(file);
+                              setClipboardAction(action);
+                            }}
                             viewMode={viewMode}
+                            onDragStart={handleFileCardDragStart}
+                            onDragEnd={handleFileCardDragEnd}
                           />
                         ))}
                       </div>
@@ -339,7 +516,7 @@ const DocumentsList = () => {
                         permissions.documents.canUpload(currentFolder) && {
                           label: "Upload File",
                           logo: Upload,
-                          onClick: () => setIsUploadOpen(true),
+                          onClick: () => setIsMultipleUploadOpen(true),
                           extra: {
                             label: "Create Folder",
                             logo: Folder,
@@ -362,7 +539,7 @@ const DocumentsList = () => {
                 New Folder
               </span>
             </ContextMenuItem>
-            <ContextMenuItem onClick={() => setIsUploadOpen(true)}>
+            <ContextMenuItem onClick={() => setIsMultipleUploadOpen(true)}>
               <span className="flex items-center gap-1">
                 <Upload className="h-4 w-4" />
                 Upload File
@@ -379,19 +556,26 @@ const DocumentsList = () => {
             >
               <span className="flex items-center gap-1">
                 <ClipboardPaste className="h-4 w-4" />
-                Paste
+                Paste {clipboardFile && clipboardAction === 'cut' ? '(Move)' : clipboardFile && clipboardAction === 'copy' ? '(Copy)' : ''}
               </span>
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
       </Card>
 
-      {/* Upload Dialog */}
-      <UploadFileDialog
-        open={isUploadOpen}
-        onOpenChange={setIsUploadOpen}
+      {/* Multiple Upload Dialog */}
+      <MultipleUploadDialog
+        open={isMultipleUploadOpen}
+        onOpenChange={(open) => {
+          setIsMultipleUploadOpen(open);
+          // Always clear dragged files when dialog closes (whether cancelled or uploaded)
+          if (!open) {
+            setDraggedFiles([]);
+          }
+        }}
         currentFolder={currentFolder}
         rootData={rootData}
+        draggedFiles={draggedFiles}
       />
 
       {/* Create Folder Dialog */}

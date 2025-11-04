@@ -33,6 +33,7 @@ const FolderCard = ({
   onClick,
   showLocation = false,
   viewMode = "grid",
+  onFileDrop,
 }) => {
   const {
     contextMenuOpen,
@@ -57,6 +58,47 @@ const FolderCard = ({
     deleteMutation,
   } = useFolderCard(folder);
 
+  const [isDropTarget, setIsDropTarget] = React.useState(false);
+
+  // Drag handlers
+  const handleDragOver = (e) => {
+    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
+    
+    if (!isFileCard) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = "move";
+    setIsDropTarget(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDropTarget(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDropTarget(false);
+    
+    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
+    
+    if (!isFileCard) return;
+    
+    try {
+      const data = e.dataTransfer.getData("application/x-file-card");
+      const fileData = JSON.parse(data);
+      
+      if (onFileDrop) {
+        onFileDrop(fileData, folder);
+      }
+    } catch (error) {
+      console.error("Error handling file drop:", error);
+    }
+  };
+
   // List view rendering
   if (viewMode === "list") {
     return (
@@ -68,8 +110,13 @@ const FolderCard = ({
         >
           <ContextMenuTrigger asChild>
             <div
-              className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              className={`relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border ${
+                isDropTarget ? 'border-primary bg-primary/10' : 'border-border'
+              }`}
               onClick={() => !isRenaming && onClick(folder)}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onTouchMove={handleTouchMove}
@@ -235,8 +282,13 @@ const FolderCard = ({
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <div
-                  className="relative flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
+                  className={`relative flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px] ${
+                    isDropTarget ? 'bg-primary/10 border-2 border-primary' : ''
+                  }`}
                   onClick={() => !isRenaming && onClick(folder)}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
                   onTouchMove={handleTouchMove}

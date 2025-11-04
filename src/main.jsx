@@ -7,6 +7,10 @@ import { Provider } from "react-redux";
 import App from "./App";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./store";
+import { registerLicense } from "@syncfusion/ej2-base";
+
+registerLicense(import.meta.env.VITE_SYNCFUSION_LICENSE);
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

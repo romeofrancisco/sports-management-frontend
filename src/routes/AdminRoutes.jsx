@@ -32,6 +32,7 @@ import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 import { ChatPage } from "@/pages/chat";
 import { Navigate, useParams } from "react-router-dom";
 import DocumentsList from "@/pages/documents/DocumentsList";
+import DocumentEditor from "@/pages/documents/DocumentEditor";
 import path from "path";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 
@@ -245,5 +246,9 @@ export const adminRoutes = [
   {
     path: "documents",
     element: <DocumentsList />,
+  },
+  {
+    path: "documents/editor/:documentId",
+    element: <DocumentEditor />,
   }
 ];

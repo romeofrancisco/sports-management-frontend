@@ -25,6 +25,7 @@ import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
+import DocumentEditor from "@/pages/documents/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import path from "path";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
@@ -181,5 +182,9 @@ export const coachRoutes = [
   {
     path: "documents",
     element: <DocumentsList />,
+  },
+  {
+    path: "documents/editor/:documentId",
+    element: <DocumentEditor />,
   },
 ];
