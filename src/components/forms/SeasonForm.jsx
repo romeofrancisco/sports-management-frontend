@@ -230,7 +230,7 @@ const SeasonForm = ({ teams, onClose, season = null }) => {
 };
 
 // Team selection UI
-const TeamSelection = ({
+export const TeamSelection = ({
   sportTeams,
   selectedTeams,
   handleToggleAllTeams,

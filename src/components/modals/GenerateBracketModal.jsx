@@ -21,8 +21,12 @@ import { useForm, Controller } from "react-hook-form";
 import { useCreateBracket } from "@/hooks/useBrackets";
 import { Loader2 } from "lucide-react";
 
-const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
-  const { mutate: createBracket, isPending } = useCreateBracket(league, season);
+const GenerateBracketModal = ({ isOpen, onClose, season, league, tournament, isTournament = false }) => {
+  const { mutate: createBracket, isPending } = useCreateBracket(
+    isTournament ? null : league,
+    isTournament ? null : season,
+    isTournament ? tournament : null
+  );
   const {
     control,
     handleSubmit,
@@ -30,13 +34,25 @@ const GenerateBracketModal = ({ isOpen, onClose, season, league }) => {
   } = useForm({
     defaultValues: {
       season: season,
+      tournament: tournament,
       elimination_type: "",
     },
     mode: "onBlur",
   });
 
   const onSubmit = (data) => {
-    createBracket(data, {
+    // Only send the relevant field (season or tournament)
+    const payload = {
+      elimination_type: data.elimination_type,
+    };
+    
+    if (isTournament) {
+      payload.tournament = tournament;
+    } else {
+      payload.season = season;
+    }
+    
+    createBracket(payload, {
       onSuccess: () => {
         onClose();
       },

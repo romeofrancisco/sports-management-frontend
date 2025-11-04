@@ -14,6 +14,7 @@ import {
 } from "@/api/seasonsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
+import { useRef } from "react";
 
 export const useSeasons = (league, page = 1, pageSize = 10) => {
   return useQuery({
@@ -76,11 +77,30 @@ export const useUpdateSeason = (league) => {
 };
 
 export const useDeleteSeason = () => {
+  const toastIdRef = useRef(null);
+
   return useMutation({
     mutationFn: ({ leagueId, seasonId }) => deleteSeason(leagueId, seasonId),
+    onMutate: () => {
+      const id = toast.loading("Deleting season...", {
+        richColors: true,
+      });
+      toastIdRef.current = id;
+    },
+
     onSuccess: () => {
       queryClient.invalidateQueries(["seasons"]);
-      toast.success("Season deleted successfully", { richColors: true });
+      if (toastIdRef.current) {
+        toast.success("Season deleted successfully", {
+          richColors: true,
+          id: toastIdRef.current,
+        });
+      }
+    },
+    onError: () => {
+      if (toastIdRef.current) {
+        toast.error("Failed to delete season", { id: toastIdRef.current });
+      }
     },
   });
 };

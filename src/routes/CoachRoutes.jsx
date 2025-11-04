@@ -25,6 +25,9 @@ import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
 import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
+import TournamentsList from "@/pages/admin/tournament/TournamentsList";
+import path from "path";
+import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 
 export const coachRoutes = [
   {
@@ -160,6 +163,14 @@ export const coachRoutes = [
     element: <SeasonDetails />,
   },
   {
+    path: "/tournaments",
+    element: <TournamentsList />,
+  },
+    {
+    path: "/tournaments/:tournamentId",
+    element: <TournamentDetails />,
+  },
+  {
     path: "/chat/team",
     element: <ChatPage />,
   },
@@ -167,8 +178,8 @@ export const coachRoutes = [
     path: "/chat/team/:teamId",
     element: <ChatPage />,
   },
-    {
+  {
     path: "documents",
     element: <DocumentsList />,
-  }
+  },
 ];

@@ -1,5 +1,11 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Modal = ({
@@ -8,7 +14,7 @@ const Modal = ({
   onOpenChange,
   title,
   children,
-  
+
   // Optional props
   description,
   icon: Icon,
@@ -16,14 +22,14 @@ const Modal = ({
   error,
   loadingComponent = null,
   errorComponent = null,
-  
+
   // Styling props
   size = "md", // sm, md, lg, xl, full
   maxHeight = "90vh",
   showHeader = true,
   headerGradient = true,
   scrollable = true,
-  
+
   // Custom classes
   contentClassName = "",
   headerClassName = "",
@@ -35,7 +41,7 @@ const Modal = ({
     md: "max-w-[700px]",
     lg: "max-w-[900px]",
     xl: "max-w-[1200px]",
-    full: "max-w-[95vw]"
+    full: "max-w-[95vw]",
   };
 
   // Default loading component
@@ -49,7 +55,7 @@ const Modal = ({
   const defaultErrorComponent = (
     <div className="p-4 text-center">
       <div className="text-destructive text-sm font-medium">
-        {typeof error === 'string' ? error : 'An error occurred'}
+        {typeof error === "string" ? error : "An error occurred"}
       </div>
       <div className="text-muted-foreground text-xs mt-1">
         Please try again or contact support if the problem persists
@@ -61,25 +67,25 @@ const Modal = ({
     if (isLoading) {
       return loadingComponent || defaultLoadingComponent;
     }
-    
+
     if (error) {
       return errorComponent || defaultErrorComponent;
     }
-    
+
     return children;
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className={`w-[95vw] ${sizeClasses[size]} overflow-hidden p-0 ${contentClassName}`}
         style={{ maxHeight }}
       >
         {showHeader && (title || description || Icon) && (
-          <DialogHeader 
+          <DialogHeader
             className={`px-6 pt-6 pb-4 border-b border-border/50 ${
-              headerGradient 
-                ? "bg-gradient-to-r from-background via-primary/5 to-background" 
+              headerGradient
+                ? "bg-gradient-to-r from-background via-primary/5 to-background"
                 : "bg-background"
             } ${headerClassName}`}
           >
@@ -104,16 +110,22 @@ const Modal = ({
             </div>
           </DialogHeader>
         )}
-        
-        <div className={`${scrollable ? '' : 'overflow-hidden'} ${bodyClassName}`}>
+
+        <div
+          className={`${scrollable ? "" : "overflow-hidden"} ${bodyClassName}`}
+        >
           {scrollable ? (
-            <ScrollArea className={`px-6 pb-6 ${showHeader ? `max-h-[calc(${maxHeight}-140px)]` : `max-h-[calc(${maxHeight}-60px)]`}`}>
+            <ScrollArea
+              className={`px-6 pb-6 ${
+                showHeader
+                  ? `h-[calc(90vh-96px)]`
+                  : `h-[calc(90vh-96px)]`
+              }`}
+            >
               {content()}
             </ScrollArea>
           ) : (
-            <div className="px-6 pb-6">
-              {content()}
-            </div>
+            <div className="px-6 pb-6">{content()}</div>
           )}
         </div>
       </DialogContent>

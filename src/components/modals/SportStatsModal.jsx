@@ -16,7 +16,7 @@ import { useStatCategories } from "@/hooks/useStats";
 const SportStatsModal = ({ isOpen, onClose, stat }) => {
   const { sport } = useParams();
   const { data: formulas, isLoading } = useFormula(sport);
-  const { data: categories } = useStatCategories();
+  const { data: categories } = useStatCategories({ sport });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
