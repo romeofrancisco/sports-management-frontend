@@ -69,8 +69,11 @@ export const EDITOR_TOOLBAR_CONFIG = [
   "ContentControl",
 ];
 
-export const SYNCFUSION_SERVICE_URL =
+export const SYNCFUSION_DOCUMENT_SERVICE_URL =
   "https://ej2services.syncfusion.com/production/web-services/api/documenteditor/";
+
+export const SYNCFUSION_SPREADSHEET_SERVICE_URL =
+  "https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/open";
 
 // ============================================================================
 // TOOLBAR ACTIONS

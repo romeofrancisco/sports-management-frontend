@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { TOOLBAR_ACTIONS } from "../constants/editorConfig";
+import { TOOLBAR_ACTIONS } from "../../constants/editorConfig";
 
 export const handleSave = ({ canEdit, isPublic, saveMutation, editorRef, documentId }) => {
   if (!canEdit) {

@@ -35,6 +35,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import SpreadSheetEditor from "@/features/editors/spreadsheet/SpreadSheetEditor";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();
@@ -290,7 +291,7 @@ const DocumentsList = () => {
                 <>
                   {/* Folders Grid */}
                   {folders.length > 0 && (
-                    <div>
+                    <div className="mb-4">
                       <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
                         <Folder className="size-4 md:size-6" />
                         <h2 className="text-lg md:text-xl">Folders</h2>
@@ -331,7 +332,7 @@ const DocumentsList = () => {
                   {/* Files Grid */}
                   {documents.length > 0 && (
                     <div>
-                      <div className="flex items-center gap-1 my-4 text-xl font-semibold text-primary">
+                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
                         <File className="size-4 md:size-6" />
                         <h2 className="text-lg md:text-xl">Files</h2>
                         {isSearching && (

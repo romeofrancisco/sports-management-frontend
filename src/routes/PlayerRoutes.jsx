@@ -9,7 +9,7 @@ import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
-import DocumentEditor from "@/pages/documents/DocumentEditor";
+import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 
