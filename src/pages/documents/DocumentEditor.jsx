@@ -11,15 +11,16 @@ import {
   EDITOR_SETTINGS,
   EDITOR_TOOLBAR_CONFIG,
   SYNCFUSION_SERVICE_URL,
-  TOOLBAR_ACTIONS,
 } from "./constants/editorConfig";
+import {
+  handleSave,
+  handlePrint,
+  handleEditorCreated,
+  handleToolbarClick,
+} from "./handlers/documentEditorHandlers";
 import FullPageLoading from "@/components/common/FullPageLoading";
 
 DocumentEditorContainerComponent.Inject(Toolbar, Print);
-
-// ============================================================================
-// COMPONENT
-// ============================================================================
 
 const DocumentEditor = () => {
   // Hooks
@@ -27,84 +28,28 @@ const DocumentEditor = () => {
   const editorRef = useRef(null);
   const [isEditorReady, setIsEditorReady] = React.useState(false);
 
-  const {
-    isLoading,
-    isError,
-    error,
-    data: documentData,
-  } = useLoadDocument(documentId, editorRef, isEditorReady);
+  const { isLoading, isError, data: documentData} = useLoadDocument(documentId, editorRef, isEditorReady);
   const saveMutation = useSaveDocument();
 
   // Permission flags
   const canEdit = documentData?.canEdit ?? false;
   const isPublic = documentData?.isPublic ?? false;
 
-  // ============================================================================
-  // EVENT HANDLERS
-  // ============================================================================
-
-  const handleSave = () => {
-    if (!canEdit) {
-      toast.error("Cannot save changes", {
-        richColors: true,
-        description: isPublic
-          ? "This is a public document. Please make a copy to save your changes."
-          : "You don't have permission to save changes to this document.",
-      });
-      return;
-    }
-    saveMutation.mutate({ editorRef, documentId });
+  // Handler callbacks
+  const onSave = () => {
+    handleSave({ canEdit, isPublic, saveMutation, editorRef, documentId });
   };
 
-  const handlePrint = () => {
-    if (editorRef.current) {
-      editorRef.current.documentEditor.print();
-    }
+  const onPrint = () => {
+    handlePrint(editorRef);
   };
 
-  const handleEditorCreated = () => {
-    setIsEditorReady(true);
-
-    if (editorRef.current) {
-      // Configure editor settings
-      editorRef.current.documentEditor.documentEditorSettings.showRuler = true;
-
-      // Track document changes
-      editorRef.current.documentEditor.documentChange = () => {
-        editorRef.current.documentEditor.isDocumentChanged = true;
-      };
-    }
+  const onEditorCreated = () => {
+    handleEditorCreated(editorRef, setIsEditorReady);
   };
 
-const handleWrapText = (style) => {
-  const editor = editorRef.current?.documentEditor;
-  if (!editor) return;
-
-  const sel = editor.selection;
-  if (!sel.isImageSelected) {
-    toast.error("Select an image first");
-    return;
-  }
-
-  const imgFmt = sel.imageFormat;
-  imgFmt.textWrappingStyle = style;  // e.g. "TopAndBottom", "Behind", "Square", "InFrontOfText", "Inline"
-  editor.editorModule.setImageProperties(imgFmt);
-};
-
-  const handleToolbarClick = (args) => {
-    switch (args.item.id) {
-      case TOOLBAR_ACTIONS.SAVE:
-        handleSave();
-        break;
-      case TOOLBAR_ACTIONS.PRINT:
-        handlePrint();
-        break;
-      case TOOLBAR_ACTIONS.WRAP_TEXT:
-        handleWrapText();
-        break;
-      default:
-        break;
-    }
+  const onToolbarClick = (args) => {
+    handleToolbarClick(args, { onSave, onPrint });
   };
 
   return (
@@ -121,14 +66,12 @@ const handleWrapText = (style) => {
           serviceUrl={SYNCFUSION_SERVICE_URL}
           documentEditorSettings={EDITOR_SETTINGS}
           enableToolbar={true}
-          toolbarClick={handleToolbarClick}
+          toolbarClick={onToolbarClick}
           toolbarItems={EDITOR_TOOLBAR_CONFIG}
-          created={handleEditorCreated}
+          created={onEditorCreated}
           showPropertiesPane={false}
         />
       )}
-
-      {/* Error State */}
     </>
   );
 };

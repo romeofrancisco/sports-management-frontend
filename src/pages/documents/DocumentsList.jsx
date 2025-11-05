@@ -9,6 +9,7 @@ import {
   useFolderDetails,
 } from "@/hooks/useDocuments";
 import { useDocumentNavigation } from "./hooks/useDocumentNavigation";
+import * as handlers from "./handlers/documentsListHandlers";
 import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
 import DocumentsHeader from "./components/DocumentsHeader";
@@ -140,43 +141,6 @@ const DocumentsList = () => {
     }
   };
 
-  const handleBreadcrumbNavigation = (index) => {
-    // Clear search when navigating via breadcrumb
-    setSearchQuery("");
-    handleBreadcrumbClick(index);
-  };
-
-  const handleSearchFolderClick = (folder) => {
-    // Clear search first
-    setSearchQuery("");
-
-    // If the folder has location info, parse it to build the full breadcrumb path
-    if (folder.location) {
-      // Location format: "Coaches > Ittetsu Takeda > Players > Caitlin Antetokounmpo"
-      // Using " > " as separator to avoid conflicts with folder names containing "/"
-      const pathParts = folder.location.split(" > ");
-
-      // Create folder objects for each part of the path for breadcrumb display
-      const pathFolders = pathParts.map((name, index) => {
-        // Only the last item in the path has the real folder ID
-        if (index === pathParts.length - 1) {
-          return folder; // Use the actual folder object
-        }
-        // For parent folders, create temporary objects for breadcrumb display
-        return {
-          id: `breadcrumb-${index}-${name}`,
-          name: name,
-        };
-      });
-
-      // Set the full navigation path for proper breadcrumb display
-      setNavigationPath(pathFolders);
-    } else {
-      // No location means it's a root folder
-      navigateToFolder(folder);
-    }
-  };
-
   // Cleanup long press timer on unmount
   useEffect(() => {
     return () => {
@@ -186,171 +150,80 @@ const DocumentsList = () => {
     };
   }, []);
 
-  // Touch handlers for long press
-  const handleTouchStart = () => {
-    longPressTimerRef.current = setTimeout(() => {
-      setContextMenuOpen(true);
-    }, 500);
+  // Wrapper functions for handlers
+  const onBreadcrumbNavigate = (index) => {
+    handlers.handleBreadcrumbNavigation(
+      index,
+      setSearchQuery,
+      handleBreadcrumbClick
+    );
   };
 
-  const handleTouchEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
+  const onSearchFolderClick = (folder) => {
+    handlers.handleSearchFolderClick(
+      folder,
+      setSearchQuery,
+      setNavigationPath,
+      navigateToFolder
+    );
   };
 
-  const handleTouchMove = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
+  const onTouchStart = () => {
+    handlers.handleTouchStart(longPressTimerRef, setContextMenuOpen);
   };
 
-  const handlePaste = () => {
-    if (clipboardFile) {
-      if (clipboardAction === 'cut') {
-        // Move the file
-        let targetFolderId = null;
-        
-        if (currentFolder) {
-          targetFolderId = currentFolder.id;
-        } else if (rootData) {
-          // At root level, admin can paste to null
-          targetFolderId = null;
-        }
-        
-        moveMutation.mutate(
-          {
-            fileId: clipboardFile.id,
-            targetFolderId: targetFolderId,
-          },
-          {
-            onSuccess: () => {
-              setClipboardFile(null);
-              setClipboardAction(null);
-            },
-          }
-        );
-      } else {
-        // Copy the file
-        copyMutation.mutate(
-          {
-            fileId: clipboardFile.id,
-            currentFolder,
-            rootData,
-          },
-          {
-            onSuccess: () => {
-              setClipboardFile(null);
-              setClipboardAction(null);
-            },
-          }
-        );
-      }
-    }
+  const onTouchEnd = () => {
+    handlers.handleTouchEnd(longPressTimerRef);
   };
 
-  // File card drag handlers
-  const handleFileCardDragStart = (file) => {
-    setDraggedFileCard(file);
+  const onTouchMove = () => {
+    handlers.handleTouchMove(longPressTimerRef);
   };
 
-  const handleFileCardDragEnd = () => {
-    setDraggedFileCard(null);
-  };
-
-  // Handle file drop on folder
-  const handleFileDrop = (fileData, targetFolder) => {
-    if (!fileData || !fileData.fileId) {
-      return;
-    }
-    
-    moveMutation.mutate({
-      fileId: fileData.fileId,
-      targetFolderId: targetFolder.id,
+  const onPaste = () => {
+    handlers.handlePaste({
+      clipboardFile,
+      clipboardAction,
+      currentFolder,
+      rootData,
+      moveMutation,
+      copyMutation,
+      setClipboardFile,
+      setClipboardAction,
     });
   };
 
-  // Drag and drop file upload handlers
-  const handleDragOver = (e) => {
-    // Check if we're dragging a file card (internal) or files from outside
-    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
-    
-    if (isFileCard) {
-      // Don't show upload overlay for internal file card dragging
-      return;
-    }
-    
-    // Check if we're dragging actual files (not just any drag event)
-    const hasFiles = Array.from(e.dataTransfer.items || []).some(
-      item => item.kind === 'file'
+  const onFileCardDragStart = (file) => {
+    handlers.handleFileCardDragStart(file, setDraggedFileCard);
+  };
+
+  const onFileCardDragEnd = () => {
+    handlers.handleFileCardDragEnd(setDraggedFileCard);
+  };
+
+  const onFileDrop = (fileData, targetFolder) => {
+    handlers.handleFileDrop(fileData, targetFolder, moveMutation);
+  };
+
+  const onDragOver = (e) => {
+    handlers.handleDragOver(e, isDraggingOver, setIsDraggingOver);
+  };
+
+  const onDragEnter = (e) => {
+    handlers.handleDragEnter(e, setIsDraggingOver);
+  };
+
+  const onDragLeave = (e) => {
+    handlers.handleDragLeave(e, isDraggingOver, setIsDraggingOver);
+  };
+
+  const onDrop = (e) => {
+    handlers.handleDrop(
+      e,
+      setIsDraggingOver,
+      setDraggedFiles,
+      setIsMultipleUploadOpen
     );
-    
-    if (!hasFiles) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = "copy";
-    
-    if (!isDraggingOver) {
-      setIsDraggingOver(true);
-    }
-  };
-
-  const handleDragEnter = (e) => {
-    // Check if we're dragging a file card (internal)
-    const isFileCard = e.dataTransfer.types.includes("application/x-file-card");
-    
-    if (isFileCard) {
-      return;
-    }
-    
-    // Check if we're dragging actual files
-    const hasFiles = Array.from(e.dataTransfer.items || []).some(
-      item => item.kind === 'file'
-    );
-    
-    if (!hasFiles) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingOver(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Only process if we were showing the upload overlay
-    if (!isDraggingOver) return;
-    
-    // Only set to false if we're leaving the CardContent area
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX;
-    const y = e.clientY;
-
-    // Check if mouse is outside the bounds
-    if (
-      x <= rect.left ||
-      x >= rect.right ||
-      y <= rect.top ||
-      y >= rect.bottom
-    ) {
-      setIsDraggingOver(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingOver(false);
-
-    // Only handle if it's files from outside (not internal drag)
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const files = Array.from(e.dataTransfer.files);
-      setDraggedFiles(files);
-      // Use multiple upload dialog for drag and drop
-      setIsMultipleUploadOpen(true);
-    }
   };
 
   return (
@@ -366,7 +239,7 @@ const DocumentsList = () => {
         <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
           <DocumentsHeader
             navigationStack={navigationStack}
-            onBreadcrumbNavigate={handleBreadcrumbNavigation}
+            onBreadcrumbNavigate={onBreadcrumbNavigate}
             isFetching={isFetching}
             onRefresh={handleRefresh}
             searchQuery={searchQuery}
@@ -385,13 +258,13 @@ const DocumentsList = () => {
         >
           <ContextMenuTrigger asChild>
             <CardContent
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchMove={handleTouchMove}
-              onDragOver={handleDragOver}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+              onTouchMove={onTouchMove}
+              onDragOver={onDragOver}
+              onDragEnter={onDragEnter}
+              onDragLeave={onDragLeave}
+              onDrop={onDrop}
               className="relative"
             >
               {/* Drag overlay */}
@@ -441,14 +314,14 @@ const DocumentsList = () => {
                             folder={folder}
                             onClick={() => {
                               if (isSearching) {
-                                handleSearchFolderClick(folder);
+                                onSearchFolderClick(folder);
                               } else {
                                 handleFolderClick(folder);
                               }
                             }}
                             showLocation={isSearching}
                             viewMode={viewMode}
-                            onFileDrop={handleFileDrop}
+                            onFileDrop={onFileDrop}
                           />
                         ))}
                       </div>
@@ -491,8 +364,8 @@ const DocumentsList = () => {
                               setClipboardAction(action);
                             }}
                             viewMode={viewMode}
-                            onDragStart={handleFileCardDragStart}
-                            onDragEnd={handleFileCardDragEnd}
+                            onDragStart={onFileCardDragStart}
+                            onDragEnd={onFileCardDragEnd}
                           />
                         ))}
                       </div>
@@ -550,13 +423,18 @@ const DocumentsList = () => {
               onSelect={(e) => {
                 e.preventDefault();
                 setContextMenuOpen(false);
-                setTimeout(() => handlePaste(), 0);
+                setTimeout(() => onPaste(), 0);
               }}
               disabled={!clipboardFile}
             >
               <span className="flex items-center gap-1">
                 <ClipboardPaste className="h-4 w-4" />
-                Paste {clipboardFile && clipboardAction === 'cut' ? '(Move)' : clipboardFile && clipboardAction === 'copy' ? '(Copy)' : ''}
+                Paste{" "}
+                {clipboardFile && clipboardAction === "cut"
+                  ? "(Move)"
+                  : clipboardFile && clipboardAction === "copy"
+                  ? "(Copy)"
+                  : ""}
               </span>
             </ContextMenuItem>
           </ContextMenuContent>

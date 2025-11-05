@@ -54,7 +54,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     };
   }, []);
 
-  // Touch handlers
+  // Touch handlers for mobile
   const handleTouchStart = () => {
     longPressTimerRef.current = setTimeout(() => {
       setContextMenuOpen(true);
