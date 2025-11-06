@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDebounce } from "use-debounce";
 import CoachFilterBar from "./CoachFilterBar";
 import { useCoaches, useReactivateCoach } from "@/hooks/useCoaches";
-import PageError from "@/pages/PageError";
 import ContentLoading from "@/components/common/ContentLoading";
 import DeleteCoachModal from "@/components/modals/DeleteCoachModal";
 import CoachModal from "@/components/modals/CoachModal";
@@ -59,7 +58,6 @@ const CoachContainer = () => {
     reactivateCoachMutation.mutate({ id: coach.id });
   };
 
-  if (isError) return <PageError />;
 
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">

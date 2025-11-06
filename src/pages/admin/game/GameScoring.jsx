@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import RequireStatsGame from "./RequireStatsGame";
 import { useSportDetails } from "@/hooks/useSports";
 import FullPageLoading from "@/components/common/FullPageLoading";
-import PageError from "@/pages/PageError";
 import { useGameDetails } from "@/hooks/useGames";
 import { useParams } from "react-router";
 import NoStatsRequiredGame from "./NoStatsRequiredGame";
@@ -22,16 +21,10 @@ const GameScoring = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const { checkGamePermission } = useCoachPermissions();
 
-  const {
-    data: game,
-    isLoading: isGameLoading,
-    isError: isGameError,
-  } = useGameDetails(gameId);
-  const {
-    data: sport,
-    isLoading: isSportLoading,
-    isError: isSportError,
-  } = useSportDetails(game?.sport_slug);
+  const { data: game, isLoading: isGameLoading } = useGameDetails(gameId);
+  const { data: sport, isLoading: isSportLoading } = useSportDetails(
+    game?.sport_slug
+  );
 
   // Check permissions when game data is loaded
   useEffect(() => {
@@ -106,7 +99,6 @@ const GameScoring = () => {
 
   if (isPortrait) return <RequireLandscape />;
   if (isGameLoading || isSportLoading) return <FullPageLoading />;
-  if (isGameError || isSportError) return <PageError />;
 
   return sport?.requires_stats ? (
     <RequireStatsGame sport={sport} game={game} isConnected={isConnected} />

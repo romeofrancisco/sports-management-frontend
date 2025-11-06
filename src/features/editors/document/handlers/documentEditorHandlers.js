@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { TOOLBAR_ACTIONS } from "../../constants/editorConfig";
 
-export const handleSave = ({ canEdit, isPublic, saveMutation, editorRef, documentId }) => {
+export const handleSave = ({ canEdit, isPublic, saveMutation, editorRef, documentId, fileExtension }) => {
   if (!canEdit) {
     toast.error("Cannot save changes", {
       richColors: true,
@@ -11,7 +11,7 @@ export const handleSave = ({ canEdit, isPublic, saveMutation, editorRef, documen
     });
     return;
   }
-  saveMutation.mutate({ editorRef, documentId });
+  saveMutation.mutate({ editorRef, documentId, fileExtension });
 };
 
 export const handlePrint = (editorRef) => {
@@ -26,6 +26,7 @@ export const handleEditorCreated = (editorRef, setIsEditorReady) => {
   if (editorRef.current) {
     // Configure editor settings
     editorRef.current.documentEditor.documentEditorSettings.showRuler = true;
+    console.log(editorRef.current)
 
     // Track document changes
     editorRef.current.documentEditor.documentChange = () => {

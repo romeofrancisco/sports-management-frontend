@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useModal } from "@/hooks/useModal";
 import DataTable from "@/components/common/DataTable";
-import PageError from "@/pages/PageError";
 import { useGames } from "@/hooks/useGames";
-import { GAME_STATUS_VALUES, GAME_TYPE_VALUES } from "@/constants/game";
 import GameModal from "@/components/modals/GameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
@@ -28,7 +26,6 @@ import {
   GameCard,
   StatusSection,
   GameTableSkeleton,
-  GameCardsSkeletons,
   StatusSectionSkeleton,
 } from "@/components/games";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
@@ -96,7 +93,6 @@ const GameTable = () => {
     startGame: useModal(),
   };
 
-  if (isError) return <PageError />;
   const columns = getGameTableColumns({
     filterStatus: filter.status,
     navigate,

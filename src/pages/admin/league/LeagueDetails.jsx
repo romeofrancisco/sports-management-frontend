@@ -1,14 +1,12 @@
 import React from "react";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import { useLeagueDetails, useLeagueRankings } from "@/hooks/useLeagues";
-import PageError from "@/pages/PageError";
 import FullPageLoading from "@/components/common/FullPageLoading";
 import { useParams, Link, useLocation } from "react-router-dom";
 import LeagueSeasons from "./components/seasons/LeagueSeasons";
 import LeagueStandings from "./components/standings/LeagueStandings";
 import { useSeasons } from "@/hooks/useSeasons";
 import LeagueTeamsGrid from "./components/teams/LeagueTeamsGrid";
-import { Card, CardContent } from "@/components/ui/card";
 import { LeagueOverview } from "./components/overview";
 import { cn } from "@/lib/utils";
 import { Trophy, Users, Calendar } from "lucide-react";
@@ -48,7 +46,6 @@ const LeagueDetails = () => {
   const isError = isLeagueError || isSeasonsError || isLeagueRankingsError;
 
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
   const { name, sport } = leagueDetails;
   // Navigation items for the league details

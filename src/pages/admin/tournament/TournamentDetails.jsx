@@ -4,7 +4,6 @@ import {
   useTournamentDetails,
   useTournamentStandings,
 } from "@/hooks/useTournaments";
-import PageError from "@/pages/PageError";
 import FullPageLoading from "@/components/common/FullPageLoading";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -54,7 +53,6 @@ const TournamentDetails = () => {
   const isError = isTournamentError || isStandingsError;
 
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
   const { name, sport } = tournamentDetails;
 

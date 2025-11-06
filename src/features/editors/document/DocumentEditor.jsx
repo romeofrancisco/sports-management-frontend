@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   DocumentEditorContainerComponent,
   Toolbar,
@@ -67,7 +67,7 @@ const DocumentEditor = ({
       toolbarClick={onToolbarClick}
       toolbarItems={EDITOR_TOOLBAR_CONFIG}
       created={onEditorCreated}
-      showPropertiesPane={false}
+      showPropertiesPane={true}
     />
   );
 };

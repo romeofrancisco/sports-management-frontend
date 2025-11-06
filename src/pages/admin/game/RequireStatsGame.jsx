@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import FullPageLoading from "@/components/common/FullPageLoading";
-import PageError from "@/pages/PageError";
 import ScoreBoard from "./components/scoring/ScoreBoard";
 import TeamSide from "./components/scoring/TeamSide";
 import StatButtons from "./components/scoring/StatButtons/StatButtons";
@@ -83,7 +82,6 @@ const RequireStatsGame = ({ game, isConnected }) => {
 
   // Loading/Error UI
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
 
   const { home_players, away_players } = currentPlayers;

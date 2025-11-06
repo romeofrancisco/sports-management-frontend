@@ -2,17 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import api from "@/api";
 import { toast } from "sonner";
-
-// Constants
-const MIME_TYPES = {
-  DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-};
-
-const FILE_EXTENSIONS = {
-  WORD: ["docx", "doc"],
-  EXCEL: ["xlsx", "xls", "csv"],
-};
-
+import { FILE_EXTENSIONS, MIME_TYPES } from "../constants/documentTypes";
 /**
  * Hook to fetch and load a document for editing
  * Handles file download and File object creation
@@ -109,6 +99,15 @@ async function fetchExcelFile(fileUrl, fileName) {
     }
   );
 
+  if (response.ok) {
+    toast.success(`Spreadsheet loaded`, {
+      description: fileName,
+      richColors: true,
+    });
+  } else {
+    throw new Error("Failed to open Excel file");
+  }
+
   return await response.json();
 }
 
@@ -118,13 +117,9 @@ function loadWordDocument(editor, file, fileName) {
   toast.success(`Document loaded`, { description: fileName, richColors: true });
 }
 
-function loadExcelDocument(editor, file, fileName) {
+function loadExcelDocument(editor, file) {
   if (editor.openFromJson) {
     editor.openFromJson({ file });
-    toast.success(`Spreadsheet loaded`, {
-      description: fileName,
-      richColors: true,
-    });
   }
 }
 
@@ -140,20 +135,22 @@ export const useSaveDocument = () => {
       if (!documentId) {
         throw new Error("No document to save");
       }
-
       // Check if it's a Word document that needs blob conversion
-      const isDocx =
-        fileExtension?.toLowerCase() === "docx" ||
-        fileExtension?.toLowerCase() === "doc";
+      const isDocx = FILE_EXTENSIONS.WORD.includes(
+        fileExtension?.toLowerCase()
+      );
+
+      const isExcel = FILE_EXTENSIONS.EXCEL.includes(
+        fileExtension?.toLowerCase()
+      );
 
       let base64Content;
       let fileName;
-
+      if (!editorRef.current) {
+        throw new Error("Editor not available");
+      }
       if (isDocx) {
         // Word documents: Get content from Syncfusion Document Editor
-        if (!editorRef.current) {
-          throw new Error("Editor not available");
-        }
 
         // Get the document content as blob
         const blob = await editorRef.current.documentEditor.saveAsBlob("Docx");
@@ -170,8 +167,13 @@ export const useSaveDocument = () => {
         });
 
         fileName = editorRef.current.documentEditor.documentName;
+      } else if (isExcel) {
+        // For Excel files, they handle their own save mechanism
+        editorRef.current.saveAsJson().then((json) => {
+          const FormData = new FormData();
+          FormData.appent("FileName");
+        });
       } else {
-        // For other file types (PDF, spreadsheets), they handle their own save mechanism
         // This will be handled by their respective editors/components
         throw new Error(
           `Saving ${fileExtension} files is handled by their specific editor`

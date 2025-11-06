@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import DocumentEditor from '@/features/editors/document/DocumentEditor'
-import SpreadSheetEditor from '@/features/editors/spreadsheet/SpreadSheetEditor'
-import { useLoadDocument } from '@/features/editors/hooks/useEditor'
-import FullPageLoading from '@/components/common/FullPageLoading'
+import React, { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import DocumentEditor from "@/features/editors/document/DocumentEditor";
+import SpreadSheetEditor from "@/features/editors/spreadsheet/SpreadSheetEditor";
+import { useLoadDocument } from "@/features/editors/hooks/useEditor";
+import FullPageLoading from "@/components/common/FullPageLoading";
 
 const IdentifyEditor = () => {
   const { documentId } = useParams();
@@ -11,20 +11,15 @@ const IdentifyEditor = () => {
   const [isEditorReady, setIsEditorReady] = useState(true); // Changed to true so query can run immediately
 
   // Load document data
-  const { isLoading, isError, data: documentData, error } = useLoadDocument(
-    documentId, 
-    editorRef, 
-    isEditorReady
-  );
+  const {
+    isLoading,
+    isError,
+    data: documentData,
+    error,
+  } = useLoadDocument(documentId, editorRef, isEditorReady);
+  console.log(error)
 
-
-
-  // Show loading state
-  if (isLoading || !documentData) {
-    return <FullPageLoading />;
-  }
-  // Show error state
-  if (isError) {
+  if (true) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
@@ -39,11 +34,16 @@ const IdentifyEditor = () => {
     );
   }
 
+  // Show loading state
+  if (isLoading) {
+    return <FullPageLoading />;
+  }
+  // Show error state
 
   // Determine which editor to render based on file type
   const fileExtension = documentData?.fileExtension?.toLowerCase();
-  const isDocx = fileExtension === 'docx' || fileExtension === 'doc';
-  const isSpreadsheet = ['xlsx', 'xls', 'csv'].includes(fileExtension);
+  const isDocx = fileExtension === "docx" || fileExtension === "doc";
+  const isSpreadsheet = ["xlsx", "xls", "csv"].includes(fileExtension);
 
   // Render appropriate editor
   if (isDocx) {
@@ -74,9 +74,7 @@ const IdentifyEditor = () => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="text-center">
-        <h2 className="text-xl font-semibold mb-2">
-          Unsupported File Type
-        </h2>
+        <h2 className="text-xl font-semibold mb-2">Unsupported File Type</h2>
         <p className="text-muted-foreground">
           {fileExtension?.toUpperCase()} files cannot be edited in this viewer.
         </p>

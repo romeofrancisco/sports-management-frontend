@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
+import React from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { useSeasonDetails, useSeasonStandings } from "@/hooks/useSeasons";
 import { useLeagueDetails } from "@/hooks/useLeagues";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
@@ -9,7 +9,6 @@ import { SeasonGames } from "./components/SeasonGames";
 import { SeasonTeams } from "./components/SeasonTeams";
 import BracketView from "./components/BracketView";
 import SeasonActions from "./components/SeasonActions";
-import PageError from "@/pages/PageError";
 import FullPageLoading from "@/components/common/FullPageLoading";
 import { cn } from "@/lib/utils";
 import { Trophy, Users, BarChart3, Target } from "lucide-react";
@@ -54,7 +53,6 @@ const SeasonDetails = () => {
     isLeagueLoading || isSeasonStandingsLoading || isSeasonLoading;
   const isError = isLeagueError || isSeasonStandingsError || isSeasonError;
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
   const { sport } = leagueDetails;
   // Navigation items for the season details
