@@ -4,6 +4,9 @@ import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import SpreadSheetEditor from "@/features/editors/spreadsheet/SpreadSheetEditor";
 import { useLoadDocument } from "@/features/editors/hooks/useEditor";
 import FullPageLoading from "@/components/common/FullPageLoading";
+import PageError from "../PageError";
+import { FileX } from "lucide-react";
+import { FILE_EXTENSIONS } from "@/features/editors/constants/fileTypes";
 
 const IdentifyEditor = () => {
   const { documentId } = useParams();
@@ -17,35 +20,20 @@ const IdentifyEditor = () => {
     data: documentData,
     error,
   } = useLoadDocument(documentId, editorRef, isEditorReady);
-  console.log(error)
-
-  if (true) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-destructive mb-2">
-            Failed to load document
-          </h2>
-          <p className="text-muted-foreground">
-            Please try again or contact support if the problem persists.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   // Show loading state
-  if (isLoading) {
-    return <FullPageLoading />;
-  }
-  // Show error state
+  if (isLoading) return <FullPageLoading />;
+
+  // Show error
+  if (isError || !documentData)
+    return <PageError error={error} onReset={() => window.location.reload()} />;
 
   // Determine which editor to render based on file type
   const fileExtension = documentData?.fileExtension?.toLowerCase();
-  const isDocx = fileExtension === "docx" || fileExtension === "doc";
-  const isSpreadsheet = ["xlsx", "xls", "csv"].includes(fileExtension);
+  const isDocx = FILE_EXTENSIONS.WORD.includes(fileExtension);
+  const isExcel = FILE_EXTENSIONS.EXCEL.includes(fileExtension);
 
-  // Render appropriate editor
+  //Render appropriate editor
   if (isDocx) {
     return (
       <DocumentEditor
@@ -58,7 +46,7 @@ const IdentifyEditor = () => {
     );
   }
 
-  if (isSpreadsheet) {
+  if (isExcel) {
     return (
       <SpreadSheetEditor
         documentId={documentId}
@@ -72,13 +60,16 @@ const IdentifyEditor = () => {
 
   // Fallback for unsupported file types
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold mb-2">Unsupported File Type</h2>
-        <p className="text-muted-foreground">
+    <div className="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-md text-center place-items-center">
+        <FileX className="size-20" />
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          Unsupported File Type
+        </h1>
+        <p className="mt-2">
           {fileExtension?.toUpperCase()} files cannot be edited in this viewer.
         </p>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="mt-4 text-muted-foreground">
           Supported formats: DOCX, DOC, XLSX, XLS, CSV
         </p>
       </div>

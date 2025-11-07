@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import api from "@/api";
 import { toast } from "sonner";
-import { FILE_EXTENSIONS, MIME_TYPES } from "../constants/documentTypes";
+import { FILE_EXTENSIONS, MIME_TYPES } from "../constants/fileTypes";
 /**
  * Hook to fetch and load a document for editing
  * Handles file download and File object creation
@@ -14,12 +14,12 @@ export const useLoadDocument = (documentId, editorRef) => {
       const { data } = await api.get(`/documents/files/${documentId}/`);
       if (!data) throw new Error("Document not found");
 
-      const { file: fileUrl, title: fileName, folder, file_extension } = data;
+      const { file: fileUrl, title: fileName, folder, file_extension, version } = data;
       const ext = file_extension?.toLowerCase();
       const isDocx = FILE_EXTENSIONS.WORD.includes(ext);
       const isExcel = FILE_EXTENSIONS.EXCEL.includes(ext);
 
-      const file = await processFile(fileUrl, fileName, isDocx, isExcel);
+      const file = await processFile(fileUrl, fileName, version, isDocx, isExcel);
 
       return {
         file,
@@ -54,23 +54,13 @@ export const useLoadDocument = (documentId, editorRef) => {
       toast.error("Failed to open document");
     }
   }, [query.isSuccess, query.data, editorRef]);
-
-  // Handle errors
-  useEffect(() => {
-    if (query.isError) {
-      toast.error("Failed to load document", {
-        description: query.error?.message || "Error",
-      });
-    }
-  }, [query.isError, query.error]);
-
   return query;
 };
 
 // Helper Functions
-async function processFile(fileUrl, fileName, isDocx, isExcel) {
+async function processFile(fileUrl, fileName, version, isDocx, isExcel) {
   if (isDocx) {
-    return await fetchWordFile(fileUrl, fileName);
+    return await fetchWordFile(fileUrl, fileName, version);
   }
 
   if (isExcel) {
@@ -80,10 +70,13 @@ async function processFile(fileUrl, fileName, isDocx, isExcel) {
   return fileUrl; // PDFs or non-editable previews
 }
 
-async function fetchWordFile(fileUrl, fileName) {
-  const blob = await fetch(fileUrl).then((r) => r.blob());
+async function fetchWordFile(fileUrl, fileName, version) {
+  // prevent browser cache
+  const fileUrlWithVersion = `${fileUrl}?v=${version}`;
+  const blob = await fetch(fileUrlWithVersion, { cache: "no-store" }).then((r) => r.blob());
   return new File([blob], fileName, { type: MIME_TYPES.DOCX });
 }
+
 
 async function fetchExcelFile(fileUrl, fileName) {
   const blob = await fetch(fileUrl).then((r) => r.blob());
@@ -129,86 +122,94 @@ function loadExcelDocument(editor, file) {
  * - Word documents: Converts blob to base64 from Syncfusion editor
  * - Other files (PDF, spreadsheets, etc.): Handles them directly
  */
+// Convert Blob → base64
 export const useSaveDocument = () => {
   return useMutation({
     mutationFn: async ({ editorRef, documentId, fileExtension }) => {
-      if (!documentId) {
-        throw new Error("No document to save");
-      }
-      // Check if it's a Word document that needs blob conversion
-      const isDocx = FILE_EXTENSIONS.WORD.includes(
-        fileExtension?.toLowerCase()
-      );
+      if (!documentId) throw new Error("No document to save");
+      if (!editorRef?.current) throw new Error("Editor not available");
 
-      const isExcel = FILE_EXTENSIONS.EXCEL.includes(
-        fileExtension?.toLowerCase()
-      );
+      const ext = fileExtension?.toLowerCase();
+      const isDocx = FILE_EXTENSIONS.WORD.includes(ext);
+      const isExcel = FILE_EXTENSIONS.EXCEL.includes(ext);
 
       let base64Content;
       let fileName;
-      if (!editorRef.current) {
-        throw new Error("Editor not available");
-      }
+
+      // ---------- WORD ----------
       if (isDocx) {
-        // Word documents: Get content from Syncfusion Document Editor
-
-        // Get the document content as blob
         const blob = await editorRef.current.documentEditor.saveAsBlob("Docx");
+        base64Content = (await blobToBase64(blob)).split(",")[1];
+        fileName =
+          editorRef.current.documentEditor?.documentName || "Document.docx";
 
-        // Convert blob to base64
-        base64Content = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const base64data = reader.result.split(",")[1];
-            resolve(base64data);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
+        const response = await api.post("/documents/editor/export/", {
+          documentId,
+          content: base64Content,
+          fileName,
         });
 
-        fileName = editorRef.current.documentEditor.documentName;
-      } else if (isExcel) {
-        // For Excel files, they handle their own save mechanism
-        editorRef.current.saveAsJson().then((json) => {
-          const FormData = new FormData();
-          FormData.appent("FileName");
-        });
-      } else {
-        // This will be handled by their respective editors/components
+        if (!response.data.success) throw new Error("Save operation failed");
+        return response.data;
+      }
+
+      // ---------- EXCEL ----------
+      else if (isExcel) {
+        const spreadsheet = editorRef.current;
+        if (!spreadsheet) throw new Error("Spreadsheet not initialized");
+
+        // 1️⃣ Get JSON data from Syncfusion
+        const jsonData = await spreadsheet.saveAsJson();
+
+        // 2️⃣ Send to our backend (axios keeps cookies & interceptors)
+        const { data } = await api.post(
+          "/documents/spreadsheet/save/",
+          {
+            documentId,
+            FileName: spreadsheet.sheets?.[0]?.name || "Spreadsheet.xlsx",
+            JSONData: JSON.stringify(jsonData.jsonObject.Workbook),
+            saveType: "Xlsx",
+          }
+        );
+
+        if (!data?.success) throw new Error("Spreadsheet save failed");
+        return data;
+      }
+
+      // ---------- UNSUPPORTED ----------
+      else {
         throw new Error(
           `Saving ${fileExtension} files is handled by their specific editor`
         );
       }
-
-      // Save to backend
-      const response = await api.post("/documents/editor/export/", {
-        documentId,
-        content: base64Content,
-        fileName: fileName,
-      });
-
-      if (!response.data.success) {
-        throw new Error("Save operation failed");
-      }
-
-      return response.data;
     },
-    onSuccess: () => {
+
+    // ---------- SUCCESS ----------
+    onSuccess: (data) => {
       toast.success("Document saved successfully", {
         richColors: true,
         description: "Your changes have been saved to Cloudinary.",
       });
     },
-    onError: (error) => {
-      const errorData = error.response?.data;
-      const errorMessage =
-        errorData?.error || error.message || "An error occurred while saving.";
-      const errorDescription = errorData?.message || errorMessage;
 
+    // ---------- ERROR ----------
+    onError: (error) => {
+      const msg =
+        error.response?.data?.error || error.message || "Save failed";
       toast.error("Failed to save document", {
         richColors: true,
-        description: errorDescription,
+        description: msg,
       });
     },
+  });
+};
+
+// --- Helper: Convert Blob → Base64 ---
+const blobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
   });
 };

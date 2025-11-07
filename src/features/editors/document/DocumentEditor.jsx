@@ -3,21 +3,22 @@ import {
   DocumentEditorContainerComponent,
   Toolbar,
   Print,
+  Ribbon,
 } from "@syncfusion/ej2-react-documenteditor";
 import { useSaveDocument } from "@/features/editors/hooks/useEditor";
 import {
   EDITOR_SETTINGS,
   EDITOR_TOOLBAR_CONFIG,
   SYNCFUSION_DOCUMENT_SERVICE_URL,
-} from "../constants/editorConfig";
+} from "../constants/documentConfig";
 import {
   handleSave,
   handlePrint,
   handleEditorCreated,
-  handleToolbarClick,
+  handleFileMenuItemSelect,
 } from "./handlers/documentEditorHandlers";
 
-DocumentEditorContainerComponent.Inject(Toolbar, Print);
+DocumentEditorContainerComponent.Inject(Toolbar, Print, Ribbon);
 
 const DocumentEditor = ({
   documentId,
@@ -52,8 +53,8 @@ const DocumentEditor = ({
     handleEditorCreated(editorRef, setIsEditorReady);
   };
 
-  const onToolbarClick = (args) => {
-    handleToolbarClick(args, { onSave, onPrint });
+  const onFileMenuItemSelect = (args) => {
+    handleFileMenuItemSelect(args, { onSave, onPrint });
   };
 
   return (
@@ -64,10 +65,15 @@ const DocumentEditor = ({
       serviceUrl={SYNCFUSION_DOCUMENT_SERVICE_URL}
       documentEditorSettings={EDITOR_SETTINGS}
       enableToolbar={true}
-      toolbarClick={onToolbarClick}
-      toolbarItems={EDITOR_TOOLBAR_CONFIG}
+      fileMenuItemClick={onFileMenuItemSelect}
+      fileMenuItems={[
+        "New",
+        { text: "Print", id: "print", iconCss: "e-icons e-print" },
+        { text: "Save", id: "save", iconCss: "e-icons e-save" },
+      ]}
       created={onEditorCreated}
       showPropertiesPane={true}
+      toolbarMode="Ribbon"
     />
   );
 };

@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { TOOLBAR_ACTIONS } from "../../constants/editorConfig";
+import { TOOLBAR_ACTIONS } from "../../constants/documentConfig";
 
 export const handleSave = ({ canEdit, isPublic, saveMutation, editorRef, documentId, fileExtension }) => {
   if (!canEdit) {
@@ -36,7 +36,7 @@ export const handleEditorCreated = (editorRef, setIsEditorReady) => {
 };
 
 
-export const handleToolbarClick = (args, handlers) => {
+export const handleFileMenuItemSelect = (args, handlers) => {
   switch (args.item.id) {
     case TOOLBAR_ACTIONS.SAVE:
       handlers.onSave();
