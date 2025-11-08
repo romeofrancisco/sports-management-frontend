@@ -75,6 +75,11 @@ export const SYNCFUSION_DOCUMENT_SERVICE_URL =
 export const SYNCFUSION_SPREADSHEET_SERVICE_URL =
   "https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/open";
 
+export const SYNCFUSION_SAVE_URLS = [
+  "https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/save",
+  "https://ej2services.syncfusion.com/production/web-services/api/documenteditor/save",
+];
+
 // ============================================================================
 // TOOLBAR ACTIONS
 // ============================================================================

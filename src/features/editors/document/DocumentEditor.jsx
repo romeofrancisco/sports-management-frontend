@@ -42,6 +42,7 @@ const DocumentEditor = ({
       editorRef,
       documentId,
       fileExtension: documentData?.fileExtension,
+      fileName: documentData?.fileName,
     });
   };
 

@@ -5,6 +5,7 @@ import {
   handleSave,
   handleFileMenuItemSelect,
 } from "./handlers/spreadsheetEditorHandlers";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 const SpreadSheetEditor = ({ editorRef, documentId, documentData }) => {
   // Hooks
@@ -28,20 +29,18 @@ const SpreadSheetEditor = ({ editorRef, documentId, documentData }) => {
       editorRef,
       documentId,
       fileExtension: documentData?.fileExtension,
+      fileName: documentData?.fileName,
     });
   };
 
-  const fileMenuBeforeOpen = () => {
+  const created = () => {
     const spreadsheet = editorRef.current;
     if (!spreadsheet) return;
-
-    // Wait for file menu to actually initialize
-    spreadsheet.hideFileMenuItems(["Save As"], true);
     spreadsheet.addFileMenuItems(
       [
         {
           text: "Save",
-          iconCss: "e-icons e-save",
+          iconCss: "e-icons e-cloud",
           id: "save",
         },
       ],
@@ -54,6 +53,11 @@ const SpreadSheetEditor = ({ editorRef, documentId, documentData }) => {
     handleFileMenuItemSelect(args, { onSave });
   };
 
+  const beforeSave = (args) => {
+    console.log(args)
+
+  };
+
   return (
     <div style={{ width: "100%", height: "calc(100vh - 64px)" }}>
       <SpreadsheetComponent
@@ -61,9 +65,11 @@ const SpreadSheetEditor = ({ editorRef, documentId, documentData }) => {
         scrollSettings={scrollSettings}
         allowOpen={true}
         allowSave={true}
+        saveUrl="https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/save"
         width="100%"
         height="100%"
-        fileMenuBeforeOpen={fileMenuBeforeOpen}
+        created={created}
+        beforeSave={beforeSave}
         fileMenuItemSelect={onFileMenuItemSelect}
       />
     </div>

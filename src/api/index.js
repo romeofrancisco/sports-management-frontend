@@ -9,7 +9,7 @@ import { isManualLogout, setManualLogout } from "@/utils/logoutFlag";
 import { triggerGlobalError } from "@/utils/globalErrorHandler";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },
