@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTournaments } from "@/hooks/useTournaments";
 import FullPageLoading from "../common/FullPageLoading";
-import PageError from "@/pages/PageError";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import TournamentsHeader from "./TournamentsHeader";
 import TournamentsGrid from "./TournamentsGrid";
@@ -22,7 +21,6 @@ const TournamentsContainer = () => {
   }, [tournaments, searchTerm]);
 
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">

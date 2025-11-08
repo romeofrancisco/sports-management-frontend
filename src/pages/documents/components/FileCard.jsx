@@ -8,6 +8,7 @@ import {
   Check,
   X,
   MapPin,
+  MoreVertical,
 } from "lucide-react";
 import { useFileCard } from "../hooks/useFileCard";
 import DeleteModal from "@/components/common/DeleteModal";
@@ -72,19 +73,39 @@ const FileCard = ({
   } = useFileCard(file, currentFolder, rootData, onCopy, onCut);
 
   const fileIcon = getFileIcon();
+  const contextMenuTriggerRef = React.useRef(null);
 
+  // Handler to open context menu via button click
+  const handleMenuButtonClick = (e) => {
+    e.stopPropagation();
+    
+    // Create and dispatch a context menu event
+    const contextMenuEvent = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      button: 2,
+      clientX: e.clientX,
+      clientY: e.clientY,
+    });
+    
+    contextMenuTriggerRef.current?.dispatchEvent(contextMenuEvent);
+  };
 
   // Drag handlers for moving files
   const handleDragStart = (e) => {
     if (!canEdit) return; // Only owner/admin can move files
-    
+
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("application/x-file-card", JSON.stringify({
-      fileId: file.id,
-      fileName: file.title,
-      type: "file"
-    }));
-    
+    e.dataTransfer.setData(
+      "application/x-file-card",
+      JSON.stringify({
+        fileId: file.id,
+        fileName: file.title,
+        type: "file",
+      })
+    );
+
     if (onDragStart) {
       onDragStart(file);
     }
@@ -107,6 +128,7 @@ const FileCard = ({
         >
           <ContextMenuTrigger asChild>
             <div
+              ref={contextMenuTriggerRef}
               className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
               draggable={canEdit}
               onDragStart={handleDragStart}
@@ -204,12 +226,21 @@ const FileCard = ({
                 >
                   <DownloadIcon className="h-4 w-4" />
                 </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={handleMenuButtonClick}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </ContextMenuTrigger>
 
           {/* Right-Click Context Menu */}
           <ContextMenuContent className="w-48">
+            {/* View/Download Actions */}
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
@@ -232,30 +263,39 @@ const FileCard = ({
                 Open in Editor
               </ContextMenuItem>
             )}
-            {canCopy && file.status !== "copy" && (
-              <ContextMenuItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                  setContextMenuOpen(false);
-                  setTimeout(() => handleCopy(), 0);
-                }}
-              >
-                <CopyIcon className="mr-2 h-4 w-4" />
-                Copy
-              </ContextMenuItem>
+
+            {/* Clipboard Actions */}
+            {(canCopy || canEdit) && (
+              <>
+                <ContextMenuSeparator />
+                {canCopy && file.status !== "copy" && (
+                  <ContextMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setContextMenuOpen(false);
+                      setTimeout(() => handleCopy(), 0);
+                    }}
+                  >
+                    <CopyIcon className="mr-2 h-4 w-4" />
+                    Copy
+                  </ContextMenuItem>
+                )}
+                {canEdit && (
+                  <ContextMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setContextMenuOpen(false);
+                      setTimeout(() => handleCut(), 0);
+                    }}
+                  >
+                    <Scissors className="mr-2 h-4 w-4" />
+                    Cut
+                  </ContextMenuItem>
+                )}
+              </>
             )}
-            {canEdit && (
-              <ContextMenuItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                  setContextMenuOpen(false);
-                  setTimeout(() => handleCut(), 0);
-                }}
-              >
-                <Scissors className="mr-2 h-4 w-4" />
-                Cut
-              </ContextMenuItem>
-            )}
+
+            {/* Edit Actions */}
             {canEdit && (
               <>
                 <ContextMenuSeparator />
@@ -271,6 +311,8 @@ const FileCard = ({
                 </ContextMenuItem>
               </>
             )}
+
+            {/* Destructive Actions */}
             {canDelete && (
               <>
                 <ContextMenuSeparator />
@@ -315,9 +357,20 @@ const FileCard = ({
       >
         <ContextMenuTrigger asChild>
           <div className="relative group">
+            {/* Three-dot menu button */}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="absolute top-2 right-2 z-10"
+              onClick={handleMenuButtonClick}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <div
+                  ref={contextMenuTriggerRef}
                   className="flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
                   draggable={canEdit}
                   onDragStart={handleDragStart}
@@ -432,6 +485,7 @@ const FileCard = ({
 
         {/* Right-Click Context Menu */}
         <ContextMenuContent className="w-48">
+          {/* View/Download Actions */}
           <ContextMenuItem
             onSelect={(e) => {
               e.preventDefault();
@@ -454,30 +508,39 @@ const FileCard = ({
               Open in Editor
             </ContextMenuItem>
           )}
-          {canCopy && file.status !== "copy" && (
-            <ContextMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-                setContextMenuOpen(false);
-                setTimeout(() => handleCopy(), 0);
-              }}
-            >
-              <CopyIcon className="mr-2 h-4 w-4" />
-              Copy
-            </ContextMenuItem>
+
+          {/* Clipboard Actions */}
+          {(canCopy || canEdit) && (
+            <>
+              <ContextMenuSeparator />
+              {canCopy && file.status !== "copy" && (
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleCopy(), 0);
+                  }}
+                >
+                  <CopyIcon className="mr-2 h-4 w-4" />
+                  Copy
+                </ContextMenuItem>
+              )}
+              {canEdit && (
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleCut(), 0);
+                  }}
+                >
+                  <Scissors className="mr-2 h-4 w-4" />
+                  Cut
+                </ContextMenuItem>
+              )}
+            </>
           )}
-          {canEdit && (
-            <ContextMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-                setContextMenuOpen(false);
-                setTimeout(() => handleCut(), 0);
-              }}
-            >
-              <Scissors className="mr-2 h-4 w-4" />
-              Cut
-            </ContextMenuItem>
-          )}
+
+          {/* Edit Actions */}
           {canEdit && (
             <>
               <ContextMenuSeparator />
@@ -493,6 +556,8 @@ const FileCard = ({
               </ContextMenuItem>
             </>
           )}
+
+          {/* Destructive Actions */}
           {canDelete && (
             <>
               <ContextMenuSeparator />

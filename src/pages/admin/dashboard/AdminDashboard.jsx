@@ -41,22 +41,6 @@ const AdminDashboard = () => {
     return <DashboardSkeleton />;
   }
 
-  if (overviewError || analyticsError) {
-    return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">
-            Error Loading Dashboard
-          </h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {overviewError?.message ||
-              analyticsError?.message ||
-              "Failed to load dashboard data"}
-          </p>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       <div className="p-4 md:p-6 space-y-8">

@@ -7,7 +7,6 @@ import {
 } from "@/hooks/useTrainings";
 import { useSessionWorkflow } from "@/hooks/useSessionWorkflow";
 import { useSessionStatus } from "@/hooks/useSessionStatus";
-import PageError from "@/pages/PageError";
 import { toast } from "sonner";
 
 // Import components
@@ -67,7 +66,6 @@ const SessionManagement = () => {
 
   // Early returns MUST come after all hooks are called
   if (isLoading) return <FullPageLoading />;
-  if (isError) return <PageError />;
 
   return (
     <SessionErrorBoundary onError={handleError}>

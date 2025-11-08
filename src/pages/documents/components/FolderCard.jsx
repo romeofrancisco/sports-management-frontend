@@ -7,6 +7,7 @@ import {
   X,
   User,
   MapPin,
+  MoreVertical,
 } from "lucide-react";
 import { useFolderCard } from "../hooks/useFolderCard";
 import DeleteModal from "@/components/common/DeleteModal";
@@ -59,6 +60,24 @@ const FolderCard = ({
   } = useFolderCard(folder);
 
   const [isDropTarget, setIsDropTarget] = React.useState(false);
+  const contextMenuTriggerRef = React.useRef(null);
+
+  // Handler to open context menu via button click
+  const handleMenuButtonClick = (e) => {
+    e.stopPropagation();
+    
+    // Create and dispatch a context menu event
+    const contextMenuEvent = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      button: 2,
+      clientX: e.clientX,
+      clientY: e.clientY,
+    });
+    
+    contextMenuTriggerRef.current?.dispatchEvent(contextMenuEvent);
+  };
 
   // Drag handlers
   const handleDragOver = (e) => {
@@ -110,6 +129,7 @@ const FolderCard = ({
         >
           <ContextMenuTrigger asChild>
             <div
+              ref={contextMenuTriggerRef}
               className={`relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border ${
                 isDropTarget ? 'border-primary bg-primary/10' : 'border-border'
               }`}
@@ -219,38 +239,54 @@ const FolderCard = ({
                   </Tooltip>
                 </div>
               )}
+
+              {/* Three-dot menu button */}
+              <div className="flex-shrink-0">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={handleMenuButtonClick}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </ContextMenuTrigger>
 
           {/* Right-Click Context Menu */}
           <ContextMenuContent className="w-48">
-            <ContextMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-                setContextMenuOpen(false);
-                setTimeout(() => handleRenameStart(), 0);
-              }}
-              disabled={!canEdit}
-            >
-              <Edit2 className="mr-2 h-4 w-4" />
-              Rename
-            </ContextMenuItem>
-
-            <>
-              <ContextMenuSeparator />
+            {/* Edit Actions */}
+            {canEdit && (
               <ContextMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
                   setContextMenuOpen(false);
-                  setTimeout(() => handleDeleteClick(), 0);
+                  setTimeout(() => handleRenameStart(), 0);
                 }}
-                disabled={!canDelete}
-                className="text-destructive focus:text-destructive"
               >
-                <Trash2Icon className="mr-2 h-4 w-4" />
-                Delete
+                <Edit2 className="mr-2 h-4 w-4" />
+                Rename
               </ContextMenuItem>
-            </>
+            )}
+
+            {/* Destructive Actions */}
+            {canDelete && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setContextMenuOpen(false);
+                    setTimeout(() => handleDeleteClick(), 0);
+                  }}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  Delete
+                </ContextMenuItem>
+              </>
+            )}
           </ContextMenuContent>
         </ContextMenu>
 
@@ -279,9 +315,20 @@ const FolderCard = ({
       >
         <ContextMenuTrigger asChild>
           <div className="relative group">
+            {/* Three-dot menu button */}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="absolute top-2 right-2 transition-opacity z-10 hover:bg-accent"
+              onClick={handleMenuButtonClick}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <div
+                  ref={contextMenuTriggerRef}
                   className={`relative flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px] ${
                     isDropTarget ? 'bg-primary/10 border-2 border-primary' : ''
                   }`}
@@ -405,33 +452,37 @@ const FolderCard = ({
 
         {/* Right-Click Context Menu */}
         <ContextMenuContent className="w-48">
-          <ContextMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              setContextMenuOpen(false);
-              setTimeout(() => handleRenameStart(), 0);
-            }}
-            disabled={!canEdit}
-          >
-            <Edit2 className="mr-2 h-4 w-4" />
-            Rename
-          </ContextMenuItem>
-
-          <>
-            <ContextMenuSeparator />
+          {/* Edit Actions */}
+          {canEdit && (
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
                 setContextMenuOpen(false);
-                setTimeout(() => handleDeleteClick(), 0);
+                setTimeout(() => handleRenameStart(), 0);
               }}
-              disabled={!canDelete}
-              className="text-destructive focus:text-destructive"
             >
-              <Trash2Icon className="mr-2 h-4 w-4" />
-              Delete
+              <Edit2 className="mr-2 h-4 w-4" />
+              Rename
             </ContextMenuItem>
-          </>
+          )}
+
+          {/* Destructive Actions */}
+          {canDelete && (
+            <>
+              <ContextMenuSeparator />
+              <ContextMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setContextMenuOpen(false);
+                  setTimeout(() => handleDeleteClick(), 0);
+                }}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                Delete
+              </ContextMenuItem>
+            </>
+          )}
         </ContextMenuContent>
       </ContextMenu>
 

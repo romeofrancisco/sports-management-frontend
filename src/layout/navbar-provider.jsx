@@ -7,6 +7,7 @@ import {
   playerGroupedNavigation,
 } from "@/constants/navItems";
 import AppNavbar from "./app-navbar";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const NavbarProvider = () => {
   const { user } = useSelector((state) => state.auth);
@@ -32,9 +33,11 @@ const NavbarProvider = () => {
   return (
     <div className="h-screen bg-background">
       <AppNavbar navItems={userNavItems} />
-      <main>
-        <Outlet />
-      </main>
+      <ErrorBoundary>
+        <main>
+          <Outlet />
+        </main>
+      </ErrorBoundary>
     </div>
   );
 };

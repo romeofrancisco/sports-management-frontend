@@ -22,7 +22,7 @@ export const TOOLBAR_ITEMS = {
   WRAP_TEXT: {
     prefixIcon: "e-text-wrap icon",
     tooltipText: "Wrap Text",
-    text: "Wrap",
+    text: "Wrap Text",
     id: "wrap_text",
   },
 };
@@ -37,8 +37,8 @@ export const EDITOR_TOOLBAR_CONFIG = [
   TOOLBAR_ITEMS.SAVE,
   "Separator",
   TOOLBAR_ITEMS.PRINT,
-  "Separator",
-  TOOLBAR_ITEMS.WRAP_TEXT,
+  // "Separator",
+  // // TOOLBAR_ITEMS.WRAP_TEXT,
   "Undo",
   "Redo",
   "Separator",
@@ -69,8 +69,16 @@ export const EDITOR_TOOLBAR_CONFIG = [
   "ContentControl",
 ];
 
-export const SYNCFUSION_SERVICE_URL =
+export const SYNCFUSION_DOCUMENT_SERVICE_URL =
   "https://ej2services.syncfusion.com/production/web-services/api/documenteditor/";
+
+export const SYNCFUSION_SPREADSHEET_SERVICE_URL =
+  "https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/open";
+
+export const SYNCFUSION_SAVE_URLS = [
+  "https://document.syncfusion.com/web-services/spreadsheet-editor/api/spreadsheet/save",
+  "https://ej2services.syncfusion.com/production/web-services/api/documenteditor/save",
+];
 
 // ============================================================================
 // TOOLBAR ACTIONS
@@ -79,5 +87,5 @@ export const SYNCFUSION_SERVICE_URL =
 export const TOOLBAR_ACTIONS = {
   SAVE: "save",
   PRINT: "print",
-  WRAP_TEXT: "wrap_text",
+  // WRAP_TEXT: "wrap_text",
 };

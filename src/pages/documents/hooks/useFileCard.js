@@ -54,7 +54,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     };
   }, []);
 
-  // Touch handlers
+  // Touch handlers for mobile
   const handleTouchStart = () => {
     longPressTimerRef.current = setTimeout(() => {
       setContextMenuOpen(true);
@@ -84,15 +84,15 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const handleEdit = () => {
     // Check if file is editable (docx, doc files)
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
-    const editableExtensions = ['doc', 'docx'];
+    const editableExtensions = ['doc', 'docx', 'xls', 'xlsx'];
     
     if (!editableExtensions.includes(extension)) {
-      toast.error("Only Word documents (.doc, .docx) can be edited in the editor");
+      toast.error("Only Word documents (.doc, .docx) and Excel files (.xls, .xlsx) can be edited in the editor");
       return;
     }
     
-    // Navigate to document editor
-    navigate(`/documents/editor/${file.id}`);
+    // Open document editor in new tab
+    window.open(`/documents/editor/${file.id}`, '_blank');
   };
 
   const handleCopy = () => {
@@ -201,7 +201,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const isEditable = () => {
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
 
-    return ['doc', 'docx'].includes(extension);
+    return ['doc', 'docx', 'xls', 'xlsx'].includes(extension);
   };
 
   return {

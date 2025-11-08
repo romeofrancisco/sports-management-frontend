@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
 import { usePlayers, useReactivatePlayer } from "@/hooks/usePlayers";
 import { useModal } from "@/hooks/useModal";
-import PageError from "@/pages/PageError";
 import DeletePlayerModal from "@/components/modals/DeletePlayerModal";
 import PlayerModal from "@/components/modals/PlayerModal";
 import PlayersFiltersBar from "./PlayersFiltersBar";
@@ -56,7 +55,6 @@ const PlayersContainer = () => {
     reactivatePlayerMutation.mutate({ playerId: player.id });
   };
 
-  if (isError) return <PageError />;
   return (
     <Card className="border-2 border-primary/20">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">

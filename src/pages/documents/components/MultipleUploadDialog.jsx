@@ -10,6 +10,7 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  UploadCloud,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
@@ -191,6 +192,7 @@ const MultipleUploadDialog = ({
     <Modal
       open={open}
       onOpenChange={onOpenChange}
+      icon={UploadCloud}
       title="Upload Multiple Files"
       description={`Upload files to ${
         currentFolder ? currentFolder.name : "root folder"

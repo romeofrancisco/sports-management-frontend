@@ -6,9 +6,10 @@ import { persistor } from "@/store";
 import { queryClient } from "@/context/QueryProvider";
 import { navigateTo } from "@/utils/navigate";
 import { isManualLogout, setManualLogout } from "@/utils/logoutFlag";
+import { triggerGlobalError } from "@/utils/globalErrorHandler";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },
@@ -64,11 +65,35 @@ api.interceptors.response.use(
           "Please check your internet connection or try again later.",
         richColors: true,
       });
+      
+      // Trigger global error handler for critical network failures
+      triggerGlobalError({
+        type: "NETWORK_ERROR",
+        message: "Unable to connect to the server",
+        originalError: error,
+      });
+      
       return Promise.reject(error);
     }
 
     // Get current auth state from Redux
     const { auth } = store.getState();
+
+    // Server error (5xx)
+    if (error.response.status >= 500) {
+      toast.error("Server Error", {
+        description: "Something went wrong on the server. Please try again later.",
+        richColors: true,
+      });
+      
+      // Trigger global error handler for server errors
+      triggerGlobalError({
+        type: "SERVER_ERROR",
+        message: "Server error occurred",
+        status: error.response.status,
+        originalError: error,
+      });
+    }
 
     // Token expired
     if (

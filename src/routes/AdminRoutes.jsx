@@ -32,9 +32,8 @@ import SystemSettingsPage from "@/pages/admin/settings/SystemSettingsPage";
 import { ChatPage } from "@/pages/chat";
 import { Navigate, useParams } from "react-router-dom";
 import DocumentsList from "@/pages/documents/DocumentsList";
-import DocumentEditor from "@/pages/documents/DocumentEditor";
-import path from "path";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
+import IdentifyEditor from "@/pages/documents/IdentifyEditor";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -248,7 +247,11 @@ export const adminRoutes = [
     element: <DocumentsList />,
   },
   {
+    path: "documents/editor",
+    element: <IdentifyEditor />,
+  },
+  {
     path: "documents/editor/:documentId",
-    element: <DocumentEditor />,
-  }
+    element: <IdentifyEditor />,
+  },
 ];
