@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import DataTable from "@/components/common/DataTable";
-import { getSeasonStandingsColumns } from "@/components/table_columns/seasonStandingsColumns";
+import { getSeasonStandingsColumns } from "@/components/table_columns/SeasonStandingsColumns";
 import { useTournamentTeamForm } from "@/hooks/useTournaments";
 
 const TournamentStandings = ({ tournament, standings }) => {
