@@ -21,10 +21,8 @@ export const useGlobalChatWebSocket = () => {
       websocketRef.current.close();
     }
 
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const backendHost = process.env.NODE_ENV === 'production' 
-      ? window.location.host 
-      : 'localhost:8000';
+    // Use environment variable for WebSocket URL
+    const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
     
     // Get access token from cookies for WebSocket authentication
     const getCookie = (name) => {
@@ -34,7 +32,7 @@ export const useGlobalChatWebSocket = () => {
     };
     
     const accessToken = getCookie('access_token');
-    let wsUrl = `${wsProtocol}//${backendHost}/ws/chat/global/`;
+    let wsUrl = `${wsBaseUrl}/ws/chat/global/`;
     
     // Add token and user ID as query parameters
     if (accessToken) {

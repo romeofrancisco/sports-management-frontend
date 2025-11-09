@@ -30,15 +30,11 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
       websocketRef.current.close();
     }
 
-    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    // For development, connect to Django server on port 8000
-    const backendHost =
-      process.env.NODE_ENV === "production"
-        ? window.location.host
-        : "localhost:8000";
+    // Use environment variable for WebSocket URL
+    const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
     // WebSocket URL - cookies will be sent automatically
-    let wsUrl = `${wsProtocol}//${backendHost}/ws/games/${gameId}/`;
+    let wsUrl = `${wsBaseUrl}/ws/games/${gameId}/`;
 
     const ws = new WebSocket(wsUrl);
 

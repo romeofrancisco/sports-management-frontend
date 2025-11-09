@@ -22,12 +22,8 @@ export const useChatWebSocket = (teamId, currentUserId, onMessage = null) => {
       websocketRef.current.close();
     }
 
-    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    // For development, connect to Django server on port 8000
-    const backendHost =
-      process.env.NODE_ENV === "production"
-        ? window.location.host
-        : "localhost:8000";
+    // Use environment variable for WebSocket URL
+    const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
     // Get access token from cookies for WebSocket authentication
     const getCookie = (name) => {
@@ -37,7 +33,7 @@ export const useChatWebSocket = (teamId, currentUserId, onMessage = null) => {
     };
 
     const accessToken = getCookie("access_token");
-    let wsUrl = `${wsProtocol}//${backendHost}/ws/chat/team/${teamId}/`;
+    let wsUrl = `${wsBaseUrl}/ws/chat/team/${teamId}/`;
 
     // Add token as query parameter if available
     if (accessToken) {
