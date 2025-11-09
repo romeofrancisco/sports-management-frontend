@@ -78,6 +78,9 @@ const Modal = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
+        // keep outer container clipped (rounded corners) and let inner ScrollArea
+        // control scrolling via max-height + overflow-auto so small content keeps
+        // a compact modal while large content scrolls.
         className={`w-[95vw] ${sizeClasses[size]} overflow-hidden p-0 ${contentClassName}`}
         style={{ maxHeight }}
       >
@@ -110,24 +113,13 @@ const Modal = ({
             </div>
           </DialogHeader>
         )}
-
-        <div
-          className={`${scrollable ? "" : "overflow-hidden"} ${bodyClassName}`}
-        >
-          {scrollable ? (
-            <ScrollArea
-              className={`px-6 pb-6 w-full ${
-                showHeader
-                  ? `max-h-[calc(90vh-96px)]`
-                  : `h-[calc(90vh-96px)]`
-              }`}
-            >
-              {content()}
-            </ScrollArea>
-          ) : (
-            <div className="px-6 pb-6">{content()}</div>
-          )}
-        </div>
+        {scrollable ? (
+          <ScrollArea className={`px-6 pb-6 w-full max-h-[calc(90vh-96px)]`}>
+            {content()}
+          </ScrollArea>
+        ) : (
+          <div className="px-6 pb-6">{content()}</div>
+        )}
       </DialogContent>
     </Dialog>
   );

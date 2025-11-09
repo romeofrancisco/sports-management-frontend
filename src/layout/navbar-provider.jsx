@@ -22,7 +22,8 @@ const NavbarProvider = () => {
       case "coach":
         return coachGroupedNavigation();
       case "player":
-        return playerGroupedNavigation();
+        // pass team_slug from user into the helper so the helper doesn't use hooks
+        return playerGroupedNavigation(user.team_slug);
       default:
         return [];
     }

@@ -21,7 +21,7 @@ export const loginUser = async (formData) => {
 export const logoutUser = async () => {
   try {
     await api.post("logout/", null);
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     throw error;
   }
@@ -39,18 +39,18 @@ export const fetchUser = async () => {
 export const updateUserProfile = async (profileData) => {
   try {
     const formData = new FormData();
-    
+
     // Append all the profile data to FormData
-    Object.keys(profileData).forEach(key => {
+    Object.keys(profileData).forEach((key) => {
       if (profileData[key] !== null && profileData[key] !== undefined) {
         formData.append(key, profileData[key]);
       }
     });
-    
+
     const { data } = await api.put("get-user/", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     return data;
   } catch (error) {
@@ -61,6 +61,24 @@ export const updateUserProfile = async (profileData) => {
 export const refreshToken = async () => {
   try {
     const { data } = await api.get("refresh/");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const setPassword = async (passwordData) => {
+  try {
+    const { data } = await api.post("set-password/", passwordData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const changePassword = async (passwordData) => {
+  try {
+    const { data } = await api.post("change-password/", passwordData);
     return data;
   } catch (error) {
     throw error;

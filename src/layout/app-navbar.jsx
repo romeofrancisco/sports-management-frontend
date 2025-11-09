@@ -43,9 +43,19 @@ const AppNavbar = ({ navItems = [] }) => {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      // Allow certain public routes (like set-password) to be accessed
+      // without forcing a redirect to login. This prevents the app from
+      // redirecting when visiting routes such as `/set-password/:uuid/:token`.
+      const publicPrefixes = ["/login", "/set-password"];
+      const pathname = location.pathname || "";
+      const isPublic = publicPrefixes.some(
+        (p) => pathname === p || pathname.startsWith(p + "/")
+      );
+      if (!isPublic) {
+        navigate("/login");
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   const isActive = (href) => {
     if (href === "/") {
@@ -330,26 +340,30 @@ const AppNavbar = ({ navItems = [] }) => {
             </div>
           </Link>
         </div>
+        {isAuthenticated && (
+          <>
+            {" "}
+            {/* Center - Desktop Navigation */}
+            <NavigationMenu className="hidden lg:flex">
+              <NavigationMenuList className="gap-2">
+                {navItems.map(renderDesktopNavItem)}
+              </NavigationMenuList>
+            </NavigationMenu>{" "}
+            {/* Right side - Messages and User menu */}
+            <div className="flex items-center gap-4">
+              <NavbarMessages />
 
-        {/* Center - Desktop Navigation */}
-        <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList className="gap-2">
-            {navItems.map(renderDesktopNavItem)}
-          </NavigationMenuList>
-        </NavigationMenu>        {/* Right side - Messages and User menu */}
-        <div className="flex items-center gap-4">
-        
-          <NavbarMessages />
-          
-          {/* Welcome message for larger screens */}
-          <div className="hidden xl:block text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">
-              {user?.first_name} {user?.last_name}
-            </span>
-          </div>
+              {/* Welcome message for larger screens */}
+              <div className="hidden xl:block text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {user?.first_name} {user?.last_name}
+                </span>
+              </div>
 
-          <NavbarNavUser />
-        </div>
+              <NavbarNavUser />
+            </div>
+          </>
+        )}
       </div>
     </header>
   );

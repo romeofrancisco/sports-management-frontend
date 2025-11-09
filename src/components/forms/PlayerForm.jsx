@@ -217,17 +217,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
             labelKey="label"
             errors={errors}
           />
-          
-          {!isEdit && (
-            <ControlledInput
-              name="password"
-              label="Password"
-              placeholder="Enter password"
-              type="password"
-              control={control}
-              errors={errors}
-            />
-          )}
+
         </div>
       </div>
 

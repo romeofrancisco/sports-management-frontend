@@ -23,9 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -221,31 +218,23 @@ export function NavbarNavUser() {
           </div>
           <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           {/* Profile and Settings */}
-          <div className="px-2 pt-2">
-            <DropdownMenuItem
-              onClick={() => {
-                setDropdownOpen(false);
-                profileModal.openModal();
-              }}
-              className="group relative px-4 py-3 mb-2 cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/20 rounded-xl"
-            >
-              <User />
-              <span className="font-medium">Edit Profile</span>
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-            </DropdownMenuItem>
-          </div>
-          <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+
+          <DropdownMenuItem
+            onClick={() => {
+              setDropdownOpen(false);
+              profileModal.openModal();
+            }}
+          >
+            <User />
+            Account
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
           {/* Logout option */}
-          <div className="px-2 pt-2 pb-4">
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="group relative px-4 py-3 mb-2 cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-primary/20 hover:to-primary/30 rounded-xl "
-            >
-              <LogOut />
-              <span className="font-medium">Log out</span>
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-            </DropdownMenuItem>
-          </div>
+          <DropdownMenuItem onClick={handleLogout}>
+            <LogOut />
+            Log out
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

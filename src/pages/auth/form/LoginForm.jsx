@@ -44,7 +44,7 @@ const LoginForm = () => {
                 required
               />
               {errors.email && (
-                <p className="text-destructive">{errors.email.message}</p>
+                <p className="text-destructive text-xs">{errors.email.message}</p>
               )}
             </div>
             <div className="grid gap-2">
