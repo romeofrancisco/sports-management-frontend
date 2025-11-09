@@ -22,8 +22,9 @@ export const markMessagesAsRead = (teamId) => {
 
 // Create WebSocket connection for real-time chat
 export const createChatWebSocket = (teamId, onMessage, onError) => {
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-  const wsUrl = `${protocol}//${window.location.host}/ws/chat/team/${teamId}/`;
+  // Use environment variable for WebSocket URL
+  const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+  const wsUrl = `${wsBaseUrl}/ws/chat/team/${teamId}/`;
   
   const socket = new WebSocket(wsUrl);
   
