@@ -11,7 +11,6 @@ import {
   BarChart3,
   FolderClosed,
 } from "lucide-react";
-import { useSelector } from "react-redux";
 
 // Grouped navigation for better responsive design
 export const adminGroupedNavigation = () => {
@@ -154,8 +153,7 @@ export const coachGroupedNavigation = () => {
   ];
 };
 
-export const playerGroupedNavigation = () => {
-  const { team_slug } = useSelector((state) => state.auth.user);
+export const playerGroupedNavigation = (team_slug) => {
 
   return [
     {
@@ -165,7 +163,7 @@ export const playerGroupedNavigation = () => {
     },
     {
       title: "My Team",
-      href: `/teams/${team_slug}`,
+      href: team_slug ? `/teams/${team_slug}` : "/teams",
       icon: Users,
       description: "View your team details",
     },

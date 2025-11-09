@@ -541,6 +541,7 @@ export const SystemHealthChart = ({ score }) => {
 
 // Monthly Training Trend Chart
 export const TrainingTrendChart = ({ data }) => {
+  console.log("TrainingTrendChart data:", data);
   if (!data) {
     return (
       <ChartCard
@@ -553,13 +554,53 @@ export const TrainingTrendChart = ({ data }) => {
     );
   }
 
-  // Mock trend data - in real implementation, you'd get this from the backend
+  // Prefer backend-provided monthly trend. If not available, generate
+  // recent month labels and show zeros (do NOT invent positive mock data).
+  const monthlyTrend =
+    data?.monthly_trend || data?.training_analytics?.monthly_trend || null;
+
+  const monthsToShow = (monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length) || 5;
+
+  // generateLastNMonths: returns array of short month labels like ['Jun', 'Jul', ...]
+  const generateLastNMonths = (n) => {
+    const res = [];
+    const now = new Date();
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      res.push(d.toLocaleString(undefined, { month: 'short' }));
+    }
+    return res;
+  };
+
+  const labels = (monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length > 0)
+    ? monthlyTrend.labels
+    : generateLastNMonths(monthsToShow);
+
+  // If backend provided values, use them. Otherwise create zeros.
+  let values;
+  if (monthlyTrend && monthlyTrend.values && monthlyTrend.values.length > 0) {
+    values = monthlyTrend.values;
+  } else {
+    // Do not fabricate historical non-zero values. If a single `monthly_sessions`
+    // number exists and is > 0, show it only for the most recent month.
+    const lastCount = (typeof data?.monthly_sessions === 'number' && data.monthly_sessions > 0)
+      ? data.monthly_sessions
+      : (typeof data?.training_analytics?.monthly_sessions === 'number' && data.training_analytics.monthly_sessions > 0)
+        ? data.training_analytics.monthly_sessions
+        : 0;
+
+    values = Array(monthsToShow).fill(0);
+    if (lastCount > 0) {
+      values[values.length - 1] = lastCount;
+    }
+  }
+
   const trendData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    labels,
     datasets: [
       {
         label: "Training Sessions",
-        data: [45, 52, 48, 61, data.monthly_sessions || 0],
+        data: values,
         borderColor: "#8B1538", // Maroon border
         backgroundColor: "rgba(139, 21, 56, 0.1)", // Maroon with transparency
         borderWidth: 2,
@@ -580,7 +621,7 @@ export const TrainingTrendChart = ({ data }) => {
       ...commonOptions.plugins,
       title: {
         display: true,
-        text: `Trend: ${data.training_trend || "stable"}`,
+        text: `Trend: ${data?.training_trend || data?.training_analytics?.training_trend || "stable"}`,
       },
     },
   };

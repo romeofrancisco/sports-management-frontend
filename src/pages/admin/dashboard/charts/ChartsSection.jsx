@@ -64,10 +64,12 @@ const ChartsSection = ({ overview, analytics }) => {
         <div className="lg:col-span-2">
           <TrainingTrendChart
             data={{
-              monthly_sessions:
-                analytics?.training_analytics?.monthly_sessions || 0,
-              training_trend:
-                analytics?.training_analytics?.training_trend || "stable",
+                monthly_sessions:
+                  analytics?.training_analytics?.monthly_sessions || 0,
+                training_trend:
+                  analytics?.training_analytics?.training_trend || "stable",
+                // Pass backend-provided monthly trend for chart labels/values
+                monthly_trend: analytics?.training_analytics?.monthly_trend || null,
             }}
           />
         </div>
