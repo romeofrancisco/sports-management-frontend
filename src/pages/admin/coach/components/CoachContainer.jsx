@@ -8,7 +8,15 @@ import CoachModal from "@/components/modals/CoachModal";
 import CoachCard from "./CoachCard";
 import CoachTable from "./CoachTable";
 import { useModal } from "@/hooks/useModal";
-import { Users, ClipboardList, Grid3X3, List } from "lucide-react";
+import {
+  Users,
+  ClipboardList,
+  Grid3X3,
+  List,
+  Table,
+  LayoutGrid,
+  Table2,
+} from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,7 +42,7 @@ const CoachContainer = () => {
   const totalPages = Math.ceil(totalCoaches / pageSize);
   const modals = {
     delete: useModal(),
-    update: useModal(),
+    coach: useModal(),
   };
 
   const reactivateCoachMutation = useReactivateCoach();
@@ -51,13 +59,17 @@ const CoachContainer = () => {
 
   const handleUpdateCoach = (coach) => {
     setSelectedCoach(coach);
-    modals.update.openModal();
+    modals.coach.openModal();
+  };
+
+  const handleCreateCoach = () => {
+    setSelectedCoach(null);
+    modals.coach.openModal();
   };
 
   const handleReactivateCoach = (coach) => {
     reactivateCoachMutation.mutate({ id: coach.id });
   };
-
 
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
@@ -70,36 +82,40 @@ const CoachContainer = () => {
             <div>
               <div className="flex gap-2">
                 <h2 className="text-2xl font-bold text-foreground">Coaches</h2>
-                <Badge>{totalCoaches} coaches</Badge>
+                <Badge className="h-6 text-[11px]">
+                  {totalCoaches} coaches
+                </Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground line-clamp-2">
                 Register, manage, and track coach profiles and assignments for
                 your sports organization.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="items-center gap-2 hidden md:flex">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("table")}
-              className="flex items-center gap-2"
             >
-              <List className="h-4 w-4" />
-              Table
+              <Table2 />
             </Button>
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("cards")}
-              className="flex items-center gap-2"
             >
-              <Grid3X3 className="h-4 w-4" />
-              Cards
+              <LayoutGrid className="h-4 w-4" />
             </Button>
           </div>
         </div>
-        <CoachFilterBar filter={filter} setFilter={handleFilterChange} />
+        <CoachFilterBar
+          filter={filter}
+          setFilter={handleFilterChange}
+          setViewMode={setViewMode}
+          viewMode={viewMode}
+          createCoach={handleCreateCoach}
+        />
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -155,7 +171,7 @@ const CoachContainer = () => {
                   setCurrentPage(1);
                 }}
                 onDelete={handleDeleteCoach}
-                onUpdate={handleUpdateCoach}
+                oncoach={handlecoachCoach}
                 onReactivate={handleReactivateCoach}
               />
             )}
@@ -179,8 +195,8 @@ const CoachContainer = () => {
       </CardContent>
       {/* Modals */}
       <CoachModal
-        isOpen={modals.update.isOpen}
-        onClose={modals.update.closeModal}
+        isOpen={modals.coach.isOpen}
+        onClose={modals.coach.closeModal}
         coach={selectedCoach}
       />
       <DeleteCoachModal

@@ -36,26 +36,25 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-export const FilterYearLevel = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterYearLevel = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Levels" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Year Level</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Levels
-            </SelectItem>
+            <SelectItem value={null}>All Levels</SelectItem>
             <SelectSeparator />
             {YEAR_LEVEL_CHOICES.map((year) => (
-              <SelectItem
-                className="text-xs"
-                key={year.value}
-                value={year.value}
-              >
+              <SelectItem key={year.value} value={year.value}>
                 {year.label}
               </SelectItem>
             ))}
@@ -65,25 +64,19 @@ export const FilterYearLevel = ({ value, onChange, className = "", hideLabel = f
     );
   }
   return (
-    <div className={`grid gap-0.5 lg:w-[9rem] ${className}`}>
+    <div className={`grid gap-0.5${className}`}>
       <Label className="text-xs text-muted-foreground">Year Level</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Year Level" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Year Level</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Levels
-            </SelectItem>
+            <SelectItem value={null}>All Levels</SelectItem>
             <SelectSeparator />
             {YEAR_LEVEL_CHOICES.map((year) => (
-              <SelectItem
-                className="text-xs"
-                key={year.value}
-                value={year.value}
-              >
+              <SelectItem key={year.value} value={year.value}>
                 {year.label}
               </SelectItem>
             ))}
@@ -99,21 +92,16 @@ export const FilterStatType = ({ value, onChange, className = "" }) => {
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Stat Type</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Stat Type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>            <SelectLabel>Types</SelectLabel>
-            <SelectItem className="text-xs" value="all_stats">
-              All Stats
-            </SelectItem>
+          <SelectGroup>
+            <SelectLabel>Types</SelectLabel>
+            <SelectItem value="all_stats">All Stats</SelectItem>
             <SelectSeparator />
             {STAT_TYPE.map((stat) => (
-              <SelectItem
-                className="text-xs"
-                key={stat.value.toString()}
-                value={stat.value}
-              >
+              <SelectItem key={stat.value.toString()} value={stat.value}>
                 {stat.label}
               </SelectItem>
             ))}
@@ -124,22 +112,25 @@ export const FilterStatType = ({ value, onChange, className = "" }) => {
   );
 };
 
-export const FilterSex = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterSex = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Sex" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sex</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All
-            </SelectItem>
+            <SelectItem value={null}>All</SelectItem>
             <SelectSeparator />
             {SEX.map((sex) => (
-              <SelectItem className="text-xs" key={sex.value} value={sex.value}>
+              <SelectItem key={sex.value} value={sex.value}>
                 {sex.label}
               </SelectItem>
             ))}
@@ -149,21 +140,19 @@ export const FilterSex = ({ value, onChange, className = "", hideLabel = false }
     );
   }
   return (
-    <div className={`grid gap-0.5 lg:w-[7rem] ${className}`}>
+    <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Sex</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Sex" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sex</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All
-            </SelectItem>
+            <SelectItem value={null}>All</SelectItem>
             <SelectSeparator />
             {SEX.map((sex) => (
-              <SelectItem className="text-xs" key={sex.value} value={sex.value}>
+              <SelectItem key={sex.value} value={sex.value}>
                 {sex.label}
               </SelectItem>
             ))}
@@ -174,26 +163,25 @@ export const FilterSex = ({ value, onChange, className = "", hideLabel = false }
   );
 };
 
-export const FilterCourse = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterCourse = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Courses" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Course</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Courses
-            </SelectItem>
+            <SelectItem value={null}>All Courses</SelectItem>
             <SelectSeparator />
             {COURSE_CHOICES.map((course) => (
-              <SelectItem
-                className="text-xs"
-                key={course.value}
-                value={course.value}
-              >
+              <SelectItem key={course.value} value={course.value}>
                 {course.label}
               </SelectItem>
             ))}
@@ -206,22 +194,16 @@ export const FilterCourse = ({ value, onChange, className = "", hideLabel = fals
     <div className={`grid gap-0.5 max-w-[15rem] min-w-[8rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Course</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Course" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Course</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Courses
-            </SelectItem>
+            <SelectItem value={null}>All Courses</SelectItem>
             <SelectSeparator />
             {COURSE_CHOICES.map((course) => (
-              <SelectItem
-                className="text-xs"
-                key={course.value}
-                value={course.value}
-              >
+              <SelectItem key={course.value} value={course.value}>
                 {course.label}
               </SelectItem>
             ))}
@@ -232,24 +214,27 @@ export const FilterCourse = ({ value, onChange, className = "", hideLabel = fals
   );
 };
 
-export const FilterSport = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterSport = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   const { data: sports } = useSports();
 
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Sports" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sport</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Sports
-            </SelectItem>
+            <SelectItem value={null}>All Sports</SelectItem>
             <SelectSeparator />
             {sports?.map((sport) => (
-              <SelectItem className="text-xs" key={sport?.id} value={sport?.id}>
+              <SelectItem key={sport?.id} value={sport?.id}>
                 {sport?.name}
               </SelectItem>
             ))}
@@ -262,18 +247,16 @@ export const FilterSport = ({ value, onChange, className = "", hideLabel = false
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Sport</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Sport" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Sport</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Sports
-            </SelectItem>
+            <SelectItem value={null}>All Sports</SelectItem>
             <SelectSeparator />
             {sports?.map((sport) => (
-              <SelectItem className="text-xs" key={sport?.id} value={sport?.id}>
+              <SelectItem key={sport?.id} value={sport?.id}>
                 {sport?.name}
               </SelectItem>
             ))}
@@ -284,31 +267,45 @@ export const FilterSport = ({ value, onChange, className = "", hideLabel = false
   );
 };
 
-export const FilterTeam = ({ value, onChange, className = "", hideLabel = false, sportFilter = null }) => {
+export const FilterTeam = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+  sportFilter = null,
+}) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data: teams } = useAllTeams(true, sportFilter ? { sport: sportFilter } : {});
+  const { data: teams } = useAllTeams(
+    true,
+    sportFilter ? { sport: sportFilter } : {}
+  );
 
   // Filter teams based on search
-  const filteredTeams = teams?.filter(team =>
-    team?.name?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  const filteredTeams =
+    teams?.filter((team) =>
+      team?.name?.toLowerCase().includes(search.toLowerCase())
+    ) || [];
 
   // Find selected team
-  const selectedTeam = teams?.find(team => String(team?.id) === String(value));
+  const selectedTeam = teams?.find(
+    (team) => String(team?.id) === String(value)
+  );
 
   // Team logo component with fallback
   const TeamLogo = ({ team, size = "w-4 h-4" }) => {
     const [imageError, setImageError] = useState(false);
     if (!team.logo || imageError) {
       const initials = team.name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
+        .split(" ")
+        .map((word) => word.charAt(0))
+        .join("")
         .toUpperCase()
         .slice(0, 2);
       return (
-        <div className={`${size} rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary`}>
+        <div
+          className={`${size} rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary`}
+        >
           {initials}
         </div>
       );
@@ -331,7 +328,7 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={`text-xs h-8 justify-between font-normal ${className}`}
+            className={`justify-between font-normal ${className}`}
           >
             {selectedTeam ? (
               <div className="flex items-center gap-1.5">
@@ -350,10 +347,11 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
               placeholder="Search teams..."
               value={search}
               onValueChange={setSearch}
-              className="text-xs"
             />
             <CommandList>
-              <CommandEmpty className="text-xs py-2">No teams found.</CommandEmpty>
+              <CommandEmpty className="py-2">
+                No teams found.
+              </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   value="all-teams"
@@ -362,7 +360,6 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
                     setOpen(false);
                     setSearch("");
                   }}
-                  className="text-xs"
                 >
                   <Check
                     className={cn(
@@ -381,12 +378,13 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
                       setOpen(false);
                       setSearch("");
                     }}
-                    className="text-xs"
                   >
                     <Check
                       className={cn(
                         "h-3 w-3",
-                        String(value) === String(team.id) ? "opacity-100" : "opacity-0"
+                        String(value) === String(team.id)
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     <div className="flex items-center gap-1.5">
@@ -402,7 +400,7 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
       </Popover>
     );
   }
-  
+
   return (
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Team</Label>
@@ -431,10 +429,11 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
               placeholder="Search teams..."
               value={search}
               onValueChange={setSearch}
-              className="text-xs"
             />
             <CommandList>
-              <CommandEmpty className="text-xs py-2">No teams found.</CommandEmpty>
+              <CommandEmpty className="text-xs py-2">
+                No teams found.
+              </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   value="all-teams"
@@ -443,7 +442,6 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
                     setOpen(false);
                     setSearch("");
                   }}
-                  className="text-xs"
                 >
                   <Check
                     className={cn(
@@ -462,12 +460,13 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
                       setOpen(false);
                       setSearch("");
                     }}
-                    className="text-xs"
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        String(value) === String(team.id) ? "opacity-100" : "opacity-0"
+                        String(value) === String(team.id)
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     <div className="flex items-center gap-2">
@@ -485,27 +484,25 @@ export const FilterTeam = ({ value, onChange, className = "", hideLabel = false,
   );
 };
 
-
-export const FilterDivision = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterDivision = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Divisions" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Divisions</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Division
-            </SelectItem>
+            <SelectItem value={null}>All Division</SelectItem>
             <SelectSeparator />
             {DIVISIONS.map((division) => (
-              <SelectItem
-                className="text-xs"
-                key={division.value}
-                value={division.value}
-              >
+              <SelectItem key={division.value} value={division.value}>
                 {division.label}
               </SelectItem>
             ))}
@@ -524,16 +521,10 @@ export const FilterDivision = ({ value, onChange, className = "", hideLabel = fa
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Divisions</SelectLabel>
-            <SelectItem className="text-xs" value={null}>
-              All Division
-            </SelectItem>
+            <SelectItem value={null}>All Division</SelectItem>
             <SelectSeparator />
             {DIVISIONS.map((division) => (
-              <SelectItem
-                className="text-xs"
-                key={division.value}
-                value={division.value}
-              >
+              <SelectItem key={division.value} value={division.value}>
                 {division.label}
               </SelectItem>
             ))}
@@ -544,7 +535,13 @@ export const FilterDivision = ({ value, onChange, className = "", hideLabel = fa
   );
 };
 
-export const SearchFilter = ({ value, onChange, className = "", placeholder = "Search name...", hideLabel = false }) => {
+export const SearchFilter = ({
+  value,
+  onChange,
+  className = "",
+  placeholder = "Search name...",
+  hideLabel = false,
+}) => {
   const [searchInput, setSearchInput] = useState(value);
   const [debouncedValue] = useDebounce(searchInput, 500);
 
@@ -562,7 +559,7 @@ export const SearchFilter = ({ value, onChange, className = "", placeholder = "S
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder={placeholder}
-        className={`text-xs h-8 ${className}`}
+        className={`${className}`}
       />
     );
   }
@@ -580,7 +577,12 @@ export const SearchFilter = ({ value, onChange, className = "", placeholder = "S
   );
 };
 
-export const FilterGameType = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterGameType = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -591,11 +593,7 @@ export const FilterGameType = ({ value, onChange, className = "", hideLabel = fa
           <SelectGroup>
             <SelectLabel>Game Type</SelectLabel>
             {GAME_TYPES.map((type) => (
-              <SelectItem
-                className="text-xs"
-                key={type.value}
-                value={type.value}
-              >
+              <SelectItem key={type.value} value={type.value}>
                 {type.label}
               </SelectItem>
             ))}
@@ -615,11 +613,7 @@ export const FilterGameType = ({ value, onChange, className = "", hideLabel = fa
           <SelectGroup>
             <SelectLabel>Game Type</SelectLabel>
             {GAME_TYPES.map((type) => (
-              <SelectItem
-                className="text-xs"
-                key={type.value}
-                value={type.value}
-              >
+              <SelectItem key={type.value} value={type.value}>
                 {type.label}
               </SelectItem>
             ))}
@@ -630,7 +624,12 @@ export const FilterGameType = ({ value, onChange, className = "", hideLabel = fa
   );
 };
 
-export const FilterGameStatus = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterGameStatus = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -641,11 +640,7 @@ export const FilterGameStatus = ({ value, onChange, className = "", hideLabel = 
           <SelectGroup>
             <SelectLabel>Game Status</SelectLabel>
             {GAME_STATUS?.map((status) => (
-              <SelectItem
-                className="text-xs"
-                key={status.value}
-                value={status.value}
-              >
+              <SelectItem key={status.value} value={status.value}>
                 {status.label}
               </SelectItem>
             ))}
@@ -665,11 +660,7 @@ export const FilterGameStatus = ({ value, onChange, className = "", hideLabel = 
           <SelectGroup>
             <SelectLabel>Game Status</SelectLabel>
             {GAME_STATUS?.map((status) => (
-              <SelectItem
-                className="text-xs"
-                key={status.value}
-                value={status.value}
-              >
+              <SelectItem key={status.value} value={status.value}>
                 {status.label}
               </SelectItem>
             ))}
@@ -680,7 +671,13 @@ export const FilterGameStatus = ({ value, onChange, className = "", hideLabel = 
   );
 };
 
-export const FilterSeason = ({ value, onChange, league, className = "", hideLabel = false }) => {
+export const FilterSeason = ({
+  value,
+  onChange,
+  league,
+  className = "",
+  hideLabel = false,
+}) => {
   const { data: seasons } = useSeasons(league);
 
   if (hideLabel) {
@@ -699,11 +696,7 @@ export const FilterSeason = ({ value, onChange, league, className = "", hideLabe
           <SelectGroup>
             <SelectLabel>Seasons</SelectLabel>
             {seasons?.map((season) => (
-              <SelectItem
-                className="text-xs"
-                key={season?.id}
-                value={season?.id}
-              >
+              <SelectItem key={season?.id} value={season?.id}>
                 {season.name} {season.year}
               </SelectItem>
             ))}
@@ -730,11 +723,7 @@ export const FilterSeason = ({ value, onChange, league, className = "", hideLabe
           <SelectGroup>
             <SelectLabel>Seasons</SelectLabel>
             {seasons?.map((season) => (
-              <SelectItem
-                className="text-xs"
-                key={season?.id}
-                value={season?.id}
-              >
+              <SelectItem key={season?.id} value={season?.id}>
                 {season.name} {season.year}
               </SelectItem>
             ))}
@@ -745,7 +734,13 @@ export const FilterSeason = ({ value, onChange, league, className = "", hideLabe
   );
 };
 
-export const FilterLeague = ({ value, onChange, type, className = "", hideLabel = false }) => {
+export const FilterLeague = ({
+  value,
+  onChange,
+  type,
+  className = "",
+  hideLabel = false,
+}) => {
   const { data: leagues } = useLeagues();
 
   if (hideLabel) {
@@ -768,11 +763,7 @@ export const FilterLeague = ({ value, onChange, type, className = "", hideLabel 
           <SelectGroup>
             <SelectLabel>Leagues</SelectLabel>
             {leagues?.map((league) => (
-              <SelectItem
-                className="text-xs"
-                key={league?.id}
-                value={league?.id}
-              >
+              <SelectItem key={league?.id} value={league?.id}>
                 {league.name}
               </SelectItem>
             ))}
@@ -803,11 +794,7 @@ export const FilterLeague = ({ value, onChange, type, className = "", hideLabel 
           <SelectGroup>
             <SelectLabel>Leagues</SelectLabel>
             {leagues?.map((league) => (
-              <SelectItem
-                className="text-xs"
-                key={league?.id}
-                value={league?.id}
-              >
+              <SelectItem key={league?.id} value={league?.id}>
                 {league.name}
               </SelectItem>
             ))}
@@ -818,7 +805,12 @@ export const FilterLeague = ({ value, onChange, type, className = "", hideLabel 
   );
 };
 
-export const FilterDateRange = ({ value, onChange, className = "", hideLabel = false }) => {
+export const FilterDateRange = ({
+  value,
+  onChange,
+  className = "",
+  hideLabel = false,
+}) => {
   const [date, setDate] = useState(null);
 
   useEffect(() => {

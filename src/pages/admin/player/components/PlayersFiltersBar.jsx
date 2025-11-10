@@ -7,27 +7,22 @@ import {
   FilterYearLevel,
   FilterCourse,
 } from "@/components/common/Filters";
-import {
-  Search,
-  Filter,
-  X,
-  Sparkles,
-  Trophy,
-  Users,
-  GraduationCap,
-  BookOpen,
-  VenusAndMars,
-} from "lucide-react";
+import { Search, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useSports } from "@/hooks/useSports";
-import { YEAR_LEVEL_CHOICES, COURSE_CHOICES, SEX } from "@/constants/player";
-import { useAllTeams } from "@/hooks/useTeams";
+import FilterDropdown from "@/components/common/FilterDropdown";
+import {
+  DropdownMenuGroup,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Table2, LayoutGrid } from "lucide-react";
 
-const PlayersFiltersBar = ({ filter, setFilter }) => {
-  const { data: sports } = useSports();
-  const { data: teams } = useAllTeams();
-
+const PlayersFiltersBar = ({
+  filter,
+  setFilter,
+  setViewMode,
+  viewMode,
+  registerPlayer,
+}) => {
   const hasActiveFilters =
     filter.search ||
     filter.sport ||
@@ -58,242 +53,185 @@ const PlayersFiltersBar = ({ filter, setFilter }) => {
     };
     setFilter((prev) => ({ ...prev, [filterType]: defaultValues[filterType] }));
   };
-  // Helper functions to get display names
-  const getSportName = () => {
-    if (!filter.sport || !sports) return null;
-    const sport = sports.find((s) => s.id === parseInt(filter.sport));
-    return sport?.name || null;
-  };
 
-  const getTeamName = () => {
-    if (!filter.team || !teams) return null;
-    const team = teams.find((t) => t.id === parseInt(filter.team));
-    return team?.name || null;
-  };
-
-  const getSexLabel = () => {
-    if (!filter.sex) return null;
-    const sex = SEX.find((s) => s.value === filter.sex);
-    return sex?.label || filter.sex;
-  };
-
-  const getYearLevelLabel = () => {
-    if (!filter.year_level) return null;
-    const yearLevel = YEAR_LEVEL_CHOICES.find(
-      (y) => y.value === filter.year_level
-    );
-    return yearLevel?.label || filter.year_level;
-  };
-
-  const getCourseLabel = () => {
-    if (!filter.course) return null;
-    const course = COURSE_CHOICES.find((c) => c.value === filter.course);
-    return course?.label || filter.course;
-  };
   return (
-    <div className="space-y-3">
-      {/* Responsive Filter Controls */}
-      <div className="flex flex-col lg:flex-row gap-3 p-3 bg-gradient-to-r from-card/60 to-card/40 backdrop-blur-sm border border-primary/20 rounded-lg">
-        {/* Search Filter - Full width on mobile, flex-1 on desktop */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-          <SearchFilter
-            value={filter.search}
-            onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
-            className="flex-1 bg-transparent border-0 focus:ring-0 text-sm placeholder:text-muted-foreground/60 min-w-0"
-            placeholder="Search players..."
-            hideLabel={true}
-          />
-        </div>
-
-        {/* Filter Row - Wraps on mobile, single row on desktop */}
-        <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 lg:gap-3">
-          {/* Sport Filter */}
-          <div className="flex items-center gap-1.5 min-w-0">
-            <Trophy className="h-4 w-4 text-muted-foreground shrink-0" />
+    <div className=" flex gap-2 items-center">
+      {/* Search Filter - Full width on desktop, hidden on small (mobile uses dropdown) */}
+      <div className="hidden md:block relative w-full">
+        <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+        <SearchFilter
+          value={filter.search}
+          onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
+          className="w-full ps-7"
+          placeholder="Search teams..."
+          hideLabel={true}
+        />
+      </div>
+      <Button className="flex-1" onClick={registerPlayer}>
+        <User />
+        Register Player
+      </Button>
+      {/* Filters dropdown (replaces inert Filters button) */}
+      <div className="flex items-center gap-2 ml-auto">
+        <FilterDropdown
+          title="Filters"
+          widthClass="w-72"
+          onClear={clearAllFilters}
+          disableClear={!hasActiveFilters}
+          headerRight={
+            <div className="flex md:hidden items-center gap-2">
+              <Button
+                variant={viewMode === "table" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("table")}
+                className="flex items-center gap-2"
+              >
+                <Table2 />
+              </Button>
+              <Button
+                variant={viewMode === "cards" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("cards")}
+                className="flex items-center gap-2"
+              >
+                <LayoutGrid />
+              </Button>
+            </div>
+          }
+        >
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Search</span>
+              <button
+                onClick={() => clearSpecificFilter("search")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
+            <div className="relative w-full">
+              <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+              <SearchFilter
+                value={filter.search}
+                onChange={(val) =>
+                  setFilter((prev) => ({ ...prev, search: val }))
+                }
+                className="w-full ps-7"
+                placeholder="Search players..."
+                hideLabel={true}
+              />
+            </div>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Sport</span>
+              <button
+                onClick={() => clearSpecificFilter("sport")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
             <FilterSport
               value={filter.sport}
               onChange={(val) => setFilter((prev) => ({ ...prev, sport: val }))}
-              className="min-w-[120px] lg:min-w-[140px]"
+              className="w-full"
               hideLabel={true}
             />
-          </div>
-
-          <div className="flex items-center gap-1.5 min-w-0">
-            <Users className="h-4 w-4 text-muted-foreground shrink-0" />
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Team</span>
+              <button
+                onClick={() => clearSpecificFilter("team")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
             <FilterTeam
               value={filter.team}
               onChange={(val) => setFilter((prev) => ({ ...prev, team: val }))}
-              className="min-w-[120px] lg:min-w-[140px]"
+              className="w-full"
               hideLabel={true}
               sportFilter={filter.sport}
             />
-          </div>
-
-          {/* Gender Filter */}
-          <div className="flex items-center gap-1.5 min-w-0">
-            <VenusAndMars className="h-4 w-4 text-muted-foreground shrink-0" />
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Sex</span>
+              <button
+                onClick={() => clearSpecificFilter("sex")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
             <FilterSex
               value={filter.sex}
               onChange={(val) => setFilter((prev) => ({ ...prev, sex: val }))}
-              className="min-w-[100px] lg:min-w-[120px]"
+              className="w-full"
               hideLabel={true}
             />
-          </div>
-
-          {/* Year Level Filter */}
-          <div className="flex items-center gap-1.5 min-w-0">
-            <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Year Level</span>
+              <button
+                onClick={() => clearSpecificFilter("year_level")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
             <FilterYearLevel
               value={filter.year_level}
               onChange={(val) =>
                 setFilter((prev) => ({ ...prev, year_level: val }))
               }
-              className="min-w-[120px] lg:min-w-[140px]"
+              className="w-full"
               hideLabel={true}
             />
-          </div>
-
-          {/* Course Filter */}
-          <div className="flex items-center gap-1.5 min-w-0">
-            <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="px-1">
+            <div className="flex justify-between px-1 text-sm my-2">
+              <span>Course</span>
+              <button
+                onClick={() => clearSpecificFilter("course")}
+                className="text-primary cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
             <FilterCourse
               value={filter.course}
               onChange={(val) =>
                 setFilter((prev) => ({ ...prev, course: val }))
               }
-              className="min-w-[140px] lg:min-w-[160px]"
+              className="w-full"
               hideLabel={true}
             />
-          </div>
-
-          {/* Clear All Button */}
-          {hasActiveFilters && (
-            <Button
-              onClick={clearAllFilters}
-              variant="outline"
-              size="sm"
-              className="shrink-0 text-destructive hover:bg-destructive/10 border-destructive/30"
-            >
-              <X className="mr-1 h-3 w-3" />
-              <span className="hidden sm:inline">Clear</span>
-            </Button>
-          )}
-        </div>
+            <div className="h-3" />
+          </DropdownMenuGroup>
+        </FilterDropdown>
       </div>
-      {/* Responsive Active Filters Display */}
+
+      {/* Clear All Button */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap items-center gap-2 p-2 bg-primary/5 border border-primary/20 rounded-lg">
-          <span className="text-xs font-medium text-muted-foreground shrink-0">
-            Active filters:
-          </span>
-
-          {filter.search && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <Search className="h-3 w-3" />"{filter.search}"
-              <Button
-                onClick={() => clearSpecificFilter("search")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-          {filter.sport && getSportName() && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <Trophy className="h-3 w-3" />
-              {getSportName()}
-              <Button
-                onClick={() => clearSpecificFilter("sport")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-
-          {filter.team && getTeamName() && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <Users className="h-3 w-3" />
-              {getTeamName()}
-              <Button
-                onClick={() => clearSpecificFilter("team")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-
-          {filter.sex && getSexLabel() && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <VenusAndMars className="h-3 w-3" />
-              {getSexLabel()}
-              <Button
-                onClick={() => clearSpecificFilter("sex")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-
-          {filter.year_level && getYearLevelLabel() && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <GraduationCap className="h-3 w-3" />
-              {getYearLevelLabel()}
-              <Button
-                onClick={() => clearSpecificFilter("year_level")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-
-          {filter.course && getCourseLabel() && (
-            <Badge
-              variant="secondary"
-              className="text-xs flex items-center gap-1"
-            >
-              <BookOpen className="h-3 w-3" />
-              {getCourseLabel()}
-              <Button
-                onClick={() => clearSpecificFilter("course")}
-                variant="ghost"
-                size="sm"
-                className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
-              >
-                <X className="h-2 w-2" />
-              </Button>
-            </Badge>
-          )}
-        </div>
+        <Button
+          onClick={clearAllFilters}
+          variant="outline"
+          size="sm"
+          className="shrink-0 text-destructive hover:bg-destructive/10 border-destructive/30"
+        >
+          <X className="mr-1 h-3 w-3" />
+          <span className="hidden sm:inline">Clear</span>
+        </Button>
       )}
     </div>
   );

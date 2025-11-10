@@ -1,9 +1,12 @@
 import React from "react";
-import { Search, Grid3X3, LayoutGrid, Trophy } from "lucide-react";
+import { Search, Grid3X3, LayoutGrid, Trophy, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import TournamentModal from "@/components/tournaments/TournamentModal";
+import { useModal } from "@/hooks/useModal";
 
 const TournamentsHeader = ({
   filteredCount,
@@ -13,6 +16,7 @@ const TournamentsHeader = ({
   setSearchTerm,
 }) => {
   const { isAdmin } = useRolePermissions();
+  const { isOpen, openModal, closeModal } = useModal();
 
   return (
     <>
@@ -24,8 +28,12 @@ const TournamentsHeader = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-foreground">Tournaments</h2>
-              <Badge className="h-6 text-[11px]">{filteredCount} tournaments</Badge>
+              <h2 className="text-2xl font-bold text-foreground">
+                Tournaments
+              </h2>
+              <Badge className="h-6 text-[11px]">
+                {filteredCount} tournaments
+              </Badge>
             </div>
             <p className="text-sm text-muted-foreground">
               {isAdmin()
@@ -34,38 +42,63 @@ const TournamentsHeader = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <Button
             variant={viewMode === "cards" ? "default" : "outline"}
-            size="sm"
+            size="icon"
             onClick={() => setViewMode("cards")}
-            className="flex items-center gap-2"
           >
-            <LayoutGrid className="h-4 w-4" />
-            Cards
+            <LayoutGrid />
           </Button>
           <Button
             variant={viewMode === "list" ? "default" : "outline"}
-            size="sm"
+            size="icon"
             onClick={() => setViewMode("list")}
-            className="flex items-center gap-2"
           >
-            <Grid3X3 className="h-4 w-4" />
-            List
+            <Grid3X3 />
           </Button>
         </div>
       </div>
 
       {/* Search Filter */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search tournaments..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 bg-background/50 border-primary/20 focus:border-primary/40 transition-all duration-300"
-        />
+      <div className="flex flex-col-reverse md:flex-row gap-2">
+        <div className="flex gap-2 w-full">
+          <div className="relative w-full flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search tournaments..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-background/50 border-primary/20 focus:border-primary/40 transition-all duration-300"
+            />
+          </div>
+          <div className="md:hidden flex items-center gap-2">
+            <Button
+              variant={viewMode === "cards" ? "default" : "outline"}
+              size="icon"
+              onClick={() => setViewMode("cards")}
+            >
+              <LayoutGrid />
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "default" : "outline"}
+              size="icon"
+              onClick={() => setViewMode("list")}
+            >
+              <Grid3X3 />
+            </Button>
+          </div>
+        </div>
+
+        {isAdmin() && (
+          <Button className="" onClick={() => openModal()}>
+            <Plus />
+            Register Tournament
+          </Button>
+        )}
       </div>
+
+      {isAdmin() && <TournamentModal open={isOpen} onOpenChange={closeModal} />}
     </>
   );
 };

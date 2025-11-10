@@ -79,7 +79,7 @@ const SystemHealthSection = ({ overview }) => {
               <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
                 System Health
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="line-clamp-2">
                 Monitor the health of your system and address issues affecting
                 teams and players.
               </CardDescription>
@@ -87,7 +87,7 @@ const SystemHealthSection = ({ overview }) => {
           </div>
           <Badge
             variant={totalIssues === 0 ? "default" : "destructive"}
-            className={`px-3 py-1 text-sm font-medium border-2 ${
+            className={`hidden md:block px-3 py-1 text-sm font-medium border-2 ${
               totalIssues === 0
                 ? "bg-primary/10 text-primary border-primary/30"
                 : "bg-destructive/10 text-destructive dark:text-white border-destructive/30"
@@ -141,34 +141,10 @@ const SystemHealthSection = ({ overview }) => {
                     <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                       {issue.count}
                     </div>
-                    <div
-                      className={`p-1.5 rounded-full border ${colorClasses
-                        .split(" ")
-                        .slice(1)
-                        .join(" ")}`}
-                    >
-                      <StatusIcon
-                        className={`h-4 w-4 ${colorClasses.split(" ")[0]}`}
-                      />
-                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {issue.description}
                   </p>
-                  {issue.count > 0 && (
-                    <div className="mt-2">
-                      <Badge
-                        variant="outline"
-                        className={`text-xs border-2 ${
-                          issue.severity === "high"
-                            ? "border-destructive/30 text-destructive bg-destructive/10"
-                            : "border-secondary/30 text-secondary bg-secondary/10"
-                        }`}
-                      >
-                        Needs Attention
-                      </Badge>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             );
