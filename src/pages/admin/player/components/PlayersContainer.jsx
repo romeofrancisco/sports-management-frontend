@@ -41,18 +41,23 @@ const PlayersContainer = () => {
   const totalPages = Math.ceil(totalPlayers / pageSize);
 
   const deleteModal = useModal();
-  const updateModal = useModal();
+  const playerModal = useModal();
   const navigate = useNavigate();
-  
+
   const reactivatePlayerMutation = useReactivatePlayer();
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     setCurrentPage(1);
   };
-  
+
   const handleReactivatePlayer = (player) => {
     reactivatePlayerMutation.mutate({ playerId: player.id });
+  };
+
+  const handleRegisterPlayer = () => {
+    setSelectedPlayer(null);
+    playerModal.openModal();
   };
 
   return (
@@ -65,39 +70,44 @@ const PlayersContainer = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-foreground">
-                  Student Athletes
-                </h2>
-                <Badge className="h-6 text-[11px]">{totalPlayers} players</Badge>
+                <h2 className="text-2xl font-bold text-foreground">Players</h2>
+                <Badge className="h-6 text-[11px]">
+                  {totalPlayers} players
+                </Badge>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-1">
-                Register, manage, and track student athlete profiles and statistics for your sports team.
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                Register, manage, and track student athlete profiles and
+                statistics for your sports team.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("table")}
               className="flex items-center gap-2"
             >
-              <Table2 className="h-4 w-4" />
-              Table
+              <Table2 />
             </Button>
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("cards")}
               className="flex items-center gap-2"
             >
-              <LayoutGrid className="h-4 w-4" />
-              Cards
+              <LayoutGrid />
             </Button>
           </div>
         </div>
 
-        <PlayersFiltersBar filter={filter} setFilter={handleFilterChange} />
+        <PlayersFiltersBar
+          filter={filter}
+          setFilter={handleFilterChange}
+          setViewMode={setViewMode}
+          viewMode={viewMode}
+          registerPlayer={handleRegisterPlayer}
+        />
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -113,7 +123,7 @@ const PlayersContainer = () => {
                     onView={() => navigate(`/players/${player.id}`)}
                     onEdit={() => {
                       setSelectedPlayer(player);
-                      updateModal.openModal();
+                      playerModal.openModal();
                     }}
                     onDelete={() => {
                       setSelectedPlayer(player);
@@ -152,7 +162,7 @@ const PlayersContainer = () => {
               }}
               onUpdatePlayer={(player) => {
                 setSelectedPlayer(player);
-                updateModal.openModal();
+                playerModal.openModal();
               }}
               onDeletePlayer={(player) => {
                 setSelectedPlayer(player);
@@ -190,8 +200,8 @@ const PlayersContainer = () => {
           player={selectedPlayer}
         />
         <PlayerModal
-          isOpen={updateModal.isOpen}
-          onClose={updateModal.closeModal}
+          isOpen={playerModal.isOpen}
+          onClose={playerModal.closeModal}
           player={selectedPlayer}
         />
       </CardContent>

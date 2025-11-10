@@ -93,7 +93,7 @@ const NavbarMessages = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-80 h-96 flex flex-col bg-gradient-to-br from-card via-card to-card/95 shadow-2xl border-2 border-primary/20 rounded-2xl backdrop-blur-md"
+        className="w-80 flex flex-col bg-gradient-to-br from-card via-card to-card/95 shadow-2xl border-2 border-primary/20 rounded-2xl backdrop-blur-md"
         sideOffset={8}
       >
         <DropdownMenuLabel className="font-semibold text-lg bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
@@ -111,66 +111,68 @@ const NavbarMessages = () => {
             <p className="text-sm">No team chats available</p>
           </div>
         ) : (
-          <ScrollArea className="flex-1 min-h-0">
-            {filteredChats.slice(0, 5).map((chat) => (
-              <DropdownMenuItem
-                key={chat.id}
-                onClick={() => handleTeamChatClick(chat.team_id)}
-                className="p-3 cursor-pointer hover:bg-primary/10 transition-all duration-300 focus:bg-primary/10"
-              >
-                <div className="flex items-center gap-3 w-full">
-                  {/* Team Avatar/Logo placeholder */}
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src={chat.logo}
-                      alt={`${chat.team_name} logo`}
-                    />
-                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold">
-                      {chat.team_name?.charAt(0) || "T"}
-                    </AvatarFallback>
-                  </Avatar>
+          <ScrollArea>
+            <div className="max-h-64">
+              {filteredChats.slice(0, 5).map((chat) => (
+                <DropdownMenuItem
+                  key={chat.id}
+                  onClick={() => handleTeamChatClick(chat.team_id)}
+                  className="p-3 cursor-pointer hover:bg-primary/10 transition-all duration-300 focus:bg-primary/10"
+                >
+                  <div className="flex items-center gap-3 w-full">
+                    {/* Team Avatar/Logo placeholder */}
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage
+                        src={chat.logo}
+                        alt={`${chat.team_name} logo`}
+                      />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold">
+                        {chat.team_name?.charAt(0) || "T"}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-sm truncate w-0 flex-1 min-w-0">
-                        {chat.team_name}
-                      </p>
-                      {chat.unread_count > 0 && (
-                        <Badge
-                          variant="secondary"
-                          className="h-5 px-2 text-xs bg-primary/20 text-primary"
-                        >
-                          {chat.unread_count}
-                        </Badge>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-sm truncate w-0 flex-1 min-w-0">
+                          {chat.team_name}
+                        </p>
+                        {chat.unread_count > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className="h-5 px-2 text-xs bg-primary/20 text-primary"
+                          >
+                            {chat.unread_count}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {chat.latest_message ? (
+                        <div className="flex items-center gap-1 mt-1">
+                          <p className="text-xs text-muted-foreground truncate w-0 flex-1 min-w-0">
+                            <span className="font-medium">
+                              {chat.latest_message.sender_name}:
+                            </span>{" "}
+                            {chat.latest_message.message}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 mt-1">
+                          <p className="text-xs text-muted-foreground truncate w-0 flex-1 min-w-0">
+                            No messages yet
+                          </p>
+                        </div>
+                      )}
+
+                      {chat.latest_message?.timestamp && (
+                        <p className="text-xs text-muted-foreground">
+                          {formatDateLabel(chat.latest_message.timestamp)}
+                        </p>
                       )}
                     </div>
-
-                    {chat.latest_message ? (
-                      <div className="flex items-center gap-1 mt-1">
-                        <p className="text-xs text-muted-foreground truncate w-0 flex-1 min-w-0">
-                          <span className="font-medium">
-                            {chat.latest_message.sender_name}:
-                          </span>{" "}
-                          {chat.latest_message.message}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 mt-1">
-                        <p className="text-xs text-muted-foreground truncate w-0 flex-1 min-w-0">
-                          No messages yet
-                        </p>
-                      </div>
-                    )}
-
-                    {chat.latest_message?.timestamp && (
-                      <p className="text-xs text-muted-foreground">
-                        {formatDateLabel(chat.latest_message.timestamp)}
-                      </p>
-                    )}
                   </div>
-                </div>
-              </DropdownMenuItem>
-            ))}
+                </DropdownMenuItem>
+              ))}
+            </div>
           </ScrollArea>
         )}
         <DropdownMenuSeparator />
