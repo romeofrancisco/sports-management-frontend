@@ -14,7 +14,8 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import TablePagination from "@/components/ui/table-pagination";
-import { Users, Table2, LayoutGrid } from "lucide-react";
+import { Users } from "lucide-react";
+import { Table2, LayoutGrid } from "lucide-react";
 
 const TeamsContainer = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -39,16 +40,22 @@ const TeamsContainer = () => {
   const totalPages = Math.ceil(totalTeams / pageSize);
 
   const deleteModal = useModal();
-  const updateModal = useModal();
+  const teamModal = useModal();
+
   const navigate = useNavigate();
-  
+
   const reactivateTeamMutation = useReactivateTeam();
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     setCurrentPage(1);
   };
-  
+
+  const handleCreateTeam = () => {
+    setSelectedTeam(null);
+    teamModal.openModal();
+  };
+
   const handleReactivateTeam = (team) => {
     reactivateTeamMutation.mutate({ teamSlug: team.slug });
   };
@@ -66,33 +73,38 @@ const TeamsContainer = () => {
                 <h2 className="text-2xl font-bold text-foreground">Teams</h2>
                 <Badge className="h-6 text-[11px]">{totalTeams} teams</Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Register, manage, and track team profiles and statistics for your sports organization.
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                Register, manage, and track team profiles and statistics for
+                your sports organization.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("table")}
               className="flex items-center gap-2"
             >
               <Table2 className="h-4 w-4" />
-              Table
             </Button>
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
-              size="sm"
+              size="icon"
               onClick={() => setViewMode("cards")}
               className="flex items-center gap-2"
             >
               <LayoutGrid className="h-4 w-4" />
-              Cards
             </Button>
           </div>
         </div>
-        <TeamFiltersBar filter={filter} setFilter={handleFilterChange} />
+        <TeamFiltersBar
+          filter={filter}
+          setFilter={handleFilterChange}
+          setViewMode={setViewMode}
+          viewMode={viewMode}
+          createTeam={handleCreateTeam}
+        />
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -108,7 +120,7 @@ const TeamsContainer = () => {
                     onView={() => navigate(`/teams/${team.slug}`)}
                     onEdit={() => {
                       setSelectedTeam(team);
-                      updateModal.openModal();
+                      teamModal.openModal();
                     }}
                     onDelete={() => {
                       setSelectedTeam(team);
@@ -151,7 +163,7 @@ const TeamsContainer = () => {
               }}
               onUpdateTeam={(team) => {
                 setSelectedTeam(team);
-                updateModal.openModal();
+                teamModal.openModal();
               }}
               onDeleteTeam={(team) => {
                 setSelectedTeam(team);
@@ -187,8 +199,8 @@ const TeamsContainer = () => {
         team={selectedTeam}
       />
       <TeamModal
-        isOpen={updateModal.isOpen}
-        onClose={updateModal.closeModal}
+        isOpen={teamModal.isOpen}
+        onClose={teamModal.closeModal}
         team={selectedTeam}
       />
     </Card>

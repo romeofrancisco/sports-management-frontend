@@ -178,7 +178,7 @@ export const FilterCourse = ({ value, onChange, className = "", hideLabel = fals
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Courses" />
         </SelectTrigger>
         <SelectContent>
@@ -206,7 +206,7 @@ export const FilterCourse = ({ value, onChange, className = "", hideLabel = fals
     <div className={`grid gap-0.5 max-w-[15rem] min-w-[8rem] ${className}`}>
       <Label className="text-xs text-muted-foreground">Course</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Course" />
         </SelectTrigger>
         <SelectContent>
@@ -238,7 +238,7 @@ export const FilterSport = ({ value, onChange, className = "", hideLabel = false
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Sports" />
         </SelectTrigger>
         <SelectContent>
@@ -262,7 +262,7 @@ export const FilterSport = ({ value, onChange, className = "", hideLabel = false
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Sport</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs w-full" size="sm">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Sport" />
         </SelectTrigger>
         <SelectContent>
@@ -490,7 +490,7 @@ export const FilterDivision = ({ value, onChange, className = "", hideLabel = fa
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="All Divisions" />
         </SelectTrigger>
         <SelectContent>
@@ -562,7 +562,7 @@ export const SearchFilter = ({ value, onChange, className = "", placeholder = "S
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder={placeholder}
-        className={`text-xs h-8 ${className}`}
+        className={`${className}`}
       />
     );
   }
