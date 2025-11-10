@@ -84,3 +84,21 @@ export const changePassword = async (passwordData) => {
     throw error;
   }
 };
+
+export const forgotPassword = async (emailData) => {
+  try {
+    const { data } = await api.post("forgot-password/", emailData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPassword = async (resetData) => {
+  try {
+    const { data } = await api.post("reset-password/", resetData);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

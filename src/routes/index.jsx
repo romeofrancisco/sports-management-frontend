@@ -4,6 +4,8 @@ import { RoleRoutes } from "./RoleRoutes";
 import PageNotFound from "@/pages/PageNotFound";
 import NavbarProvider from "@/layout/navbar-provider";
 import SetPassword from "@/pages/auth/SetPassword";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
+import ResetPassword from "@/pages/auth/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +18,14 @@ export const router = createBrowserRouter([
       {
         path: "/set-password/:uid/:token",
         element: <SetPassword />,
+      },
+      {
+        path: "/reset-password/:uid/:token",
+        element: <ResetPassword />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
       },
       {
         path: "/*",
