@@ -17,38 +17,44 @@ const CoachForm = ({ onClose, coach = null }) => {
   const { mutate: updateCoach, isPending: isUpdating } = useUpdateCoach();
   const { data: sports = [], isLoading: sportsLoading } = useSports();
 
-  const { control, handleSubmit, formState: { errors }, setError } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm({
     defaultValues: {
       first_name: coach?.first_name || "",
       last_name: coach?.last_name || "",
       sex: coach?.sex || "",
       email: coach?.email || "",
-      sport_ids: coach?.sports?.map(sport => sport.id) || [],
+      sport_ids: coach?.sports?.map((sport) => sport.id) || [],
       profile: null,
     },
-  });  const onSubmit = (data) => {
-    console.log('Form data before processing:', data);
-    
+  });
+  const onSubmit = (data) => {
+    console.log("Form data before processing:", data);
+
     // Check if there's a file upload
     const hasFileUpload = data.profile && data.profile.length > 0;
-    
+
     if (hasFileUpload) {
       // Use FormData for file uploads
       const formData = convertToFormData(data);
-      
+
       // Handle sport_ids specially - remove the [] suffix that convertToFormData adds
-      formData.delete('sport_ids[]');
-      
+      formData.delete("sport_ids[]");
+
       if (data.sport_ids && data.sport_ids.length > 0) {
         // Add each sport ID as a separate entry
-        data.sport_ids.forEach(sportId => {
-          formData.append('sport_ids', sportId);
+        data.sport_ids.forEach((sportId) => {
+          formData.append("sport_ids", sportId);
         });
       }
-      
+
       const mutationFn = isEdit ? updateCoach : createCoach;
       const payload = isEdit ? { id: coach.id, data: formData } : formData;
-      
+
       mutationFn(payload, {
         onSuccess: () => {
           onClose();
@@ -69,12 +75,12 @@ const CoachForm = ({ onClose, coach = null }) => {
       // Use JSON for data without file uploads
       const jsonData = { ...data };
       delete jsonData.profile; // Remove profile if it's empty
-      
-      console.log('JSON data being sent:', jsonData);
-      
+
+      console.log("JSON data being sent:", jsonData);
+
       const mutationFn = isEdit ? updateCoach : createCoach;
       const payload = isEdit ? { id: coach.id, data: jsonData } : jsonData;
-      
+
       mutationFn(payload, {
         onSuccess: () => {
           onClose();
@@ -107,7 +113,6 @@ const CoachForm = ({ onClose, coach = null }) => {
         control={control}
         errors={errors}
       />
-
       {/* Last Name */}
       <ControlledInput
         name="last_name"
@@ -116,7 +121,6 @@ const CoachForm = ({ onClose, coach = null }) => {
         control={control}
         errors={errors}
       />
-
       {/* Sex */}
       <ControlledSelect
         name="sex"
@@ -126,7 +130,8 @@ const CoachForm = ({ onClose, coach = null }) => {
         groupLabel="Sex"
         options={SEX}
         errors={errors}
-      />      {/* Email */}
+      />{" "}
+      {/* Email */}
       <ControlledInput
         name="email"
         label="Email"
@@ -134,7 +139,8 @@ const CoachForm = ({ onClose, coach = null }) => {
         type="email"
         control={control}
         errors={errors}
-      />      {/* Sports */}
+      />{" "}
+      {/* Sports */}
       <ControlledMultiSelect
         name="sport_ids"
         control={control}
@@ -146,7 +152,6 @@ const CoachForm = ({ onClose, coach = null }) => {
         labelKey="name"
         errors={errors}
       />
-
       {/* Display current team assignments if editing */}
       {isEdit && coach && (
         <div className="space-y-2">
@@ -157,52 +162,52 @@ const CoachForm = ({ onClose, coach = null }) => {
               </label>
               <div className="mt-1 space-y-1">
                 {coach.head_coached_teams.map((team) => (
-                  <div key={team.id} className="flex items-center text-sm text-gray-600">
+                  <div
+                    key={team.id}
+                    className="flex items-center text-sm text-gray-600"
+                  >
                     <span className="font-medium">{team.name}</span>
-                    <span className="ml-2 text-gray-500">({team.sport_name})</span>
+                    <span className="ml-2 text-gray-500">
+                      ({team.sport_name})
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-          
-          {coach.assistant_coached_teams && coach.assistant_coached_teams.length > 0 && (
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Assistant Coach of:
-              </label>
-              <div className="mt-1 space-y-1">
-                {coach.assistant_coached_teams.map((team) => (
-                  <div key={team.id} className="flex items-center text-sm text-gray-600">
-                    <span className="font-medium">{team.name}</span>
-                    <span className="ml-2 text-gray-500">({team.sport_name})</span>
-                  </div>
-                ))}
+
+          {coach.assistant_coached_teams &&
+            coach.assistant_coached_teams.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-700">
+                  Assistant Coach of:
+                </label>
+                <div className="mt-1 space-y-1">
+                  {coach.assistant_coached_teams.map((team) => (
+                    <div
+                      key={team.id}
+                      className="flex items-center text-sm text-gray-600"
+                    >
+                      <span className="font-medium">{team.name}</span>
+                      <span className="ml-2 text-gray-500">
+                        ({team.sport_name})
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-          
-          {(!coach.head_coached_teams || coach.head_coached_teams.length === 0) && 
-           (!coach.assistant_coached_teams || coach.assistant_coached_teams.length === 0) && (
-            <div className="text-sm text-gray-500">
-              This coach is not currently assigned to any teams.
-            </div>
-          )}
+            )}
+
+          {(!coach.head_coached_teams ||
+            coach.head_coached_teams.length === 0) &&
+            (!coach.assistant_coached_teams ||
+              coach.assistant_coached_teams.length === 0) && (
+              <div className="text-sm text-gray-500">
+                This coach is not currently assigned to any teams.
+              </div>
+            )}
         </div>
       )}
-
-      {/* Password */}
-      {!isEdit && (
-        <ControlledInput
-          name="password"
-          label="Password"
-          placeholder="Enter Password"
-          type="password"
-          control={control}
-          errors={errors}
-        />
-      )}
-
       {/* Profile */}
       <ControlledInput
         name="profile"
@@ -211,7 +216,8 @@ const CoachForm = ({ onClose, coach = null }) => {
         accept="image/*"
         control={control}
         errors={errors}
-      />      <Button
+      />{" "}
+      <Button
         type="submit"
         className="mt-4"
         disabled={isCreating || isUpdating || sportsLoading}

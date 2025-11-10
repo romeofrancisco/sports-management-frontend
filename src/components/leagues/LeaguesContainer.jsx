@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import LeaguesHeader from "./LeaguesHeader";
 import LeaguesGrid from "./LeaguesGrid";
 import LeaguesEmptyState from "./LeaguesEmptyState";
+import ContentEmpty from "../common/ContentEmpty";
+import { Trophy } from "lucide-react";
 
 const LeaguesContainer = () => {
   const { data, isLoading, isError } = useLeagues();
@@ -37,7 +39,15 @@ const LeaguesContainer = () => {
         {filteredLeagues.length > 0 ? (
           <LeaguesGrid leagues={filteredLeagues} viewMode={viewMode} />
         ) : (
-          <LeaguesEmptyState searchTerm={searchTerm} />
+          <ContentEmpty
+            icon={Trophy}
+            title="No League Found"
+            description={
+              searchTerm
+                ? `No results found for "${searchTerm}"`
+                : "Create a new league to get started."
+            }
+          />
         )}
       </CardContent>
     </Card>

@@ -11,8 +11,6 @@ const TeamsList = () => {
         <UniversityPageHeader
           title="Team Management"
           description="Create and manage teams for your sports leagues"
-          buttonText="Create Team"
-          buttonIcon={Users}
         />
 
         {/* Teams Container */}

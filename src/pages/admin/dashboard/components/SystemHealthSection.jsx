@@ -79,7 +79,7 @@ const SystemHealthSection = ({ overview }) => {
               <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
                 System Health
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="line-clamp-2">
                 Monitor the health of your system and address issues affecting
                 teams and players.
               </CardDescription>
