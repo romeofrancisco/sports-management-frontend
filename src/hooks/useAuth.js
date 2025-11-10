@@ -1,6 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { loginUser, logoutUser, fetchUser, setPassword, changePassword } from "@/api/authApi";
+import {
+  loginUser,
+  logoutUser,
+  fetchUser,
+  setPassword,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+} from "@/api/authApi";
 import { login, logout } from "@/store/slices/authSlice";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -114,7 +122,48 @@ export const useChangePassword = () => {
     onError: (error) => {
       toast.error("Failed to change password", {
         description:
-          error.response.data.error || "An error occurred while changing the password.",
+          error.response.data.error ||
+          "An error occurred while changing the password.",
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: (emailData) => forgotPassword(emailData),
+    onSuccess: () => {
+      toast.success("Password reset email sent!", {
+        description: "Please check your inbox for further instructions.",
+        richColors: true,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to send password reset email", {
+        description:
+          error.response.data.error ||
+          "An error occurred while sending the email.",
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: (resetData) => resetPassword(resetData),
+    onSuccess: () => {
+      toast.success("Password reset successfully!", {
+        description: "You can now log in with your new password.",
+        richColors: true,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to reset password", {
+        description:
+          error.response.data.error ||
+          "An error occurred while resetting the password.",
         richColors: true,
       });
     },

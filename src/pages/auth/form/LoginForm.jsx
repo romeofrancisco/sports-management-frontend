@@ -51,10 +51,10 @@ const LoginForm = () => {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <a
-                  href="#"
-                  className="ml-auto text-sm underline-offset-2 hover:underline"
+                  href="/forgot-password"
+                  className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer"
                 >
-                  {/* Forgot your password? */}
+                  Forgot your password?
                 </a>
               </div>
               <Input

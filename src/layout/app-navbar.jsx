@@ -46,7 +46,7 @@ const AppNavbar = ({ navItems = [] }) => {
       // Allow certain public routes (like set-password) to be accessed
       // without forcing a redirect to login. This prevents the app from
       // redirecting when visiting routes such as `/set-password/:uuid/:token`.
-      const publicPrefixes = ["/login", "/set-password"];
+      const publicPrefixes = ["/login", "/set-password", "/forgot-password", "/reset-password"];
       const pathname = location.pathname || "";
       const isPublic = publicPrefixes.some(
         (p) => pathname === p || pathname.startsWith(p + "/")
