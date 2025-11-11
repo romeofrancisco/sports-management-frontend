@@ -10,6 +10,7 @@ import {
   Target,
   Ruler,
   ExternalLink,
+  Dumbbell,
 } from "lucide-react";
 
 import { useSelector } from "react-redux";
@@ -49,7 +50,7 @@ const TrainingDashboard = () => {
     },
     {
       label: "Metrics",
-      icon: Target,
+      icon: Dumbbell,
       path: "/trainings/metrics",
       description: "Configure performance metrics",
     },

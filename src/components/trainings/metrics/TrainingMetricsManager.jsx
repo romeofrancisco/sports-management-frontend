@@ -6,7 +6,7 @@ import {
 } from "../../../hooks/useTrainings";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
 import { Button } from "../../ui/button";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Dumbbell, Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import TrainingMetricFormDialog from "../../modals/trainings/TrainingMetricFormDialog";
 import { DeleteConfirmDialog } from "../dialogs/DeleteConfirmDialog";
@@ -96,6 +96,7 @@ export const TrainingMetricsManager = () => {
     <TabLayout>
       <TabHeader
         title="Training Metrics"
+        icon={Dumbbell}
         description="Configure and manage training performance metrics for tracking player progress"
         actions={
           canCreateTrainingMetrics() && (

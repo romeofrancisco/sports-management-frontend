@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMetricUnits } from "../../../hooks/useMetricUnits";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
 import { Button } from "../../ui/button";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Plus, Ruler } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import { MetricUnitFormDialog } from "../dialogs/MetricUnitFormDialog";
 import { DeleteConfirmDialog } from "../dialogs/DeleteConfirmDialog";
@@ -107,6 +107,7 @@ export const MetricUnitsManager = () => {
     <TabLayout>
       <TabHeader
         title="Metric Units"
+        icon={Ruler}
         description="Manage units of measurement for training metrics"
         actions={
           // Only show Add Unit button for users with permission
