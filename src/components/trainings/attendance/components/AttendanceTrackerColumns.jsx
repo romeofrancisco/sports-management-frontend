@@ -9,7 +9,8 @@ import { formatShortDate } from "@/utils/formatDate";
 export const getAllTeamsAttendanceColumns = (attendanceData) => {
   // Get all unique date keys (from the first team or merge all teams if needed)
   const firstTeam = attendanceData?.[0];
-  const dateKeys = firstTeam ? Object.keys(firstTeam.attendance) : [];
+  // reverse date keys so the most recent date appears first (after team name)
+  const dateKeys = firstTeam ? Object.keys(firstTeam.attendance).slice().reverse() : [];
 
   const columns = [
     {
@@ -143,7 +144,8 @@ export const getPlayerAttendanceColumns = (attendanceData, navigate) => {
 
   // Get all unique date keys from the first player's attendance
   const firstPlayer = players[0];
-  const dateKeys = firstPlayer ? Object.keys(firstPlayer.attendance) : [];
+  // show most recent dates first for player attendance as well
+  const dateKeys = firstPlayer ? Object.keys(firstPlayer.attendance).slice().reverse() : [];
 
   const getCellBgColor = (status) => {
     switch (status) {

@@ -220,19 +220,6 @@ const PlayersFiltersBar = ({
           </DropdownMenuGroup>
         </FilterDropdown>
       </div>
-
-      {/* Clear All Button */}
-      {hasActiveFilters && (
-        <Button
-          onClick={clearAllFilters}
-          variant="outline"
-          size="sm"
-          className="shrink-0 text-destructive hover:bg-destructive/10 border-destructive/30"
-        >
-          <X className="mr-1 h-3 w-3" />
-          <span className="hidden sm:inline">Clear</span>
-        </Button>
-      )}
     </div>
   );
 };
