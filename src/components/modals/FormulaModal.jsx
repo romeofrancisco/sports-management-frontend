@@ -10,33 +10,40 @@ import { ScrollArea } from "../ui/scroll-area";
 import FormulaForm from "../forms/FormulaForm";
 import { useParams } from "react-router";
 import ContentLoading from "../common/ContentLoading";
-import { useSportStats } from "@/hooks/useStats";
+import { useSportStats, useStatCategories } from "@/hooks/useStats";
+import Modal from "../common/Modal";
+import { Calculator } from "lucide-react";
 
 const FormulaModal = ({ isOpen, onClose, formula = null }) => {
   const { sport } = useParams();
-  const { data: stats, isLoading } = useSportStats(sport);
+  const { data: stats, isLoading: isStatsLoading } = useSportStats(sport);
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useStatCategories({ sport: sport });
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{formula ? "Update Formula" : "Create New Formula"}</DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="max-h-[75vh]">
-          {isLoading ? (
-            <ContentLoading />
-          ) : (
-            <FormulaForm
-              onClose={onClose}
-              stats={stats}
-              sport={sport}
-              formula={formula}
-            />
-          )}
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+    <Modal
+      title={formula ? "Update Formula" : "Create New Formula"}
+      description={
+        formula
+          ? "Modify the details of the existing formula."
+          : "Fill out the details below to create a new formula."
+      }
+      icon={Calculator}
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      {isStatsLoading || isCategoriesLoading ? (
+        <ContentLoading />
+      ) : (
+        <FormulaForm
+          onClose={onClose}
+          stats={stats}
+          sport={sport}
+          formula={formula}
+          categories={categories}
+        />
+      )}
+    </Modal>
   );
 };
 

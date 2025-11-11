@@ -9,7 +9,7 @@ import { useCreateFormula, useUpdateFormula } from "@/hooks/useFormula";
 import ControlledCheckbox from "../common/ControlledCheckbox";
 import ControlledCombobox from "../common/ControlledCombobox";
 
-const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
+const FormulaForm = ({ onClose, stats, sport, formula = null, categories }) => {
   const isEdit = !!formula;
   const { mutate: createFormula, isPending: isCreating } = useCreateFormula();
   const { mutate: updateFormula, isPending: isUpdating } = useUpdateFormula();
@@ -67,8 +67,32 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
       }
     });
 
+    // Normalize nullable and PK values coming from ControlledSelect/Combobox which serialize values as strings
+    const normalized = { ...data };
+    // category may be string "null" or numeric string
+    if (normalized.category === "null" || normalized.category === "") {
+      normalized.category = null;
+    }
+    if (typeof normalized.category === "string" && /^\d+$/.test(normalized.category)) {
+      normalized.category = parseInt(normalized.category, 10);
+    }
+
+    // Normalize component stat_type values (array)
+    if (Array.isArray(normalized.components)) {
+      normalized.components = normalized.components.map((comp) => {
+        const c = { ...comp };
+        if (c.stat_type === "null" || c.stat_type === "") {
+          c.stat_type = null;
+        }
+        if (typeof c.stat_type === "string" && /^\d+$/.test(c.stat_type)) {
+          c.stat_type = parseInt(c.stat_type, 10);
+        }
+        return c;
+      });
+    }
+
     const mutationFn = isEdit ? updateFormula : createFormula;
-    const payload = isEdit ? { id: formula.id, data: data } : data;
+    const payload = isEdit ? { id: formula.id, data: normalized } : normalized;
 
     // For ratio formulas, clear the expression since it's not needed
     if (data.is_ratio) {
@@ -120,7 +144,7 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4 px-1"
+      className="flex flex-col gap-4 px-2"
     >
       <ControlledInput
         name="name"
@@ -146,10 +170,23 @@ const FormulaForm = ({ onClose, stats, sport, formula = null }) => {
         errors={errors}
       />
 
+      <ControlledSelect
+        name="category"
+        label="Category"
+        control={control}
+        options={[...(categories || []), { id: null, name: "Other" }]}
+        labelKey="name"
+        valueKey="id"
+        placeholder="Select category..."
+        errors={errors}
+        rules={{ required: "Category is required" }}
+      />
+
       {!isRatio && (
         <ControlledTextarea
           name="expression"
           control={control}
+          help_text="Use the components stat code (eg; FT_MA / FT_ATT) is the free throw percentage"
           label="Formula"
           placeholder="Enter formula for expression..."
           errors={errors}

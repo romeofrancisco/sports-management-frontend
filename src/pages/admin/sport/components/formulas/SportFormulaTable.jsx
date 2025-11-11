@@ -5,15 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Calculator, Plus } from "lucide-react";
 import SportFormulaActions from "./SportFormulaActions";
 
-const SportFormulaTable = ({ 
-  formulas, 
-  filter, 
-  modals, 
+const SportFormulaTable = ({
+  formulas,
+  filter,
+  modals,
   selectedFormula,
   setSelectedFormula,
   onEdit,
   onDelete,
-  isLoading
+  isLoading,
 }) => {
   const handleCreateFormula = () => {
     setSelectedFormula(null);
@@ -24,9 +24,7 @@ const SportFormulaTable = ({
     {
       accessorKey: "name",
       header: "Formula Name",
-      cell: ({ getValue }) => (
-        <div className="font-medium">{getValue()}</div>
-      ),
+      cell: ({ getValue }) => <div className="font-medium">{getValue()}</div>,
     },
     {
       accessorKey: "expression",
@@ -42,10 +40,23 @@ const SportFormulaTable = ({
       header: "Type",
       cell: ({ row }) => (
         <div>
-          <Badge variant={row.original.is_ratio ? "outline" : "secondary"} className="font-normal">
-            {row.original.is_ratio ? "Ratio" : "Standard"}
+          <Badge
+            variant={row.original.is_ratio ? "outline" : "secondary"}
+            className="font-normal"
+          >
+            {row.original.is_ratio ? "Made/Attempted" : "Standard"}
           </Badge>
         </div>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: "category_name",
+      header: "Category",
+      cell: ({ row }) => (
+        <Badge className="font-normal" variant="outline">
+          {row.original.category_name || "Other"}
+        </Badge>
       ),
       size: 120,
     },
@@ -54,10 +65,18 @@ const SportFormulaTable = ({
       header: "Uses Point Value",
       cell: ({ row }) => (
         <div>
-          {row.original.uses_point_value ? 
-            <Badge variant="default" className="bg-primary/20 text-primary border-primary/30">Yes</Badge> : 
-            <Badge variant="outline" className="text-muted-foreground">No</Badge>
-          }
+          {row.original.uses_point_value ? (
+            <Badge
+              variant="default"
+              className="bg-primary/20 text-primary border-primary/30"
+            >
+              Yes
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-muted-foreground">
+              No
+            </Badge>
+          )}
         </div>
       ),
       size: 150,

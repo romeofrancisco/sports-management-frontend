@@ -32,7 +32,7 @@ const SportStatsForm = ({
       name: stat?.name || "",
       display_name: stat?.display_name || "",
       code: stat?.code || "",
-      category: stat?.category || "",
+      category: stat?.category || null,
 
       is_player_summary: stat?.is_player_summary || false,
       is_team_summary: stat?.is_team_summary || false,
@@ -58,8 +58,26 @@ const SportStatsForm = ({
   const isPoints = watch("is_points");
 
   const onSubmit = (data) => {
+    // Normalize values coming from ControlledSelect: HTML selects serialize null to the string "null"
+    // Backend expects actual null or numeric PKs, so coerce here before sending.
+    const normalized = { ...data };
+    // category and formula are nullable foreign keys; coerce string 'null' or empty string to null
+    if (normalized.category === "null" || normalized.category === "") {
+      normalized.category = null;
+    }
+    if (normalized.formula === "null" || normalized.formula === "") {
+      normalized.formula = null;
+    }
+    // Convert numeric strings to numbers (primary key values)
+    if (typeof normalized.category === "string" && /^\d+$/.test(normalized.category)) {
+      normalized.category = parseInt(normalized.category, 10);
+    }
+    if (typeof normalized.formula === "string" && /^\d+$/.test(normalized.formula)) {
+      normalized.formula = parseInt(normalized.formula, 10);
+    }
+
     const mutationFn = isEdit ? updateStat : createStat;
-    const payload = isEdit ? { id: stat.id, data: data } : data;
+    const payload = isEdit ? { id: stat.id, data: normalized } : normalized;
 
     mutationFn(payload, {
       onSuccess: () => {

@@ -69,7 +69,7 @@ const SessionManagement = () => {
 
   return (
     <SessionErrorBoundary onError={handleError}>
-      <div className="min-h-screen bg-background p-4 md:p-6">
+      <div className="container mx-auto p-1 md:p-6 space-y-6">
         <SessionHeader
           sessionDetails={sessionDetails}
           sessionStatus={sessionStatus}

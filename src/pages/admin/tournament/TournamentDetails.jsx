@@ -158,7 +158,7 @@ const TournamentDetails = () => {
   };
 
   return (
-    <div className="p-3 md:p-6">
+    <div className="container mx-auto p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title={titleWithBadge}
         subtitle={`${sport?.name} Tournament`}
