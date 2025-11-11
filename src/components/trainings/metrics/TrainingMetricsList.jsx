@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { Dumbbell, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -49,7 +49,7 @@ const TrainingMetricsList = () => {
         description="Configure and manage training performance metrics"
         actions={
           <Button onClick={openCreateDialog}>
-            <PlusIcon className="mr-2 h-4 w-4" />
+            <PlusIcon />
             Add Metric
           </Button>
         }

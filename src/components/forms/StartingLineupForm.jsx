@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useUpdateStartingLineup } from "@/hooks/useStartingLineup";
 import { Loader2 } from "lucide-react";
 import SelectPlayer from "../common/SelectPlayer";
@@ -69,16 +70,16 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
     });
   };
 
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid px-1">
       <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3">
         <div className="grid gap-3">
           <div className="flex justify-center items-center gap-2">
-            <img
-              src={game.home_team.logo}
-              alt={game.home_team.name}
-              className="w-12"
-            />
+            <Avatar className="w-12 h-12 border-2 border-primary/20">
+              <AvatarImage src={game.home_team.logo} alt={game.home_team.name} />
+              <AvatarFallback>{game.home_team.name[0]}</AvatarFallback>
+            </Avatar>
             <h1 className="text-3xl font-semibold">{game.home_team.name}</h1>
           </div>
           {Array.from({ length: max }).map(
@@ -108,11 +109,10 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
 
         <div className="grid gap-3">
           <div className="flex justify-center items-center gap-2">
-            <img
-              src={game.away_team.logo}
-              alt={game.away_team.name}
-              className="w-12"
-            />
+            <Avatar className="w-12 h-12 border-2 border-primary/20">
+              <AvatarImage src={game.away_team.logo} alt={game.away_team.name} />
+              <AvatarFallback>{game.away_team.name[0]}</AvatarFallback>
+            </Avatar>
             <h1 className="text-3xl font-semibold">{game.away_team.name}</h1>
           </div>
           {Array.from({ length: max }).map(

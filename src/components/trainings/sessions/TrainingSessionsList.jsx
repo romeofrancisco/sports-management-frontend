@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PlusIcon, Table2, LayoutGrid, Target } from "lucide-react";
+import { PlusIcon, Table2, LayoutGrid, Target, Calendar } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -77,7 +77,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <div className="bg-primary p-3 rounded-xl">
-              <Target className="size-7 text-primary-foreground" />
+              <Calendar className="size-7 text-primary-foreground" />
             </div>
             <div>
               <div className="flex gap-1 items-center">

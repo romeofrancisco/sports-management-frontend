@@ -5,7 +5,7 @@ import {
 } from "../../../hooks/useTrainings";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
 import { Button } from "../../ui/button";
-import { AlertCircle, Plus, Loader2, Trash } from "lucide-react";
+import { AlertCircle, Plus, Loader2, Trash, FolderOpen } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import TrainingCategoryFormDialog from "../../modals/trainings/TrainingCategoryFormDialog";
 import { TrainingCategoriesTable } from "../tables/TrainingCategoriesTable";
@@ -117,6 +117,7 @@ export const TrainingCategoriesManager = () => {
     <TabLayout>
       <TabHeader
         title="Training Categories"
+        icon={FolderOpen}
         description="Configure and manage training categories to organize your training programs"
         actions={
           canCreateTrainingCategories() && (
