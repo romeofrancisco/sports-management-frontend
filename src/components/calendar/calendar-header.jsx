@@ -20,13 +20,12 @@ import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export function CalendarHeader() {
   const { view, events } = useCalendar();
-  console.log(events)
   const { isAdmin, isPlayer } = useRolePermissions();
 
   return (
-    <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex flex-col gap-2 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
       <motion.div
-        className="flex items-center gap-3"
+        className="flex items-center  gap-2"
         variants={slideFromLeft}
         initial="initial"
         animate="animate"
@@ -34,20 +33,31 @@ export function CalendarHeader() {
       >
         <TodayButton />
         <DateNavigator view={view} events={events} />
+        {!isAdmin() && (
+          <div className={`flex flex-col ml-auto gap-2 md:hidden`}>
+            <Settings />
+            <FilterEvents />
+          </div>
+        )}
       </motion.div>
       <motion.div
-        className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5"
+        className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-1.5"
         variants={slideFromRight}
         initial="initial"
         animate="animate"
         transition={transition}
       >
-        <div className="options flex-wrap flex items-center gap-4 md:gap-2">
-          <Views />
-        </div>
-
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">
-          {isAdmin() && <UserSelect />}
+        <div className="flex flex-col gap-2 xl:flex-row xl:items-center lg:gap-1.5">
+          <div className="flex flex-col md:flex-row gap-2 ">
+            <Views />
+            <div className="flex gap-2">
+              {isAdmin() && <UserSelect />}
+              <div className={`${!isAdmin() ? "hidden md:flex gap-2" : ""} `}>
+                <FilterEvents />
+                <Settings />
+              </div>
+            </div>
+          </div>
 
           {!isPlayer() && (
             <AddEditEventDialog>
@@ -58,8 +68,6 @@ export function CalendarHeader() {
             </AddEditEventDialog>
           )}
         </div>
-        <FilterEvents />
-        <Settings />
       </motion.div>
     </div>
   );

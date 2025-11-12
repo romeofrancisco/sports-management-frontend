@@ -27,7 +27,7 @@ function CalendarContent() {
 
   // Update users in context when they're loaded
   React.useEffect(() => {
-    if (users.length > 0) {
+    if (users) {
       setUsers(users);
     }
   }, [users, setUsers]);

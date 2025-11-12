@@ -46,7 +46,7 @@ export function UserSelect() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between"
+          className="justify-between flex-1"
         >
           <div className="flex items-center gap-2">
             {selectedUserId === "all" ? (

@@ -73,7 +73,7 @@ export function DateNavigator({
 				</MotionButton>
 
 				<motion.p
-                    className="text-sm text-muted-foreground"
+                    className="text-xs md:text-sm text-muted-foreground"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={transition}>

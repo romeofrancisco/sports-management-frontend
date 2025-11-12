@@ -16,12 +16,14 @@ import { useCalendar } from "@/components/calendar/calendar-context";
 import { AddEditEventDialog } from "@/components/calendar/add-edit-event-dialog";
 import { formatTime } from "@/components/calendar/helpers";
 import { useDeleteEvent } from "@/hooks/useEvents";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export function EventDetailsDialog({ event, children }) {
   const startDate = parseISO(event.startDate);
   const endDate = parseISO(event.endDate);
   const { use24HourFormat, removeEvent } = useCalendar();
   const deleteEventMutation = useDeleteEvent();
+  const { isPlayer } = useRolePermissions();
 
   const deleteEvent = (eventId) => {
     deleteEventMutation.mutate(eventId, {
@@ -108,7 +110,7 @@ export function EventDetailsDialog({ event, children }) {
             </div>
           </div>
         </ScrollArea>
-        {event?.type === "event" && (
+        {event?.type === "event" && !isPlayer() && (
           <div className="flex justify-end gap-2">
             <AddEditEventDialog event={event}>
               <Button variant="outline">Edit</Button>
