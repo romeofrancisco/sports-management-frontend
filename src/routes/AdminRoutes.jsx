@@ -34,6 +34,7 @@ import { Navigate, useParams } from "react-router-dom";
 import DocumentsList from "@/pages/documents/DocumentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import IdentifyEditor from "@/pages/documents/IdentifyEditor";
+import EventCalendar from "@/features/eventcalendar/EventCalendar";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -254,4 +255,8 @@ export const adminRoutes = [
     path: "documents/editor/:documentId",
     element: <IdentifyEditor />,
   },
+  {
+    path: "calendar",
+    element: <EventCalendar />,
+  }
 ];
