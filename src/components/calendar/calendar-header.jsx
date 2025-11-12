@@ -20,6 +20,7 @@ import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export function CalendarHeader() {
   const { view, events } = useCalendar();
+  console.log(events)
   const { isAdmin, isPlayer } = useRolePermissions();
 
   return (

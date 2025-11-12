@@ -7,25 +7,45 @@ import { DndProvider } from "@/components/calendar/dnd-context";
 import { CalendarHeader } from "@/components/calendar/calendar-header";
 import { useEvents } from "@/hooks/useEvents";
 import { useCoaches } from "@/hooks/useCoaches";
+import { useCalendar } from "@/components/calendar/calendar-context";
 
-export function Calendar() {
-  // Hooks must be called directly inside the component (client-side).
-  const { data: events } = useEvents();
-  // request a large page size so we get all coaches for the calendar
+function CalendarContent() {
+  const { view, selectedDate, setUsers, setEvents } = useCalendar();
+  const { data: events } = useEvents({
+    view: view,
+    date: selectedDate,
+  });
   const { data: coachesData } = useCoaches({}, 1, 1000);
-  // coaches API returns a paginated shape { results: [...], count, ... }
-  // normalize to an array for the CalendarProvider
   const users = coachesData?.results || [];
-  
+
+  // Update events in context when they're loaded
+  React.useEffect(() => {
+    if (events) {
+      setEvents(events);
+    }
+  }, [events, setEvents]);
+
+  // Update users in context when they're loaded
+  React.useEffect(() => {
+    if (users.length > 0) {
+      setUsers(users);
+    }
+  }, [users, setUsers]);
 
   return (
-    <CalendarProvider events={events} users={users} view="month">
-      <DndProvider showConfirmation={false}>
-        <div className="w-full border-2 border-primary/20 rounded-xl">
-          <CalendarHeader />
-          <CalendarBody />
-        </div>
-      </DndProvider>
+    <DndProvider showConfirmation={false}>
+      <div className="w-full border-2 border-primary/20 rounded-xl">
+        <CalendarHeader />
+        <CalendarBody />
+      </div>
+    </DndProvider>
+  );
+}
+
+export function Calendar() {
+  return (
+    <CalendarProvider events={[]} users={[]} view="month">
+      <CalendarContent />
     </CalendarProvider>
   );
 }

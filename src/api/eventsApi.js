@@ -1,9 +1,9 @@
 import api from "@/api";
 
-export const getEvents = async () => {
+export const getEvents = async (params) => {
   // Try to fetch real events from the backend (events app). Fallback to mock.
   try {
-    const { data } = await api.get(`events`);
+    const { data } = await api.get(`events`, { params });
     const items = Array.isArray(data) ? data : data.results || [];
     return items.map((s) => {
       let start = null;

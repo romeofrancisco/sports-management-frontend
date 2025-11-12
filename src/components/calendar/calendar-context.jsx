@@ -18,7 +18,7 @@ export function CalendarProvider({
     badge = "colored",
     view = "day"
 }) {
-	console.log("CalendarProvider events:", events);
+
 
 	const [settings, setSettings] = useLocalStorage("calendar-settings", {
         ...DEFAULT_SETTINGS,
@@ -142,6 +142,11 @@ export function CalendarProvider({
 		setSelectedUserId("all");
 	};
 
+	const setEvents = (newEvents) => {
+		setAllEvents(newEvents || []);
+		setFilteredEvents(newEvents || []);
+	};
+
 	const value = {
 		selectedDate,
 		setSelectedDate: handleSelectDate,
@@ -165,6 +170,7 @@ export function CalendarProvider({
 		updateEvent,
 		removeEvent,
 		clearFilter,
+		setEvents,
 	};
 
 	return (

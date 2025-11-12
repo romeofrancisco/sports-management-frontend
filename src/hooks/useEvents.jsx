@@ -2,10 +2,10 @@ import { createEvent, deleteEvent, getEvents, updateEvent } from "@/api/eventsAp
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/context/QueryProvider";
 
-export const useEvents = (options = {}) => {
+export const useEvents = (params = {}, options = {}) => {
   return useQuery({
-    queryKey: ["events"],
-    queryFn: getEvents,
+    queryKey: ["events", params],
+    queryFn: () => getEvents(params),
     ...options,
   });
 };
