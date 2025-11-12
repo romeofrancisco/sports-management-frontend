@@ -18,6 +18,7 @@ export function CalendarProvider({
     badge = "colored",
     view = "day"
 }) {
+	console.log("CalendarProvider events:", events);
 
 	const [settings, setSettings] = useLocalStorage("calendar-settings", {
         ...DEFAULT_SETTINGS,
@@ -102,7 +103,8 @@ export function CalendarProvider({
 		if (userId === "all") {
 			setFilteredEvents(allEvents);
 		} else {
-			const filtered = allEvents.filter((event) => event.user.id === userId);
+			const filtered = allEvents.filter((event) => event.user.id == userId);
+			
 			setFilteredEvents(filtered);
 		}
 	};

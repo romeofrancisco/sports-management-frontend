@@ -4,7 +4,7 @@ import { CalendarSkeleton } from "@/components/calendar/calendar-skeleton";
 
 const EventCalendar = () => {
   return (
-    <div className="w-full max-h-[100vh-64px]">
+    <div className="container mx-auto p-1 md:p-6 space-y-6">
       <Suspense fallback={<CalendarSkeleton />}>
         <Calendar />
       </Suspense>

@@ -29,6 +29,7 @@ import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import path from "path";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
+import EventCalendar from "@/features/eventcalendar/EventCalendar";
 
 export const coachRoutes = [
   {
@@ -187,4 +188,8 @@ export const coachRoutes = [
     path: "documents/editor/:documentId",
     element: <DocumentEditor />,
   },
+  {
+    path: "calendar",
+    element: <EventCalendar/>,
+  }
 ];

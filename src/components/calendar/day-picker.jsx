@@ -1,4 +1,4 @@
-"use client";;
+
 import { enUS } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker as ReactDayPicker } from "react-day-picker";

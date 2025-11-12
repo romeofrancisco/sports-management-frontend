@@ -28,8 +28,9 @@ export const getEvents = async () => {
         startDate: start,
         endDate: end,
         color: s.color || "blue",
-        user: { id: `event:${s.id}`, name: s.location || s.title },
+        user: s.user,
         meta: { status: s.status, location: s.location },
+        type: s.type
       };
     });
   } catch (err) {

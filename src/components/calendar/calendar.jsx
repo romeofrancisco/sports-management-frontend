@@ -16,13 +16,12 @@ export function Calendar() {
   // coaches API returns a paginated shape { results: [...], count, ... }
   // normalize to an array for the CalendarProvider
   const users = coachesData?.results || [];
-
   
 
   return (
     <CalendarProvider events={events} users={users} view="month">
       <DndProvider showConfirmation={false}>
-        <div className="w-full border rounded-xl">
+        <div className="w-full border-2 border-primary/20 rounded-xl">
           <CalendarHeader />
           <CalendarBody />
         </div>

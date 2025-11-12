@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useRef, useState, useMem
 import { toast } from "sonner";
 import { useCalendar } from "@/components/calendar/calendar-context";
 import { DndConfirmationDialog } from "@/components/calendar/dnd-confirmation-dialog";
+import { useUpdateEvent } from "@/hooks/useEvents";
 
 const DragDropContext = createContext(undefined);
 
@@ -11,6 +12,7 @@ export function DndProvider({
     showConfirmation: showConfirmationProp = false
 }) {
 	const { updateEvent } = useCalendar();
+    const updateEventMutation = useUpdateEvent();
 	const [dragState, setDragState] = useState({ draggedEvent: null, isDragging: false });
 
 	const [showConfirmation, setShowConfirmation] =
@@ -111,12 +113,37 @@ export function DndProvider({
                 startDate: newStartDate.toISOString(),
                 endDate: newEndDate.toISOString(),
             };
-            updateEvent(updatedEvent);
-            toast.success("Event updated successfully");
-        } catch {
+
+            // Optimistically update local calendar state so the UI feels snappy
+            try {
+                updateEvent(updatedEvent);
+            } catch (e) {
+                // ignore local update errors
+            }
+
+            // Send update to backend
+            updateEventMutation.mutate(
+                { id: event.id, data: updatedEvent },
+                {
+                    onSuccess: (data) => {
+                        // replace with server canonical data when available
+                        try {
+                            updateEvent(data || updatedEvent);
+                        } catch (e) {}
+                        toast.success("Event updated successfully");
+                    },
+                    onError: (err) => {
+                        console.error("Failed to persist drag/drop update", err);
+                        toast.error("Failed to update event");
+                        // Let React Query invalidation or a refetch recover canonical state
+                    },
+                }
+            );
+        } catch (err) {
+            console.error(err);
             toast.error("Failed to update event");
         }
-    }, [updateEvent]);
+    }, [updateEvent, updateEventMutation]);
 
 	// Set default callback
 	React.useEffect(() => {

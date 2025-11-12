@@ -73,9 +73,11 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
     defaultValues: {
       title: event?.title ?? "",
       description: event?.description ?? "",
+      // Provide a default color so schema validation passes even when the
+      // color input is not shown in the form UI.
+      color: event?.color ?? COLORS[0] ?? "blue",
       startDate: initialDates.startDate,
       endDate: initialDates.endDate,
-      color: event?.color ?? "blue",
     },
   });
 
@@ -83,20 +85,20 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
     form.reset({
       title: event?.title ?? "",
       description: event?.description ?? "",
+      color: event?.color ?? COLORS[0] ?? "blue",
       startDate: initialDates.startDate,
       endDate: initialDates.endDate,
-      color: event?.color ?? "blue",
     });
   }, [event, initialDates, form]);
 
   const onSubmit = (values) => {
     try {
-      console.log(values.id);
       const formattedEvent = {
         ...values,
+        // ensure color is present for backend/schema
+        color: values.color ?? COLORS[0] ?? "blue",
         startDate: format(values.startDate, "yyyy-MM-dd'T'HH:mm:ss"),
         endDate: format(values.endDate, "yyyy-MM-dd'T'HH:mm:ss"),
-        color: values.color,
       };
 
       if (isEditing) {
@@ -193,39 +195,6 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
               name="endDate"
               render={({ field }) => (
                 <DateTimePicker form={form} field={field} />
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel className="required">Variant</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className={`w-full ${
-                          fieldState.invalid ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select a variant" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {COLORS.map((color) => (
-                          <SelectItem value={color} key={color}>
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`size-3.5 rounded-full bg-${color}-600 dark:bg-${color}-700`}
-                              />
-                              {color}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
               )}
             />
             <FormField
