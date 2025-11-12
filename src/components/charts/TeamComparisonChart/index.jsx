@@ -71,6 +71,7 @@ export default function TeamStatsComparison({ game }) {
   }
 
   const { home_team, away_team, comparison_stats } = statComparison;
+  console.log("Comparison Stats:", comparison_stats);
 
   return (
     <Card className="gap-0">

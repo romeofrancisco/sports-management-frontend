@@ -284,7 +284,7 @@ const TeamDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       {/* Team Header */}
-      <section className="p-4 md:p-6">
+      <section className="container mx-auto p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title={teamDetails.name}
           description="Monitor team performance, manage players, and track training progress"

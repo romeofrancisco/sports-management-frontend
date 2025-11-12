@@ -8,7 +8,7 @@ import {
   Gauge,
   Medal,
   Dumbbell,
-  BarChart3,
+  Calendar,
   FolderClosed,
 } from "lucide-react";
 
@@ -84,6 +84,12 @@ export const adminGroupedNavigation = () => {
           icon: Dumbbell,
           description: "Schedule training sessions",
         },
+        {
+          title: "Calendar",
+          href: "/calendar",
+          icon: Calendar,
+          description: "View and manage all scheduled events",
+        },
       ],
     },
   ];
@@ -117,6 +123,12 @@ export const coachGroupedNavigation = () => {
           href: "/documents",
           icon: FolderClosed,
           description: "Access and manage shared documents",
+        },
+        {
+          title: "Calendar",
+          href: "/calendar",
+          icon: Calendar,
+          description: "View and manage all scheduled events",
         },
       ],
     },
@@ -154,7 +166,6 @@ export const coachGroupedNavigation = () => {
 };
 
 export const playerGroupedNavigation = (team_slug) => {
-
   return [
     {
       title: "Dashboard",
@@ -200,6 +211,12 @@ export const playerGroupedNavigation = (team_slug) => {
           href: "/tournaments",
           icon: Medal,
           description: "View tournament details and schedules",
+        },
+        {
+          title: "Calendar",
+          href: "/calendar",
+          icon: Calendar,
+          description: "View all scheduled events",
         },
       ],
     },

@@ -88,7 +88,7 @@ const Sport = () => {
     }
   };
   return (
-    <div className="p-3 sm:p-4 md:p-6">
+    <div className="container mx-auto p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title={sportDetails?.name || sport}
         subtitle="Sport Management"

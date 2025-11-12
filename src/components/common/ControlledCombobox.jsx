@@ -104,9 +104,20 @@ const ControlledCombobox = ({
                       {options.map((opt) => (
                         <CommandItem
                           key={String(opt[valueKey])}
-                          value={String(opt[valueKey])}
+                          // Use the label as the searchable value so typing matches the option name
+                          value={String(opt[labelKey])}
                           onSelect={(currentValue) => {
-                            field.onChange(currentValue);
+                            // `currentValue` will be the label (because we used label as value).
+                            // Find the option by label and pass its id/value to the form field.
+                            const selectedOpt = options.find(
+                              (o) => String(o[labelKey]) === String(currentValue)
+                            );
+                            if (selectedOpt) {
+                              field.onChange(selectedOpt[valueKey]);
+                            } else {
+                              // Fallback: pass the raw currentValue
+                              field.onChange(currentValue);
+                            }
                             setOpen(false);
                           }}
                         >

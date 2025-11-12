@@ -7,10 +7,25 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 import {
   DayPicker,
-  labelNext,
-  labelPrevious,
   useDayPicker,
 } from "react-day-picker"
+
+const labelNext = (month) =>
+  month
+    ? `Go to next month, ${month.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      })}`
+    : "Go to next month"
+
+const labelPrevious = (month) =>
+  month
+    ? `Go to previous month, ${month.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      })}`
+    : "Go to previous month"
+
 
 export function Calendar({
   className,

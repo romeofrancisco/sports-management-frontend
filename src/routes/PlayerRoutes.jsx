@@ -12,6 +12,7 @@ import DocumentsList from "@/pages/documents/DocumentsList";
 import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
+import EventCalendar from "@/features/eventcalendar/EventCalendar";
 
 export const playerRoutes = [
   {
@@ -110,4 +111,8 @@ export const playerRoutes = [
     path: "documents/editor/:documentId",
     element: <DocumentEditor />,
   },
+  {
+    path: "calendar",
+    element: <EventCalendar/>
+  }
 ];
