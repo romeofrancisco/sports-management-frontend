@@ -9,6 +9,7 @@ import {
   Target,
   GraduationCap,
   BookOpen,
+  ClipboardList,
 } from "lucide-react";
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 import PlayerActions from "./PlayerActions";
@@ -19,9 +20,11 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
   const allPositions =
     player.positions?.map((pos) => pos.abbreviation).join(", ") || "N/A";
   return (
-    <Card className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 ${
-      !player.is_active ? 'opacity-70 border-gray-300' : ''
-    }`}>
+    <Card
+      className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 ${
+        !player.is_active ? "opacity-70 border-gray-300" : ""
+      }`}
+    >
       {/* University color indicator  */}
       <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
 
@@ -56,11 +59,13 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
                 </AvatarFallback>
               </Avatar>
               {/* Active/Inactive status indicator */}
-              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
-                !player.is_active 
-                  ? 'bg-gradient-to-r from-red-400 to-red-500' 
-                  : 'bg-gradient-to-r from-emerald-400 to-emerald-500'
-              }`}></div>
+              <div
+                className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
+                  !player.is_active
+                    ? "bg-gradient-to-r from-red-400 to-red-500"
+                    : "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                }`}
+              ></div>
             </div>
             <div className="flex-1 min-w-0">
               <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
@@ -83,15 +88,15 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
                   </Badge>
                 )}
                 {/* Player active/inactive status badge */}
-                <Badge 
+                <Badge
                   variant={player.is_active ? "default" : "destructive"}
                   className={`text-xs font-medium px-2 py-0.5 ${
-                    player.is_active 
-                      ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
-                      : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                    player.is_active
+                      ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                      : "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
                   }`}
                 >
-                  {player.is_active ? 'Active' : 'Inactive'}
+                  {player.is_active ? "Active" : "Inactive"}
                 </Badge>
               </div>
 
@@ -131,7 +136,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
           </div>
         </div>
         {/* Academic Information */}
-        <div className="pt-2 border-t border-border/50 space-y-2">
+        <div className="pt-2 border-t border-border/50">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-1">
               <GraduationCap className="h-3 w-3 text-muted-foreground" />
@@ -140,13 +145,9 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               </span>
             </div>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded-md ${
-                player.sex === "female"
-                  ? "bg-secondary/15 text-secondary"
-                  : "bg-primary/15 text-primary"
-              }`}
+              className="text-xs font-medium px-2 py-1 rounded-md text-primary"
             >
-              {getYearLevelLabel(player.year_level)}
+              {player.academic_info?.year_level}
             </span>
           </div>
 
@@ -156,16 +157,26 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               <span className="text-muted-foreground font-medium">Course</span>
             </div>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded-md truncate max-w-24 ${
-                player.sex === "female"
-                  ? "bg-secondary/15 text-secondary"
-                  : "bg-primary/15 text-primary"
-              }`}
-              title={getCourseLabel(player.course)}
+              className="text-xs font-medium px-2 py-1 rounded-md text-primary"
+              title={player.academic_info?.course}
             >
-              {getCourseLabel(player.course)}
+              {player.academic_info?.course}
             </span>
           </div>
+
+          {player.academic_info?.section && (
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-1">
+                <ClipboardList className="h-3 w-3 text-muted-foreground" />
+                <span className="text-muted-foreground font-medium">
+                  Section
+                </span>
+              </div>
+              <span className="text-xs font-medium p-1 rounded-md text-primary">
+                {player.academic_info?.section}
+              </span>
+            </div>
+          )}
         </div>
       </CardHeader>
     </Card>

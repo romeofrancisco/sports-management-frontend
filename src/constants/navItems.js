@@ -10,6 +10,7 @@ import {
   Dumbbell,
   Calendar,
   FolderClosed,
+  GraduationCap,
 } from "lucide-react";
 
 // Grouped navigation for better responsive design
@@ -66,6 +67,12 @@ export const adminGroupedNavigation = () => {
           icon: FolderClosed,
           description: "Manage shared documents and resources",
         },
+        {
+          title: "Courses & Sections",
+          href: "/course-sections",
+          icon: GraduationCap,
+          description: "Manage courses and sections for players",
+        }
       ],
     },
     {

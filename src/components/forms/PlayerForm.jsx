@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { TeamSelect } from "../common/TeamSelect";
 import MultiSelect from "../common/ControlledMultiSelect";
-import { useCreatePlayer, useUpdatePlayer } from "@/hooks/usePlayers";
-import { Loader2 } from "lucide-react";
-import { convertToFormData } from "@/utils/convertToFormData";
-import { useSportPositions } from "@/hooks/useSports";
 import ControlledInput from "../common/ControlledInput";
 import ControlledSelect from "../common/ControlledSelect";
-import { COURSE_CHOICES, SEX, YEAR_LEVEL_CHOICES } from "@/constants/player";
-import { useSportTeams } from "@/hooks/useTeams";
 import ControlledTeamSelect from "../common/ControlledTeamSelect";
+import { Loader2 } from "lucide-react";
+import { convertToFormData } from "@/utils/convertToFormData";
+
+import { useCreatePlayer, useUpdatePlayer } from "@/hooks/usePlayers";
+import { useSportPositions } from "@/hooks/useSports";
+import { useSportTeams } from "@/hooks/useTeams";
+import { useAcademicInfoForm } from "@/hooks/useAcademicInfo";
+
+import { SEX } from "@/constants/player";
 
 const PlayerForm = ({ sports, onClose, player }) => {
   const isEdit = !!player;
@@ -26,100 +28,168 @@ const PlayerForm = ({ sports, onClose, player }) => {
     watch,
     setError,
     setValue,
-    reset,
   } = useForm({
     defaultValues: {
       first_name: player?.first_name || "",
       last_name: player?.last_name || "",
       email: player?.email || "",
       sex: player?.sex || "",
-      year_level: player?.year_level || "",
-      course: player?.course || "",
       profile: null,
       sport_slug: player?.sport?.slug || "",
       height: player?.height || "",
       weight: player?.weight || "",
       jersey_number: player?.jersey_number || "",
       team_id: player?.team?.id || "",
-      position_ids: player?.positions.map((pos) => pos.id) || [],
+      position_ids: player?.positions?.map((pos) => pos.id) || [],
+      // Academic info
+      year_level: player?.academic_info?.year_level || "",
+      course: player?.academic_info?.course || "",
+      section: player?.academic_info?.section || null,
+      academic_info_id: player?.academic_info?.id || null,
     },
   });
+
+  // Watch cascading values
   const selectedSport = watch("sport_slug");
   const selectedSex = watch("sex");
+  const selectedYear = watch("year_level");
+  const selectedCourse = watch("course");
+  const selectedSection = watch("section");
 
-  // Convert sex to division for team filtering
-  const division = selectedSex; // Since sex values match division values
+  const division = selectedSex;
 
+  // Hooks
   const { data: positions } = useSportPositions(selectedSport);
   const { data: teams } = useSportTeams(selectedSport, division);
 
-  // Find the selected sport object to check if it requires stats
-  const selectedSportObj = sports?.find(sport => sport.slug === selectedSport);
-  const sportRequiresStats = selectedSportObj?.requires_stats ?? true;
+  // Academic Info
+  const { data: allAcademic } = useAcademicInfoForm();
+  const { data: coursesForYear } = useAcademicInfoForm(
+    selectedYear ? { year_level: selectedYear } : undefined,
+    { enabled: !!selectedYear }
+  );
+  const { data: sectionsForCourse } = useAcademicInfoForm(
+    selectedYear && selectedCourse
+      ? { year_level: selectedYear, course: selectedCourse }
+      : undefined,
+    { enabled: !!selectedYear && !!selectedCourse }
+  );
 
-  // Reset team and position selection when sex or sport changes
+  // Academic options
+  const yearOptions = useMemo(() => {
+    if (!allAcademic) return [];
+    return [...new Set(allAcademic.map((a) => a.year_level))].map((y) => ({
+      value: y,
+      label: y,
+    }));
+  }, [allAcademic]);
+
+  const courseOptions = useMemo(() => {
+    if (!coursesForYear) return [];
+    return [...new Set(coursesForYear.map((a) => a.course))].map((c) => ({
+      value: c,
+      label: c,
+    }));
+  }, [coursesForYear]);
+
+  const sectionOptions = useMemo(() => {
+    if (!sectionsForCourse) return [];
+    const sections = [
+      ...new Set(sectionsForCourse.map((a) => a.section || "")),
+    ];
+    return sections.map((s) => ({
+      value: s || null,
+      label: s || "None",
+    }));
+  }, [sectionsForCourse]);
+
+  // Auto-resolve academic_info_id
+  useEffect(() => {
+    if (!sectionsForCourse) return;
+    const normalizedSection = selectedSection === "" ? null : selectedSection;
+    const match =
+      sectionsForCourse.find((a) => a.section === normalizedSection) ||
+      sectionsForCourse.find((a) => a.section == null);
+
+    if (match) setValue("academic_info_id", match.id);
+  }, [sectionsForCourse, selectedSection, setValue]);
+
+  // Reset cascading values
+  const yearDidMount = useRef(false);
+  useEffect(() => {
+    if (!yearDidMount.current) {
+      yearDidMount.current = true;
+      return;
+    }
+    setValue("course", "");
+    setValue("section", "");
+    setValue("academic_info_id", null);
+  }, [selectedYear, setValue]);
+
+  const courseDidMount = useRef(false);
+  useEffect(() => {
+    if (!courseDidMount.current) {
+      courseDidMount.current = true;
+      return;
+    }
+    setValue("section", "");
+    setValue("academic_info_id", null);
+  }, [selectedCourse, setValue]);
+
+  // Reset team & positions when sport/sex changes
   useEffect(() => {
     if (!isEdit) {
       setValue("team_id", "");
-      // Reset positions if sport doesn't require stats
-      if (!sportRequiresStats) {
-        setValue("position_ids", []);
-      }
+      setValue("position_ids", []);
     }
-  }, [selectedSex, selectedSport, sportRequiresStats, setValue, isEdit]);
+  }, [selectedSex, selectedSport, setValue, isEdit]);
 
-  const onSubmit = (playerData) => {
-    // Remove position_ids if sport doesn't require stats
-    const dataToSend = { ...playerData };
-    
-    // Ensure position_ids is always an array
-    if (dataToSend.position_ids && !Array.isArray(dataToSend.position_ids)) {
-      dataToSend.position_ids = [dataToSend.position_ids];
+  // Submit Handler
+  const onSubmit = (data) => {
+    const payload = { ...data };
+
+    // Normalize position_ids
+    if (payload.position_ids && !Array.isArray(payload.position_ids)) {
+      payload.position_ids = [payload.position_ids];
     }
-    
-    // If sport doesn't require stats or positions array is empty, remove position_ids
-    if (!sportRequiresStats || !dataToSend.position_ids || dataToSend.position_ids.length === 0) {
-      delete dataToSend.position_ids;
+
+    // Resolve academic_info_id if missing
+    if (!payload.academic_info_id) {
+      const normalizedSection = payload.section === "" ? null : payload.section;
+      const match =
+        sectionsForCourse?.find((a) => a.section === normalizedSection) ||
+        sectionsForCourse?.find((a) => a.section == null) ||
+        coursesForYear?.find((a) => a.section == null);
+      if (match) payload.academic_info_id = match.id;
     }
-    
-    // Check if there's a file to upload
-    const hasFile = dataToSend.profile instanceof File || dataToSend.profile instanceof FileList;
-    
-    let payload;
+
+    // Remove front-end only fields
+    delete payload.year_level;
+    delete payload.course;
+    delete payload.section;
+
+    // Handle file upload
+    const hasFile =
+      payload.profile instanceof File || payload.profile instanceof FileList;
+    let requestData;
     if (hasFile) {
-      // Use FormData when there's a file
-      const formData = convertToFormData(dataToSend);
-      
-      payload = isEdit ? { player: player.slug, data: formData } : formData;
+      const formData = convertToFormData(payload);
+      requestData = isEdit ? { player: player.slug, data: formData } : formData;
     } else {
-      // Use JSON when there's no file - DRF handles arrays correctly with JSON
-      const jsonData = { ...dataToSend };
-      delete jsonData.profile; // Remove null/undefined profile field
-      
-      payload = isEdit ? { player: player.slug, data: jsonData } : jsonData;
+      delete payload.profile;
+      requestData = isEdit ? { player: player.slug, data: payload } : payload;
     }
 
     const mutationFn = isEdit ? updatePlayer : createPlayer;
-
-    mutationFn(payload, {
-      onSuccess: () => {
-        onClose();
-      },
+    mutationFn(requestData, {
+      onSuccess: () => onClose(),
       onError: (e) => {
-        console.log("Error response:", e.response);
         const error = e.response?.data;
         if (error) {
-          console.log("Error data:", error);
-          Object.keys(error).forEach((fieldName) => {
-            // Handle both string and array error formats
-            let errorMessage = error[fieldName];
-            if (Array.isArray(errorMessage)) {
-              errorMessage = errorMessage[0]; // Take the first error message
-            }
-            console.log(`Setting error for ${fieldName}:`, errorMessage);
-            setError(fieldName, {
+          Object.entries(error).forEach(([field, message]) => {
+            setError(field, {
               type: "server",
-              message: errorMessage,
+              message: Array.isArray(message) ? message[0] : message,
             });
           });
         }
@@ -127,185 +197,174 @@ const PlayerForm = ({ sports, onClose, player }) => {
     });
   };
 
+  // Initialize form values on edit after all data is loaded
+  useEffect(() => {
+    if (!player || !allAcademic) return;
+
+    // Set the top-level academic values
+    setValue("year_level", player.academic_info?.year_level || "");
+    setValue("course", player.academic_info?.course || "");
+    setValue("section", player.academic_info?.section || null);
+
+    // Resolve academic_info_id once sections are loaded
+    if (sectionsForCourse && sectionsForCourse.length > 0) {
+      const normalizedSection = player.academic_info?.section || null;
+      const match =
+        sectionsForCourse.find((a) => a.section === normalizedSection) ||
+        sectionsForCourse.find((a) => a.section == null);
+
+      if (match) setValue("academic_info_id", match.id);
+    }
+  }, [player, allAcademic, sectionsForCourse, setValue]);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-8 px-4 py-6 max-w-2xl mx-auto"
     >
-      {/* Personal Details */}
+      {/* PERSONAL DETAILS */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-          Personal Details
-        </h2>
-        <div className="space-y-4">
-          {/* Only group truly related fields */}
-          <div className="grid grid-cols-2 gap-3">
-            <ControlledInput
-              name="first_name"
-              label="First Name"
-              placeholder="Enter first name"
-              control={control}
-              errors={errors}
-            />
-            <ControlledInput
-              name="last_name"
-              label="Last Name"
-              placeholder="Enter last name"
-              control={control}
-              errors={errors}
-            />
-          </div>
-          
-          <ControlledSelect
-            name="sex"
+        <h2 className="text-lg font-bold text-primary">Personal Details</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <ControlledInput
+            name="first_name"
+            label="First Name"
+            placeholder="Enter first name"
             control={control}
-            label="Sex"
-            placeholder="Select sex"
-            groupLabel="Sex"
-            options={SEX}
-            valueKey="value"
-            labelKey="label"
             errors={errors}
           />
-          
           <ControlledInput
-            name="profile"
-            label="Profile Photo"
-            type="file"
-            accept="image/*"
+            name="last_name"
+            label="Last Name"
+            placeholder="Enter last name"
             control={control}
             errors={errors}
           />
         </div>
+
+        <ControlledSelect
+          name="sex"
+          control={control}
+          label="Sex"
+          placeholder="Select sex"
+          options={SEX}
+          valueKey="value"
+          labelKey="label"
+          errors={errors}
+        />
+
+        <ControlledInput
+          name="profile"
+          label="Profile Photo"
+          type="file"
+          accept="image/*"
+          control={control}
+          errors={errors}
+        />
       </div>
 
-      {/* Account Details */}
+      {/* ACADEMIC DETAILS */}
       <div className="space-y-4 pt-6 border-t border-border/60">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Account Details
-        </h2>
-        <div className="space-y-4">
-          <ControlledInput
-            name="email"
-            label="Email Address"
-            placeholder="Enter email address"
-            type="email"
-            control={control}
-            errors={errors}
-          />
-          
-          <ControlledSelect
-            name="year_level"
-            control={control}
-            label="Year Level"
-            placeholder="Select year level"
-            groupLabel="Year Level"
-            options={YEAR_LEVEL_CHOICES}
-            valueKey="value"
-            labelKey="label"
-            errors={errors}
-          />
-          
-          <ControlledSelect
-            name="course"
-            control={control}
-            label="Course"
-            groupLabel="Course"
-            placeholder="Select course"
-            options={COURSE_CHOICES}
-            valueKey="value"
-            labelKey="label"
-            errors={errors}
-          />
-
-        </div>
+        <h2 className="text-lg font-bold text-primary">Academic Info</h2>
+        <ControlledSelect
+          name="year_level"
+          control={control}
+          label="Year Level"
+          placeholder="Select year level"
+          options={yearOptions}
+          valueKey="value"
+          labelKey="label"
+          errors={errors}
+        />
+        <ControlledSelect
+          name="course"
+          control={control}
+          label="Course"
+          placeholder="Select course"
+          options={courseOptions}
+          disabled={!selectedYear}
+          valueKey="value"
+          labelKey="label"
+          errors={errors}
+        />
+        <ControlledSelect
+          name="section"
+          control={control}
+          label="Section"
+          placeholder="Select section (optional)"
+          options={sectionOptions}
+          disabled={!selectedCourse}
+          valueKey="value"
+          labelKey="label"
+          errors={errors}
+        />
       </div>
 
-      {/* Player Information */}
+      {/* PLAYER INFO */}
       <div className="space-y-4 pt-6 border-t border-border/60">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Player Information
-        </h2>
-        <div className="space-y-4">
-          <ControlledSelect
-            name="sport_slug"
-            control={control}
-            label="Sport"
-            placeholder="Select sport"
-            groupLabel="Sport"
-            options={sports}
-            valueKey="slug"
-            labelKey="name"
-            errors={errors}
-          />
-          
-          <ControlledTeamSelect
-            control={control}
-            name="team_id"
-            label="Team"
-            placeholder={
-              !selectedSport 
-                ? "Please select sport first" 
-                : !selectedSex 
-                ? "Please select sex first" 
-                : "Select team"
-            }
-            teams={teams}
-            disabled={!selectedSport || !selectedSex}
-            errors={errors}
-            helperText={
-              !selectedSport 
-                ? "You must select a sport first to see available teams" 
-                : !selectedSex 
-                ? "You must select your sex to see available teams" 
-                : ""
-            }
-          />
-          
-          <MultiSelect
-            name="position_ids"
-            label="Position"
-            control={control}
-            options={positions}
-            max={3}
-            placeholder={
-              !selectedSport 
-                ? "Please select sport first" 
-                : !sportRequiresStats 
-                ? "Positions not required for this sport" 
-                : "Select player position..."
-            }
-            disabled={!selectedSport || !sportRequiresStats}
-            className=""
-          />
-          
-          <ControlledInput
-            name="jersey_number"
-            label="Jersey Number"
-            type="number"
-            placeholder="Enter jersey number"
-            control={control}
-            errors={errors}
-          />
-          
-          <ControlledInput
-            name="height"
-            label="Height (cm)"
-            type="number"
-            placeholder="Enter height in centimeters"
-            control={control}
-            errors={errors}
-          />
-          
-          <ControlledInput
-            name="weight"
-            label="Weight (kg)"
-            type="number"
-            placeholder="Enter weight in kilograms"
-            control={control}
-            errors={errors}
-          />
-        </div>
+        <h2 className="text-lg font-bold text-primary">Player Info</h2>
+
+        <ControlledSelect
+          name="sport_slug"
+          control={control}
+          label="Sport"
+          placeholder="Select sport"
+          options={sports}
+          valueKey="slug"
+          labelKey="name"
+          errors={errors}
+        />
+
+        <ControlledTeamSelect
+          control={control}
+          name="team_id"
+          label="Team"
+          placeholder={
+            !selectedSport
+              ? "Select sport first"
+              : !selectedSex
+              ? "Select sex first"
+              : "Select team"
+          }
+          teams={teams}
+          disabled={!selectedSport || !selectedSex}
+          errors={errors}
+        />
+
+        <MultiSelect
+          name="position_ids"
+          label="Positions"
+          control={control}
+          options={positions}
+          max={3}
+          placeholder={
+            !selectedSport ? "Select sport first" : "Select player positions"
+          }
+          disabled={!selectedSport}
+          errors={errors}
+        />
+
+        <ControlledInput
+          name="jersey_number"
+          label="Jersey Number"
+          type="number"
+          control={control}
+          errors={errors}
+        />
+        <ControlledInput
+          name="height"
+          label="Height (cm)"
+          type="number"
+          control={control}
+          errors={errors}
+        />
+        <ControlledInput
+          name="weight"
+          label="Weight (kg)"
+          type="number"
+          control={control}
+          errors={errors}
+        />
       </div>
 
       <Button type="submit" disabled={isCreating || isUpdating}>
