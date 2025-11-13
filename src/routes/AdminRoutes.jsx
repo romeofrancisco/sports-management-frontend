@@ -35,6 +35,7 @@ import DocumentsList from "@/pages/documents/DocumentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import IdentifyEditor from "@/pages/documents/IdentifyEditor";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
+import CourseSections from "@/features/course-sections/CourseSections";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -258,5 +259,9 @@ export const adminRoutes = [
   {
     path: "calendar",
     element: <EventCalendar />,
+  },
+  {
+    path: "course-sections",
+    element: <CourseSections/>
   }
 ];

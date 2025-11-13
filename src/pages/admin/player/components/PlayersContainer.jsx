@@ -27,6 +27,7 @@ const PlayersContainer = () => {
     sport: null,
     year_level: null,
     course: null,
+    section: null,
   });
 
   const [debouncedSearch] = useDebounce(filter.search, 500);

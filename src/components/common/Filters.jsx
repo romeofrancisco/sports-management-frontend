@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectSeparator,
 } from "@/components/ui/select";
-import { YEAR_LEVEL_CHOICES, COURSE_CHOICES } from "@/constants/player";
+import { useAcademicInfo } from "@/hooks/useAcademicInfo";
 import { DIVISIONS } from "@/constants/team";
 import { SEX } from "@/constants/player";
 import { useSports } from "@/hooks/useSports";
@@ -42,6 +42,8 @@ export const FilterYearLevel = ({
   className = "",
   hideLabel = false,
 }) => {
+  const { data: allAcademic } = useAcademicInfo({}, { staleTime: 1000 * 60 * 5 });
+  
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -51,20 +53,24 @@ export const FilterYearLevel = ({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Year Level</SelectLabel>
-            <SelectItem value={null}>All Levels</SelectItem>
+            <SelectItem value={null}>All Levels</SelectItem>   
             <SelectSeparator />
-            {YEAR_LEVEL_CHOICES.map((year) => (
-              <SelectItem key={year.value} value={year.value}>
-                {year.label}
-              </SelectItem>
-            ))}
+            {(() => {
+              const set = new Set();
+              (allAcademic || []).forEach((a) => a.year_level && set.add(a.year_level));
+              return Array.from(set).map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ));
+            })()}
           </SelectGroup>
         </SelectContent>
       </Select>
     );
   }
   return (
-    <div className={`grid gap-0.5${className}`}>
+    <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Year Level</Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="w-full">
@@ -75,11 +81,15 @@ export const FilterYearLevel = ({
             <SelectLabel>Year Level</SelectLabel>
             <SelectItem value={null}>All Levels</SelectItem>
             <SelectSeparator />
-            {YEAR_LEVEL_CHOICES.map((year) => (
-              <SelectItem key={year.value} value={year.value}>
-                {year.label}
-              </SelectItem>
-            ))}
+            {(() => {
+              const set = new Set();
+              (allAcademic || []).forEach((a) => a.year_level && set.add(a.year_level));
+              return Array.from(set).map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ));
+            })()}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -139,6 +149,7 @@ export const FilterSex = ({
       </Select>
     );
   }
+
   return (
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Sex</Label>
@@ -169,6 +180,7 @@ export const FilterCourse = ({
   className = "",
   hideLabel = false,
 }) => {
+  const { data: allAcademic } = useAcademicInfo({}, { staleTime: 1000 * 60 * 5 });
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -180,11 +192,15 @@ export const FilterCourse = ({
             <SelectLabel>Course</SelectLabel>
             <SelectItem value={null}>All Courses</SelectItem>
             <SelectSeparator />
-            {COURSE_CHOICES.map((course) => (
-              <SelectItem key={course.value} value={course.value}>
-                {course.label}
-              </SelectItem>
-            ))}
+            {(() => {
+              const set = new Set();
+              (allAcademic || []).forEach((a) => a.course && set.add(a.course));
+              return Array.from(set).map((course) => (
+                <SelectItem key={course} value={course}>
+                  {course}
+                </SelectItem>
+              ));
+            })()}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -202,11 +218,15 @@ export const FilterCourse = ({
             <SelectLabel>Course</SelectLabel>
             <SelectItem value={null}>All Courses</SelectItem>
             <SelectSeparator />
-            {COURSE_CHOICES.map((course) => (
-              <SelectItem key={course.value} value={course.value}>
-                {course.label}
-              </SelectItem>
-            ))}
+            {(() => {
+              const set = new Set();
+              (allAcademic || []).forEach((a) => a.course && set.add(a.course));
+              return Array.from(set).map((course) => (
+                <SelectItem key={course} value={course}>
+                  {course}
+                </SelectItem>
+              ));
+            })()}
           </SelectGroup>
         </SelectContent>
       </Select>

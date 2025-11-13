@@ -39,7 +39,7 @@ const FilterDropdown = ({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto">
           <SlidersHorizontal />
-          <span className="ml-2">{title}</span>
+          {title}
         </Button>
       </DropdownMenuTrigger>
 
@@ -50,7 +50,7 @@ const FilterDropdown = ({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <ScrollArea>
-          <div className="max-h-64">{children}</div>
+          <div className="max-h-72">{children}</div>
         </ScrollArea>
 
         {onClear && (
