@@ -11,23 +11,33 @@ import { useCalendar } from "@/components/calendar/calendar-context";
 
 function CalendarContent() {
   const { view, selectedDate, setUsers, setEvents } = useCalendar();
+  
   const { data: events } = useEvents({
     view: view,
     date: selectedDate,
   });
+  
   const { data: coachesData } = useCoaches({}, 1, 1000);
   const users = coachesData?.results || [];
 
-  // Update events in context when they're loaded
+  // Memoize to prevent unnecessary updates
+  const eventsRef = React.useRef(null);
+  const usersRef = React.useRef(null);
+
   React.useEffect(() => {
-    if (events) {
+    // Only update if events actually changed (deep comparison by stringifying)
+    const eventsStr = JSON.stringify(events);
+    if (events && eventsStr !== eventsRef.current) {
+      eventsRef.current = eventsStr;
       setEvents(events);
     }
   }, [events, setEvents]);
 
-  // Update users in context when they're loaded
   React.useEffect(() => {
-    if (users) {
+    // Only update if users actually changed
+    const usersStr = JSON.stringify(users);
+    if (users && usersStr !== usersRef.current) {
+      usersRef.current = usersStr;
       setUsers(users);
     }
   }, [users, setUsers]);
