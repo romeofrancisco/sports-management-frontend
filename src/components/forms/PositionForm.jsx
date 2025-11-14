@@ -55,6 +55,7 @@ const PositionForm = ({ onClose, sportSlug, position = null }) => {
       const apiErrors = error.response?.data;
       if (apiErrors) {
         // Map API errors to form fields
+        console.log(apiErrors)
         Object.keys(apiErrors).forEach(field => {
           const message = Array.isArray(apiErrors[field])
             ? apiErrors[field].join(", ")

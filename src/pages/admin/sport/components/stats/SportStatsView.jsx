@@ -20,7 +20,7 @@ const SportStatsView = () => {
     type: "all",
   });
 
-  const { data: categories } = useStatCategories();
+  const { data: categories } = useStatCategories({ sport: sport });
 
   // Get stats data with the filter - now using backend filtering
   const { data: stats } = useSportStats(sport, {
@@ -44,7 +44,8 @@ const SportStatsView = () => {
             <span className="text-xl font-bold">Stats</span>
 
             <span className="text-muted-foreground line-clamp-1 text-sm">
-                Manage sport statis. Stats are used for boxscore and performance tracking.
+              Manage sport statis. Stats are used for boxscore and performance
+              tracking.
             </span>
           </div>
         </div>
@@ -77,7 +78,11 @@ const SportStatsView = () => {
 
       {/* Filter Section - Improved responsiveness */}
       <Card className="p-3 sm:p-4 lg:p-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-        <SportStatsFilterBar filter={statFilter} setFilter={setStatFilter} categories={categories} />
+        <SportStatsFilterBar
+          filter={statFilter}
+          setFilter={setStatFilter}
+          categories={categories}
+        />
       </Card>
 
       {/* Content Section - Better mobile spacing */}

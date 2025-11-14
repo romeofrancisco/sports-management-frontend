@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { SCORING_TYPE_VALUES } from "@/constants/sport";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
   const { home_team, away_team } = useSelector((state) => state.game);
@@ -75,13 +76,19 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
       {/* Teams Header */}
       <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium mb-4">
         <div className="flex items-center gap-2 justify-start">
-          <img src={home_team.logo} alt={home_team.name} className="w-9" />
+          <Avatar>
+            <AvatarImage src={home_team.logo} alt={home_team.name} />
+            <AvatarFallback>{home_team.name.charAt(0)}</AvatarFallback>
+          </Avatar>
           <span>{home_team.abbreviation}</span>
         </div>
         <span></span>
         <div className="flex items-center gap-2 justify-start">
           <span>{away_team.abbreviation}</span>
-          <img src={away_team.logo} alt={away_team.name} className="w-9" />
+          <Avatar>
+            <AvatarImage src={away_team.logo} alt={away_team.name} />
+            <AvatarFallback>{away_team.name.charAt(0)}</AvatarFallback>
+          </Avatar>
         </div>
       </div>
 

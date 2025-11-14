@@ -8,6 +8,7 @@ import LeaderCard from "../../league/components/standings/LeaderCard";
 
 const TournamentLeaders = ({ tournamentId }) => {
   const { data, isLoading } = useTournamentLeaders(tournamentId);
+  console.log(data)
 
   if (isLoading) {
     return <LoadingState />;

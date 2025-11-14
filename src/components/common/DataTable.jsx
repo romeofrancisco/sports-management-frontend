@@ -119,26 +119,32 @@ const DataTable = ({
           <div className="overflow-x-auto">
             <Table className={`${className} text-xs md:text-sm relative`}>
               <TableHeader>
-                <TableRow className="border-b">
-                  {table.getHeaderGroups()[0].headers.map((header, index) => (
-                    <TableHead
-                      key={header.id}
-                      style={{
-                        ...(index === 0 ? getFirstColumnStyle(true) : {}),
-                        width: header.column.columnDef.size,
-                        minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
-                      }}
-                      className={`border-r border-border ${index === 0 ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="border-b">
+                    {headerGroup.headers.map((header, index) => {
+                      const isFirstColumn = index === 0 && headerGroup.depth === table.getHeaderGroups().length - 1;
+                      return (
+                        <TableHead
+                          key={header.id}
+                          colSpan={header.colSpan}
+                          style={{
+                            ...(isFirstColumn ? getFirstColumnStyle(true) : {}),
+                            width: header.column.columnDef.size,
+                            minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
+                          }}
+                          className={`border-r border-border ${isFirstColumn ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows.length ? (

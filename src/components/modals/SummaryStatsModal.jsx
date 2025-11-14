@@ -127,10 +127,10 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
               <TabsTrigger value={TEAM_SIDES.HOME_TEAM}>
                 {home_team?.name || "Home Team"}
               </TabsTrigger>
+              <TabsTrigger value="team_stats">Team Stats</TabsTrigger>
               <TabsTrigger value={TEAM_SIDES.AWAY_TEAM}>
                 {away_team?.name || "Away Team"}
               </TabsTrigger>
-              <TabsTrigger value="team_stats">Team Stats</TabsTrigger>
             </TabsList>
 
             {isPlayerStatsLoading || isTeamStatsLoading ? (
@@ -143,15 +143,15 @@ const SummaryStatsModal = ({ isOpen, onClose }) => {
                     selectedPeriod={selectedPeriod}
                   />
                 </TabsContent>
-                <TabsContent value={TEAM_SIDES.AWAY_TEAM}>
-                  <PlayerStatsSummaryTable
-                    players={playerStats}
-                    selectedPeriod={selectedPeriod}
-                  />
-                </TabsContent>
                 <TabsContent value="team_stats">
                   <TeamStatsSummary
                     teamStats={teamStats}
+                    selectedPeriod={selectedPeriod}
+                  />
+                </TabsContent>
+                <TabsContent value={TEAM_SIDES.AWAY_TEAM}>
+                  <PlayerStatsSummaryTable
+                    players={playerStats}
                     selectedPeriod={selectedPeriod}
                   />
                 </TabsContent>
