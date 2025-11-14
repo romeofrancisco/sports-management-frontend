@@ -5,8 +5,13 @@ import CourseSectionFilter from "./CourseSectionFilter";
 import DataTable from "@/components/common/DataTable";
 import CourseSectionTable from "./CourseSectionTable";
 import { Button } from "@/components/ui/button";
+import CourseSectionsModal from "./CourseSectionsModal";
+import { useModal } from "@/hooks/useModal";
+import { set } from "date-fns";
+import CourseSectionDeleteModal from "./CourseSectionDeleteModal";
 
 const CourseSectionsContainer = () => {
+  const [selectedCourseSection, setSelectedCourseSection] = useState(null);
   const [filter, setFilter] = useState({
     search: "",
     year_level: null,
@@ -14,6 +19,34 @@ const CourseSectionsContainer = () => {
     section: null,
     exclude: null,
   });
+
+  const modal = useModal();
+  const deleteModal = useModal();
+
+  const handleOpenModal = () => {
+    setSelectedCourseSection(null);
+    modal.openModal();
+  };
+
+  const handleUpdateModal = (courseSection) => {
+    setSelectedCourseSection(courseSection);
+    modal.openModal();
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCourseSection(null);
+    modal.closeModal();
+  };
+
+  const handleOpenDeleteModal = (courseSection) => {
+    setSelectedCourseSection(courseSection);
+    deleteModal.openModal();
+  };
+
+  const handleCloseDeleteModal = () => {
+    setSelectedCourseSection(null);
+    deleteModal.closeModal();
+  };
 
   return (
     <Card className="border-2 border-primary/20">
@@ -35,14 +68,28 @@ const CourseSectionsContainer = () => {
               </p>
             </div>
           </div>
-          <Button>
+          <Button onClick={handleOpenModal}>
             <Plus /> Register Course & Section
           </Button>
         </div>
         <CourseSectionFilter filter={filter} setFilter={setFilter} />
       </CardHeader>
       <CardContent>
-        <CourseSectionTable filter={filter} />
+        <CourseSectionTable
+          filter={filter}
+          onUpdate={handleUpdateModal}
+          onDelete={handleOpenDeleteModal}
+        />
+        <CourseSectionsModal
+          open={modal.isOpen}
+          onOpenChange={handleCloseModal}
+          courseSection={selectedCourseSection}
+        />
+        <CourseSectionDeleteModal
+          open={deleteModal.isOpen}
+          onOpenChange={handleCloseDeleteModal}
+          courseSection={selectedCourseSection}
+        />
       </CardContent>
     </Card>
   );
