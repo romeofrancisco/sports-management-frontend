@@ -81,7 +81,7 @@ const Modal = ({
         // keep outer container clipped (rounded corners) and let inner ScrollArea
         // control scrolling via max-height + overflow-auto so small content keeps
         // a compact modal while large content scrolls.
-        className={`w-[95vw] ${sizeClasses[size]} overflow-hidden p-0 ${contentClassName}`}
+        className={`overflow-hidden p-0 ${contentClassName}`}
         style={{ maxHeight }}
       >
         {showHeader && (title || description || Icon) && (

@@ -226,15 +226,10 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   <DropdownMenuLabel>Season Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
 
-                  {/* Modify season actions - Edit, Export */}
+              
                   <DropdownMenuItem className="flex items-center gap-2">
                     <Settings size={14} />
                     <span>Edit Season</span>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="flex items-center gap-2">
-                    <Share2 size={14} />
-                    <span>Export Schedule</span>
                   </DropdownMenuItem>
 
                   {/* Generate Bracket moved to settings dropdown */}

@@ -70,7 +70,7 @@ const DeleteModal = ({
       onOpenChange={!isLoading ? onOpenChange : undefined}
     >
       <AlertDialogContent
-        className={`${sizeClasses[size]} overflow-hidden p-0 gap-0 ${contentClassName}`}
+        className={`overflow-hidden p-0 gap-0 ${contentClassName}`}
       >
         <AlertDialogHeader
           className={`px-6 pt-6 pb-4 border-b border-border/50 bg-gradient-to-r from-background via-destructive/5 to-background ${headerClassName}`}

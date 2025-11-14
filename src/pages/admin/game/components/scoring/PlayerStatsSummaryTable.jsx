@@ -1,16 +1,12 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "@/components/common/DataTable";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useSelector } from "react-redux";
 import { getPeriodLabel, SCORING_TYPE_VALUES } from "@/constants/sport";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const PlayerStatsSummaryTable = ({
   players,
@@ -19,6 +15,19 @@ const PlayerStatsSummaryTable = ({
 }) => {
   const { current_period } = useSelector((state) => state.game);
   const { scoring_type } = useSelector((state) => state.sport);
+
+  // Flatten stats from grouped categories
+  const flattenStats = (statsArray) => {
+    if (!statsArray || !Array.isArray(statsArray)) return [];
+
+    const flattened = [];
+    statsArray.forEach((categoryGroup) => {
+      if (categoryGroup.stats && Array.isArray(categoryGroup.stats)) {
+        flattened.push(...categoryGroup.stats);
+      }
+    });
+    return flattened;
+  };
 
   // Get available periods from the first player's stats
   const availablePeriods = useMemo(() => {
@@ -33,9 +42,13 @@ const PlayerStatsSummaryTable = ({
       Array.isArray(players[0].stats) &&
       players[0].stats.length > 0
     ) {
-      Object.keys(players[0].stats[0].period_values || {}).forEach((period) => {
-        periods.add(period);
-      });
+      // Flatten the grouped stats to access period_values
+      const flatStats = flattenStats(players[0].stats);
+      if (flatStats.length > 0) {
+        Object.keys(flatStats[0].period_values || {}).forEach((period) => {
+          periods.add(period);
+        });
+      }
     }
 
     return Array.from(periods).sort((a, b) => {
@@ -72,7 +85,10 @@ const PlayerStatsSummaryTable = ({
 
       // Add stats to row data
       if (player.stats && Array.isArray(player.stats)) {
-        player.stats.forEach((stat) => {
+        // Flatten grouped stats
+        const flatStats = flattenStats(player.stats);
+
+        flatStats.forEach((stat) => {
           if (scoring_type === SCORING_TYPE_VALUES.SETS) {
             if (selectedPeriod === "total") {
               // For ratio stats that have period-specific values
@@ -118,10 +134,13 @@ const PlayerStatsSummaryTable = ({
     ) {
       return [];
     }
-    return players[0].stats.map((stat) => stat.display_name);
+
+    // Flatten grouped stats to get all display names
+    const flatStats = flattenStats(players[0].stats);
+    return flatStats.map((stat) => stat.display_name);
   }, [players]);
 
-  // Generate columns
+  // Generate columns with category grouping
   const columns = useMemo(() => {
     const baseColumns = [
       {
@@ -141,23 +160,57 @@ const PlayerStatsSummaryTable = ({
       },
     ];
 
-    const statColumns = allStatDisplayNames.map((stat) => ({
-      id: stat,
-      accessorKey: stat,
-      header: () => <div className="text-center text-xs">{stat}</div>,
-      cell: ({ getValue }) => {
-        const value = getValue();
-        return (
-          <div className="text-center text-muted-foreground">
-            {value !== undefined ? value : "-"}
-          </div>
-        );
-      },
-      size: 50,
-    }));
+    // Group stats by category
+    if (
+      !players ||
+      !Array.isArray(players) ||
+      players.length === 0 ||
+      !players[0]?.stats ||
+      !Array.isArray(players[0].stats)
+    ) {
+      return baseColumns;
+    }
 
-    return [...baseColumns, ...statColumns];
-  }, [allStatDisplayNames, selectedPeriod, scoring_type]);
+    const categoryColumns = players[0].stats.map((categoryGroup) => {
+      const subColumns = categoryGroup.stats.map((stat) => ({
+        id: stat.display_name,
+        accessorKey: stat.display_name,
+        header: () => (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="text-center text-xs select-none">
+                {stat.display_name}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>{stat.name}</TooltipContent>
+          </Tooltip>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue();
+          return (
+            <div className="text-center text-muted-foreground">
+              {value !== undefined ? value : "-"}
+            </div>
+          );
+        },
+        size: 50,
+      }));
+
+      return {
+        id: categoryGroup.category, // Add id for the parent column group
+        header: () => (
+          <div className="text-center font-bold text-xs">
+            {categoryGroup.category === "Other"
+              ? ""
+              : categoryGroup.category.toUpperCase()}
+          </div>
+        ),
+        columns: subColumns,
+      };
+    });
+
+    return [...baseColumns, ...categoryColumns];
+  }, [players, selectedPeriod, scoring_type]);
 
   return (
     <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem]">
