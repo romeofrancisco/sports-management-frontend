@@ -9,6 +9,19 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Force the ESM build of @emotion/is-prop-valid so Rollup doesn't leave a
+      // runtime `require(...)` in the production bundle.
+      "@emotion/is-prop-valid": path.resolve(
+        __dirname,
+        "./node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js"
+      ),
+    },
+  },
+  build: {
+    // Ensure CommonJS deps are processed during the build so `require()` calls
+    // inside packages are converted to ESM and bundled.
+    commonjsOptions: {
+      include: [/node_modules/],
     },
   },
   server: {
