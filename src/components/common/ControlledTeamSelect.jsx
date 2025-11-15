@@ -99,7 +99,7 @@ const ControlledTeamSelect = ({
                   role="combobox"
                   aria-expanded={open}
                   className="w-full justify-between font-normal"
-                  disabled={disabled || availableTeams.length === 0}
+                  disabled={disabled}
                 >
                   {selectedTeam ? (
                     <div className="flex items-center gap-2">

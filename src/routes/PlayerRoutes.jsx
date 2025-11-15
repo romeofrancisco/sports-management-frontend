@@ -5,7 +5,6 @@ import GameResult from "@/pages/admin/game/GameResult";
 import LeaguesList from "@/pages/admin/league/LeaguesList";
 import LeagueDetails from "@/pages/admin/league/LeagueDetails";
 import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
-import TeamsList from "@/pages/admin/team/TeamsList";
 import TeamDetails from "@/pages/admin/team/TeamDetails";
 import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
@@ -26,10 +25,6 @@ export const playerRoutes = [
   {
     path: "/games/:gameId/game-result",
     element: <GameResult />,
-  },
-  {
-    path: "/teams",
-    element: <TeamsList />,
   },
   {
     path: "/teams/:team",
