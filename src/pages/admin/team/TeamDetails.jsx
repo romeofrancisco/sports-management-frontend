@@ -247,7 +247,7 @@ const TeamDetails = () => {
     quickStats,
     isLoading: analyticsLoading,
   } = useTeamAnalyticsData(team, ANALYTICS_PERIOD);
-  
+
   // Use optimized coach endpoint with team filtering on server-side
   const { data: playerProgress, isLoading: progressLoading } =
     useCoachPlayerProgress(team);
@@ -282,63 +282,60 @@ const TeamDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div className="min-h-screen container mx-auto p-1 md:p-6 space-y-6 bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       {/* Team Header */}
-      <section className="container mx-auto p-1 md:p-6 space-y-6">
-        <UniversityPageHeader
-          title={teamDetails.name}
-          description="Monitor team performance, manage players, and track training progress"
-          buttonText="Edit Team"
-          buttonIcon={Edit}
-          onButtonClick={() => setIsEditModalOpen(true)}
-          showBackButton
-          backButtonText="Back to Teams"
-          backButtonPath="/teams"
-          teamLogo={teamDetails.logo}
-          teamName={teamDetails.name}
-          // Hide Edit Team button if user is player
-          {...(hasRole("Player") && {
-            buttonText: undefined,
-            buttonIcon: undefined,
-            onButtonClick: undefined,
-          })}
-        />
-      </section>
+
+      <UniversityPageHeader
+        title={teamDetails.name}
+        description="Monitor team performance, manage players, and track training progress"
+        buttonText="Edit Team"
+        buttonIcon={Edit}
+        onButtonClick={() => setIsEditModalOpen(true)}
+        showBackButton
+        backButtonText="Back to Teams"
+        backButtonPath="/teams"
+        teamLogo={teamDetails.logo}
+        teamName={teamDetails.name}
+        // Hide Edit Team button if user is player
+        {...(hasRole("Player") && {
+          buttonText: undefined,
+          buttonIcon: undefined,
+          onButtonClick: undefined,
+        })}
+      />
 
       {/* Quick Stats Cards */}
-      <section className="p-4 md:p-6 pt-0 md:pt-0">
-        <QuickStatsCards stats={quickStats} />
-      </section>
+
+      <QuickStatsCards stats={quickStats} />
 
       {/* Main Content */}
-      <section className="px-4 md:px-6">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
-            <TeamKeyMetrics data={teamDetails} />
-            <TeamAnalyticsSection
-              statistics={statistics}
-              trainingEffectiveness={trainingEffectiveness}
-              teamTrainings={teamTrainings}
-              attendanceTrends={attendanceTrends}
-              analytics={analytics}
-              transformedPlayerProgress={playerProgress}
-              scoringAnalytics={scoringAnalytics}
-              teamGamesForScoring={teamDetailsForGames?.games || teamGames}
-            />
-            {/* Removed recent games and trainings from main content */}
-          </div>
 
-          {/* Sidebar */}
-          <TeamSidebar
-            teamSlug={team}
-            upcomingGames={games.upcoming}
-            recentGames={games.recent}
-            upcomingTrainings={trainings.upcoming}
-            recentTrainings={trainings.recent}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Primary Content */}
+        <div className="xl:col-span-2 space-y-6">
+          <TeamKeyMetrics data={teamDetails} />
+          <TeamAnalyticsSection
+            statistics={statistics}
+            trainingEffectiveness={trainingEffectiveness}
+            teamTrainings={teamTrainings}
+            attendanceTrends={attendanceTrends}
+            analytics={analytics}
+            transformedPlayerProgress={playerProgress}
+            scoringAnalytics={scoringAnalytics}
+            teamGamesForScoring={teamDetailsForGames?.games || teamGames}
           />
+          {/* Removed recent games and trainings from main content */}
         </div>
-      </section>
+
+        {/* Sidebar */}
+        <TeamSidebar
+          teamSlug={team}
+          upcomingGames={games.upcoming}
+          recentGames={games.recent}
+          upcomingTrainings={trainings.upcoming}
+          recentTrainings={trainings.recent}
+        />
+      </div>
 
       {/* Team Edit Modal */}
       <TeamModal

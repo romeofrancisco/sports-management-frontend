@@ -125,7 +125,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               </div>
             </div>
           </div>
-          <div className="ml-2">
+          <div className="absolute top-0 right-5">
             <PlayerActions
               player={player}
               onView={onView}

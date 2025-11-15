@@ -1,6 +1,6 @@
 import React from "react";
 import { Target, XCircle, Clock, CheckCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import CommonOverviewCards from "@/components/common/OverviewCards";
 
 const SummaryStats = ({
   summary,
@@ -12,10 +12,8 @@ const SummaryStats = ({
       title: "Completed/Total",
       value: (
         <>
-          <span className="text-green-600">{summary.completed}</span>
-          <span className="text-muted-foreground">
-            /{summary.total_metrics}
-          </span>
+          <span className="">{summary.completed}</span>
+          <span className="d">/{summary.total_metrics}</span>
           {isFiltered && filteredSummary && (
             <div className="text-sm text-muted-foreground mt-1">
               ({filteredSummary.completed}/{filteredSummary.total_metrics})
@@ -24,12 +22,10 @@ const SummaryStats = ({
         </>
       ),
       description: "Metrics completed out of total assigned",
-      icon: <Target className="h-5 w-5 text-primary-foreground" />,
+      icon: Target,
       color: "from-primary via-primary/90 to-primary/80",
-      bgColor: "bg-primary/8",
-      borderColor: "border-primary/30",
       iconBg: "bg-primary",
-      textAccent: "text-primary",
+      iconColor: "text-primary",
     },
     {
       title: "In Progress",
@@ -37,19 +33,15 @@ const SummaryStats = ({
         <>
           {summary.in_progress}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">
-              ({filteredSummary.in_progress})
-            </span>
+            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.in_progress})</span>
           )}
         </>
       ),
       description: "Metrics currently being tracked",
-      icon: <Clock className="h-5 w-5 text-secondary-foreground" />,
+      icon: Clock,
       color: "from-secondary via-secondary/90 to-secondary/80",
-      bgColor: "bg-secondary/8",
-      borderColor: "border-secondary/30",
       iconBg: "bg-secondary",
-      textAccent: "text-secondary",
+      iconColor: "text-secondary",
     },
     {
       title: "Assigned",
@@ -57,19 +49,15 @@ const SummaryStats = ({
         <>
           {summary.assigned}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">
-              ({filteredSummary.assigned})
-            </span>
+            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.assigned})</span>
           )}
         </>
       ),
       description: "Metrics awaiting completion",
-      icon: <CheckCircle className="h-5 w-5 text-white" />,
+      icon: CheckCircle,
       color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-      bgColor: "bg-orange-500/8",
-      borderColor: "border-orange-500/30",
       iconBg: "bg-orange-500",
-      textAccent: "text-orange-600",
+      iconColor: "text-orange-600",
     },
     {
       title: "Missed",
@@ -77,52 +65,19 @@ const SummaryStats = ({
         <>
           {summary.missed}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">
-              ({filteredSummary.missed})
-            </span>
+            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.missed})</span>
           )}
         </>
       ),
       description: "Metrics not completed",
-      icon: <XCircle className="h-5 w-5 text-white" />,
+      icon: XCircle,
       color: "from-red-500 via-red-500/90 to-red-500/80",
-      bgColor: "bg-red-500/8",
-      borderColor: "border-red-500/30",
       iconBg: "bg-red-500",
-      textAccent: "text-red-600",
+      iconColor: "text-red-600",
     },
   ];
 
-  return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {cards.map((card, index) => (
-        <Card
-          key={index}
-          className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 ${card.bgColor} ${card.borderColor} border`}
-        >
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-5`}
-          />
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {card.title}
-            </CardTitle>
-            <div
-              className={`p-2 rounded-lg ${card.iconBg} shadow-lg transition-transform duration-300 hover:scale-110`}
-            >
-              {card.icon}
-            </div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className={`text-2xl font-bold ${card.textAccent} mb-1`}>
-              {card.value}
-            </div>
-            <p className="text-xs text-muted-foreground">{card.description}</p>
-          </CardContent>{" "}
-        </Card>
-      ))}
-    </div>
-  );
+  return <CommonOverviewCards stats={cards} />;
 };
 
 export default SummaryStats;

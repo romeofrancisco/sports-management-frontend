@@ -12,15 +12,15 @@ import { getDivisionLabel } from "@/constants/team";
 const TeamKeyMetrics = ({ data }) => {
   const teamMetrics = [
     {
-      label: "Head Coach",
+      label: "Coach",
       value: data.head_coach_name || "No Head Coach Assigned",
       color: "text-primary",
       bgColor: "bg-primary/8",
       borderColor: "border-primary/30",
       icon: <UserCheck className="h-5 w-5 text-primary-foreground" />,
       iconBg: "bg-primary",
-      gradient: "from-primary via-primary/90 to-primary/80",
-      description: "primary team leadership",
+      gradient: "from-primary/80 via-primary/70 to-primary/60",
+      description: "Leading team strategy",
     },
     // {
     //   label: "Assistant Coach",

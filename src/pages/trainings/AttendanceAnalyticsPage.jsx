@@ -9,7 +9,7 @@ import {
 } from "@/hooks/useAttendanceAnalytics";
 import { format, subDays } from "date-fns";
 import { Doughnut, Bar } from "react-chartjs-2";
-import OverviewCards from "@/components/trainings/attendance/components/OverviewCards";
+import OverviewCards from "@/components/common/OverviewCards";
 import {
   Card,
   CardContent,
@@ -48,7 +48,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AttendanceAnalyticsPage = () => {
   const navigate = useNavigate();
-  
+
   // Local filter state
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [dateRange, setDateRange] = useState({
@@ -66,9 +66,7 @@ const AttendanceAnalyticsPage = () => {
     start_date: dateRange.from
       ? format(dateRange.from, "yyyy-MM-dd")
       : undefined,
-    end_date: dateRange.to
-      ? format(dateRange.to, "yyyy-MM-dd")
-      : undefined,
+    end_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
   };
 
   // Build filters for trends with period parameter
@@ -83,9 +81,7 @@ const AttendanceAnalyticsPage = () => {
     start_date: dateRange.from
       ? format(dateRange.from, "yyyy-MM-dd")
       : undefined,
-    end_date: dateRange.to
-      ? format(dateRange.to, "yyyy-MM-dd")
-      : undefined,
+    end_date: dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
   };
 
   // Fetch analytics
@@ -204,9 +200,9 @@ const AttendanceAnalyticsPage = () => {
             <div className="h-80">
               <div className="flex items-end justify-between h-full space-x-2 px-4">
                 {[...Array(8)].map((_, index) => (
-                  <Skeleton 
-                    key={index} 
-                    className="w-full rounded-t-sm" 
+                  <Skeleton
+                    key={index}
+                    className="w-full rounded-t-sm"
                     style={{ height: `${Math.random() * 60 + 20}%` }}
                   />
                 ))}
@@ -289,19 +285,17 @@ const AttendanceAnalyticsPage = () => {
     return (
       <div className="space-y-6 sm:space-y-8">
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {overviewStats.map((stat, index) => (
-            <OverviewCards key={index} {...stat} />
-          ))}
+        <div className="px-0">
+          <OverviewCards stats={overviewStats} />
         </div>
 
         {/* Charts Grid */}
-        <div className="grid gap-6 lg:grid-cols-8">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-8">
           <ChartCard
             title="Attendance Distribution"
             description="Proportion of attendance statuses"
             icon={Users}
-            className="xl:col-span-2 lg:col-span-3"
+            className="lg:col-span-3"
             hasData={attendanceDistribution?.datasets?.[0]?.data?.some(
               (val) => val > 0
             )}
@@ -318,7 +312,7 @@ const AttendanceAnalyticsPage = () => {
             title={getChartTitle()}
             description={getChartDescription()}
             icon={TrendingUp}
-            className="xl:col-span-6 lg:col-span-5"
+            className="lg:col-span-5"
             action={<PeriodToggle />}
             hasData={trendsChartData}
           >
@@ -328,71 +322,70 @@ const AttendanceAnalyticsPage = () => {
               options={trendsChartOptions}
             />
           </ChartCard>
-
-          {/* Attendance Tracker Table - Only show if there's actual attendance data */}
-          {shouldShowAttendanceTable && (
-            <Card className="relative overflow-hidden col-span-8 border-2 border-primary/20">
-              <CardHeader className="relative z-10">
-                <div className="flex items-center gap-2">
-                  <div className="p-3 rounded-lg bg-primary shadow-lg">
-                    <BarChart3 className="size-5 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <CardTitle className="flex items-center gap-2 text-gradient text-xl">
-                      {isTeamSelected
-                        ? "Player Attendance Tracker"
-                        : "Team Attendance Tracker"}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {isTeamSelected
-                        ? "Detailed attendance status for each player"
-                        : "Overall attendance status for the team"}
-                    </CardDescription>
-                  </div>
+        </div>
+        {/* Attendance Tracker Table - Only show if there's actual attendance data */}
+        {shouldShowAttendanceTable && (
+          <Card className="relative overflow-hidden col-span-8 border-2 border-primary/20">
+            <CardHeader className="relative z-10">
+              <div className="flex items-center gap-2">
+                <div className="p-3 rounded-lg bg-primary shadow-lg">
+                  <BarChart3 className="size-5 text-primary-foreground" />
                 </div>
-              </CardHeader>
-              <CardContent className="relative z-10 p-0">
-                <div className="overflow-x-auto w-full">
-                  {attendanceTrackerLoading ? (
-                    <div className="p-6 space-y-3">
-                      {/* Table header skeleton */}
-                      <div className="flex gap-4 pb-2 border-b">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-gradient text-xl">
+                    {isTeamSelected
+                      ? "Player Attendance Tracker"
+                      : "Team Attendance Tracker"}
+                  </CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    {isTeamSelected
+                      ? "Detailed attendance status for each player"
+                      : "Overall attendance status for the team"}
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10 p-0">
+              <div className="overflow-x-auto w-full">
+                {attendanceTrackerLoading ? (
+                  <div className="p-6 space-y-3">
+                    {/* Table header skeleton */}
+                    <div className="flex gap-4 pb-2 border-b">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    {/* Table rows skeleton */}
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index} className="flex gap-4 py-2">
                         <Skeleton className="h-4 w-32" />
                         <Skeleton className="h-4 w-24" />
                         <Skeleton className="h-4 w-20" />
                         <Skeleton className="h-4 w-20" />
                         <Skeleton className="h-4 w-20" />
                       </div>
-                      {/* Table rows skeleton */}
-                      {[...Array(5)].map((_, index) => (
-                        <div key={index} className="flex gap-4 py-2">
-                          <Skeleton className="h-4 w-32" />
-                          <Skeleton className="h-4 w-24" />
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-20" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : attendanceTrackerError ? (
-                    <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                      <AlertCircle className="h-6 w-6 text-red-600" />
-                      <p className="text-red-800 dark:text-red-200 font-medium">
-                        Failed to load attendance tracker data
-                      </p>
-                    </div>
-                  ) : (
-                    <DataTable
-                      unlimited={true}
-                      columns={attendanceColumns}
-                      data={attendanceTableData}
-                    />
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+                    ))}
+                  </div>
+                ) : attendanceTrackerError ? (
+                  <div className="flex flex-col items-center justify-center h-40 space-y-2">
+                    <AlertCircle className="h-6 w-6 text-red-600" />
+                    <p className="text-red-800 dark:text-red-200 font-medium">
+                      Failed to load attendance tracker data
+                    </p>
+                  </div>
+                ) : (
+                  <DataTable
+                    unlimited={true}
+                    columns={attendanceColumns}
+                    data={attendanceTableData}
+                  />
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     );
   };
@@ -443,45 +436,37 @@ const AttendanceAnalyticsPage = () => {
       title: "Total Sessions",
       value: overviewData?.total_sessions || 0,
       description: "Training sessions recorded",
-      icon: <CalendarDays className="h-5 w-5 text-primary-foreground" />,
+      icon: CalendarDays,
       color: "from-primary via-primary/90 to-primary/80",
-      bgColor: "bg-primary/8",
-      borderColor: "border-primary/30",
       iconBg: "bg-primary",
-      textAccent: "text-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Total Players",
       value: overviewData?.total_players || 0,
       description: "Unique participants",
-      icon: <Users className="h-5 w-5 text-secondary-foreground" />,
+      icon: Users,
       color: "from-secondary via-secondary/90 to-secondary/80",
-      bgColor: "bg-secondary/8",
-      borderColor: "border-secondary/30",
       iconBg: "bg-secondary",
-      textAccent: "text-secondary",
+      iconColor: "text-secondary",
     },
     {
       title: "Attendance Rate",
       value: `${overviewData?.overall_attendance_rate || 0}%`,
       description: "Overall performance",
-      icon: <BarChart3 className="h-5 w-5 text-primary-foreground" />,
-      color: "from-green-500 via-green-500/90 to-green-500/80",
-      bgColor: "bg-green-500/8",
-      borderColor: "border-green-500/30",
-      iconBg: "bg-green-500",
-      textAccent: "text-green-600",
+      icon: BarChart3,
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Avg Per Session",
       value: (overviewData?.average_attendance_per_session || 0).toFixed(2),
       description: "Players per session",
-      icon: <TrendingUp className="h-5 w-5 text-primary-foreground" />,
-      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-      bgColor: "bg-orange-500/8",
-      borderColor: "border-orange-500/30",
-      iconBg: "bg-orange-500",
-      textAccent: "text-orange-600",
+      icon: TrendingUp,
+      color: "from-secondary via-secondary/90 to-secondary/80",
+      iconBg: "bg-secondary",
+      iconColor: "text-secondary",
     },
   ];
 
@@ -512,7 +497,7 @@ const AttendanceAnalyticsPage = () => {
                   <h3 className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
                     Attendance Overview
                   </h3>
-                  <p className="text-sm text-muted-foreground font-medium">
+                  <p className="text-sm text-muted-foreground font-medium line-clamp-1">
                     Analyze training attendance patterns and player stats
                   </p>
                 </div>

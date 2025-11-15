@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Users, BarChart, Plus } from "lucide-react";
+import OverviewCards from "@/components/common/OverviewCards";
 import { Button } from "@/components/ui/button";
 import BracketDisplay from "@/components/brackets/BracketDisplay";
 import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
@@ -18,6 +19,7 @@ import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
 const BRACKET_TYPES = {
   SINGLE: "single_elimination",
   ROUND_ROBIN: "round_robin",
+  DOUBLE: "double_elimination",
 };
 
 const TournamentBracket = ({ tournament }) => {
@@ -184,10 +186,10 @@ const TournamentBracket = ({ tournament }) => {
   // Calculate stats
   const bracketTypeDisplay =
     bracket.elimination_type === BRACKET_TYPES.SINGLE
-      ? "Single Elimination Tournament"
-      : bracket.elimination_type === BRACKET_TYPES.ROUND_ROBIN
-      ? "Round Robin Tournament"
-      : "Tournament";
+      ? "Single Elimination"
+      : bracket.elimination_type === BRACKET_TYPES.DOUBLE
+      ? "Double Elimination"
+      : "Round Robin";
 
   const totalTeams = bracket.team_count;
   const completedMatches =
@@ -202,6 +204,44 @@ const TournamentBracket = ({ tournament }) => {
 
   const completionPercentage =
     totalMatches > 0 ? Math.round((completedMatches / totalMatches) * 100) : 0;
+  const statsData = [
+    {
+      title: "Tournament Format",
+      value: bracketTypeDisplay,
+      icon: Trophy,
+      description: "Competition type",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
+    },
+    {
+      title: "Teams",
+      value: totalTeams,
+      icon: Users,
+      description: "Total teams in this tournament",
+      color: "from-secondary/80 via-secondary/70 to-secondary/60",
+      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
+      iconColor: "text-secondary",
+    },
+    {
+      title: "Match Progress",
+      value: `${completedMatches}/${totalMatches}`,
+      icon: BarChart,
+      description: `${completionPercentage}% complete`,
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
+    },
+    {
+      title: "Champion",
+      value: bracket.winner_name || "TBD",
+      description: "Winning team",
+      icon: Trophy,
+      color: "from-secondary via-secondary/90 to-secondary/80",
+      iconBg: "bg-secondary",
+      iconColor: "text-secondary",
+    },
+  ];
 
   return (
     <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
@@ -221,66 +261,8 @@ const TournamentBracket = ({ tournament }) => {
         </div>
       </CardHeader>
       <CardContent className="relative p-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 px-3 md:px-6">
-          {[
-            {
-              title: "Tournament Format",
-              value: bracketTypeDisplay,
-              icon: Trophy,
-              description: "Competition type",
-              color: "from-primary via-primary/90 to-primary/80",
-              iconBg: "bg-primary",
-              iconColor: "text-primary-foreground",
-            },
-            {
-              title: "Participating Teams",
-              value: totalTeams,
-              icon: Users,
-              description: "Teams competing",
-              color: "from-secondary via-secondary/90 to-secondary/80",
-              iconBg: "bg-secondary",
-              iconColor: "text-secondary-foreground",
-            },
-            {
-              title: "Match Progress",
-              value: `${completedMatches}/${totalMatches}`,
-              icon: BarChart,
-              description: `${completionPercentage}% complete`,
-              color: "from-primary/80 via-primary/70 to-primary/60",
-              iconBg: "bg-gradient-to-br from-primary to-primary/80",
-              iconColor: "text-primary-foreground",
-            },
-          ].map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <Card
-                key={index}
-                className="relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-lg hover:border-primary/30"
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-8 group-hover:opacity-12 transition-opacity duration-300`}
-                />
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div
-                    className={`p-3 rounded-xl ${stat.iconBg} shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:scale-110`}
-                  >
-                    <Icon className={`size-5 ${stat.iconColor}`} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground mb-1 transition-all duration-300 group-hover:scale-105">
-                    {stat.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {stat.description}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="px-3 md:px-6 mb-6">
+          <OverviewCards stats={statsData} />
         </div>
 
         <BracketDisplay bracket={bracket} />

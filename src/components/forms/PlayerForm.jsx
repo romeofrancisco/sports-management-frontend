@@ -254,6 +254,14 @@ const PlayerForm = ({ sports, onClose, player }) => {
         />
 
         <ControlledInput
+          name="email"
+          label="Email Address"
+          type="email"
+          control={control}
+          errors={errors}
+        />
+
+        <ControlledInput
           name="profile"
           label="Profile Photo"
           type="file"
