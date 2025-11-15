@@ -19,9 +19,9 @@ const FiltersSection = ({
   teamsLoading = false 
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="flex gap-2">
       {/* Team Filter */}
-      <div className="ml-auto">
+      <div className="flex-1">
         <Label htmlFor="team-select" className="text-xs text-muted-foreground font-medium">
           Team Selection
         </Label>

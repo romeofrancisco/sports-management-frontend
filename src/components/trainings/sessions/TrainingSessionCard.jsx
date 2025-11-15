@@ -124,15 +124,19 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
             <CardDescription className="mb-2">
               {session.description || "No description provided"}
             </CardDescription>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CalendarIcon className="h-4 w-4" />
-              <span>{formattedDate}</span>
-              <span>•</span>
-              <ClockIcon className="h-4 w-4" />
-              <span>
-                {formatTime(session.start_time)} -{" "}
-                {formatTime(session.end_time)}
-              </span>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <CalendarIcon className="h-4 w-4" />
+                <span>{formattedDate}</span>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <ClockIcon className="h-4 w-4" />
+                <span>
+                  {formatTime(session.start_time)} -{" "}
+                  {formatTime(session.end_time)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -141,33 +145,35 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
       {/* Content Section - Table Data Only */}
       <CardContent className="space-y-3 pt-0 flex-1">
         <div className="space-y-3">
-          {/* Team */}
-          <div className="flex items-center gap-3 p-3 rounded-lg border border-border">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Users className="h-4 w-4 text-primary" />
+          <div className="flex flex-col lg:flex-row gap-3">
+            {/* Team */}
+            <div className="flex flex-1 items-center gap-3 p-3 rounded-lg border border-border">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-primary uppercase tracking-wide">
+                  Team
+                </p>
+                <p className="text-sm font-medium text-foreground truncate">
+                  {session.team_name || "No team specified"}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-primary uppercase tracking-wide">
-                Team
-              </p>
-              <p className="text-sm font-medium text-foreground truncate">
-                {session.team_name || "No team specified"}
-              </p>
-            </div>
-          </div>
 
-          {/* Venue */}
-          <div className="flex items-center gap-3 p-3 rounded-lg border border-border">
-            <div className="p-2 rounded-lg bg-secondary/10">
-              <MapPin className="h-4 w-4 text-secondary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-secondary uppercase tracking-wide">
-                Venue
-              </p>
-              <p className="text-sm font-medium text-foreground truncate">
-                {session.location || "No venue specified"}
-              </p>
+            {/* Venue */}
+            <div className="flex flex-1 items-center gap-3 p-3 rounded-lg border border-border">
+              <div className="p-2 rounded-lg bg-secondary/10">
+                <MapPin className="h-4 w-4 text-secondary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-secondary uppercase tracking-wide">
+                  Venue
+                </p>
+                <p className="text-sm font-medium text-foreground truncate">
+                  {session.location || "No venue specified"}
+                </p>
+              </div>
             </div>
           </div>
           {/* notes */}

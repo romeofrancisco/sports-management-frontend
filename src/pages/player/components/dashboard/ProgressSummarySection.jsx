@@ -60,8 +60,7 @@ const ProgressSummarySection = ({ progress }) => {
         </div>
       </CardHeader>
       <CardContent>
-        {" "}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 grid-cols-2">
           {summaryCards.map((card, index) => (
             <div
               key={index}

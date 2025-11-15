@@ -76,7 +76,7 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
               </div>
             </div>
           </div>
-          <div className="ml-2">
+          <div className="absolute top-0 right-5">
             <div data-actions>
               <CoachActions
                 coach={coach}
