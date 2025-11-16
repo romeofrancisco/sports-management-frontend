@@ -157,12 +157,14 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }) {
                             minute={0}
                             className="absolute inset-x-0 top-0  h-[48px]"
                           >
-                            <AddEditComponent
-                              startDate={day}
-                              startTime={{ hour, minute: 0 }}
-                            >
-                              <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                            </AddEditComponent>
+                            {!isPlayer() && (
+                              <AddEditComponent
+                                startDate={day}
+                                startTime={{ hour, minute: 0 }}
+                              >
+                                <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
+                              </AddEditComponent>
+                            )}
                           </DroppableArea>
 
                           <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-b-tertiary"></div>
@@ -172,14 +174,7 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }) {
                             hour={hour}
                             minute={30}
                             className="absolute inset-x-0 bottom-0 h-[48px]"
-                          >
-                            <AddEditComponent
-                              startDate={day}
-                              startTime={{ hour, minute: 30 }}
-                            >
-                              <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                            </AddEditComponent>
-                          </DroppableArea>
+                          ></DroppableArea>
                         </motion.div>
                       ))}
                       <RenderGroupedEvents
