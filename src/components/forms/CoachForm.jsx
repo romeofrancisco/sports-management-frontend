@@ -76,8 +76,6 @@ const CoachForm = ({ onClose, coach = null }) => {
       const jsonData = { ...data };
       delete jsonData.profile; // Remove profile if it's empty
 
-      console.log("JSON data being sent:", jsonData);
-
       const mutationFn = isEdit ? updateCoach : createCoach;
       const payload = isEdit ? { id: coach.id, data: jsonData } : jsonData;
 

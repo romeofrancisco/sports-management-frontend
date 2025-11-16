@@ -56,7 +56,7 @@ export const ControlledDateTimePicker = ({
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {field.value ? (
-                  format(field.value, "MM/dd/yyyy hh:mm aa")
+                  format(field.value, "MMM d, yyyy h:mm a")
                 ) : (
                   <span>{placeholder}</span>
                 )}

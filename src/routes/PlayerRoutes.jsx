@@ -90,8 +90,24 @@ export const playerRoutes = [
     path: "/tournaments",
     element: <TournamentsList />,
   },
-    {
+  {
     path: "/tournaments/:tournamentId",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/standings",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/teams",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/games",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/bracket",
     element: <TournamentDetails />,
   },
   {
@@ -108,6 +124,6 @@ export const playerRoutes = [
   },
   {
     path: "calendar",
-    element: <EventCalendar/>
-  }
+    element: <EventCalendar />,
+  },
 ];

@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/components/calendar/calendar-context";
 import { EventDetailsDialog } from "@/components/calendar/event-details-dialog";
+import FacilityEventDetailsDialog from "@/features/facilityreservation/components/FacilityEventDetailsDialog";
 import {
   formatTime,
   getBgColor,
@@ -43,6 +44,8 @@ export const AgendaEvents = () => {
     (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime()
   );
 
+  console.log("Grouped and Sorted Events:", groupedAndSortedEvents);
+
   return (
     <Command className="py-4 h-[80vh] bg-transparent">
       <div className="mb-4 mx-4">
@@ -58,7 +61,7 @@ export const AgendaEvents = () => {
                 : toCapitalize(groupedEvents[0].color)
             }
           >
-            {groupedEvents.map((event) => (
+                {groupedEvents.map((event) => (
               <CommandItem
                 key={event.id}
                 className={cn(
@@ -70,17 +73,18 @@ export const AgendaEvents = () => {
                     "hover:opacity-60": badgeVariant === "colored",
                   }
                 )}
-              >
-                <EventDetailsDialog event={event}>
-                  <div className="w-full flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
+                >
+                {event.meta?.facility ? (
+                  <FacilityEventDetailsDialog event={event}>
+                    <div className="w-full flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2">
                       {badgeVariant === "dot" ? (
                         <EventBullet color={event.color} />
                       ) : (
                         <Avatar>
-                          <AvatarImage src="" alt="@shadcn" />
+                          <AvatarImage src={event.meta.coach.profile} alt={event.meta.coach.name} />
                           <AvatarFallback className={getBgColor(event.color)}>
-                            {getFirstLetters(event.title)}
+                            {getFirstLetters(event.meta.coach.name)}
                           </AvatarFallback>
                         </Avatar>
                       )}
@@ -91,9 +95,9 @@ export const AgendaEvents = () => {
                             "text-foreground": badgeVariant === "dot",
                           })}
                         >
-                          {event.title}
+                          {event.meta.facility.name} 
                         </p>
-                        <p className="text-muted-foreground text-sm line-clamp-1 text-ellipsis md:text-clip w-1/3">
+                        <p className="text-muted-foreground text-sm line-clamp-1 text-ellipsis md:text-clip">
                           {event.description}
                         </p>
                       </div>
@@ -122,7 +126,61 @@ export const AgendaEvents = () => {
                       )}
                     </div>
                   </div>
-                </EventDetailsDialog>
+                  </FacilityEventDetailsDialog>
+                ) : (
+                  <EventDetailsDialog event={event}>
+                    <div className="w-full flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2">
+                        {badgeVariant === "dot" ? (
+                          <EventBullet color={event.color} />
+                        ) : (
+                          <Avatar>
+                            <AvatarImage src="" alt="@shadcn" />
+                            <AvatarFallback className={getBgColor(event.color)}>
+                              {getFirstLetters(event.title)}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div className="flex flex-col">
+                          <p
+                            className={cn({
+                              "font-medium": badgeVariant === "dot",
+                              "text-foreground": badgeVariant === "dot",
+                            })}
+                          >
+                            {event.title}
+                          </p>
+                          <p className="text-muted-foreground text-sm line-clamp-1 text-ellipsis md:text-clip">
+                            {event.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="w-40 flex justify-center items-center gap-1">
+                        {agendaModeGroupBy === "date" ? (
+                          <>
+                            <p className="text-sm">
+                              {formatTime(event.startDate, use24HourFormat)}
+                            </p>
+                            <span className="text-muted-foreground">-</span>
+                            <p className="text-sm">
+                              {formatTime(event.endDate, use24HourFormat)}
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm">
+                              {format(event.startDate, "MM/dd/yyyy")}
+                            </p>
+                            <span className="text-sm">at</span>
+                            <p className="text-sm">
+                              {formatTime(event.startDate, use24HourFormat)}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </EventDetailsDialog>
+                )}
               </CommandItem>
             ))}
           </CommandGroup>

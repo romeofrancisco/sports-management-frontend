@@ -337,6 +337,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           teams={teams}
           disabled={!selectedSport || !selectedSex}
           errors={errors}
+          rules={{ required: "Team is required" }}
         />
 
         <MultiSelect

@@ -11,12 +11,13 @@ import { useCalendar } from "@/components/calendar/calendar-context";
 
 function CalendarContent() {
   const { view, selectedDate, setUsers, setEvents } = useCalendar();
-  
+
+  const dateParam = selectedDate ? selectedDate.toISOString() : undefined;
   const { data: events } = useEvents({
     view: view,
-    date: selectedDate,
+    date: dateParam,
   });
-  
+
   const { data: coachesData } = useCoaches({}, 1, 1000);
   const users = coachesData?.results || [];
 
@@ -54,7 +55,7 @@ function CalendarContent() {
 
 export function Calendar() {
   return (
-    <CalendarProvider events={[]} users={[]} view="month">
+    <CalendarProvider type="event" events={[]} users={[]} view="month">
       <CalendarContent />
     </CalendarProvider>
   );

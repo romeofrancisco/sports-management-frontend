@@ -27,9 +27,9 @@ import { ChatPage } from "@/pages/chat";
 import DocumentsList from "@/pages/documents/DocumentsList";
 import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
-import path from "path";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
+import FacilityReservation from "@/features/facilityreservation/FacilityReservation";
 
 export const coachRoutes = [
   {
@@ -168,8 +168,24 @@ export const coachRoutes = [
     path: "/tournaments",
     element: <TournamentsList />,
   },
-    {
+  {
     path: "/tournaments/:tournamentId",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/standings",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/teams",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/games",
+    element: <TournamentDetails />,
+  },
+  {
+    path: "/tournaments/:tournamentId/bracket",
     element: <TournamentDetails />,
   },
   {
@@ -190,6 +206,18 @@ export const coachRoutes = [
   },
   {
     path: "calendar",
-    element: <EventCalendar/>,
-  }
+    element: <EventCalendar />,
+  },
+  {
+    path: "facility-reservation/",
+    element: <FacilityReservation />,
+  },
+  {
+    path: "facility-reservation/reservations",
+    element: <FacilityReservation />,
+  },
+  {
+    path: "facility-reservation/facilities",
+    element: <FacilityReservation />,
+  },
 ];

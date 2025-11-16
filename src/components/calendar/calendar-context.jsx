@@ -12,11 +12,16 @@ const DEFAULT_SETTINGS = {
 const CalendarContext = createContext({});
 
 export function CalendarProvider({
-    children,
-    users,
-    events,
-    badge = "colored",
-    view = "day"
+	children,
+	users,
+	events,
+	badge = "colored",
+	view = "day",
+	// allow injecting a custom Add/Edit dialog component (optional)
+	addEditDialogComponent = null,
+	// allow injecting a custom Details dialog component (optional)
+	detailsDialogComponent = null,
+	type = "event",
 }) {
 
 
@@ -33,7 +38,9 @@ export function CalendarProvider({
 
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedUserId, setSelectedUserId] = useState("all");
+	const [selectedFacilityIds, setSelectedFacilityIds] = useState([]);
 	const [selectedColors, setSelectedColors] = useState([]);
+	const [selectedStatus, setSelectedStatus] = useState("all");
 
 	// Keep a local copy of users in state so the provider has a stable array
 	// and so we can update/sync it safely when the prop updates.
@@ -109,6 +116,48 @@ export function CalendarProvider({
 		}
 	};
 
+	const filterEventsByFacility = (facilityId) => {
+		// If 'all' requested, clear facility filters
+		if (facilityId === "all") {
+			setSelectedFacilityIds([]);
+			setFilteredEvents(allEvents);
+			return;
+		}
+
+		// toggle facility id in the selected list
+		setSelectedFacilityIds((prev) => {
+			const exists = prev.find((id) => String(id) === String(facilityId));
+			let next;
+			if (exists) {
+				next = prev.filter((id) => String(id) !== String(facilityId));
+			} else {
+				next = [...prev, facilityId];
+			}
+
+			if (next.length === 0) {
+				setFilteredEvents(allEvents);
+			} else {
+				const filtered = allEvents.filter((event) => {
+					const fid = event?.meta?.facility?.id ?? event?.facility?.id;
+					return next.some((nid) => String(nid) === String(fid));
+				});
+				setFilteredEvents(filtered);
+			}
+
+			return next;
+		});
+	 };
+
+	const filterEventsByStatus = (status) => {
+		setSelectedStatus(status);
+		if (!status || status === "all") {
+			setFilteredEvents(allEvents);
+		} else {
+			const filtered = allEvents.filter((event) => (event?.meta?.status || event.status) === status);
+			setFilteredEvents(filtered);
+		}
+	 };
+
 	const handleSelectDate = (date) => {
 		if (!date) return;
 		setSelectedDate(date);
@@ -140,6 +189,8 @@ export function CalendarProvider({
 		setFilteredEvents(allEvents);
 		setSelectedColors([]);
 		setSelectedUserId("all");
+		setSelectedFacilityIds([]);
+		setSelectedStatus("all");
 	};
 
 	const setEvents = (newEvents) => {
@@ -152,6 +203,9 @@ export function CalendarProvider({
 		setSelectedDate: handleSelectDate,
 		selectedUserId,
 		setSelectedUserId,
+		selectedFacilityIds,
+		setSelectedFacilityIds,
+		selectedStatus,
 		badgeVariant,
 		setBadgeVariant,
 		users: allUsers,
@@ -159,6 +213,8 @@ export function CalendarProvider({
 		selectedColors,
 		filterEventsBySelectedColors,
 		filterEventsBySelectedUser,
+		filterEventsByFacility,
+		filterEventsByStatus,
 		events: filteredEvents,
 		view: currentView,
 		use24HourFormat,
@@ -171,6 +227,11 @@ export function CalendarProvider({
 		removeEvent,
 		clearFilter,
 		setEvents,
+		// optional injected dialog component (e.g. FacilityAddEditReservationDialog)
+		AddEditDialog: addEditDialogComponent,
+		// optional injected details dialog (e.g. FacilityEventDetailsDialog)
+		DetailsDialog: detailsDialogComponent,
+		type,
 	};
 
 	return (

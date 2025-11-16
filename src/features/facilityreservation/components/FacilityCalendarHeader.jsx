@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   slideFromLeft,
@@ -9,20 +8,19 @@ import {
   transition,
 } from "@/components/calendar/animations";
 import { useCalendar } from "@/components/calendar/calendar-context";
-import { AddEditEventDialog } from "@/components/calendar/add-edit-event-dialog";
+import { FacilityAddEditReservationDialog } from "./FacilityAddEditReservationDialog";
 import { DateNavigator } from "@/components/calendar/date-navigator";
 import FilterEvents from "@/components/calendar/filter";
 import { TodayButton } from "@/components/calendar/today-button";
-import { UserSelect } from "@/components/calendar/user-select";
 import { Settings } from "@/components/calendar/settings";
-import Views from "./view-tabs";
+import { FacilityFilterEvents } from "./FacilityFilterEvents";
+import { FacilitySettings } from "./FacilitySettings";
+import Views from "@/components/calendar/view-tabs";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
-export function CalendarHeader() {
+export function FacilityCalendarHeader() {
   const { view, events } = useCalendar();
   const { isAdmin, isPlayer } = useRolePermissions();
-  const { AddEditDialog } = useCalendar();
-  const AddEditComponent = AddEditDialog || AddEditEventDialog;
 
   return (
     <div className="flex flex-col gap-2 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -52,25 +50,30 @@ export function CalendarHeader() {
         <div className="flex flex-col gap-2 xl:flex-row xl:items-center lg:gap-1.5">
           <div className="flex flex-col md:flex-row gap-2 ">
             <Views />
-            <div className="flex gap-2">
-              {isAdmin() && <UserSelect />}
-              <div className={`${!isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"} `}>
-                <FilterEvents />
-                <Settings />
+            <div className="flex flex-row-reverse gap-2">
+              <div
+                className={`${
+                  !isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"
+                } `}
+              >
+                {/* facility-specific controls */}
+                <FacilityFilterEvents />
+                {isAdmin() && <FacilitySettings />}
               </div>
+              {!isPlayer() && (
+                <FacilityAddEditReservationDialog>
+                  <Button className="flex-1">
+                    <Plus className="h-4 w-4" />
+                    Add Reservation
+                  </Button>
+                </FacilityAddEditReservationDialog>
+              )}
             </div>
           </div>
-
-          {!isPlayer() && (
-            <AddEditComponent>
-              <Button>
-                <Plus className="h-4 w-4" />
-                Add Event
-              </Button>
-            </AddEditComponent>
-          )}
         </div>
       </motion.div>
     </div>
   );
 }
+
+export default FacilityCalendarHeader;

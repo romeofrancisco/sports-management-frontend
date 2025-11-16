@@ -75,13 +75,13 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
   {
     id: "year_level",
     header: "Year Level",
-    cell: ({ row }) => getYearLevelLabel(row.original.year_level),
+    cell: ({ row }) => row.original.academic_info.year_level,
     size: 150,
   },
   {
     id: "course",
     header: "Course",
-    cell: ({ row }) => getCourseLabel(row.original.course),
+    cell: ({ row }) => row.original.academic_info.course,
     size: 150,
   },
   {
@@ -123,9 +123,8 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />{" "}            <DropdownMenuItem
-              onClick={() => navigate(`/players/${player.id}`)}
-            >
+            <DropdownMenuSeparator />{" "}
+            <DropdownMenuItem onClick={() => navigate(`/players/${player.id}`)}>
               <UserSearch />
               View Player
             </DropdownMenuItem>

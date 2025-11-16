@@ -11,11 +11,16 @@ import { groupEvents } from "@/components/calendar/helpers";
 import { CalendarTimeline } from "@/components/calendar/calendar-time-line";
 import { DayViewMultiDayEventsRow } from "@/components/calendar/day-view-multi-day-events-row";
 import { RenderGroupedEvents } from "@/components/calendar/render-grouped-events";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
-  const { selectedDate, setSelectedDate, users, use24HourFormat } =
+  const { selectedDate, setSelectedDate, users, use24HourFormat, type } =
     useCalendar();
   const scrollAreaRef = useRef(null);
+  const { isPlayer } = useRolePermissions();
+
+  const { AddEditDialog } = useCalendar();
+  const AddEditComponent = AddEditDialog || AddEditEventDialog;
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -132,12 +137,14 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
                       minute={0}
                       className="absolute inset-x-0 top-0 h-[48px]"
                     >
-                      <AddEditEventDialog
-                        startDate={selectedDate}
-                        startTime={{ hour, minute: 0 }}
-                      >
-                        <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                      </AddEditEventDialog>
+                      {!isPlayer() && (
+                        <AddEditComponent
+                          startDate={selectedDate}
+                          startTime={{ hour, minute: 0 }}
+                        >
+                          <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
+                        </AddEditComponent>
+                      )}
                     </DroppableArea>
 
                     <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-b-tertiary"></div>
@@ -148,12 +155,14 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
                       minute={30}
                       className="absolute inset-x-0 bottom-0 h-[48px]"
                     >
-                      <AddEditEventDialog
-                        startDate={selectedDate}
-                        startTime={{ hour, minute: 30 }}
-                      >
-                        <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                      </AddEditEventDialog>
+                      {!isPlayer() && (
+                        <AddEditComponent
+                          startDate={selectedDate}
+                          startTime={{ hour, minute: 30 }}
+                        >
+                          <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
+                        </AddEditComponent>
+                      )}
                     </DroppableArea>
                   </div>
                 ))}
@@ -191,7 +200,9 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
             </div>
           ) : (
             <p className="p-4 text-center text-sm italic text-t-tertiary">
-              No appointments or consultations at the moment
+              {type === "event"
+                ? "No ongoing events at the moment"
+                : "No ongoing reservations at the moment"}
             </p>
           )}
 

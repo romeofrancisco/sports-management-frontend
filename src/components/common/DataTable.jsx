@@ -25,6 +25,7 @@ const DataTable = ({
   className = "",
   loading = false,
   unlimited = false, // New prop to show all rows without pagination
+  showColumnBorders = true, // controls whether vertical column borders are shown (default true)
 }) => {
   const [sorting, setSorting] = useState([]);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
@@ -107,6 +108,9 @@ const DataTable = ({
   // Hide pagination controls if unlimited mode is enabled
   const showPaginationControls = showPagination && !unlimited;
 
+  // helper for conditional column border class
+  const columnBorderClass = showColumnBorders ? "border-r border-border" : "";
+
   return (
     <div>
       {loading ? (
@@ -132,7 +136,7 @@ const DataTable = ({
                             width: header.column.columnDef.size,
                             minWidth: header.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                           }}
-                          className={`border-r border-border ${isFirstColumn ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
+                          className={`${columnBorderClass} ${isFirstColumn ? 'first-col w-0 sm:w-auto' : ''} whitespace-nowrap py-3 bg-muted px-3`}
                         >
                           {header.isPlaceholder
                             ? null
@@ -164,7 +168,7 @@ const DataTable = ({
                                 width: cell.column.columnDef.size,
                                 minWidth: cell.column.columnDef.minWidth || (windowWidth < 640 ? 40 : 60),
                               }}
-                              className={`border-r border-border relative ${isFirstColumn ? "first-col bg-background" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate p-3`}
+                              className={`${columnBorderClass} relative ${isFirstColumn ? "first-col bg-background" : "bg-background"} ${cell.column.columnDef.meta?.className || ""} truncate p-3`}
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,
