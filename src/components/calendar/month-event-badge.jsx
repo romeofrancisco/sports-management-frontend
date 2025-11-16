@@ -3,6 +3,7 @@ import { endOfDay, isSameDay, parseISO, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/components/calendar/calendar-context";
 import { EventDetailsDialog } from "@/components/calendar/event-details-dialog";
+import FacilityEventDetailsDialog from "@/features/facilityreservation/components/FacilityEventDetailsDialog";
 import { DraggableEvent } from "@/components/calendar/draggable-event";
 import { formatTime } from "@/components/calendar/helpers";
 import {EventBullet} from "@/components/calendar/event-bullet";
@@ -85,9 +86,12 @@ export function MonthEventBadge({
 
 	const eventBadgeClasses = cn(eventBadgeVariants({ color, multiDayPosition: position, className }));
 
+	const { DetailsDialog } = useCalendar();
+	const DetailsComponent = DetailsDialog || (event.meta?.facility ? FacilityEventDetailsDialog : EventDetailsDialog);
+
 	return (
-        <DraggableEvent event={event}>
-            <EventDetailsDialog event={event}>
+		<DraggableEvent event={event}>
+			<DetailsComponent event={event}>
 				<div role="button" tabIndex={0} className={eventBadgeClasses}>
 					<div className="flex items-center gap-1.5 truncate">
 						{!["middle", "last"].includes(position) &&
@@ -115,7 +119,7 @@ export function MonthEventBadge({
 						)}
 					</div>
 				</div>
-			</EventDetailsDialog>
-        </DraggableEvent>
-    );
+			</DetailsComponent>
+		</DraggableEvent>
+	);
 }

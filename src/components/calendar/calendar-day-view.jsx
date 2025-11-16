@@ -17,6 +17,9 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
     useCalendar();
   const scrollAreaRef = useRef(null);
 
+  const { AddEditDialog } = useCalendar();
+  const AddEditComponent = AddEditDialog || AddEditEventDialog;
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   useEffect(() => {
@@ -132,12 +135,12 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
                       minute={0}
                       className="absolute inset-x-0 top-0 h-[48px]"
                     >
-                      <AddEditEventDialog
+                      <AddEditComponent
                         startDate={selectedDate}
                         startTime={{ hour, minute: 0 }}
                       >
                         <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                      </AddEditEventDialog>
+                      </AddEditComponent>
                     </DroppableArea>
 
                     <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-b-tertiary"></div>
@@ -148,12 +151,12 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
                       minute={30}
                       className="absolute inset-x-0 bottom-0 h-[48px]"
                     >
-                      <AddEditEventDialog
+                      <AddEditComponent
                         startDate={selectedDate}
                         startTime={{ hour, minute: 30 }}
                       >
                         <div className="absolute inset-0 cursor-pointer transition-colors hover:bg-secondary" />
-                      </AddEditEventDialog>
+                      </AddEditComponent>
                     </DroppableArea>
                   </div>
                 ))}

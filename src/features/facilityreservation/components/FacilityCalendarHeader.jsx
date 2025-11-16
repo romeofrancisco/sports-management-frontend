@@ -9,20 +9,20 @@ import {
   transition,
 } from "@/components/calendar/animations";
 import { useCalendar } from "@/components/calendar/calendar-context";
-import { AddEditEventDialog } from "@/components/calendar/add-edit-event-dialog";
+import { FacilityAddEditReservationDialog } from "./FacilityAddEditReservationDialog";
 import { DateNavigator } from "@/components/calendar/date-navigator";
 import FilterEvents from "@/components/calendar/filter";
 import { TodayButton } from "@/components/calendar/today-button";
 import { UserSelect } from "@/components/calendar/user-select";
 import { Settings } from "@/components/calendar/settings";
-import Views from "./view-tabs";
+import { FacilityFilterEvents } from "./FacilityFilterEvents";
+import { FacilitySettings } from "./FacilitySettings";
+import Views from "@/components/calendar/view-tabs";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
-export function CalendarHeader() {
+export function FacilityCalendarHeader() {
   const { view, events } = useCalendar();
   const { isAdmin, isPlayer } = useRolePermissions();
-  const { AddEditDialog } = useCalendar();
-  const AddEditComponent = AddEditDialog || AddEditEventDialog;
 
   return (
     <div className="flex flex-col gap-2 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -53,24 +53,30 @@ export function CalendarHeader() {
           <div className="flex flex-col md:flex-row gap-2 ">
             <Views />
             <div className="flex gap-2">
-              {isAdmin() && <UserSelect />}
-              <div className={`${!isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"} `}>
-                <FilterEvents />
-                <Settings />
+              <div
+                className={`${
+                  !isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"
+                } `}
+              >
+                {/* facility-specific controls */}
+                <FacilityFilterEvents />
+                <FacilitySettings />
               </div>
             </div>
           </div>
 
           {!isPlayer() && (
-            <AddEditComponent>
+            <FacilityAddEditReservationDialog>
               <Button>
                 <Plus className="h-4 w-4" />
-                Add Event
+                Add Reservation
               </Button>
-            </AddEditComponent>
+            </FacilityAddEditReservationDialog>
           )}
         </div>
       </motion.div>
     </div>
   );
 }
+
+export default FacilityCalendarHeader;

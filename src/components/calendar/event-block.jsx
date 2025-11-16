@@ -1,11 +1,12 @@
 import { cva } from "class-variance-authority";
 import { differenceInMinutes, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useCalendar } from "@/components/calendar/calendar-context";
-import { EventDetailsDialog } from "@/components/calendar/event-details-dialog";
 import { DraggableEvent } from "@/components/calendar/draggable-event";
 import { ResizableEvent } from "@/components/calendar/resizable-event";
 import { formatTime } from "@/components/calendar/helpers";
+import { useCalendar } from "@/components/calendar/calendar-context";
+import FacilityEventDetailsDialog from "@/features/facilityreservation/components/FacilityEventDetailsDialog";
+import { EventDetailsDialog } from "@/components/calendar/event-details-dialog";
 
 const calendarWeekEventCardVariants = cva(
     "flex select-none flex-col gap-0.5 truncate whitespace-nowrap rounded-md border px-2 py-1.5 text-xs focus-visible:outline-offset-2",
@@ -46,10 +47,10 @@ const calendarWeekEventCardVariants = cva(
 );
 
 export function EventBlock({
-    event,
-    className
+	event,
+	className
 }) {
-	const { badgeVariant, use24HourFormat } = useCalendar();
+	const { badgeVariant, use24HourFormat, DetailsDialog } = useCalendar();
 
 	const start = parseISO(event.startDate);
 	const end = parseISO(event.endDate);
@@ -64,33 +65,42 @@ export function EventBlock({
     );
 
 	return (
-        <ResizableEvent event={event}>
-            <DraggableEvent event={event}>
-				<EventDetailsDialog event={event}>
-					<div
-                        role="button"
-                        tabIndex={0}
-                        className={calendarWeekEventCardClasses}
-                        style={{ height: `${heightInPixels}px` }}>
-						<div className="flex items-center gap-1.5 truncate">
-							{badgeVariant === "dot" && (
-								<svg width="8" height="8" viewBox="0 0 8 8" className="shrink-0">
-									<circle cx="4" cy="4" r="4" />
-								</svg>
-							)}
+		<ResizableEvent event={event}>
+				<DraggableEvent event={event}>
+					{
+						// Prefer provider-injected details dialog. If none is injected,
+						// fall back to the feature-specific facility dialog when present.
+						(() => {
+							const DetailsComponent = DetailsDialog || (event.meta?.facility ? FacilityEventDetailsDialog : EventDetailsDialog);
+							return (
+								<DetailsComponent event={event}>
+								<div
+									role="button"
+									tabIndex={0}
+									className={calendarWeekEventCardClasses}
+									style={{ height: `${heightInPixels}px` }}>
+									<div className="flex items-center gap-1.5 truncate">
+										{badgeVariant === "dot" && (
+											<svg width="8" height="8" viewBox="0 0 8 8" className="shrink-0">
+												<circle cx="4" cy="4" r="4" />
+											</svg>
+										)}
 
-							<p className="truncate font-semibold">{event.title}</p>
-						</div>
+										<p className="truncate font-semibold">{event.title}</p>
+									</div>
 
-						{durationInMinutes > 25 && (
-							<p>
-								{formatTime(start, use24HourFormat)} -{" "}
-								{formatTime(end, use24HourFormat)}
-							</p>
-						)}
-					</div>
-				</EventDetailsDialog>
-			</DraggableEvent>
-        </ResizableEvent>
+									{durationInMinutes > 25 && (
+										<p>
+											{formatTime(start, use24HourFormat)} -{" "}
+											{formatTime(end, use24HourFormat)}
+										</p>
+									)}
+								</div>
+								</DetailsComponent>
+							);
+						})()
+					}
+				</DraggableEvent>
+			</ResizableEvent>
     );
 }

@@ -12,6 +12,7 @@ import {formatTime} from "@/components/calendar/helpers";
 import {dayCellVariants} from "@/components/calendar/day-cell";
 import {EventBullet} from "@/components/calendar/event-bullet";
 import {EventDetailsDialog} from "@/components/calendar/event-details-dialog";
+import FacilityEventDetailsDialog from "@/features/facilityreservation/components/FacilityEventDetailsDialog";
 
 export function EventListDialog({
     date,
@@ -50,24 +51,45 @@ export function EventListDialog({
                 <div className="max-h-[60vh] overflow-y-auto space-y-2">
                     {cellEvents.length > 0 ? (
                         cellEvents.map((event) => (
-                            <EventDetailsDialog event={event} key={event.id}>
-                                <div
-                                    className={cn(
-                                        "flex items-center gap-2 p-2 border rounded-md hover:bg-muted cursor-pointer",
-                                        {
-                                            [dayCellVariants({color: event.color})]:
-                                                badgeVariant === "colored",
-                                        }
-                                    )}>
-                                        <EventBullet color={event.color} />
-                                        <div className="flex justify-between items-center w-full">
-                                            <p className="text-sm font-medium">{event.title}</p>
-                                            <p className="text-xs">
-                                                {formatTime(event.startDate, use24HourFormat)}
-                                            </p>
-                                        </div>
-                                </div>
-                            </EventDetailsDialog>
+                            event.meta?.facility ? (
+                                <FacilityEventDetailsDialog event={event} key={event.id}>
+                                    <div
+                                        className={cn(
+                                            "flex items-center gap-2 p-2 border rounded-md hover:bg-muted cursor-pointer",
+                                            {
+                                                [dayCellVariants({color: event.color})]:
+                                                    badgeVariant === "colored",
+                                            }
+                                        )}>
+                                            <EventBullet color={event.color} />
+                                            <div className="flex justify-between items-center w-full">
+                                                <p className="text-sm font-medium">{event.title}</p>
+                                                <p className="text-xs">
+                                                    {formatTime(event.startDate, use24HourFormat)}
+                                                </p>
+                                            </div>
+                                    </div>
+                                </FacilityEventDetailsDialog>
+                            ) : (
+                                <EventDetailsDialog event={event} key={event.id}>
+                                    <div
+                                        className={cn(
+                                            "flex items-center gap-2 p-2 border rounded-md hover:bg-muted cursor-pointer",
+                                            {
+                                                [dayCellVariants({color: event.color})]:
+                                                    badgeVariant === "colored",
+                                            }
+                                        )}>
+                                            <EventBullet color={event.color} />
+                                            <div className="flex justify-between items-center w-full">
+                                                <p className="text-sm font-medium">{event.title}</p>
+                                                <p className="text-xs">
+                                                    {formatTime(event.startDate, use24HourFormat)}
+                                                </p>
+                                            </div>
+                                    </div>
+                                </EventDetailsDialog>
+                            )
                         ))
                     ) : (
                         <p className="text-sm text-muted-foreground">

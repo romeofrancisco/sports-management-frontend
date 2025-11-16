@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/command";
 import {
   Popover,
-  PopoverModalContent,
+  PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -65,12 +65,12 @@ const SelectCoach = ({
                       <span className="truncate">{selectedCoach.full_name}</span>
                     </div>
                   ) : (
-                    placeholder
+                    <span className="text-muted-foreground font-normal">{placeholder}</span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverModalContent className="w-full p-0" align="start">
+              <PopoverContent className="w-full p-0" align="start">
                 <Command>
                   <CommandInput placeholder="Search coaches..." />
                   <CommandEmpty>
@@ -125,7 +125,7 @@ const SelectCoach = ({
                     </CommandGroup>
                   </CommandList>
                 </Command>
-              </PopoverModalContent>
+              </PopoverContent>
             </Popover>
           );
         }}

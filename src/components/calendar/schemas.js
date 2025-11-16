@@ -13,3 +13,23 @@ export const eventSchema = z.object({
 		required_error: "Variant is required",
 	}),
 });
+
+// Reservation schema extends the base event schema and includes facility/coach ids.
+export const reservationSchema = eventSchema.extend({
+	// HTML select fields are strings; coerce to number for backend
+	facility_id: z.preprocess((val) => {
+		if (typeof val === "string") {
+			const n = Number(val);
+			return Number.isNaN(n) ? val : n;
+		}
+		return val;
+	}, z.number({ required_error: "Facility is required" })),
+	coach_id: z.preprocess((val) => {
+		if (val === "" || val === null || val === undefined) return undefined;
+		if (typeof val === "string") {
+			const n = Number(val);
+			return Number.isNaN(n) ? val : n;
+		}
+		return val;
+	}, z.number().optional()),
+});

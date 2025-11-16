@@ -97,6 +97,12 @@ export const adminGroupedNavigation = () => {
           icon: Calendar,
           description: "View and manage all scheduled events",
         },
+        {
+          title: "Facility Reservation",
+          href: "/facility-reservation",
+          icon: CalendarCog,
+          description: "Manage facility bookings and reservations",
+        }
       ],
     },
   ];

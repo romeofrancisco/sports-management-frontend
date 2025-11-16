@@ -24,6 +24,8 @@ export function EventDetailsDialog({ event, children }) {
   const { use24HourFormat, removeEvent } = useCalendar();
   const deleteEventMutation = useDeleteEvent();
   const { isPlayer } = useRolePermissions();
+  const { AddEditDialog } = useCalendar();
+  const AddEditComponent = AddEditDialog || AddEditEventDialog;
 
   const deleteEvent = (eventId) => {
     deleteEventMutation.mutate(eventId, {
@@ -112,9 +114,9 @@ export function EventDetailsDialog({ event, children }) {
         </ScrollArea>
         {event?.type === "event" && !isPlayer() && (
           <div className="flex justify-end gap-2">
-            <AddEditEventDialog event={event}>
+            <AddEditComponent event={event}>
               <Button variant="outline">Edit</Button>
-            </AddEditEventDialog>
+            </AddEditComponent>
             <Button
               variant="destructive"
               onClick={() => {
