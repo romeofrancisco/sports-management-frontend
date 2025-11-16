@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFacilities } from "@/hooks/useFacilities";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { LayoutGrid, MapPin, MapPinned, Plus } from "lucide-react";
+import { Building2, LayoutGrid, MapPin, MapPinned, Plus } from "lucide-react";
 import TablePagination from "@/components/ui/table-pagination";
 import ContentEmpty from "@/components/common/ContentEmpty";
-import FacilityActions from "./components/FacilityActions";
 import FacilityFormModal from "./components/FacilityFormModal";
+import FacilityCard from "./components/FacilityCard";
 import { useModal } from "@/hooks/useModal";
 import DeleteModal from "@/components/common/DeleteModal";
 import api from "@/api";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const Facilities = () => {
   const [selectedFacility, setSelectedFacility] = useState(null);
+  const { isAdmin } = useRolePermissions();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
 
@@ -25,36 +27,9 @@ const Facilities = () => {
 
   const facility = useModal();
   const deleteFacility = useModal();
+  const reserveFacility = useModal();
 
-  const [formState, setFormState] = useState({
-    name: "",
-    location: "",
-    capacity: 0,
-    description: "",
-    image: null,
-  });
-
-  useEffect(() => {
-    if (facility.isOpen) {
-      if (selectedFacility) {
-        setFormState({
-          name: selectedFacility.name || "",
-          location: selectedFacility.location || "",
-          capacity: selectedFacility.capacity || 0,
-          description: selectedFacility.description || "",
-          image: selectedFacility.image || null,
-        });
-      } else {
-        setFormState({
-          name: "",
-          location: "",
-          capacity: 0,
-          description: "",
-          image: null,
-        });
-      }
-    }
-  }, [facility.isOpen, selectedFacility]);
+  
 
   return (
     <>
@@ -62,7 +37,7 @@ const Facilities = () => {
         <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-4 pb-5 bg-transparent border-b-2 border-primary/20">
           <div className="flex items-center gap-3">
             <div className="bg-primary p-3 rounded-xl">
-              <LayoutGrid className="size-7 text-primary-foreground" />
+              <Building2 className="size-7 text-primary-foreground" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -78,17 +53,20 @@ const Facilities = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => {
-                facility.openModal();
-                setSelectedFacility(null);
-              }}
-            >
-              <Plus />
-              Add Facility
-            </Button>
-          </div>
+          {isAdmin() && (
+            <div className="flex items-center justify-end w-full md:w-auto gap-2">
+              <Button
+                onClick={() => {
+                  facility.openModal();
+                  setSelectedFacility(null);
+                }}
+                className="flex-1 md:flex-initial"
+              >
+                <Plus />
+                Add Facility
+              </Button>
+            </div>
+          )}
         </CardHeader>
 
         <CardContent>
@@ -98,52 +76,26 @@ const Facilities = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {facilities.map((f) => (
-                  <div className="w-full max-w-md mx-auto relative" key={f.id}>
-                    <div className="bg-card rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl dark:bg-gray-950">
-                      <img
-                        src={
-                          f.image ||
-                          "https://res.cloudinary.com/dzebi1atl/image/upload/v1763285456/assets/facility_placeholder_vkotox.svg"
-                        }
-                        alt={f.name}
-                        width={600}
-                        height={400}
-                        className="w-full h-64 object-cover dark:brightness-50"
-                        style={{ aspectRatio: "600/400", objectFit: "cover" }}
-                      />
-                      <div className="p-4">
-                        <h3 className="text-xl font-semibold">{f.name}</h3>
-                        {f.location && (
-                          <p className="text-muted-foreground text-xs flex items-center gap-0.5">
-                            <MapPin className="size-4" />
-                            {f.location}
-                          </p>
-                        )}
-                        {f.description && (
-                          <p className="text-muted-foreground text-sm line-clamp-1">
-                            {f.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute top-3 right-3">
-                      <FacilityActions
-                        facility={f}
-                        onCreate={() => {
-                          facility.openModal();
-                          setSelectedFacility(null);
-                        }}
-                        onEdit={(fac) => {
-                          facility.openModal();
-                          setSelectedFacility(fac);
-                        }}
-                        onDelete={(fac) => {
-                          deleteFacility.openModal();
-                          setSelectedFacility(fac);
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <FacilityCard
+                    key={f.id}
+                    facility={f}
+                    onCreate={() => {
+                      facility.openModal();
+                      setSelectedFacility(null);
+                    }}
+                    onEdit={(fac) => {
+                      facility.openModal();
+                      setSelectedFacility(fac);
+                    }}
+                    onDelete={(fac) => {
+                      deleteFacility.openModal();
+                      setSelectedFacility(fac);
+                    }}
+                    onReserve={(fac) => {
+                      reserveFacility.openModal();
+                      setSelectedFacility(fac);
+                    }}
+                  />
                 ))}
               </div>
 
@@ -175,7 +127,6 @@ const Facilities = () => {
         onOpenChange={facility.closeModal}
         selectedFacility={selectedFacility}
       />
-
       <DeleteModal
         open={deleteFacility.isOpen}
         onOpenChange={deleteFacility.closeModal}

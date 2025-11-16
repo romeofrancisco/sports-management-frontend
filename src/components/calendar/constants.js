@@ -5,4 +5,6 @@ export const COLORS = [
 	"yellow",
 	"purple",
 	"orange",
+	"pink",
+	"gray",
 ];

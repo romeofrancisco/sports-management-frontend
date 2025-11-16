@@ -14,20 +14,50 @@ export const getReservations = async (params) => {
     const items = Array.isArray(data) ? data : data.results || [];
     return items.map((r) => ({
       id: r.id,
-      title: r.facility?.name ? `${r.facility.name} - ${r.coach?.first_name || ''} ${r.coach?.last_name || ''}`.trim() : `Reservation ${r.id}`,
+      title: r.facility?.name
+        ? `${r.facility.name} - ${r.coach.name}`.trim()
+        : `Reservation ${r.id}`,
       description: r.notes || "",
       startDate: toISO(r.start_datetime),
       endDate: toISO(r.end_datetime),
-      color: r.status === "approved" ? "green" : r.status === "rejected" ? "red" : "orange",
+      color:
+        r.status === "approved"
+          ? "green"
+          : r.status === "rejected"
+          ? "red"
+          : r.status === "cancelled"
+          ? ""
+          : r.status === "expired"
+          ? "gray"
+          : "orange",
       // Provide a generic `user` shape expected by calendar components (id + name)
       user: r.coach
-        ? { id: r.coach.id, name: `${r.coach.first_name || ''} ${r.coach.last_name || ''}`.trim() }
+        ? {
+            id: r.coach.id,
+            name: `${r.coach.first_name || ""} ${
+              r.coach.last_name || ""
+            }`.trim(),
+          }
         : r.requested_by
         ? { id: r.requested_by.id, name: r.requested_by.name }
         : null,
-      meta: { status: r.status, facility: r.facility, coach: r.coach, requested_by: r.requested_by },
+      meta: {
+        status: r.status,
+        facility: r.facility,
+        coach: r.coach,
+        requested_by: r.requested_by,
+      },
       raw: r,
     }));
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getReservationsRaw = async (params) => {
+  try {
+    const { data } = await api.get(`reservations/`, { params });
+    return data;
   } catch (err) {
     throw err;
   }

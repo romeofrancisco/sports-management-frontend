@@ -6,10 +6,12 @@ import { Building, Calendar, CheckCircle } from "lucide-react";
 import Facilities from "./Facilities";
 import Reservations from "./Reservations";
 import Approval from "./Approval";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const FacilityReservation = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { isAdmin } = useRolePermissions();
 
   const getCurrentPage = () => {
     if (currentPath.includes("/facilities")) return "facilities";
@@ -35,14 +37,18 @@ const FacilityReservation = () => {
       description: "Manage facilities",
       icon: Building,
     },
-    {
+  ];
+
+  // Only show Approvals link to admins
+  if (isAdmin()) {
+    navigationItems.push({
       key: "approvals",
       label: "Approvals",
       path: "/facility-reservation/approvals",
       description: "Approve reservations",
       icon: CheckCircle,
-    },
-  ];
+    });
+  }
 
   const renderContent = () => {
     switch (currentPage) {

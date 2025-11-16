@@ -13,7 +13,12 @@ const FacilityActions = ({ facility, onEdit, onDelete }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Facility actions">
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="Facility actions"
+          className="bg-muted/50 border-0"
+        >
           <MoreVertical />
         </Button>
       </DropdownMenuTrigger>

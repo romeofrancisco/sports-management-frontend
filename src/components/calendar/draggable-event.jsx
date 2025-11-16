@@ -6,6 +6,7 @@ import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 export function DraggableEvent({ event, children, className }) {
   const { startDrag, endDrag, isDragging, draggedEvent } = useDragDrop();
+  const { type } = event;
   const { isAdmin, isPlayer } = useRolePermissions();
   const timerRef = useRef(null);
   const LONG_PRESS_DELAY = 250; // ms
@@ -28,7 +29,7 @@ export function DraggableEvent({ event, children, className }) {
       if (isPlayer()) {
         toast.error("You do not have permission to drag events");
       } else if (event.type !== "event") {
-        toast.info("Only events can be dragged");
+        type === "event" ? toast.info("Only events can be dragged") : null;
       }
       timerRef.current = null;
     }, LONG_PRESS_DELAY);

@@ -3,6 +3,7 @@ import Modal from "@/components/common/Modal";
 import { Button } from "@/components/ui/button";
 import api from "@/api";
 import { queryClient } from "@/context/QueryProvider";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Building2 } from "lucide-react";
 import ControlledInput from "@/components/common/ControlledInput";
@@ -47,39 +48,62 @@ const FacilityFormModal = ({ open, onOpenChange, selectedFacility }) => {
       }
     }
   }, [open, selectedFacility, reset]);
+  // Mutations for create/update using TanStack Query
+  const createMutation = useMutation({
+    mutationFn: (formData) => api.post(`facilities/`, formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["facilities"]);
+      toast.success("Facility created", {
+        richColors: true,
+        description: "The facility has been successfully created.",
+      });
+      onOpenChange(false);
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to create facility");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, formData }) => api.put(`facilities/${id}/`, formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["facilities"]);
+      toast.success("Facility updated", {
+        richColors: true,
+        description: "The facility has been successfully updated.",
+      });
+      onOpenChange(false);
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to update facility");
+    },
+  });
 
   const handleSave = async (values) => {
-    try {
-      // Build FormData so image file uploads are handled correctly.
-      const formData = new FormData();
-      formData.append("name", values.name || "");
-      formData.append("location", values.location || "");
-      formData.append("capacity", values.capacity ?? 0);
-      formData.append("description", values.description || "");
-      if (values.image && values.image.length > 0) {
-        formData.append("image", values.image[0]);
-      }
+    // Build FormData so image file uploads are handled correctly.
+    const formData = new FormData();
+    formData.append("name", values.name || "");
+    formData.append("location", values.location || "");
+    formData.append("capacity", values.capacity ?? 0);
+    formData.append("description", values.description || "");
+    if (values.image && values.image.length > 0) {
+      formData.append("image", values.image[0]);
+    }
 
+    try {
       if (selectedFacility) {
-        await api.put(`facilities/${selectedFacility.id}/`, formData);
-        toast.success("Facility updated", {
-          richColors: true,
-          description: "The facility has been successfully updated.",
-        });
+        await updateMutation.mutateAsync({ id: selectedFacility.id, formData });
       } else {
-        await api.post(`facilities/`, formData);
-        toast.success("Facility created", {
-          richColors: true,
-          description: "The facility has been successfully created.",
-        });
+        await createMutation.mutateAsync(formData);
       }
-      queryClient.invalidateQueries(["facilities"]);
-      onOpenChange(false);
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to save facility");
+      // Errors handled in onError of mutations
     }
   };
+
+  const isMutating = createMutation.isPending || updateMutation.isPending;
 
   return (
     <Modal
@@ -137,15 +161,14 @@ const FacilityFormModal = ({ open, onOpenChange, selectedFacility }) => {
         />
 
         <div className="flex justify-end gap-2 mt-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            type="button"
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {selectedFacility ? "Update" : "Create"}
+          <Button type="submit" disabled={isMutating || isSubmitting}>
+            {isMutating
+              ? selectedFacility
+                ? "Updating Facility..."
+                : "Creating Facility..."
+              : selectedFacility
+              ? "Update Facility"
+              : "Create Facility"}
           </Button>
         </div>
       </form>

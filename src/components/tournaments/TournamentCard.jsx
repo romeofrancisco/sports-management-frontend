@@ -11,14 +11,36 @@ import {
 } from "@/components/ui/tooltip";
 import TournamentActions from "./TournamentActions";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { useModal } from "@/hooks/useModal";
 import { format } from "date-fns";
 
 const TournamentCard = ({ tournament, viewMode }) => {
   const navigate = useNavigate();
   const { isAdmin } = useRolePermissions();
 
+  // Modal state lifted up (like LeagueCard) so actions can toggle without triggering navigation
+  const updateModal = useModal();
+  const deleteModal = useModal();
+  const [ignoreNextClick, setIgnoreNextClick] = React.useState(false);
+
+  // Patch modal close to set ignoreNextClick
+  const handleUpdateModalClose = () => {
+    setIgnoreNextClick(true);
+    updateModal.closeModal();
+  };
+  const handleDeleteModalClose = () => {
+    setIgnoreNextClick(true);
+    deleteModal.closeModal();
+  };
+
   const handleCardClick = () => {
-    navigate(`/tournaments/${tournament.id}`);
+    if (ignoreNextClick) {
+      setIgnoreNextClick(false);
+      return;
+    }
+    if (!updateModal.isOpen && !deleteModal.isOpen) {
+      navigate(`/tournaments/${tournament.id}`);
+    }
   };
 
   // Status badge color mapping
@@ -47,10 +69,11 @@ const TournamentCard = ({ tournament, viewMode }) => {
       return dateString;
     }
   };
+  
 
   if (viewMode === "list") {
     return (
-      <Card className="relative overflow-hidden border-2 rounded-xl hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50">
+      <Card onClick={handleCardClick} className="cursor-pointer relative overflow-hidden border-2 rounded-xl hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50">
         {/* Tournament color indicator */}
         <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
 
@@ -148,7 +171,12 @@ const TournamentCard = ({ tournament, viewMode }) => {
               </div>
             </div>
             {isAdmin() && (
-              <TournamentActions tournament={tournament} className="ml-4" />
+              <TournamentActions
+                tournament={tournament}
+                updateModal={{ ...updateModal, closeModal: handleUpdateModalClose }}
+                deleteModal={{ ...deleteModal, closeModal: handleDeleteModalClose }}
+                className="ml-4"
+              />
             )}
           </div>
         </CardHeader>
@@ -159,7 +187,7 @@ const TournamentCard = ({ tournament, viewMode }) => {
   // Grid view (card view)
   return (
     <Card
-      className="relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50"
+      onClick={handleCardClick} className="cursor-pointer relative overflow-hidden border-2 rounded-xl hover:shadow-lg group bg-card border-primary/20 shadow-sm hover:border-primary/50"
     >
       {/* Tournament color indicator */}
       <div className="absolute top-0 right-0 w-3 h-full bg-primary opacity-80"></div>
@@ -178,7 +206,13 @@ const TournamentCard = ({ tournament, viewMode }) => {
           >
             {tournament.status}
           </Badge>
-          {isAdmin() && <TournamentActions tournament={tournament} />}
+          {isAdmin() && (
+            <TournamentActions
+              tournament={tournament}
+              updateModal={{ ...updateModal, closeModal: handleUpdateModalClose }}
+              deleteModal={{ ...deleteModal, closeModal: handleDeleteModalClose }}
+            />
+          )}
         </div>
 
         {/* Tournament Logo/Avatar */}

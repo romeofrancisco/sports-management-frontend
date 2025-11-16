@@ -37,18 +37,29 @@ export function FacilityAddEditReservationDialog({
   startDate,
   startTime,
   event,
+  facility = null,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }) {
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { onOpen, onClose, onToggle, isOpen: internalIsOpen } = useDisclosure();
+  const isControlled =
+    typeof controlledOpen !== "undefined" &&
+    typeof controlledOnOpenChange === "function";
+  const isOpenState = isControlled ? controlledOpen : internalIsOpen;
+  const handleOpenChange = (val) => {
+    if (isControlled) {
+      controlledOnOpenChange(val);
+    } else {
+      if (val) onOpen();
+      else onClose();
+    }
+  };
   const { addEvent, updateEvent } = useCalendar();
-  const createReservationMutation = useCreateReservation();
-  const updateReservationMutation = useUpdateReservation();
+  const { mutate: createReservationMutation } = useCreateReservation();
+  const { mutate: updateReservationMutation } = useUpdateReservation();
   const isEditing = !!event;
   const { isAdmin, isCoach } = useRolePermissions();
-
-  const { data: facilitiesData } = useFacilities(
-    {},
-    { staleTime: 1000 * 60 * 5, noPagination: true }
-  );
+  const { data: facilitiesData } = useFacilities({}, { noPagination: true });
   const facilities = facilitiesData || [];
 
   const { data: coachesData } = useCoaches({}, 1, 1000);
@@ -58,7 +69,7 @@ export function FacilityAddEditReservationDialog({
     if (!isEditing && !event) {
       if (!startDate) {
         const now = new Date();
-        return { startDate: now, endDate: addMinutes(now, 30) };
+        return { startDate: now, endDate: addMinutes(now, 60) };
       }
       const start = startTime
         ? set(new Date(startDate), {
@@ -85,7 +96,11 @@ export function FacilityAddEditReservationDialog({
       color: event?.color ?? COLORS[0] ?? "green",
       startDate: initialDates.startDate,
       endDate: initialDates.endDate,
-      facility_id: event?.meta?.facility?.id ?? (facilities[0]?.id || null),
+      // Prefer explicit `facility` prop, then event meta, then first facility
+      facility_id:
+        event?.meta?.facility?.id ??
+        facility?.id ??
+        (facilities[0]?.id || null),
       coach_id: event?.meta?.coach?.id ?? null,
     },
   });
@@ -94,12 +109,16 @@ export function FacilityAddEditReservationDialog({
     form.reset({
       title: event?.title ?? "",
       description: event?.notes ?? event?.description ?? "",
-      facility_id: event?.meta?.facility?.id ?? (facilities[0]?.id || null),
+      // When resetting, prefer the explicit `facility` prop if provided
+      facility_id:
+        event?.meta?.facility?.id ??
+        facility?.id ??
+        (facilities[0]?.id || null),
       color: event?.color ?? COLORS[0] ?? "green",
       startDate: initialDates.startDate,
       endDate: initialDates.endDate,
     });
-  }, [event, initialDates, form]);
+  }, [event, initialDates, form, facility]);
 
   // When facilities load, ensure the form has a facility_id selected
   useEffect(() => {
@@ -107,17 +126,25 @@ export function FacilityAddEditReservationDialog({
     if ((!current || current === null) && facilities.length > 0) {
       form.setValue("facility_id", facilities[0].id);
     }
+    // If a `facility` prop was provided, prefer that selection
+    if (facility && facility.id) {
+      form.setValue("facility_id", facility.id);
+    }
   }, [facilities, form]);
+
+  // Watch the selected facility id so we can update the image shown
+  const watchedFacilityId = form.watch("facility_id");
+  const selectedFacility =
+    facilities.find((f) => String(f.id) === String(watchedFacilityId)) ||
+    facility ||
+    facilities[0] ||
+    null;
 
   // form-level server error (non-field)
   const [formError, setFormError] = useState(null);
 
   const onSubmit = (values) => {
     try {
-      console.debug(
-        "FacilityAddEditReservationDialog onSubmit values:",
-        values
-      );
       // Ensure only coaches or admins can create reservations client-side
       if (!isAdmin() && !isCoach()) {
         toast.error("Only coaches or admins can create reservations.");
@@ -198,15 +225,21 @@ export function FacilityAddEditReservationDialog({
       };
 
       if (isEditing) {
-        updateReservationMutation.mutate(
+        updateReservationMutation(
           { id: event.id, data: payload },
           {
             onSuccess: (data) => {
               try {
                 updateEvent(mapResponseToEvent(data));
+                toast.success("Reservation updated successfully", {
+                  description:
+                    "The reservation status has been successfully updated.",
+                  richColors: true,
+                });
               } catch (e) {}
-              toast.success("Reservation updated successfully");
-              onClose();
+
+              // close the dialog (works in both controlled and uncontrolled modes)
+              handleOpenChange(false);
               form.reset();
             },
             onError: (error) => {
@@ -224,17 +257,12 @@ export function FacilityAddEditReservationDialog({
           }
         );
       } else {
-        console.debug(
-          "FacilityAddEditReservationDialog submitting payload:",
-          payload
-        );
-        createReservationMutation.mutate(payload, {
+        createReservationMutation(payload, {
           onSuccess: (data) => {
             try {
               addEvent(mapResponseToEvent(data));
             } catch (e) {}
-            toast.success("Reservation created successfully");
-            onClose();
+            handleOpenChange(false);
             form.reset();
           },
           onError: (error) => {
@@ -266,8 +294,8 @@ export function FacilityAddEditReservationDialog({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={onToggle} modal={false}>
-      <ModalTrigger asChild>{children}</ModalTrigger>
+    <Modal open={isOpenState} onOpenChange={handleOpenChange} modal={false}>
+      {children ? <ModalTrigger asChild>{children}</ModalTrigger> : null}
       <ModalContent>
         <ModalHeader>
           <ModalTitle>
@@ -281,22 +309,19 @@ export function FacilityAddEditReservationDialog({
         </ModalHeader>
 
         <Form {...form}>
-          {formError && (
-            <div className="text-sm text-red-600 mb-2">{formError}</div>
-          )}
           <form
             id="reservation-form"
             onSubmit={form.handleSubmit(onSubmit, onSubmitError)}
-            className="grid gap-4 py-4"
+            className="grid gap-4 py-4 px-1"
           >
-            <ControlledInput
-              name="title"
-              control={form.control}
-              label="Title"
-              placeholder="Enter a title"
-              errors={form.formState.errors}
+            <img
+              src={
+                selectedFacility?.image ||
+                "https://res.cloudinary.com/dzebi1atl/image/upload/v1763285456/assets/facility_placeholder_vkotox.svg"
+              }
+              alt={selectedFacility?.name || "Facility"}
+              className="mb-4 rounded object-cover w-full h-40 transition-all duration-200 dark:brightness-50"
             />
-
             <ControlledSelect
               name="facility_id"
               control={form.control}

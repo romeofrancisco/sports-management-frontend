@@ -45,7 +45,7 @@ export function DayCell({ cell, events, eventPositions }) {
   const { isPlayer } = useRolePermissions();
   const { day, currentMonth, date } = cell;
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { AddEditDialog } = useCalendar();
+  const { AddEditDialog, type } = useCalendar();
 
   // Memoize cellEvents and currentCellMonth for performance
   const { cellEvents, currentCellMonth } = useMemo(() => {
@@ -144,10 +144,10 @@ export function DayCell({ cell, events, eventPositions }) {
                       <Dialog startDate={date}>
                         <Button
                           variant="ghost"
-                          size="icon"
                           className="border opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                         >
                           <Plus className="h-4 w-4" />
+                          {type === "event" ? "Add Event" : "Add Reservation"}
                         </Button>
                       </Dialog>
                     );

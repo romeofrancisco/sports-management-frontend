@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   slideFromLeft,
@@ -13,7 +12,6 @@ import { FacilityAddEditReservationDialog } from "./FacilityAddEditReservationDi
 import { DateNavigator } from "@/components/calendar/date-navigator";
 import FilterEvents from "@/components/calendar/filter";
 import { TodayButton } from "@/components/calendar/today-button";
-import { UserSelect } from "@/components/calendar/user-select";
 import { Settings } from "@/components/calendar/settings";
 import { FacilityFilterEvents } from "./FacilityFilterEvents";
 import { FacilitySettings } from "./FacilitySettings";
@@ -52,7 +50,7 @@ export function FacilityCalendarHeader() {
         <div className="flex flex-col gap-2 xl:flex-row xl:items-center lg:gap-1.5">
           <div className="flex flex-col md:flex-row gap-2 ">
             <Views />
-            <div className="flex gap-2">
+            <div className="flex flex-row-reverse gap-2">
               <div
                 className={`${
                   !isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"
@@ -60,19 +58,18 @@ export function FacilityCalendarHeader() {
               >
                 {/* facility-specific controls */}
                 <FacilityFilterEvents />
-                <FacilitySettings />
+                {isAdmin() && <FacilitySettings />}
               </div>
+              {!isPlayer() && (
+                <FacilityAddEditReservationDialog>
+                  <Button className="flex-1">
+                    <Plus className="h-4 w-4" />
+                    Add Reservation
+                  </Button>
+                </FacilityAddEditReservationDialog>
+              )}
             </div>
           </div>
-
-          {!isPlayer() && (
-            <FacilityAddEditReservationDialog>
-              <Button>
-                <Plus className="h-4 w-4" />
-                Add Reservation
-              </Button>
-            </FacilityAddEditReservationDialog>
-          )}
         </div>
       </motion.div>
     </div>

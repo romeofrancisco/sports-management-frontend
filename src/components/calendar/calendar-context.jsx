@@ -21,6 +21,7 @@ export function CalendarProvider({
 	addEditDialogComponent = null,
 	// allow injecting a custom Details dialog component (optional)
 	detailsDialogComponent = null,
+	type = "event",
 }) {
 
 
@@ -230,6 +231,7 @@ export function CalendarProvider({
 		AddEditDialog: addEditDialogComponent,
 		// optional injected details dialog (e.g. FacilityEventDetailsDialog)
 		DetailsDialog: detailsDialogComponent,
+		type,
 	};
 
 	return (

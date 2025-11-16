@@ -143,6 +143,12 @@ export const coachGroupedNavigation = () => {
           icon: Calendar,
           description: "View and manage all scheduled events",
         },
+        {
+          title: "Facility Reservation",
+          href: "/facility-reservation",
+          icon: CalendarCog,
+          description: "Reserve facilities for training and games",
+        }
       ],
     },
     {

@@ -13,7 +13,7 @@ import { DayViewMultiDayEventsRow } from "@/components/calendar/day-view-multi-d
 import { RenderGroupedEvents } from "@/components/calendar/render-grouped-events";
 
 export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
-  const { selectedDate, setSelectedDate, users, use24HourFormat } =
+  const { selectedDate, setSelectedDate, users, use24HourFormat, type  } =
     useCalendar();
   const scrollAreaRef = useRef(null);
 
@@ -194,7 +194,7 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }) {
             </div>
           ) : (
             <p className="p-4 text-center text-sm italic text-t-tertiary">
-              No appointments or consultations at the moment
+              {type === "event" ? "No ongoing events at the moment" : "No ongoing reservations at the moment"}
             </p>
           )}
 
