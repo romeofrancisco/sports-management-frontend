@@ -123,6 +123,24 @@ export function DateTimePicker({
 								</div>
 								<ScrollBar orientation="horizontal" className="sm:hidden" />
 							</ScrollArea>
+							{!use24HourFormat && (
+								<div className="flex sm:flex-col p-2">
+									{["AM", "PM"].map((ampm) => (
+										<Button
+											key={ampm}
+											variant={
+												field.value && (field.value.getHours() < 12 ? "AM" : "PM") === ampm
+													? "default"
+													: "ghost"
+											}
+											className="sm:w-full"
+											onClick={() => handleTimeChange("ampm", ampm)}
+										>
+											{ampm}
+										</Button>
+									))}
+								</div>
+							)}
 						</div>
 					</div>
 				</PopoverContent>
