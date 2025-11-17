@@ -209,15 +209,7 @@ export const coachRoutes = [
     element: <EventCalendar />,
   },
   {
-    path: "facility-reservation/",
-    element: <FacilityReservation />,
-  },
-  {
-    path: "facility-reservation/reservations",
-    element: <FacilityReservation />,
-  },
-  {
-    path: "facility-reservation/facilities",
+    path: "facility-reservation/*",
     element: <FacilityReservation />,
   },
 ];
