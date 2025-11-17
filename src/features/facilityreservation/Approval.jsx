@@ -396,66 +396,62 @@ const Approval = () => {
           )}
         </CardContent>
       </Card>
-      {!isAdmin() && (
-        <>
-          <Modal
-            open={statusUpdate.isOpen}
-            onOpenChange={statusUpdate.closeModal}
-            icon={Edit}
-            title="Update Reservation Status"
-            description="Change the status of the selected reservation."
-            contentClassName="sm:max-w-[400px]"
-          >
-            <Label className="mb-1">Status</Label>
-            <Select
-              value={updateStatus?.status}
-              onValueChange={(value) =>
-                setUpdateStatus({ ...updateStatus, status: value })
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                {UPDATE_STATUS_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              className="w-full mt-4"
-              onClick={async () => {
-                if (!updateStatus) return;
-                try {
-                  await handleChangeStatus(
-                    updateStatus.id,
-                    updateStatus.status
-                  );
-                  // close modal and clear selection
-                  statusUpdate.closeModal();
-                  setUpdateStatus(null);
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-              disabled={!updateStatus || isUpdating}
-            >
-              {isUpdating ? "Updating..." : "Update Status"}
-            </Button>
-          </Modal>
-          <DeleteModal
-            open={deleteModal.isOpen}
-            onOpenChange={deleteModal.closeModal}
-            title="Delete Reservation"
-            description="Are you sure you want to delete this reservation? This action cannot be undone."
-            icon={Trash2}
-            onConfirm={handleDeleteReservation}
-            isLoading={isDeleting}
-          />
-        </>
-      )}
+      <Modal
+        open={statusUpdate.isOpen}
+        onOpenChange={statusUpdate.closeModal}
+        icon={Edit}
+        title="Update Reservation Status"
+        description="Change the status of the selected reservation."
+        contentClassName="sm:max-w-[400px]"
+      >
+        <Label className="mb-1">Status</Label>
+        <Select
+          value={updateStatus?.status}
+          onValueChange={(value) =>
+            setUpdateStatus({ ...updateStatus, status: value })
+          }
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            {UPDATE_STATUS_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          className="w-full mt-4"
+          onClick={async () => {
+            if (!updateStatus) return;
+            try {
+              await handleChangeStatus(
+                updateStatus.id,
+                updateStatus.status
+              );
+              // close modal and clear selection
+              statusUpdate.closeModal();
+              setUpdateStatus(null);
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          disabled={!updateStatus || isUpdating}
+        >
+          {isUpdating ? "Updating..." : "Update Status"}
+        </Button>
+      </Modal>
+      <DeleteModal
+        open={deleteModal.isOpen}
+        onOpenChange={deleteModal.closeModal}
+        title="Delete Reservation"
+        description="Are you sure you want to delete this reservation? This action cannot be undone."
+        icon={Trash2}
+        onConfirm={handleDeleteReservation}
+        isLoading={isDeleting}
+      />
     </>
   );
 };
