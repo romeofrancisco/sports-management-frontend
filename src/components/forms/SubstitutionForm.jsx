@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import SelectPlayer from "../common/SelectPlayer";
 import { useSubstitution } from "@/hooks/useSubstitution";
 import { useSelector } from "react-redux";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 const SubstitutionForm = ({ currentPlayers, gamePlayers, onClose }) => {
   const { game_id, home_team, away_team, max_players_on_field_per_team, current_period } =
@@ -71,7 +72,10 @@ const SubstitutionForm = ({ currentPlayers, gamePlayers, onClose }) => {
         {/* Home Team */}
         <div className="grid gap-3">
           <div className="flex justify-center items-center gap-2">
-            <img src={home_team.logo} alt={home_team.name} className="w-12" />
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={home_team.logo} alt={home_team.name} />
+              <AvatarFallback>{home_team.name.charAt(0)}</AvatarFallback>
+            </Avatar>
             <h1 className="text-3xl font-semibold">{home_team.name}</h1>
           </div>
           {Array.from({ length: max }).map((_, idx) => {
@@ -104,7 +108,10 @@ const SubstitutionForm = ({ currentPlayers, gamePlayers, onClose }) => {
         {/* Away Team */}
         <div className="grid gap-3">
           <div className="flex justify-center items-center gap-2">
-            <img src={away_team.logo} alt={away_team.name} className="w-12" />
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={away_team.logo} alt={away_team.name} />
+              <AvatarFallback>{away_team.name.charAt(0)}</AvatarFallback>
+            </Avatar>
             <h1 className="text-3xl font-semibold">{away_team.name}</h1>
           </div>
           {Array.from({ length: max }).map((_, idx) => {
