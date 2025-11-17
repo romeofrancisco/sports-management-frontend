@@ -6,6 +6,7 @@ import {
 } from "@/hooks/useReservations";
 import DataTable from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
+import ApprovalFilter from "./components/ApprovalFilter";
 import { Badge } from "@/components/ui/badge";
 import { format, set } from "date-fns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -26,6 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import FilterDropdown from "@/components/common/FilterDropdown";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import TablePagination from "@/components/ui/table-pagination";
 import Modal from "@/components/common/Modal";
@@ -40,15 +42,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import DeleteModal from "@/components/common/DeleteModal";
-
-const STATUS_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "pending", label: "Pending" },
-  { value: "approved", label: "Approved" },
-  { value: "rejected", label: "Rejected" },
-  { value: "expired", label: "Expired" },
-  { value: "cancelled", label: "Cancelled" },
-];
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const UPDATE_STATUS_OPTIONS = [
   { value: "approved", label: "Approve" },
@@ -57,22 +51,32 @@ const UPDATE_STATUS_OPTIONS = [
 ];
 
 const Approval = () => {
-  const [status, setStatus] = useState("all");
+  const [filters, setFilters] = useState({
+    status: "all",
+    facility: null,
+    q: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [updateStatus, setUpdateStatus] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const { isAdmin } = useRolePermissions();
 
   const statusUpdate = useModal();
   const deleteModal = useModal();
 
   const params = useMemo(() => {
     const p = {};
-    if (status && status !== "all") p.status = status;
+    if (filters?.status && filters.status !== "all") p.status = filters.status;
+    if (filters?.facility && filters.facility !== "all")
+      p.facility = filters.facility;
+    if (filters?.q) p.q = filters.q;
+    if (filters?.start_date) p.start_date = filters.start_date.toISOString();
+    if (filters?.end_date) p.end_date = filters.end_date.toISOString();
     p.page = currentPage;
     p.page_size = pageSize;
     return p;
-  }, [status, currentPage, pageSize]);
+  }, [filters, currentPage, pageSize]);
 
   const { data, isLoading, refetch } = useReservations(params, {
     raw: true,
@@ -187,9 +191,22 @@ const Approval = () => {
 
             // Different dates: show full start and end datetimes on separate lines
             return (
-              <div>
-                <div>{format(s, "PPpp")}</div>
-                <div>{format(e, "PPpp")}</div>
+              <div className="flex items-center">
+                <div className="text-center">
+                  <div>{format(s, "PP")}</div>
+                  <div className="text-xs text-muted-foreground">{`${format(
+                    s,
+                    "p"
+                  )}`}</div>
+                </div>
+                <span className="mx-2">-</span>
+                <div className="text-center">
+                  <div>{format(e, "PP")}</div>
+                  <div className="text-xs text-muted-foreground">{`${format(
+                    e,
+                    "p"
+                  )}`}</div>
+                </div>
               </div>
             );
           } catch (err) {
@@ -241,80 +258,83 @@ const Approval = () => {
           }
         },
       },
-      {
-        header: "",
-        accessorKey: "id_action",
-        cell: (info) => {
-          const row = info.row.original;
-          const status = row?.status || row?.meta?.status;
-
-          if (status !== "pending")
-            return (
-              <div className="flex items-center gap-2 justify-end mr-5">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        statusUpdate.openModal();
-                        setUpdateStatus(row);
-                      }}
-                      disabled={
-                        row.start_datetime &&
-                        new Date(row.start_datetime) < new Date()
-                      }
-                    >
-                      <Edit />
-                      Update Status
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      variant="destructive"
-                      onClick={() => {
-                        deleteModal.openModal();
-                        setDeleteId(row.id);
-                      }}
-                    >
-                      <Trash2 />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            );
-
-          return (
-            <div className="flex items-center gap-2 justify-end mr-5">
-              <Button
-                size="sm"
-                onClick={() => handleChangeStatus(row.id, "approved")}
-                className="bg-green-700 hover:bg-green-800 text-white"
-              >
-                Approve
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => handleChangeStatus(row.id, "rejected")}
-              >
-                Reject
-              </Button>
-            </div>
-          );
-        },
-      },
     ],
     [statusUpdate, deleteModal]
   );
 
+  if (isAdmin()) {
+    columns.push({
+      header: "",
+      accessorKey: "id_action",
+      cell: (info) => {
+        const row = info.row.original;
+        const status = row?.status || row?.meta?.status;
+
+        if (status !== "pending")
+          return (
+            <div className="flex items-center gap-2 justify-end mr-5">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreHorizontal />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      statusUpdate.openModal();
+                      setUpdateStatus(row);
+                    }}
+                    disabled={
+                      row.start_datetime &&
+                      new Date(row.start_datetime) < new Date()
+                    }
+                  >
+                    <Edit />
+                    Update Status
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => {
+                      deleteModal.openModal();
+                      setDeleteId(row.id);
+                    }}
+                  >
+                    <Trash2 />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+
+        return (
+          <div className="flex items-center gap-2 justify-end mr-5">
+            <Button
+              size="sm"
+              onClick={() => handleChangeStatus(row.id, "approved")}
+              className="bg-green-700 hover:bg-green-800 text-white"
+            >
+              Approve
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => handleChangeStatus(row.id, "rejected")}
+            >
+              Reject
+            </Button>
+          </div>
+        );
+      },
+    });
+  }
+
   return (
     <>
       <Card className="border-2 border-primary/20 gap-0">
-        <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-4 pb-5 bg-transparent border-b-2 border-primary/20">
+        <CardHeader className="flex flex-col gap-4 pb-5 bg-transparent border-b-2 border-primary/20">
           <div className="flex items-center gap-3">
             <div className="bg-primary p-3 rounded-xl">
               <CheckCircle className="size-7 text-primary-foreground" />
@@ -322,48 +342,25 @@ const Approval = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold text-foreground">
-                  Reservation Approvals
+                  {isAdmin() ? "Manage Approvals" : "Reservation Approvals"}
                 </h2>
                 <Badge className="h-6 text-[11px] hidden md:inline-flex">
                   {totalCount} reservations
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground line-clamp-2">
-                Review and approve or reject pending facility reservation
-                requests.
+                {isAdmin()
+                  ? "Approve or reject facility reservation requests from coaches."
+                  : "View the status of your facility reservation requests."}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Filter />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {STATUS_OPTIONS.map((opt) => (
-                  <DropdownMenuItem
-                    key={opt.value}
-                    onClick={() => {
-                      setStatus(opt.value);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      {opt.value === status ? (
-                        <CheckIcon />
-                      ) : (
-                        <span className="w-4" />
-                      )}
-                      <span>{opt.label}</span>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <ApprovalFilter
+            filters={filters}
+            setFilters={setFilters}
+            setCurrentPage={setCurrentPage}
+          />
         </CardHeader>
 
         <CardContent className="p-0">
@@ -399,59 +396,66 @@ const Approval = () => {
           )}
         </CardContent>
       </Card>
-      <Modal
-        open={statusUpdate.isOpen}
-        onOpenChange={statusUpdate.closeModal}
-        icon={Edit}
-        title="Update Reservation Status"
-        description="Change the status of the selected reservation."
-        contentClassName="sm:max-w-[400px]"
-      >
-        <Label className="mb-1">Status</Label>
-        <Select
-          value={updateStatus?.status}
-          onValueChange={(value) =>
-            setUpdateStatus({ ...updateStatus, status: value })
-          }
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            {UPDATE_STATUS_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          className="w-full mt-4"
-          onClick={async () => {
-            if (!updateStatus) return;
-            try {
-              await handleChangeStatus(updateStatus.id, updateStatus.status);
-              // close modal and clear selection
-              statusUpdate.closeModal();
-              setUpdateStatus(null);
-            } catch (err) {
-              console.error(err);
-            }
-          }}
-          disabled={!updateStatus || isUpdating}
-        >
-          {isUpdating ? "Updating..." : "Update Status"}
-        </Button>
-      </Modal>
-      <DeleteModal
-        open={deleteModal.isOpen}
-        onOpenChange={deleteModal.closeModal}
-        title="Delete Reservation"
-        description="Are you sure you want to delete this reservation? This action cannot be undone."
-        icon={Trash2}
-        onConfirm={handleDeleteReservation}
-        isLoading={isDeleting}
-      />
+      {!isAdmin() && (
+        <>
+          <Modal
+            open={statusUpdate.isOpen}
+            onOpenChange={statusUpdate.closeModal}
+            icon={Edit}
+            title="Update Reservation Status"
+            description="Change the status of the selected reservation."
+            contentClassName="sm:max-w-[400px]"
+          >
+            <Label className="mb-1">Status</Label>
+            <Select
+              value={updateStatus?.status}
+              onValueChange={(value) =>
+                setUpdateStatus({ ...updateStatus, status: value })
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {UPDATE_STATUS_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              className="w-full mt-4"
+              onClick={async () => {
+                if (!updateStatus) return;
+                try {
+                  await handleChangeStatus(
+                    updateStatus.id,
+                    updateStatus.status
+                  );
+                  // close modal and clear selection
+                  statusUpdate.closeModal();
+                  setUpdateStatus(null);
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              disabled={!updateStatus || isUpdating}
+            >
+              {isUpdating ? "Updating..." : "Update Status"}
+            </Button>
+          </Modal>
+          <DeleteModal
+            open={deleteModal.isOpen}
+            onOpenChange={deleteModal.closeModal}
+            title="Delete Reservation"
+            description="Are you sure you want to delete this reservation? This action cannot be undone."
+            icon={Trash2}
+            onConfirm={handleDeleteReservation}
+            isLoading={isDeleting}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -37,18 +37,14 @@ const FacilityReservation = () => {
       description: "Manage facilities",
       icon: Building,
     },
-  ];
-
-  // Only show Approvals link to admins
-  if (isAdmin()) {
-    navigationItems.push({
+    {
       key: "approvals",
       label: "Approvals",
       path: "/facility-reservation/approvals",
       description: "Approve reservations",
       icon: CheckCircle,
-    });
-  }
+    },
+  ];
 
   const renderContent = () => {
     switch (currentPage) {
@@ -67,8 +63,12 @@ const FacilityReservation = () => {
     <div className="container mx-auto p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title="Facility Reservation"
-        subtitle="Facility Management"
-        description="Manage facility bookings and reservations"
+        subtitle={isAdmin() ? "Facility Management" : "Reserve a Facility"}
+        description={
+          isAdmin()
+            ? "Manage facilities and approve reservation requests."
+            : "Browse and reserve available facilities on campus."
+        }
       />
 
       {/* Navigation Links */}
