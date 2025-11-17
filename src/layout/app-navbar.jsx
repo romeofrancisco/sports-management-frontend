@@ -323,7 +323,7 @@ const AppNavbar = ({ navItems = [] }) => {
       <div className="container relative flex h-16 items-center justify-between">
         {/* Left side - Logo and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <MobileNav />
+          {isAuthenticated && <MobileNav />}
           {/* Logo/Brand */}
           <Link
             to="/"
