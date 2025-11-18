@@ -121,7 +121,7 @@ const WinDistributionChart = ({
       }
       className={className}
       icon={PieChart}
-      hasData={teams && teams.length > 0}
+      hasData={top5Teams.length > 0}
       height={300}
       emptyMessage="No win distribution data available. Data will appear here once games are completed."
     >

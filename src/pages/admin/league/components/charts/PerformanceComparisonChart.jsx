@@ -22,20 +22,29 @@ ChartJS.register(
   Legend
 );
 
-const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" }) => {
+const PerformanceComparisonChart = ({
+  teams,
+  isSetBased = false,
+  className = "",
+}) => {
   // Sort teams by win percentage for better visualization and take top 5
-  const winPercentageKey = isSetBased ? 'sets_win_percentage' : 'win_percentage';
+  const winPercentageKey = isSetBased
+    ? "sets_win_percentage"
+    : "win_percentage";
   const sortedTeams = [...(teams || [])]
     .sort((a, b) => (b[winPercentageKey] || 0) - (a[winPercentageKey] || 0))
     .slice(0, 5);
+
 
   const chartData = {
     labels: sortedTeams.map((team) => team.team_name),
     datasets: [
       {
         label: isSetBased ? "Sets Won" : "Games Won",
-        data: sortedTeams.map((team) => 
-          isSetBased ? (team.sets_won || 0) : (team.games_won || team.matches_won || 0)
+        data: sortedTeams.map((team) =>
+          isSetBased
+            ? team.sets_won || 0
+            : team.games_won || team.matches_won || 0
         ),
         backgroundColor: "rgba(139, 21, 56, 0.7)",
         borderColor: "#8B1538",
@@ -45,8 +54,10 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
       },
       {
         label: isSetBased ? "Sets Lost" : "Games Lost",
-        data: sortedTeams.map((team) => 
-          isSetBased ? (team.sets_lost || 0) : (team.games_lost || team.matches_lost || 0)
+        data: sortedTeams.map((team) =>
+          isSetBased
+            ? team.sets_lost || 0
+            : team.games_lost || team.matches_lost || 0
         ),
         backgroundColor: "rgba(255, 215, 0, 0.7)",
         borderColor: "#FFD700",
@@ -58,11 +69,11 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
   };
 
   const options = {
-    indexAxis: 'x',
+    indexAxis: "x",
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
-      mode: 'index',
+      mode: "index",
       intersect: false,
     },
     elements: {
@@ -107,15 +118,15 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
           afterBody: function (tooltipItems) {
             const teamIndex = tooltipItems[0].dataIndex;
             const team = sortedTeams[teamIndex];
-            const winPercentage = isSetBased 
+            const winPercentage = isSetBased
               ? (team.sets_win_percentage || 0).toFixed(1)
               : (team.win_percentage || 0).toFixed(1);
-            const totalPlayed = isSetBased 
-              ? (team.sets_played || 0)
-              : (team.games_played || 0);
+            const totalPlayed = isSetBased
+              ? team.sets_played || 0
+              : team.games_played || 0;
             return [
-              `Win Rate: ${winPercentage}%`, 
-              `Total ${isSetBased ? 'Sets' : 'Games'}: ${totalPlayed}`
+              `Win Rate: ${winPercentage}%`,
+              `Total ${isSetBased ? "Sets" : "Games"}: ${totalPlayed}`,
             ];
           },
         },
@@ -135,7 +146,7 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
         },
         title: {
           display: true,
-          text: isSetBased ? 'Sets' : 'Games',
+          text: isSetBased ? "Sets" : "Games",
           font: {
             size: 12,
             family: "'Inter', sans-serif",
@@ -155,7 +166,7 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
         },
         title: {
           display: true,
-          text: 'Teams',
+          text: "Teams",
           font: {
             size: 12,
             family: "'Inter', sans-serif",
@@ -172,7 +183,7 @@ const PerformanceComparisonChart = ({ teams, isSetBased = false, className = "" 
       description="Top 5 teams performance metrics and win rates comparison"
       className={className}
       icon={BarChart3}
-      hasData={teams && teams.length > 0}
+      hasData={sortedTeams.length > 0}
       height={300}
       emptyMessage="No team performance data available. Teams will appear here once games are played."
     >

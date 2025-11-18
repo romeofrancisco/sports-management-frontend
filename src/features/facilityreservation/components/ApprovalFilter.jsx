@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   DropdownMenuGroup,
   DropdownMenuSeparator,
@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import FilterDropdown from "@/components/common/FilterDropdown";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { useDebounce } from "use-debounce";
 
 const STATUS_OPTIONS = [
   { value: "all", label: "All" },
@@ -28,6 +29,18 @@ const STATUS_OPTIONS = [
 const ApprovalFilter = ({ filters = {}, setFilters, setCurrentPage }) => {
   const { data: facilities } = useFacilities({ no_pagination: true });
 
+  const [searchValue, setSearchValue] = useState(filters.q || "");
+  const [debouncedSearchValue] = useDebounce(searchValue, 300);
+
+  useEffect(() => {
+    setFilters((prev) => ({ ...(prev || {}), q: debouncedSearchValue }));
+    setCurrentPage(1);
+  }, [debouncedSearchValue, setFilters, setCurrentPage]);
+
+  useEffect(() => {
+    setSearchValue(filters.q || "");
+  }, [filters.q]);
+
   const handleStatusChange = (value) => {
     setFilters((prev) => ({ ...(prev || {}), status: value }));
     setCurrentPage(1);
@@ -35,12 +48,6 @@ const ApprovalFilter = ({ filters = {}, setFilters, setCurrentPage }) => {
 
   const handleFacilityChange = (value) => {
     setFilters((prev) => ({ ...(prev || {}), facility: value }));
-    setCurrentPage(1);
-  };
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setFilters((prev) => ({ ...(prev || {}), q: value }));
     setCurrentPage(1);
   };
 
@@ -56,10 +63,8 @@ const ApprovalFilter = ({ filters = {}, setFilters, setCurrentPage }) => {
         <Input
           className="w-full ps-7"
           placeholder="Search..."
-          value={filters.q || ""}
-          onChange={(e) => {
-            handleSearchChange(e);
-          }}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
       <FilterDropdown onClear={handleResetAll}>

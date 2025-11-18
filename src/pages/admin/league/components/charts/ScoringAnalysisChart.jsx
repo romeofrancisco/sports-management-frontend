@@ -165,7 +165,7 @@ const ScoringAnalysisChart = ({ teams, isSetBased = false, className = "" }) => 
       description="Team scoring performance and statistical analysis"
       className={className}
       icon={TrendingUp}
-      hasData={teams && teams.length > 0}
+      hasData={topTeams.length > 0}
       height={300}
       emptyMessage="No scoring analysis data available. Analysis will appear here once teams have played games."
     >

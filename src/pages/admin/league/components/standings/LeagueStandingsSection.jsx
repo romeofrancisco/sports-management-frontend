@@ -47,6 +47,7 @@ const LeagueStandingsSection = ({ league }) => {
             league={league}
             maxTeams={3}
             gridCols="lg:grid-cols-1 md:grid-cols-2 grid-cols-1"
+            showEmptyState={true}
           />
         </CardContent>
       </Card>

@@ -104,7 +104,7 @@ const Approval = () => {
   const columns = useMemo(
     () => [
       {
-        header: "Coach",
+        header: "Reservee",
         accessorFn: (row) => row,
         cell: ({ getValue }) => {
           const row = getValue();

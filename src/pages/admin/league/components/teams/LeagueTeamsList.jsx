@@ -72,15 +72,15 @@ const LeagueTeamsList = ({
   if ((!teams || teams.length === 0) && showEmptyState) {
     return (
       <div
-        className={`text-center p-8 border-2 border-dashed border-border/50 rounded-xl bg-gradient-to-br from-muted/20 via-background to-muted/10 ${className}`}
+        className={`text-center p-8 ${className}`}
       >
-        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
+        <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-muted">
           <Users className="h-8 w-8 text-muted-foreground" />
         </div>
-        <p className="text-muted-foreground font-medium">
+        <p className="text-muted-foreground font-medium text-lg">
           No teams in this league
         </p>
-        <p className="text-xs text-muted-foreground/80 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           Teams will appear here once they join the league
         </p>
       </div>
