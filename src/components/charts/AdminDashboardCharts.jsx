@@ -274,10 +274,6 @@ export const TrainingAttendanceChart = ({ data }) => {
     ...commonOptions,
     plugins: {
       ...commonOptions.plugins,
-      title: {
-        display: true,
-        text: `Overall Attendance: ${attendanceRate.toFixed(1)}%`,
-      },
       tooltip: {
         callbacks: {
           label: function (context) {
@@ -541,7 +537,6 @@ export const SystemHealthChart = ({ score }) => {
 
 // Monthly Training Trend Chart
 export const TrainingTrendChart = ({ data }) => {
-  console.log("TrainingTrendChart data:", data);
   if (!data) {
     return (
       <ChartCard
@@ -559,7 +554,8 @@ export const TrainingTrendChart = ({ data }) => {
   const monthlyTrend =
     data?.monthly_trend || data?.training_analytics?.monthly_trend || null;
 
-  const monthsToShow = (monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length) || 5;
+  const monthsToShow =
+    (monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length) || 5;
 
   // generateLastNMonths: returns array of short month labels like ['Jun', 'Jul', ...]
   const generateLastNMonths = (n) => {
@@ -567,14 +563,15 @@ export const TrainingTrendChart = ({ data }) => {
     const now = new Date();
     for (let i = n - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      res.push(d.toLocaleString(undefined, { month: 'short' }));
+      res.push(d.toLocaleString(undefined, { month: "short" }));
     }
     return res;
   };
 
-  const labels = (monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length > 0)
-    ? monthlyTrend.labels
-    : generateLastNMonths(monthsToShow);
+  const labels =
+    monthlyTrend && monthlyTrend.labels && monthlyTrend.labels.length > 0
+      ? monthlyTrend.labels
+      : generateLastNMonths(monthsToShow);
 
   // If backend provided values, use them. Otherwise create zeros.
   let values;
@@ -583,9 +580,11 @@ export const TrainingTrendChart = ({ data }) => {
   } else {
     // Do not fabricate historical non-zero values. If a single `monthly_sessions`
     // number exists and is > 0, show it only for the most recent month.
-    const lastCount = (typeof data?.monthly_sessions === 'number' && data.monthly_sessions > 0)
-      ? data.monthly_sessions
-      : (typeof data?.training_analytics?.monthly_sessions === 'number' && data.training_analytics.monthly_sessions > 0)
+    const lastCount =
+      typeof data?.monthly_sessions === "number" && data.monthly_sessions > 0
+        ? data.monthly_sessions
+        : typeof data?.training_analytics?.monthly_sessions === "number" &&
+          data.training_analytics.monthly_sessions > 0
         ? data.training_analytics.monthly_sessions
         : 0;
 
@@ -615,13 +614,6 @@ export const TrainingTrendChart = ({ data }) => {
     scales: {
       y: {
         beginAtZero: true,
-      },
-    },
-    plugins: {
-      ...commonOptions.plugins,
-      title: {
-        display: true,
-        text: `Trend: ${data?.training_trend || data?.training_analytics?.training_trend || "stable"}`,
       },
     },
   };

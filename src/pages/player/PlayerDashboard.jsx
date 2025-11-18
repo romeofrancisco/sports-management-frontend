@@ -28,7 +28,6 @@ const PlayerDashboard = () => {
     isLoading: progressLoading,
     error: progressError,
   } = usePlayerProgress();
-  console.log(progress);
 
   if (overviewLoading || progressLoading) {
     return <DashboardSkeleton />;

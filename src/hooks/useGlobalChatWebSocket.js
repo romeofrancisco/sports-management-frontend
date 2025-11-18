@@ -37,7 +37,9 @@ export const useGlobalChatWebSocket = () => {
     // Add token and user ID as query parameters
     if (accessToken) {
       wsUrl += `?token=${encodeURIComponent(accessToken)}&user_id=${user.id}`;
-    }    const ws = new WebSocket(wsUrl);
+    }
+    
+    const ws = new WebSocket(wsUrl);
     
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -71,11 +73,10 @@ export const useGlobalChatWebSocket = () => {
         }
 
         // Always update team chats cache for unread count
+        const isCurrentUserMessage = data.sender_id === user.id;
         queryClient.setQueryData(
           chatKeys.teamChats(),
           (oldChats) => {            if (!oldChats) return oldChats;
-            
-            const isCurrentUserMessage = data.sender_id === user.id;
             
             return oldChats.map(chat => {
               if (chat.team_id === parseInt(data.team_id)) {
@@ -96,6 +97,33 @@ export const useGlobalChatWebSocket = () => {
             });
           }
         );
+
+        // Show browser notification if document is hidden and message is not from current user
+        // and user is not currently viewing this chat and notifications are enabled and team is not muted
+        const isViewingThisChat = window.location.pathname.includes(`/chat/${data.team_id}`);
+        const chatNotificationsEnabled = JSON.parse(localStorage.getItem('chatNotificationsEnabled') ?? 'true');
+        const mutedTeams = JSON.parse(localStorage.getItem('mutedTeams') ?? '[]');
+        const isTeamMuted = mutedTeams.includes(data.team_id.toString()) || mutedTeams.includes(parseInt(data.team_id));
+        
+        if (!isCurrentUserMessage && document.hidden && !isViewingThisChat && chatNotificationsEnabled && !isTeamMuted && 'Notification' in window && Notification.permission === 'granted') {
+          const notification = new Notification(data.team_name || `Team ${data.team_id}`, {
+            body: `${data.sender_name}: ${data.message.length > 80 ? data.message.substring(0, 80) + '...' : data.message}`,
+            icon: '/perpetual_logo_small.png', // Use perpetual logo for notifications
+            tag: `chat-${data.team_id}`, // Group notifications by team
+          });
+
+          // Auto-close notification after 5 seconds
+          setTimeout(() => {
+            notification.close();
+          }, 5000);
+
+          // Click handler to focus window and navigate to chat
+          notification.onclick = () => {
+            window.focus();
+            window.location.href = `/chat/${data.team_id}`;
+            notification.close();
+          };
+        }
 
         // Force React Query to notify all components about the change
         setTimeout(() => {
