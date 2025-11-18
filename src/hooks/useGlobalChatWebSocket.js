@@ -125,6 +125,12 @@ export const useGlobalChatWebSocket = () => {
           };
         }
 
+        // Play notification sound if user is in the tab, notifications enabled, team not muted, and not current user
+        if (!isCurrentUserMessage && !document.hidden && chatNotificationsEnabled && !isTeamMuted && !isViewingThisChat) {
+          const audio = new Audio('/notification.mp3');
+          audio.play().catch(e => console.log('Notif play failed:', e));
+        }
+
         // Force React Query to notify all components about the change
         setTimeout(() => {
           queryClient.invalidateQueries({
