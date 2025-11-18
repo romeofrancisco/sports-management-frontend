@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from "react";
-import { MessageCircleMore } from "lucide-react";
+import React, { useEffect, useCallback, useState } from "react";
+import { Bell, BellOff, MessageCircleMore } from "lucide-react";
 import { useInfiniteTeamMessages } from "@/hooks/useChat";
 import { useChatWebSocket } from "@/hooks/useChatWebSocket";
 import { useSendMessage } from "@/hooks/useChat";
@@ -7,8 +7,32 @@ import { useMarkAsReadHandler } from "@/hooks/useMarkAsReadHandler";
 import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "../ui/button";
 
 const ChatWindow = ({ selectedChat, currentUser }) => {
+
+  const [mutedTeams, setMutedTeams] = useState(() => {
+    const saved = localStorage.getItem("mutedTeams");
+    const parsed = saved ? JSON.parse(saved) : [];
+    // Ensure all IDs are strings for consistency
+    return parsed.map(id => id.toString());
+  });
+
+  const toggleTeamMute = useCallback((teamId) => {
+    setMutedTeams((prev) => {
+      const teamIdStr = teamId.toString();
+      const newMuted = prev.includes(teamIdStr)
+        ? prev.filter((id) => id !== teamIdStr)
+        : [...prev, teamIdStr];
+
+      localStorage.setItem("mutedTeams", JSON.stringify(newMuted));
+      return newMuted;
+    });
+  }, []);
+
+  const isTeamMuted =
+    selectedChat?.team_id && mutedTeams.includes(selectedChat.team_id.toString());
+
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteTeamMessages(selectedChat?.team_id, !!selectedChat);
 
@@ -65,18 +89,40 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
   return (
     <div className="lg:col-span-3 flex flex-col h-full overflow-hidden">
       {/* Chat Header */}
-      <div className="flex items-center gap-2 px-4 py-2 lg:py-3 border-b-2 border-primary/20 rounded-t-lg">
-        <Avatar className="size-10 ring-2 ring-primary/20">
-          <AvatarImage
-            src={selectedChat.logo}
-            alt={`${selectedChat.team_name} logo`}
-          />
-          <AvatarFallback>{selectedChat.team_name?.[0] || "T"}</AvatarFallback>
-        </Avatar>
-        <div className="">
-          <h2 className="font-semibold text-lg">{selectedChat.team_name}</h2>
-          <p className="text-xs text-muted-foreground">Team Chat</p>
+      <div className="flex items-center justify-between gap-2 px-4 py-2 lg:py-3 border-b-2 border-primary/20 rounded-t-lg">
+        <div className="flex gap-2 items-center">
+          <Avatar className="size-10 ring-2 ring-primary/20">
+            <AvatarImage
+              src={selectedChat.logo}
+              alt={`${selectedChat.team_name} logo`}
+            />
+            <AvatarFallback>
+              {selectedChat.team_name?.[0] || "T"}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="font-semibold text-lg">{selectedChat.team_name}</h2>
+            <p className="text-xs text-muted-foreground">Team Chat</p>
+          </div>
         </div>
+
+    
+          <Button
+            variant="outline"
+            size="icon"
+            className={`bg-transparent ${
+              isTeamMuted ? "text-muted-foreground" : ""
+            }`}
+            onClick={() => toggleTeamMute(selectedChat.team_id)}
+            title={
+              isTeamMuted
+                ? "Unmute notifications for this team"
+                : "Mute notifications for this team"
+            }
+          >
+            {isTeamMuted ? <BellOff /> : <Bell />}
+          </Button>
+       
       </div>
 
       {/* Messages Area */}

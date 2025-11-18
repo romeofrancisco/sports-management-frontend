@@ -6,23 +6,16 @@ import { useSendMessage } from "@/hooks/useChat";
 import { useMarkAsReadHandler } from "@/hooks/useMarkAsReadHandler";
 import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const PlayerChatWindow = ({ selectedChat, currentUser }) => {
-  const { 
-    data, 
-    isLoading, 
-    hasNextPage, 
-    fetchNextPage, 
-    isFetchingNextPage 
-  } = useInfiniteTeamMessages(
-    selectedChat?.team_id,
-    !!selectedChat
-  );
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteTeamMessages(selectedChat?.team_id, !!selectedChat);
 
   // Flatten all pages of messages
   const messages = React.useMemo(() => {
     if (!data?.pages) return [];
-    return data.pages.flatMap(page => page.results || []);
+    return data.pages.flatMap((page) => page.results || []);
   }, [data]);
   const sendMessageMutation = useSendMessage();
   const { markAsRead } = useMarkAsReadHandler();
@@ -74,13 +67,15 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
     <div className="flex flex-col h-[calc(100vh-4.5rem)]">
       {/* Chat Header */}
       <div className="flex items-center gap-3 px-4 py-2 border-b-2 border-primary/20">
-        {selectedChat.logo && (
-          <img
+        <Avatar className="size-10 ring-2 ring-primary/20">
+          <AvatarImage
             src={selectedChat.logo}
             alt={`${selectedChat.team_name} logo`}
-            className="w-8 h-8 rounded-full object-cover"
           />
-        )}
+          <AvatarFallback className="text-xl">
+            {selectedChat.team_name?.charAt(0) || "T"}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex-1">
           <h2 className="font-semibold text-lg">{selectedChat.team_name}</h2>
           <p className="text-xs text-muted-foreground">Team Chat</p>
@@ -97,10 +92,11 @@ const PlayerChatWindow = ({ selectedChat, currentUser }) => {
                 Loading messages...
               </p>
             </div>
-          </div>        ) : (
-          <MessagesList 
+          </div>
+        ) : (
+          <MessagesList
             key={selectedChat?.team_id} // Reset component when switching chats
-            messages={messages} 
+            messages={messages}
             currentUser={currentUser}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}

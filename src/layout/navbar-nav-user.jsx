@@ -6,6 +6,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  MessageCircleMore,
   Moon,
   Palette,
   Settings,
@@ -37,6 +38,7 @@ import { setManualLogout } from "@/utils/logoutFlag";
 import { useTheme } from "@/context/ThemeProvider";
 import { useModal } from "@/hooks/useModal";
 import UserProfileModal from "@/components/modals/UserProfileModal";
+import { Switch } from "@/components/ui/switch";
 
 export function NavbarNavUser() {
   const { user } = useSelector((state) => state.auth);
@@ -44,6 +46,16 @@ export function NavbarNavUser() {
   const { setTheme, theme } = useTheme();
   const profileModal = useModal();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [chatNotificationsEnabled, setChatNotificationsEnabled] = useState(() => {
+    // Load from localStorage, default to true
+    const saved = localStorage.getItem('chatNotificationsEnabled');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const handleChatNotificationToggle = (checked) => {
+    setChatNotificationsEnabled(checked);
+    localStorage.setItem('chatNotificationsEnabled', JSON.stringify(checked));
+  };
 
   const handleLogout = () => {
     setManualLogout(true);
@@ -218,7 +230,21 @@ export function NavbarNavUser() {
           </div>
           <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           {/* Profile and Settings */}
-
+          <DropdownMenuItem
+            className="justify-between"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <MessageCircleMore />
+              Chat Notification
+            </div>
+            <Switch
+              checked={chatNotificationsEnabled}
+              onCheckedChange={handleChatNotificationToggle}
+            />
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               setDropdownOpen(false);
