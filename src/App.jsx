@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/sonner";
 import { useGlobalChatWebSocket } from "./hooks/useGlobalChatWebSocket";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import api from "./api";
 
 
 const App = () => {
@@ -44,8 +45,8 @@ const App = () => {
 
   const subscribeToPushNotifications = async (registration) => {
     try {
-      const response = await fetch('/api/chat/push/vapid-public-key/');
-      const { public_key } = await response.json();
+      const response = await api.get('/chat/push/vapid-public-key/');
+      const { public_key } = response.data;
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -53,15 +54,9 @@ const App = () => {
       });
 
       // Send subscription to backend
-      await fetch('/api/chat/push/subscribe/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          subscription: subscription,
-          user_id: user.id
-        })
+      await api.post('/chat/push/subscribe/', {
+        subscription: subscription,
+        user_id: user.id
       });
     } catch (error) {
       console.error('Error subscribing to push notifications:', error);
