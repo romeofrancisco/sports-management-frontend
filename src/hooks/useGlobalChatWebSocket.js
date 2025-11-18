@@ -120,7 +120,7 @@ export const useGlobalChatWebSocket = () => {
           // Click handler to focus window and navigate to chat
           notification.onclick = () => {
             window.focus();
-            window.location.href = `/chat/${data.team_id}`;
+            window.location.href = `/chat/team/${data.team_id}`;
             notification.close();
           };
         }
