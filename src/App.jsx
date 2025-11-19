@@ -31,7 +31,6 @@ const App = () => {
       if (token) {
         // Save token to backend
         await api.post("/chat/fcm/save-token/", { token });
-        console.log("FCM token saved successfully");
 
         // Just log foreground messages, don't show notification
         // The service worker will handle all notifications
