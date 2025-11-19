@@ -31,19 +31,14 @@ const App = () => {
       if (token) {
         // Save token to backend
         await api.post("/chat/fcm/save-token/", { token });
+        console.log("FCM token saved successfully");
 
-        // Listen for foreground messages
+        // Just log foreground messages, don't show notification
+        // The service worker will handle all notifications
         onMessageListener()
           .then((payload) => {
             console.log("Received foreground message:", payload);
-            // Show notification
-            if (Notification.permission === "granted") {
-              new Notification(payload.notification.title, {
-                body: payload.notification.body,
-                icon: "/perpetual_logo_small.png",
-                data: payload.data,
-              });
-            }
+            // Don't create notification here - FCM service worker handles it
           })
           .catch((err) => console.error("Failed to receive message:", err));
       }
