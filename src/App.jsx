@@ -5,9 +5,53 @@ import { useGlobalChatWebSocket } from "./hooks/useGlobalChatWebSocket";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import api from "./api";
+import { requestFirebaseNotificationPermission, onMessageListener } from "../firebase";
 
 const App = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  // Initialize FCM for push notifications
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      initializeFCM();
+    }
+  }, [isAuthenticated, user]);
+
+  const initializeFCM = async () => {
+    try {
+      const chatNotificationsEnabled = JSON.parse(
+        localStorage.getItem("chatNotificationsEnabled") ?? "true"
+      );
+
+      if (!chatNotificationsEnabled) return;
+
+      // Request FCM permission and get token
+      const token = await requestFirebaseNotificationPermission();
+      
+      if (token) {
+        // Save token to backend
+        await api.post("/chat/fcm/save-token/", { token });
+        console.log("FCM token saved successfully");
+
+        // Listen for foreground messages
+        onMessageListener()
+          .then((payload) => {
+            console.log("Received foreground message:", payload);
+            // Show notification
+            if (Notification.permission === "granted") {
+              new Notification(payload.notification.title, {
+                body: payload.notification.body,
+                icon: "/perpetual_logo_small.png",
+                data: payload.data,
+              });
+            }
+          })
+          .catch((err) => console.error("Failed to receive message:", err));
+      }
+    } catch (error) {
+      console.error("FCM initialization error:", error);
+    }
+  };
 
   // Register service worker and request notification permission on app load
   useEffect(() => {
@@ -21,7 +65,7 @@ const App = () => {
       window.addEventListener("load", async () => {
         try {
           const registration = await navigator.serviceWorker.register(
-            "/sw.js",
+            "/firebase-messaging-sw.js",
             { scope: "/" }
           );
           console.log("Service Worker registered successfully:", registration);
