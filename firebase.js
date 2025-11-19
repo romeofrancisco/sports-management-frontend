@@ -1,7 +1,6 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import api from "@/api";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAntExOd_2zfY4JoBYXeJd1Uw94s0h7zjE",
@@ -16,29 +15,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-export const requestFirebaseNotificationPermission = async (userId) => {
+export const requestFirebaseNotificationPermission = async () => {
   try {
-    const token = await getToken(messaging, { vapidKey: "BIg3lx-R24LcfiRnub1xv3s6I76TBMHOjYrQJgRk2Ti0Dz-fuaQayXSnugnISwho7B_40tGKlbRzLOwQuT_hfNs" });
-    console.log("FCM Token:", token);
+    // Request notification permission
+    const permission = await Notification.requestPermission();
+    
+    if (permission !== 'granted') {
+      console.log('Notification permission denied');
+      return null;
+    }
 
-    // Send this token to your backend
-    await api.post("/save-fcm-token/", {
-      body: JSON.stringify({ token, user_id: userId })
+    // Get FCM token
+    const token = await getToken(messaging, { 
+      vapidKey: "BIg3lx-R24LcfiRnub1xv3s6I76TBMHOjYrQJgRk2Ti0Dz-fuaQayXSnugnISwho7B_40tGKlbRzLOwQuT_hfNs" 
     });
-
+    
+    console.log("FCM Token:", token);
     return token;
   } catch (err) {
     console.error("FCM permission error:", err);
+    return null;
   }
 };
 
 // Handle messages while app is in foreground
-onMessage(messaging, (payload) => {
-  console.log("Message received: ", payload);
-  new Notification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: '/perpetual_logo_small.png'
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      console.log("Message received in foreground: ", payload);
+      resolve(payload);
+    });
   });
-});
 
+export { messaging };
 export default app;
