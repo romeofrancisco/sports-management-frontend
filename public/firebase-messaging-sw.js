@@ -15,11 +15,19 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+
   
-  const notificationTitle = payload.notification?.title || 'New Message';
+  // Extract title and body from data field (backend sends data-only currently)
+  const notificationTitle = payload.data?.title || payload.notification?.title || 'New Message';
+  const notificationBody = payload.data?.body || payload.notification?.body || '';
+  
+  if (!notificationTitle || !notificationBody) {
+    console.log('[firebase-messaging-sw.js] Skipping notification - missing title or body');
+    return;
+  }
+  
   const notificationOptions = {
-    body: payload.notification?.body || '',
+    body: notificationBody,
     icon: '/perpetual_logo_small.png',
     badge: '/perpetual_logo_small.png',
     data: payload.data || {},
