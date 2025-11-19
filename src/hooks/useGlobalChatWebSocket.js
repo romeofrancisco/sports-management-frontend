@@ -98,32 +98,14 @@ export const useGlobalChatWebSocket = () => {
           }
         );
 
-        // Show browser notification if document is hidden and message is not from current user
-        // and user is not currently viewing this chat and notifications are enabled and team is not muted
+        // FCM service worker handles all notifications automatically
+        // Don't create manual notifications here to avoid duplicates
+        
+        // Play notification sound if user is in the tab, notifications enabled, team not muted, and not current user
         const isViewingThisChat = window.location.pathname.includes(`/chat/${data.team_id}`);
         const chatNotificationsEnabled = JSON.parse(localStorage.getItem('chatNotificationsEnabled') ?? 'true');
         const mutedTeams = JSON.parse(localStorage.getItem('mutedTeams') ?? '[]');
         const isTeamMuted = mutedTeams.includes(data.team_id.toString()) || mutedTeams.includes(parseInt(data.team_id));
-        
-        if (!isCurrentUserMessage && document.hidden && !isViewingThisChat && chatNotificationsEnabled && !isTeamMuted && 'Notification' in window && Notification.permission === 'granted') {
-          const notification = new Notification(data.team_name || `Team ${data.team_id}`, {
-            body: `${data.sender_name}: ${data.message.length > 80 ? data.message.substring(0, 80) + '...' : data.message}`,
-            icon: '/perpetual_logo_small.png', // Use perpetual logo for notifications
-            tag: `chat-${data.team_id}`, // Group notifications by team
-          });
-
-          // Auto-close notification after 5 seconds
-          setTimeout(() => {
-            notification.close();
-          }, 5000);
-
-          // Click handler to focus window and navigate to chat
-          notification.onclick = () => {
-            window.focus();
-            window.location.href = `/chat/team/${data.team_id}`;
-            notification.close();
-          };
-        }
 
         // Play notification sound if user is in the tab, notifications enabled, team not muted, and not current user
         if (!isCurrentUserMessage && !document.hidden && chatNotificationsEnabled && !isTeamMuted && !isViewingThisChat) {
