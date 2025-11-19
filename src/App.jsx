@@ -31,7 +31,6 @@ const App = () => {
       if (token) {
         // Save token to backend
         await api.post("/chat/fcm/save-token/", { token });
-        console.log("FCM token saved successfully");
 
         // Listen for foreground messages
         onMessageListener()
@@ -75,10 +74,10 @@ const App = () => {
             await Notification.requestPermission();
           }
 
-          // Subscribe only if user logged in
-          if (Notification.permission === "granted" && isAuthenticated) {
-            await subscribeToPushNotifications(registration);
-          }
+          // Disable Web Push API subscription since we're using FCM
+          // if (Notification.permission === "granted" && isAuthenticated) {
+          //   await subscribeToPushNotifications(registration);
+          // }
         } catch (err) {
           console.error("Service Worker registration failed:", err);
         }
