@@ -36,7 +36,6 @@ export const requestFirebaseNotificationPermission = async () => {
 
     // Register service worker first
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    console.log('Service Worker registered for FCM:', registration);
 
     // Wait for service worker to be ready
     await navigator.serviceWorker.ready;
@@ -47,7 +46,6 @@ export const requestFirebaseNotificationPermission = async () => {
       serviceWorkerRegistration: registration
     });
     
-    console.log("FCM Token:", token);
     return token;
   } catch (err) {
     console.error("FCM permission error:", err);
