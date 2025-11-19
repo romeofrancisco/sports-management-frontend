@@ -66,10 +66,6 @@ const InsightsSection = ({
         i.title?.includes("AI Analysis Error")
       ));
 
-      console.log(hasAiError);
-      console.log(error);
-      console.log(insights);
-
   // If there's an API error, show error state
   if (hasAiError) {
     return (

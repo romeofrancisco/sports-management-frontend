@@ -3,17 +3,26 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAntExOd_2zfY4JoBYXeJd1Uw94s0h7zjE",
-  authDomain: "sports-management2025.firebaseapp.com",
-  projectId: "sports-management2025",
-  storageBucket: "sports-management2025.firebasestorage.app",
-  messagingSenderId: "919143438314",
-  appId: "1:919143438314:web:8cd52120fa007e0078c493",
-  measurementId: "G-87X3F7W8KW"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+let messaging = null;
+
+// Only initialize messaging if supported
+try {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    messaging = getMessaging(app);
+  }
+} catch (err) {
+  console.warn('Firebase Messaging not supported:', err);
+}
 
 export const requestFirebaseNotificationPermission = async () => {
   try {
@@ -25,9 +34,17 @@ export const requestFirebaseNotificationPermission = async () => {
       return null;
     }
 
-    // Get FCM token
+    // Register service worker first
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    console.log('Service Worker registered for FCM:', registration);
+
+    // Wait for service worker to be ready
+    await navigator.serviceWorker.ready;
+
+    // Get FCM token with service worker registration
     const token = await getToken(messaging, { 
-      vapidKey: "BIg3lx-R24LcfiRnub1xv3s6I76TBMHOjYrQJgRk2Ti0Dz-fuaQayXSnugnISwho7B_40tGKlbRzLOwQuT_hfNs" 
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: registration
     });
     
     console.log("FCM Token:", token);
@@ -41,10 +58,12 @@ export const requestFirebaseNotificationPermission = async () => {
 // Handle messages while app is in foreground
 export const onMessageListener = () =>
   new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
-      console.log("Message received in foreground: ", payload);
-      resolve(payload);
-    });
+    if (messaging) {
+      onMessage(messaging, (payload) => {
+        console.log("Message received in foreground: ", payload);
+        resolve(payload);
+      });
+    }
   });
 
 export { messaging };
