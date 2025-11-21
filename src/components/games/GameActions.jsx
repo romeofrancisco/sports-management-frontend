@@ -35,7 +35,7 @@ export const GameActions = ({
   const coachAssignmentModal = useModal();
   const deleteGameModal = useModal();
 
-  const isLeagueGame = game?.type === "league";
+  const isLeagueGame = game?.type === "league" || game?.type === "tournament";
   const isPracticeGame = game?.type === "practice";
   const canDeleteGame = permissions.games.delete(game);
   
