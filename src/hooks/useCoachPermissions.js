@@ -13,9 +13,10 @@ export const useCoachPermissions = () => {
     // If not a coach, no permission
     if (!isCoach()) return false;
     
-    // For league games, check if coach is assigned
-    if (game?.type === 'league') {
+    // For league and tournament games, check if coach is assigned
+    if (game?.type === 'league' || game?.type === 'tournament') {
       const assignedCoaches = game?.assigned_coaches || [];
+      console.log('Assigned Coaches:', assignedCoaches, 'Current User ID:', currentUser?.id);
       return assignedCoaches.some(coach => coach.id === currentUser?.id);
     }
     
