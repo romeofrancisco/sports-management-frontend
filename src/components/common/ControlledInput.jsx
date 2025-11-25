@@ -11,6 +11,7 @@ const ControlledInput = ({
   accept,
   placeholder,
   errors,
+  optional = false,
   className = "",
   rules,
   ...rest
@@ -19,8 +20,8 @@ const ControlledInput = ({
     <div className={`grid gap-1 ${className}`}>
       <div className="flex flex-col">
         {label && (
-          <Label htmlFor={name} className="text-sm text-left ">
-            {label}
+          <Label htmlFor={name} className="text-sm text-left">
+            {label} {!optional && <span className="text-destructive">*</span>}
           </Label>
         )}
         {help_text && (
