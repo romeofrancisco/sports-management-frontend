@@ -31,14 +31,16 @@ const SportForm = ({ onClose, sport = null }) => {
       scoring_type: sport?.scoring_type || "points",
       requires_stats: sport?.requires_stats || false,
       banner: null,
-      max_players_per_team: sport?.max_players_per_team || 12,
-      max_players_on_field: sport?.max_players_on_field || 5,
+      max_players_per_team: sport?.max_players_per_team || null,
+      max_players_on_field: sport?.max_players_on_field || null,
       has_period: sport?.has_period || false,
       max_period: sport?.max_period || null,
       has_tie: sport?.has_tie || false,
       has_overtime: sport?.has_overtime || false,
       win_threshold: sport?.win_threshold || null,
       win_points_threshold: sport?.win_points_threshold || null,
+      deciding_set_points_threshold:
+        sport?.deciding_set_points_threshold || null,
       win_margin: sport?.win_margin || null,
     },
   });
@@ -103,6 +105,12 @@ const SportForm = ({ onClose, sport = null }) => {
       }
       if (data.win_margin) {
         formData.append("win_margin", data.win_margin);
+      }
+      if (data.deciding_set_points_threshold) {
+        formData.append(
+          "deciding_set_points_threshold",
+          data.deciding_set_points_threshold
+        );
       }
 
       if (data.banner) {
@@ -209,7 +217,6 @@ const SportForm = ({ onClose, sport = null }) => {
             label="Max Players Per Team"
             control={control}
             type="number"
-            placeholder="12"
             help_text="Maximum players allowed per team roster"
             rules={{
               required: "This field is required",
@@ -224,7 +231,6 @@ const SportForm = ({ onClose, sport = null }) => {
             label="Max Players On Field"
             control={control}
             type="number"
-            placeholder="5"
             help_text="Maximum players allowed on the field/court during play"
             rules={{
               required: "This field is required",
@@ -310,30 +316,19 @@ const SportForm = ({ onClose, sport = null }) => {
               </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ControlledInput
                 name="win_threshold"
                 label="Sets to Win"
                 control={control}
                 type="number"
-                placeholder="3"
                 help_text="Number of sets needed to win the match"
                 rules={{
+                  ...(scoringType === "sets"
+                    ? { required: "This field is required" }
+                    : {}),
                   min: { value: 1, message: "Must be at least 1" },
                   max: { value: 7, message: "Must be 7 or less" },
-                }}
-                errors={errors}
-              />
-
-              <ControlledInput
-                name="win_points_threshold"
-                label="Points to Win Set"
-                control={control}
-                type="number"
-                help_text="Points needed to win a single set"
-                rules={{
-                  min: { value: 1, message: "Must be at least 1" },
-                  max: { value: 50, message: "Must be 50 or less" },
                 }}
                 errors={errors}
               />
@@ -345,9 +340,39 @@ const SportForm = ({ onClose, sport = null }) => {
                 type="number"
                 help_text="Minimum point difference to win a set"
                 rules={{
+                  ...(scoringType === "sets"
+                    ? { required: "This field is required" }
+                    : {}),
                   min: { value: 1, message: "Must be at least 1" },
                   max: { value: 10, message: "Must be 10 or less" },
                 }}
+                errors={errors}
+              />
+
+              <ControlledInput
+                name="win_points_threshold"
+                label="Points to Win Set"
+                control={control}
+                type="number"
+                help_text="Points needed to win a single set"
+                rules={{
+                  ...(scoringType === "sets"
+                    ? { required: "This field is required" }
+                    : {}),
+                  min: { value: 1, message: "Must be at least 1" },
+                  max: { value: 50, message: "Must be 50 or less" },
+                }}
+                errors={errors}
+              />
+
+              <ControlledInput
+                name="deciding_set_points_threshold"
+                label="Deciding Set Points"
+                control={control}
+                optional={true}
+                placeholder="(optional)"
+                type="number"
+                help_text="Points needed to win the deciding set"
                 errors={errors}
               />
             </div>
