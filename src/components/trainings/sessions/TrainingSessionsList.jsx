@@ -20,8 +20,9 @@ import DeleteTrainingSessionModal from "@/components/modals/trainings/DeleteTrai
 import TrainingSessionFormDialog from "@/components/modals/trainings/TrainingSessionFormDialog";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
-const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
+const TrainingSessionsList = () => {
   const navigate = useNavigate();
   const [selectedSession, setSelectedSession] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,8 +37,8 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
 
   const modals = {
     delete: useModal(),
+    sessions: useModal(),
   };
-  const sessionModal = useModal();
   const { data, isLoading, isError, refetch } = useTrainingSessions(
     filter,
     currentPage,
@@ -72,8 +73,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
   const columns = getTrainingSessionTableColumns({
     onEdit: (session) => {
       setSelectedSession(session);
-      sessionModal.openModal();
-      onEditSession?.(session);
+      modals.sessions.openModal();
     },
     onDelete: (session) => {
       setSelectedSession(session);
@@ -127,10 +127,12 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
 
           {/* Enhanced Filters */}
           <EnhancedTrainingFilter
-            teams={teams}
             filters={filter}
             onFilterChange={setFilter}
-            onNewSession={() => sessionModal.openModal()}
+            onNewSession={() => {
+              setSelectedSession(null);
+              modals.sessions.openModal();
+            }}
             viewMode={viewMode}
             setViewMode={setViewMode}
           />
@@ -204,8 +206,7 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
                           session={session}
                           onEdit={() => {
                             setSelectedSession(session);
-                            sessionModal.openModal();
-                            onEditSession?.(session);
+                            modals.sessions.openModal();
                           }}
                           onDelete={(session) => {
                             setSelectedSession(session);
@@ -250,12 +251,12 @@ const TrainingSessionsList = ({ onNewSession, onEditSession, teams = [] }) => {
       />
       {/* Training session form dialog moved inside list */}
       <TrainingSessionFormDialog
-        open={sessionModal.isOpen}
-        onOpenChange={sessionModal.closeModal}
+        open={modals.sessions.isOpen}
+        onOpenChange={modals.sessions.closeModal}
         sessionId={selectedSession?.id}
         onSuccess={() => {
           setCurrentPage(1);
-          sessionModal.closeModal();
+          modals.sessions.closeModal();
           // refresh list
           refetch?.();
         }}
