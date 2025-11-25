@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
-import { useAssignedMetricsDetail, useAssignedMetricsOverview } from "@/hooks/useTrainings";
+import {
+  useAssignedMetricsDetail,
+  useAssignedMetricsOverview,
+} from "@/hooks/useTrainings";
 import { transformSessionsData } from "./utils/sessionDataTransform";
 import {
   SessionCard,
   FilterControls,
   SummaryStats,
   EmptyState,
-  getSessionTableColumns
+  getSessionTableColumns,
 } from "./assigned";
 import { Badge } from "@/components/ui/badge";
 import SessionCardSkeleton from "./assigned/SessionCardSkeleton";
 import TableSkeleton from "./assigned/TableSkeleton";
+import ContentEmpty from "@/components/common/ContentEmpty";
+import { Dumbbell } from "lucide-react";
 
 const AssignedTraining = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,23 +27,27 @@ const AssignedTraining = () => {
   const [dateRange, setDateRange] = useState({ from: null, to: null });
   const [search, setSearch] = useState("");
   // Fetch assigned metrics using the reusable hook
-  const { data, isLoading, isError, error } = useAssignedMetricsDetail({
+  const { data, isLoading } = useAssignedMetricsDetail({
     page: currentPage,
     page_size: pageSize,
     status: statusFilter === "all" ? undefined : statusFilter,
-    date_from: dateRange?.from ? dateRange.from.toISOString().split("T")[0] : undefined,
-    date_to: dateRange?.to ? dateRange.to.toISOString().split("T")[0] : undefined,
+    date_from: dateRange?.from
+      ? dateRange.from.toISOString().split("T")[0]
+      : undefined,
+    date_to: dateRange?.to
+      ? dateRange.to.toISOString().split("T")[0]
+      : undefined,
     search: search || undefined,
   });
 
   // Fetch overall metrics overview using the reusable hook
-  const { data: overviewData, isLoading: isOverviewLoading } = useAssignedMetricsOverview();
+  const { data: overviewData, isLoading: isOverviewLoading } =
+    useAssignedMetricsOverview();
   const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
-  
+
   // Transform sessions data using the utility function
   const sessionsWithMetrics = transformSessionsData(sessions);
-
 
   // Use the overall unfiltered summary for display, fall back to filtered summary
   const summary = overviewData || {
@@ -47,11 +56,8 @@ const AssignedTraining = () => {
     in_progress: 0,
     assigned: 0,
     missed: 0,
-    completion_rate: 0
+    completion_rate: 0,
   };
-
-  // Optionally show filtered summary info when filters are active
-  const isFiltered = statusFilter !== "all";
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -68,20 +74,16 @@ const AssignedTraining = () => {
     setCurrentPage(1);
   };
 
-  // Handle loading and error states
-  if (isError) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-lg text-red-500">Error loading assigned metrics: {error?.message}</div>
-      </div>
-    );
-  }
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground">Assigned Training Metrics</h2>
-        <p className="text-muted-foreground">Track your assigned metrics across training sessions</p>
+        <h2 className="text-2xl font-bold text-foreground">
+          Assigned Training Metrics
+        </h2>
+        <p className="text-muted-foreground">
+          Track your assigned metrics across training sessions
+        </p>
       </div>
 
       {/* Summary Stats */}
@@ -128,7 +130,11 @@ const AssignedTraining = () => {
               ))}
             </div>
           ) : sessionsWithMetrics.length === 0 ? (
-            <EmptyState statusFilter={statusFilter} />
+            <ContentEmpty
+              title="No Trainings Found"
+              icon={Dumbbell}
+              description="You have no assigned training metrics at the moment."
+            />
           ) : (
             <div className="columns-1 xl:columns-2 gap-6">
               {sessionsWithMetrics.map((sessionGroup, index) => (

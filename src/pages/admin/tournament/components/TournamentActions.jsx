@@ -22,25 +22,7 @@ const TournamentActions = ({ tournament }) => {
   const { mutate: manageTournament, isPending } = useManageTournament();
 
   const handleAction = (action) => {
-    manageTournament(
-      { tournamentId: tournament.id, action },
-      {
-        onSuccess: () => {
-          const actionMessages = {
-            start: "Tournament started successfully",
-            pause: "Tournament paused",
-            complete: "Tournament completed",
-            cancel: "Tournament canceled",
-          };
-          toast.success(actionMessages[action] || "Action completed");
-        },
-        onError: (error) => {
-          toast.error("Action failed", {
-            description: error.message || "Failed to perform action",
-          });
-        },
-      }
-    );
+    manageTournament({ tournamentId: tournament.id, action });
   };
 
   const canStart =
