@@ -32,7 +32,7 @@ const RecentMetricsSection = ({ overview }) => {
       </CardHeader>
       <CardContent>
         {overview?.recent_metrics?.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
             {overview.recent_metrics.slice(0, 6).map((metric, index) => (
               <div
                 key={index}
@@ -41,10 +41,10 @@ const RecentMetricsSection = ({ overview }) => {
                 {/* Enhanced background effects */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative z-10 text-center">
-                  <div className="text-lg font-bold text-primary mb-1">
+                  <div className="text-sm font-bold text-primary mb-1">
                     {metric.value} {metric.unit}
                   </div>
-                  <div className="text-sm text-muted-foreground font-medium">
+                  <div className="text-xs line-clamp-1 text-muted-foreground font-medium">
                     {metric.metric_name}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">

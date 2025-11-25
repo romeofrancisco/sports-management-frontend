@@ -145,33 +145,48 @@ export const useTournamentTeamStatistics = (tournamentId, teamId) => {
 
 export const useAddTeamToTournament = () => {
   return useMutation({
-    mutationFn: ({ tournamentId, teamId }) => addTeamToTournament(tournamentId, teamId),
+    mutationFn: ({ tournamentId, teamId }) =>
+      addTeamToTournament(tournamentId, teamId),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(["tournamentDetails", variables.tournamentId]);
+      queryClient.invalidateQueries([
+        "tournamentDetails",
+        variables.tournamentId,
+      ]);
     },
   });
 };
 
 export const useRemoveTeamFromTournament = () => {
   return useMutation({
-    mutationFn: ({ tournamentId, teamId }) => removeTeamFromTournament(tournamentId, teamId),
+    mutationFn: ({ tournamentId, teamId }) =>
+      removeTeamFromTournament(tournamentId, teamId),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(["tournamentDetails", variables.tournamentId]);
+      queryClient.invalidateQueries([
+        "tournamentDetails",
+        variables.tournamentId,
+      ]);
     },
   });
 };
 
 export const useManageTournament = () => {
   return useMutation({
-    mutationFn: ({ tournamentId, action }) => manageTournament(tournamentId, action),
+    mutationFn: ({ tournamentId, action }) =>
+      manageTournament(tournamentId, action),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(["tournamentDetails", variables.tournamentId]);
+      queryClient.invalidateQueries([
+        "tournamentDetails",
+        variables.tournamentId,
+      ]);
       queryClient.invalidateQueries(["tournaments"]);
-      toast.success(data.detail || "Tournament action successful");
+      toast.success(data.detail || "Tournament action successful", {
+        richColors: true,
+      });
     },
     onError: (error) => {
       toast.error("Error performing action", {
-        description: error.response?.data?.detail || error.message || "An error occurred.",
+        description:
+          error.response?.data?.detail || error.message || "An error occurred.",
         richColors: true,
       });
     },
@@ -190,6 +205,6 @@ export const useTournamentBracket = (tournamentId, options = {}) => {
   return useQuery({
     queryKey: ["tournamentBracket", tournamentId],
     queryFn: () => fetchTournamentBracket(tournamentId),
-    enabled: !!tournamentId && (options.enabled !== false),
+    enabled: !!tournamentId && options.enabled !== false,
   });
 };
