@@ -18,6 +18,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useTeams } from "@/hooks/useTeams";
 
 /**
  * Enhanced visual filter component for training sessions matching admin teams style
@@ -25,15 +26,12 @@ import {
 const EnhancedTrainingFilter = ({
   filters,
   onFilterChange,
-  teams = [],
   onNewSession,
   viewMode,
   setViewMode,
 }) => {
-  // Fetch selected team details for better display
-  const { data: selectedTeam } = useTeamDetails(filters.team, {
-    enabled: !!filters.team,
-  });
+  const { data: teamsData } = useTeams({}, 1, 1000); // Large page size to get all teams
+  const teams = teamsData?.results || [];
 
   const handleFilterChange = (key, value) => {
     if (onFilterChange) {

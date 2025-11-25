@@ -147,7 +147,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
         <div className="space-y-3">
           <div className="flex flex-col lg:flex-row gap-3">
             {/* Team */}
-            <div className="flex flex-1 items-center gap-3 p-3 rounded-lg border border-border">
+            <div className="flex flex-1 items-center gap-1 p-2 rounded-lg border border-border">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Users className="h-4 w-4 text-primary" />
               </div>
@@ -162,7 +162,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
             </div>
 
             {/* Venue */}
-            <div className="flex flex-1 items-center gap-3 p-3 rounded-lg border border-border">
+            <div className="flex flex-1 items-center gap-1 p-2 rounded-lg border border-border">
               <div className="p-2 rounded-lg bg-secondary/10">
                 <MapPin className="h-4 w-4 text-secondary" />
               </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -31,10 +31,14 @@ import {
 import { format } from "date-fns";
 import ControlledTeamSelect from "../common/ControlledTeamSelect";
 import { Separator } from "../ui/separator";
-import { toast } from "sonner";
 import { useSports } from "@/hooks/useSports";
 
-const TrainingSessionForm = ({ session = null, teams, onClose }) => {
+const TrainingSessionForm = ({
+  open = false,
+  session = null,
+  teams,
+  onClose,
+}) => {
   const isEdit = Boolean(session);
   const [selectedSport, setSelectedSport] = useState("all");
   const navigate = useNavigate();
@@ -62,6 +66,7 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
     formState: { errors, isSubmitting },
     setError,
     clearErrors,
+    reset,
   } = useForm({
     defaultValues: {
       title: session?.title || "",
@@ -76,6 +81,15 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
       notes: session?.notes || "",
     },
   });
+
+  // Ensure the form is reset whenever the dialog is closed (click outside / X)
+  useEffect(() => {
+    if (!open) {
+      // Reset to cleared defaults and reset UI filters
+      reset();
+    }
+    // only run when `open` changes
+  }, [open, onClose]);
 
   const onSubmit = (data) => {
     // Clear any existing errors before submission
@@ -92,7 +106,6 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
         { id: session.id, ...payload },
         {
           onSuccess: (data) => {
-            onClose();
             // Navigate to session metrics page
             navigate(`/sessions/${data.id}/manage/session-metrics`);
           },
@@ -119,7 +132,6 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
     } else {
       createSession(payload, {
         onSuccess: (data) => {
-          onClose();
           // Navigate to session metrics page
           navigate(`/sessions/${data.id}/manage/session-metrics`);
         },
@@ -327,18 +339,18 @@ const TrainingSessionForm = ({ session = null, teams, onClose }) => {
         <Button
           type="button"
           variant="outline"
-          onClick={onClose}
-          disabled={isSubmitting}
+          onClick={() => onClose()}
+          disabled={isCreating || isUpdating}
           className="w-full sm:w-auto order-2 sm:order-1"
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isCreating || isUpdating}
           className="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          {isSubmitting ? (
+          {isCreating || isUpdating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {isEdit ? "Updating..." : "Creating..."}
