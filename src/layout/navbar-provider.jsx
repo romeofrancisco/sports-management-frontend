@@ -32,7 +32,7 @@ const NavbarProvider = () => {
   const userNavItems = getUserNavItems();
 
   return (
-    <div className="h-screen bg-background">
+    <div className="bg-background">
       <AppNavbar navItems={userNavItems} />
       <ErrorBoundary>
         <main>
