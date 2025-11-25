@@ -138,7 +138,7 @@
     @apply border-border font-[Roboto] outline-ring/50;
   }
   body {
-    @apply bg-primary text-foreground;
+    @apply bg-background text-foreground;
   }
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
