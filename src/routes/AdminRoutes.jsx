@@ -37,7 +37,6 @@ import IdentifyEditor from "@/pages/documents/IdentifyEditor";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
 import CourseSections from "@/features/course-sections/CourseSections";
 import FacilityReservation from "@/features/facilityreservation/FacilityReservation";
-import path from "path";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -135,6 +134,10 @@ export const adminRoutes = [
     element: <SeasonDetails />,
   },
   {
+    path: "/leagues/:league/seasons/:season/games/:gameId",
+    element: <SeasonDetails />,
+  },
+  {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
   },
@@ -163,6 +166,10 @@ export const adminRoutes = [
     element: <TournamentDetails />,
   },
   {
+    path: "/tournaments/:tournamentId/games/:gameId",
+    element: <TournamentDetails />,
+  },
+  {
     path: "/tournaments/:tournamentId/bracket",
     element: <TournamentDetails />,
   },
@@ -172,6 +179,10 @@ export const adminRoutes = [
   },
   {
     path: "/games/:gameId",
+    element: <GameSchedule />,
+  },
+  {
+    path: "/games/:gameId/scoring",
     element: <GameScoring />,
   },
   {
@@ -273,5 +284,5 @@ export const adminRoutes = [
   {
     path: "facility-reservation/*",
     element: <FacilityReservation />,
-  }
+  },
 ];

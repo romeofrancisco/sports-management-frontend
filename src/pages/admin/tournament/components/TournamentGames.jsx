@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router";
 import { useTournamentGames } from "@/hooks/useTournaments";
+import { useGameDetails } from "@/hooks/useGames";
 import { useModal } from "@/hooks/useModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DateNavigationBar } from "@/components/ui/date-navigation";
@@ -13,8 +15,12 @@ import {
 import GameModal from "@/components/modals/GameModal";
 
 const TournamentGames = ({ tournamentId }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const gameIdParam = searchParams.get("gameId");
+  
   const [selectedDate, setSelectedDate] = useState(null);
   const [editingGame, setEditingGame] = useState(null);
+  const [initialDateSet, setInitialDateSet] = useState(false);
 
   const {
     isOpen: showEditModal,
@@ -22,13 +28,27 @@ const TournamentGames = ({ tournamentId }) => {
     closeModal: closeEditModal,
   } = useModal();
 
+  // Fetch the specific game if gameId param is provided
+  const { data: linkedGame } = useGameDetails(gameIdParam);
+
   // First, fetch all games to determine the initial date
   const { data: allGames = [], isLoading: isLoadingAllGames } =
     useTournamentGames(tournamentId);
 
-  // Initialize date when all games data is available
+  // Set the date based on the linked game from URL param
   useEffect(() => {
-    if (!selectedDate && !isLoadingAllGames) {
+    if (linkedGame && linkedGame.date && !initialDateSet) {
+      const gameDate = parseISO(linkedGame.date);
+      setSelectedDate(gameDate);
+      setInitialDateSet(true);
+      // Clear the gameId param from URL after navigating to the date
+      setSearchParams({}, { replace: true });
+    }
+  }, [linkedGame, initialDateSet, setSearchParams]);
+
+  // Initialize date when all games data is available (only if no gameId param)
+  useEffect(() => {
+    if (!selectedDate && !isLoadingAllGames && !gameIdParam) {
       // Start with today
       let initialDate = new Date();
 
@@ -48,7 +68,7 @@ const TournamentGames = ({ tournamentId }) => {
       // Set the date regardless of whether there are games or not
       setSelectedDate(initialDate);
     }
-  }, [allGames, selectedDate, isLoadingAllGames]);
+  }, [allGames, selectedDate, isLoadingAllGames, gameIdParam]);
 
   // Format the selected date as YYYY-MM-DD for API filtering (only when date is set)
   const formattedDate = selectedDate
