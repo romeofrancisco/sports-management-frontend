@@ -9,7 +9,16 @@ import {
   FilterSport,
 } from "@/components/common/Filters";
 import { GAME_TYPE_VALUES, GAME_STATUS, GAME_TYPES } from "@/constants/game";
-import { Search, Filter, X, Calendar, Trophy, Target, Clock, Globe } from "lucide-react";
+import {
+  Search,
+  Filter,
+  X,
+  Calendar,
+  Trophy,
+  Target,
+  Clock,
+  Globe,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,14 +31,14 @@ const GameFilterBar = ({ filter, setFilter }) => {
   const { data: leagues } = useLeagues();
   const { data: seasons } = useSeasons(filter.league);
 
-  const hasActiveFilters = 
-    filter.team_name || 
-    filter.type || 
-    filter.league || 
-    filter.season || 
-    filter.status || 
-    filter.start_date || 
-    filter.end_date || 
+  const hasActiveFilters =
+    filter.team_name ||
+    filter.type ||
+    filter.league ||
+    filter.season ||
+    filter.status ||
+    filter.start_date ||
+    filter.end_date ||
     filter.sport;
 
   const handleLeagueChange = (leagueId) => {
@@ -59,7 +68,7 @@ const GameFilterBar = ({ filter, setFilter }) => {
 
   const clearSpecificFilter = (filterType) => {
     const updates = { [filterType]: "" };
-    
+
     // Clear dependent filters
     if (filterType === "type") {
       updates.league = "";
@@ -67,7 +76,7 @@ const GameFilterBar = ({ filter, setFilter }) => {
     } else if (filterType === "league") {
       updates.season = "";
     }
-    
+
     setFilter((prev) => ({ ...prev, ...updates }));
   };
 
@@ -92,7 +101,9 @@ const GameFilterBar = ({ filter, setFilter }) => {
 
   const getSeasonName = () => {
     if (!filter.season || !seasons?.results) return null;
-    const season = seasons.results.find((s) => s.id === parseInt(filter.season));
+    const season = seasons.results.find(
+      (s) => s.id === parseInt(filter.season)
+    );
     return season ? `${season.name} ${season.year}` : null;
   };
 
@@ -105,10 +116,14 @@ const GameFilterBar = ({ filter, setFilter }) => {
   const getDateRangeName = () => {
     if (!filter.start_date && !filter.end_date) return null;
     if (filter.start_date && filter.end_date) {
-      return `${new Date(filter.start_date).toLocaleDateString()} - ${new Date(filter.end_date).toLocaleDateString()}`;
+      return `${new Date(filter.start_date).toLocaleDateString()} - ${new Date(
+        filter.end_date
+      ).toLocaleDateString()}`;
     }
-    if (filter.start_date) return `From ${new Date(filter.start_date).toLocaleDateString()}`;
-    if (filter.end_date) return `Until ${new Date(filter.end_date).toLocaleDateString()}`;
+    if (filter.start_date)
+      return `From ${new Date(filter.start_date).toLocaleDateString()}`;
+    if (filter.end_date)
+      return `Until ${new Date(filter.end_date).toLocaleDateString()}`;
     return null;
   };
 
@@ -116,55 +131,21 @@ const GameFilterBar = ({ filter, setFilter }) => {
     <Card className="bg-gradient-to-r from-card/60 to-card/40 backdrop-blur-sm border border-primary/20 shadow-sm">
       <CardContent className="p-4">
         <div className="space-y-4">
-          {/* Main Filter Controls */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-            {/* Search Filter */}
-            <div className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
+          {/* Main Filter Controls - Responsive Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3">
+            {/* Search Filter - Takes more space on larger screens */}
+            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-2 2xl:col-span-2">
               <div className="flex items-center gap-2">
                 <Search className="h-4 w-4 text-muted-foreground shrink-0" />
                 <SearchFilter
                   value={filter.team_name}
-                  onChange={(team_name) => setFilter((prev) => ({ ...prev, team_name }))}
-                  className="flex-1 bg-transparent border-0 focus:ring-0 text-sm placeholder:text-muted-foreground/60"
+                  onChange={(team_name) =>
+                    setFilter((prev) => ({ ...prev, team_name }))
+                  }
                   placeholder="Search by team name..."
                   hideLabel={true}
                 />
               </div>
-            </div>
-
-            {/* Game Type Filter */}
-            <div className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-muted-foreground shrink-0" />
-              <FilterGameType
-                value={filter.type} 
-                onChange={handleTypeChange}
-                className="flex-1"
-                hideLabel={true}
-              />
-            </div>
-
-            {/* League Filter */}
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-muted-foreground shrink-0" />
-              <FilterLeague
-                value={filter.league}
-                type={filter.type}
-                onChange={handleLeagueChange}
-                className="flex-1"
-                hideLabel={true}
-              />
-            </div>
-
-            {/* Season Filter */}
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-              <FilterSeason
-                value={filter.season}
-                league={filter.league}
-                onChange={(seasonId) => setFilter((prev) => ({ ...prev, season: seasonId }))}
-                className="flex-1"
-                hideLabel={true}
-              />
             </div>
 
             {/* Status Filter */}
@@ -172,28 +153,12 @@ const GameFilterBar = ({ filter, setFilter }) => {
               <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
               <FilterGameStatus
                 value={filter.status}
-                onChange={(status) => setFilter((prev) => ({ ...prev, status }))}
+                onChange={(status) =>
+                  setFilter((prev) => ({ ...prev, status }))
+                }
                 className="flex-1"
                 hideLabel={true}
               />
-            </div>
-          </div>
-
-          {/* Second Row - Date Range and Sport */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {/* Date Range Filter */}
-            <div className="sm:col-span-1 lg:col-span-1">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-                <FilterDateRange
-                  value={{ start_date: filter.start_date, end_date: filter.end_date }}
-                  onChange={({ start_date, end_date }) =>
-                    setFilter((prev) => ({ ...prev, start_date, end_date }))
-                  }
-                  className="flex-1"
-                  hideLabel={true}
-                />
-              </div>
             </div>
 
             {/* Sport Filter */}
@@ -207,20 +172,62 @@ const GameFilterBar = ({ filter, setFilter }) => {
               />
             </div>
 
-            {/* Clear All Button */}
-            {hasActiveFilters && (
-              <div className="flex justify-end">
-                <Button
-                  onClick={clearAllFilters}
-                  variant="outline"
-                  size="sm"
-                  className="shrink-0 text-destructive hover:bg-destructive/10 border-destructive/30"
-                >
-                  <X className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">Clear All</span>
-                  <span className="sm:hidden">Clear</span>
-                </Button>
+            {/* Date Range Filter */}
+            <div className="lg:col-span-1 xl:col-span-1 2xl:col-span-1">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+                <FilterDateRange
+                  value={{
+                    start_date: filter.start_date,
+                    end_date: filter.end_date,
+                  }}
+                  onChange={({ start_date, end_date }) =>
+                    setFilter((prev) => ({ ...prev, start_date, end_date }))
+                  }
+                  className="flex-1"
+                  hideLabel={true}
+                />
               </div>
+            </div>
+
+            {/* Game Type Filter */}
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-muted-foreground shrink-0" />
+              <FilterGameType
+                value={filter.type}
+                onChange={handleTypeChange}
+                className="flex-1"
+                hideLabel={true}
+              />
+            </div>
+            {/* League & Season Filters - Only show when League type is selected */}
+            {filter.type === GAME_TYPE_VALUES.LEAGUE && (
+              <>
+                {/* League Filter */}
+                <div className="sm:col-span-1 flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <FilterLeague
+                    value={filter.league}
+                    type={filter.type}
+                    onChange={handleLeagueChange}
+                    className="flex-1"
+                    hideLabel={true}
+                  />
+                </div>
+                {/* Season Filter */}
+                <div className="sm:col-span-1 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <FilterSeason
+                    value={filter.season}
+                    league={filter.league}
+                    onChange={(seasonId) =>
+                      setFilter((prev) => ({ ...prev, season: seasonId }))
+                    }
+                    className="flex-1"
+                    hideLabel={true}
+                  />
+                </div>
+              </>
             )}
           </div>
 
@@ -232,9 +239,11 @@ const GameFilterBar = ({ filter, setFilter }) => {
               </span>
 
               {filter.team_name && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                  <Search className="h-3 w-3" />
-                  "{filter.team_name}"
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
+                  <Search className="h-3 w-3" />"{filter.team_name}"
                   <Button
                     onClick={() => clearSpecificFilter("team_name")}
                     variant="ghost"
@@ -247,7 +256,10 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {filter.type && getGameTypeName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Target className="h-3 w-3" />
                   {getGameTypeName()}
                   <Button
@@ -262,7 +274,10 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {filter.league && getLeagueName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Trophy className="h-3 w-3" />
                   {getLeagueName()}
                   <Button
@@ -277,7 +292,10 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {filter.season && getSeasonName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Calendar className="h-3 w-3" />
                   {getSeasonName()}
                   <Button
@@ -292,7 +310,10 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {filter.status && getStatusName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Clock className="h-3 w-3" />
                   {getStatusName()}
                   <Button
@@ -307,11 +328,20 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {(filter.start_date || filter.end_date) && getDateRangeName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Calendar className="h-3 w-3" />
                   {getDateRangeName()}
                   <Button
-                    onClick={() => setFilter((prev) => ({ ...prev, start_date: "", end_date: "" }))}
+                    onClick={() =>
+                      setFilter((prev) => ({
+                        ...prev,
+                        start_date: "",
+                        end_date: "",
+                      }))
+                    }
                     variant="ghost"
                     size="sm"
                     className="ml-1 h-3 w-3 p-0 hover:bg-destructive/20"
@@ -322,7 +352,10 @@ const GameFilterBar = ({ filter, setFilter }) => {
               )}
 
               {filter.sport && getSportName() && (
-                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                >
                   <Globe className="h-3 w-3" />
                   {getSportName()}
                   <Button
@@ -335,6 +368,17 @@ const GameFilterBar = ({ filter, setFilter }) => {
                   </Button>
                 </Badge>
               )}
+
+              <Button
+                onClick={clearAllFilters}
+                variant="outline"
+                size="sm"
+                className="shrink-0 text-destructive hover:bg-destructive/10 border-destructive/30 ml-auto"
+              >
+                <X className="mr-1 h-3 w-3" />
+                <span className="hidden sm:inline">Clear All Filters</span>
+                <span className="sm:hidden">Clear</span>
+              </Button>
             </div>
           )}
         </div>

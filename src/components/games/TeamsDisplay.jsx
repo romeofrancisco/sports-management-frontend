@@ -31,7 +31,7 @@ export const TeamsDisplay = ({
   return (
     <div className="flex items-center justify-between w-full gap-4">
       {/* Home Team */}
-      <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className="flex flex-col items-center gap-3 min-w-0 flex-1">
         <div className="relative flex-shrink-0">
           <TeamLogo
             team={homeTeam}
@@ -49,7 +49,7 @@ export const TeamsDisplay = ({
           <div className="font-semibold text-base truncate leading-tight">
             {homeTeam.name || "Home"}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">
+          <div className="text-sm text-center text-muted-foreground mt-0.5">
             {homeTeam.abbreviation || "HOME"}
           </div>
         </div>
@@ -114,12 +114,12 @@ export const TeamsDisplay = ({
       </div>
 
       {/* Away Team */}
-      <div className="flex items-center gap-3 min-w-0 flex-1 justify-end">
+      <div className="flex flex-col-reverse items-center gap-3 min-w-0 flex-1 justify-end">
         <div className="min-w-0 text-right flex-1">
           <div className="font-semibold text-base truncate leading-tight">
             {awayTeam.name || "Away"}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">
+          <div className="text-sm text-center text-muted-foreground mt-0.5">
             {awayTeam.abbreviation || "AWAY"}
           </div>
         </div>

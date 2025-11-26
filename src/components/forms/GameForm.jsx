@@ -171,7 +171,7 @@ const GameForm = ({
         excludeTeamId={selectedAwayTeam}
         rules={{ required: "Home team is required" }}
         errors={errors}
-        disabled={!selectedSport || (isEdit && isLeagueGame)}
+        disabled={!selectedSport || (isEdit && isLeagueGame) ||  game?.status === "in_progress"}
         searchPlaceholder="Search home teams..."
       />
 
@@ -193,7 +193,7 @@ const GameForm = ({
           },
         }}
         errors={errors}
-        disabled={!selectedSport || (isEdit && isLeagueGame)}
+        disabled={!selectedSport || (isEdit && isLeagueGame) ||  game?.status === "in_progress"}
         searchPlaceholder="Search away teams..."
       />
 

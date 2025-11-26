@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { ClockIcon, MapPinIcon, Calendar, Trophy, Clock } from "lucide-react";
+import {
+  ClockIcon,
+  MapPinIcon,
+  Calendar,
+  Trophy,
+  Clock,
+  Medal,
+  MapPinned,
+  Dumbbell,
+} from "lucide-react";
 import { TeamsDisplay } from "./TeamsDisplay";
 import { GameActions } from "./GameActions";
 import { ScoreSummary } from "./ScoreSummary";
@@ -23,8 +37,14 @@ export const GameCard = React.memo(
     const isLive = liveGameData.status === "in_progress";
     const isScheduled = liveGameData.status === "scheduled";
 
-    const homeScore = liveGameData.sport_scoring_type === "points" ? liveGameData.home_team_score || 0 : liveGameData.score_summary?.total?.home || 0;
-    const awayScore = liveGameData.sport_scoring_type === "points" ? liveGameData.away_team_score || 0 : liveGameData.score_summary?.total?.away || 0;
+    const homeScore =
+      liveGameData.sport_scoring_type === "points"
+        ? liveGameData.home_team_score || 0
+        : liveGameData.score_summary?.total?.home || 0;
+    const awayScore =
+      liveGameData.sport_scoring_type === "points"
+        ? liveGameData.away_team_score || 0
+        : liveGameData.score_summary?.total?.away || 0;
     const winnerTeamId = liveGameData.winner; // WebSocket connection for real-time updates (connect for live and scheduled games)
     const shouldConnect = isLive || isScheduled;
     const { isConnected } = useGameScoreWebSocket(
@@ -77,11 +97,6 @@ export const GameCard = React.memo(
       return format(date, "MMM d, yyyy");
     };
 
-    const formatDuration = (duration) => {
-      if (!duration) return "";
-      const parts = duration.split(":");
-      return `${parts[0]}h ${parts[1]}m`;
-    }; // Status configuration
     const getStatusConfig = () => {
       if (isLive) {
         return {
@@ -146,6 +161,35 @@ export const GameCard = React.memo(
       liveGameData.type === "league" &&
       liveGameData.league &&
       liveGameData.season;
+    const isTournamentGame =
+      liveGameData.type === "tournament" && liveGameData.tournament;
+
+    const gameTypeDisplay = () => {
+      switch (liveGameData.type) {
+        case "league":
+          return (
+            <Badge>
+              <Trophy />
+              {liveGameData.league.name} - {liveGameData.season.name}
+            </Badge>
+          );
+        case "tournament":
+          return (
+            <Badge>
+              <Medal />
+              {liveGameData.tournament.name}
+            </Badge>
+          );
+        default:
+          return (
+            <Badge>
+              <Dumbbell />
+              Practice Game
+            </Badge>
+          );
+      }
+    };
+
     return (
       <Card
         className={`
@@ -165,84 +209,8 @@ export const GameCard = React.memo(
         {isScheduled && (
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/60 to-secondary"></div>
         )}
-        <CardHeader>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-primary/70" />
-                  <span className="font-semibold text-foreground whitespace-nowrap">
-                    {formatDate(liveGameData.date)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <ClockIcon className="h-4 w-4 text-secondary/70" />
-                  <span className="font-medium whitespace-nowrap">
-                    {formatTo12HourTime(liveGameData.time)}
-                  </span>
-                </div>
-              </div>
-              {/* Status Badge */}
-              <div className="flex items-center gap-2">
-                {statusConfig.badge}
-              </div>
-            </div>
-            {/* League & Season Details for League Games on /games */}
-            {isGamesPage && isLeagueGame && (
-              <div className="flex flex-wrap items-center gap-4 mt-1 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <span className="font-semibold text-foreground">League:</span>
-                  <span>{liveGameData.league.name}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="font-semibold text-foreground">Season:</span>
-                  <span>
-                    {liveGameData.season.name} {liveGameData.season.year}
-                  </span>
-                </div>
-                {/* Show assigned coaches for league games */}
-                {liveGameData.assigned_coaches &&
-                  liveGameData.assigned_coaches.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <span className="font-semibold text-foreground">
-                        Coaches:
-                      </span>
-                      <span>
-                        {liveGameData.assigned_coaches
-                          .map((coach) => coach.name)
-                          .join(", ")}
-                      </span>
-                    </div>
-                  )}
-              </div>
-            )}
-          </div>
-          {/* Second Row: Location and Duration */}
-          <div className="flex items-center justify-between mt-1">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPinIcon className="h-4 w-4 text-primary/50" />
-                <span
-                  className="font-medium"
-                  title={liveGameData.location || "TBA"}
-                >
-                  {liveGameData.location || "TBA"}
-                </span>
-              </div>
-
-              {/* Additional completed game info */}
-              {isCompleted && liveGameData.duration && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4 text-secondary/50" />
-                  <span className="font-medium whitespace-nowrap">
-                    {formatDuration(liveGameData.duration)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-4 border-t border-secondary/10 space-y-4">
+        <CardHeader>{isGamesPage && gameTypeDisplay()}</CardHeader>
+        <CardContent>
           {/* Teams Display */}
           <div className="relative">
             {" "}
@@ -260,24 +228,39 @@ export const GameCard = React.memo(
               game={liveGameData}
             />
           </div>
+
+          <div className="flex items-center mt-3 border-y py-2 border-primary/20 border-dashed justify-between gap-2">
+            <div className="flex items-center  gap-1 text-sm">
+              <Calendar className="size-3 text-primary" />
+              <span className="text-xs text-muted-foreground">
+                {liveGameData.date ? formatDate(liveGameData.date) : "TBA"}
+              </span>
+            </div>
+
+            <div className="flex items-center  gap-1 text-sm">
+              <Clock className="size-3 text-primary" />
+              <span className="text-xs text-muted-foreground">
+                {liveGameData.start_time
+                  ? formatTo12HourTime(liveGameData.start_time)
+                  : "TBA"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <MapPinned className="size-3 text-primary" />
+              <span className="text-xs text-muted-foreground">
+                {liveGameData.location || "TBA"}
+              </span>
+            </div>
+          </div>
+
           {/* Game Actions and Score Summary Section */}
-          <div className="pt-3 border-t border-primary/10 space-y-4">
+          <div className="border-primary/10 space-y-4">
             {/* Game Actions */}
-            {(isAdmin() || isCoach()) && (
-              <div className="flex items-center justify-end">
-                <GameActions
-                  game={liveGameData}
-                  isCompleted={isCompleted}
-                  isLive={isLive}
-                  isScheduled={isScheduled}
-                  bothReady={bothReady}
-                  onEditGame={onEditGame}
-                />
-              </div>
-            )}
+
             {/* Score Summary and View Result for Completed Games */}
             {isCompleted && liveGameData.score_summary?.periods && (
-              <div className="space-y-4">
+              <div className="space-y-4 mt-4">
                 <ScoreSummary
                   game={liveGameData}
                   homeTeam={homeTeam}
@@ -287,7 +270,20 @@ export const GameCard = React.memo(
               </div>
             )}
           </div>
-        </CardContent>{" "}
+        </CardContent>
+
+        {(isAdmin() || isCoach()) && (
+          <CardFooter>
+            <GameActions
+              game={liveGameData}
+              isCompleted={isCompleted}
+              isLive={isLive}
+              isScheduled={isScheduled}
+              bothReady={bothReady}
+              onEditGame={onEditGame}
+            />
+          </CardFooter>
+        )}
       </Card>
     );
   },

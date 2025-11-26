@@ -1,9 +1,21 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useDeleteTrainingSession } from "@/hooks/useTrainings";
+import DeleteModal from "@/components/common/DeleteModal";
+import { formatShortDate } from "@/utils/formatDate";
 
-const DeleteTrainingSessionModal = ({ isOpen, onClose, session, onSuccess }) => {
+const DeleteTrainingSessionModal = ({
+  isOpen,
+  onClose,
+  session,
+  onSuccess,
+}) => {
   const { mutate: deleteSession, isLoading } = useDeleteTrainingSession();
 
   const handleDelete = () => {
@@ -17,27 +29,18 @@ const DeleteTrainingSessionModal = ({ isOpen, onClose, session, onSuccess }) => 
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <h3 className="text-lg font-semibold">Delete Training Session</h3>
-        </DialogHeader>
-        <div className="py-4">
-          Are you sure you want to delete this training session?
-          <div className="mt-2 text-muted-foreground text-sm">
-            {session?.date} {session?.start_time} - {session?.end_time}
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button variant="destructive" onClick={handleDelete} loading={isLoading}>
-            Delete
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <DeleteModal
+      open={isOpen}
+      onOpenChange={onClose}
+      onConfirm={handleDelete}
+      loading={isLoading}
+      title="Delete Training Session"
+      description={`Are you sure you want to delete the training session "${
+        session?.title
+      }" scheduled on ${formatShortDate(
+        session?.date
+      )}? This action cannot be undone.`}
+    />
   );
 };
 

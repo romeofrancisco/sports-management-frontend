@@ -306,7 +306,7 @@ const GameTable = () => {
                     games={liveGames}
                     variant="default"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {liveGames.map((game, index) => (
                         <div
                           key={game.id}
@@ -325,7 +325,7 @@ const GameTable = () => {
                     games={scheduledGames}
                     variant="default"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {scheduledGames.map((game) => (
                         <GameCard
                           key={game.id}
@@ -342,7 +342,7 @@ const GameTable = () => {
                     games={completedGames}
                     variant="default"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {completedGames.map((game) => (
                         <GameCard
                           key={game.id}
@@ -359,7 +359,7 @@ const GameTable = () => {
                     games={otherGames}
                     variant="default"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {otherGames.map((game, index) => (
                         <GameCard
                           key={game.id}
