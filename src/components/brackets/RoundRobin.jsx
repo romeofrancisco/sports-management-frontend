@@ -69,7 +69,7 @@ const TeamSeed = ({ seed, breakpoint }) => {
       </SeedItem>
       <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
         <Calendar size={12} className="text-muted-foreground" />
-        {formatDate(date)}
+        {date ? formatDate(date) : 'TBD'}
       </div>
     </Seed>
   );

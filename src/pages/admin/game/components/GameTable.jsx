@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { useModal } from "@/hooks/useModal";
 import DataTable from "@/components/common/DataTable";
-import { useGames } from "@/hooks/useGames";
+import { useGames, useGameDetails } from "@/hooks/useGames";
 import GameModal from "@/components/modals/GameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
@@ -33,12 +33,31 @@ import { Badge } from "@/components/ui/badge";
 
 const GameTable = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const gameIdParam = searchParams.get("gameId");
+  
   const [selectedGame, setSelectedGame] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
   const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [initialDateSet, setInitialDateSet] = useState(false);
+
+  // Fetch the specific game if gameId param is provided
+  const { data: linkedGame } = useGameDetails(gameIdParam);
+
+  // Set the date based on the linked game
+  useEffect(() => {
+    if (linkedGame && linkedGame.date && !initialDateSet) {
+      const gameDate = parseISO(linkedGame.date);
+      setSelectedDate(gameDate);
+      setFilterMode("date"); // Ensure we're in date view mode
+      setInitialDateSet(true);
+      // Clear the gameId param from URL after navigating to the date
+      setSearchParams({}, { replace: true });
+    }
+  }, [linkedGame, initialDateSet, setSearchParams]);
 
   const { isAdmin, isCoach, isPlayer } = useRolePermissions();
   const [filter, setFilter] = useState({

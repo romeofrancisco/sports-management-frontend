@@ -38,10 +38,10 @@ export const GameActions = ({
   const isLeagueGame = game?.type === "league" || game?.type === "tournament";
   const isPracticeGame = game?.type === "practice";
   const canDeleteGame = permissions.games.delete(game);
-  
+
   // Check if sport requires stats (for lineup requirements)
   const sportRequiresStats = game?.sport_requires_stats ?? true;
-  
+
   // Determine if game can be started
   // For stat-tracking sports: need both teams ready
   // For scoreboard-only sports: can start without lineup
@@ -65,12 +65,13 @@ export const GameActions = ({
 
   const handleStartGame = () => {
     setShowStartGameConfirmation(true);
+    navigate(`/games/${game.id}/scoring`);
   };
   const handleResumeGame = () => {
     if (!requirePermissionForAction(game, "resume")) {
       return; // Permission check will show the error toast
     }
-    navigate(`/games/${game.id}`);
+    navigate(`/games/${game.id}/scoring`);
   };
 
   const handleEditGame = () => {
@@ -106,9 +107,7 @@ export const GameActions = ({
   ]);
   return (
     <>
-      {" "}
       <div className="flex flex-wrap gap-2 items-center justify-end">
-        {" "}
         {/* Edit button available only for live and scheduled games, not completed */}
         {!isCompleted && (
           <Button

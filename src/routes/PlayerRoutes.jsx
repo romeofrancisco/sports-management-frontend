@@ -23,6 +23,10 @@ export const playerRoutes = [
     element: <GameSchedule />,
   },
   {
+    path: "/games/:gameId",
+    element: <GameSchedule />,
+  },
+  {
     path: "/games/:gameId/game-result",
     element: <GameResult />,
   },
@@ -78,6 +82,10 @@ export const playerRoutes = [
     path: "/leagues/:league/seasons/:season/games",
     element: <SeasonDetails />,
   },
+    {
+    path: "/leagues/:league/seasons/:season/games/:gameId",
+    element: <SeasonDetails />,
+  },
   {
     path: "/leagues/:league/seasons/:season/teams",
     element: <SeasonDetails />,
@@ -104,6 +112,10 @@ export const playerRoutes = [
   },
   {
     path: "/tournaments/:tournamentId/games",
+    element: <TournamentDetails />,
+  },
+    {
+    path: "/tournaments/:tournamentId/games/:gameId",
     element: <TournamentDetails />,
   },
   {

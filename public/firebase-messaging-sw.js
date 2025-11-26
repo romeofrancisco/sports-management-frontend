@@ -15,14 +15,11 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage(function(payload) {
-
-  
   // Extract title and body from data field (backend sends data-only currently)
   const notificationTitle = payload.data?.title || payload.notification?.title || 'New Message';
   const notificationBody = payload.data?.body || payload.notification?.body || '';
   
   if (!notificationTitle || !notificationBody) {
-    console.log('[firebase-messaging-sw.js] Skipping notification - missing title or body');
     return;
   }
   
@@ -32,7 +29,7 @@ messaging.onBackgroundMessage(function(payload) {
     badge: '/perpetual_logo_small.png',
     data: payload.data || {},
     requireInteraction: false,
-    tag: payload.data?.team_id || 'default',
+    tag: payload.data?.team_id || payload.data?.game_id || 'default',
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);
@@ -40,8 +37,6 @@ messaging.onBackgroundMessage(function(payload) {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', function(event) {
-  console.log('[firebase-messaging-sw.js] Notification click received.');
-  
   event.notification.close();
 
   // Get the click action URL from the notification data

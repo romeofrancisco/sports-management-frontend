@@ -76,7 +76,7 @@ const CustomMatch = ({ match }) => {
       </div>
       <div className="text-[10px] justify-center text-muted-foreground mt-1 flex items-center gap-1">
         <Calendar size={12} className="text-muted-foreground" />
-        {formatDate(match?.startTime)}
+        {match?.startTime ? formatDate(match.startTime) : 'TBD'}
       </div>
     </div>
   );
