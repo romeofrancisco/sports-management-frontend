@@ -29,7 +29,7 @@ const StartGameConfirmation = ({ isOpen, onClose, game }) => {
     startGame(GAME_ACTIONS.START, {
       onSuccess: () => {
         onClose(); // Close the modal first
-        navigate(`/games/${game.id}`);
+        navigate(`/games/${game.id}/scoring`); // Then navigate to scoring page
       },
       onError: (error) => {
         console.error("Failed to start game:", error);

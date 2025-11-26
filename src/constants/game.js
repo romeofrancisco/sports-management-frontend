@@ -2,13 +2,12 @@ export const GAME_STATUS = [
   { value: "scheduled", label: "Scheduled" },
   { value: "in_progress", label: "In Progress" },
   { value: "completed", label: "Completed" },
-  { value: "postponed", label: "Postponed" },
 ];
 
 export const GAME_TYPES = [
   { value: "practice", label: "Practice Game" },
   { value: "league", label: "League" },
-  // { value: "tournament", label: "Tournament" },
+  { value: "tournament", label: "Tournament" },
 ];
 
 export const GAME_TYPE_VALUES = {

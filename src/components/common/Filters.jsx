@@ -42,8 +42,11 @@ export const FilterYearLevel = ({
   className = "",
   hideLabel = false,
 }) => {
-  const { data: allAcademic } = useAcademicInfo({}, { staleTime: 1000 * 60 * 5 });
-  
+  const { data: allAcademic } = useAcademicInfo(
+    {},
+    { staleTime: 1000 * 60 * 5 }
+  );
+
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -53,11 +56,13 @@ export const FilterYearLevel = ({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Year Level</SelectLabel>
-            <SelectItem value={null}>All Levels</SelectItem>   
+            <SelectItem value={null}>All Levels</SelectItem>
             <SelectSeparator />
             {(() => {
               const set = new Set();
-              (allAcademic || []).forEach((a) => a.year_level && set.add(a.year_level));
+              (allAcademic || []).forEach(
+                (a) => a.year_level && set.add(a.year_level)
+              );
               return Array.from(set).map((year) => (
                 <SelectItem key={year} value={year}>
                   {year}
@@ -83,7 +88,9 @@ export const FilterYearLevel = ({
             <SelectSeparator />
             {(() => {
               const set = new Set();
-              (allAcademic || []).forEach((a) => a.year_level && set.add(a.year_level));
+              (allAcademic || []).forEach(
+                (a) => a.year_level && set.add(a.year_level)
+              );
               return Array.from(set).map((year) => (
                 <SelectItem key={year} value={year}>
                   {year}
@@ -180,7 +187,10 @@ export const FilterCourse = ({
   className = "",
   hideLabel = false,
 }) => {
-  const { data: allAcademic } = useAcademicInfo({}, { staleTime: 1000 * 60 * 5 });
+  const { data: allAcademic } = useAcademicInfo(
+    {},
+    { staleTime: 1000 * 60 * 5 }
+  );
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
@@ -369,9 +379,7 @@ export const FilterTeam = ({
               onValueChange={setSearch}
             />
             <CommandList>
-              <CommandEmpty className="py-2">
-                No teams found.
-              </CommandEmpty>
+              <CommandEmpty className="py-2">No teams found.</CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   value="all-teams"
@@ -430,7 +438,7 @@ export const FilterTeam = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="text-xs h-8 justify-between font-normal"
+            className=" justify-between font-normal"
           >
             {selectedTeam ? (
               <div className="flex items-center gap-2">
@@ -535,7 +543,7 @@ export const FilterDivision = ({
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Team's Division</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[8rem] max-w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] max-w-full">
           <SelectValue placeholder="Select Division" />
         </SelectTrigger>
         <SelectContent>
@@ -591,7 +599,7 @@ export const SearchFilter = ({
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder={placeholder}
-        className="text-xs h-8"
+        className=""
       />
     </div>
   );
@@ -606,7 +614,7 @@ export const FilterGameType = ({
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={`${className}`}>
           <SelectValue placeholder="Game Type" />
         </SelectTrigger>
         <SelectContent>
@@ -626,7 +634,7 @@ export const FilterGameType = ({
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Game Type</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[8rem] w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] w-full">
           <SelectValue placeholder="Select Game Type" />
         </SelectTrigger>
         <SelectContent>
@@ -653,7 +661,7 @@ export const FilterGameStatus = ({
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`text-xs h-8 ${className}`} size="sm">
+        <SelectTrigger className={` ${className}`}>
           <SelectValue placeholder="Game Status" />
         </SelectTrigger>
         <SelectContent>
@@ -673,7 +681,7 @@ export const FilterGameStatus = ({
     <div className={`grid gap-0.5 ${className}`}>
       <Label className="text-xs text-muted-foreground">Status</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="text-xs min-w-[8rem] w-full" size="sm">
+        <SelectTrigger className="text-xs min-w-[8rem] w-full">
           <SelectValue placeholder="Select Status" />
         </SelectTrigger>
         <SelectContent>
@@ -698,16 +706,12 @@ export const FilterSeason = ({
   className = "",
   hideLabel = false,
 }) => {
-  const { data: seasons } = useSeasons(league);
+  const { data: seasons, isLoading } = useSeasons(league);
 
   if (hideLabel) {
     return (
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger
-          className={`text-xs h-8 ${className}`}
-          size="sm"
-          disabled={!!!league}
-        >
+        <SelectTrigger className={` ${className}`} disabled={!!!league}>
           <SelectValue
             placeholder={league ? "Select Season" : "Select League First"}
           />
@@ -715,7 +719,7 @@ export const FilterSeason = ({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Seasons</SelectLabel>
-            {seasons?.map((season) => (
+            {seasons?.results?.map((season) => (
               <SelectItem key={season?.id} value={season?.id}>
                 {season.name} {season.year}
               </SelectItem>
@@ -732,7 +736,6 @@ export const FilterSeason = ({
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
           className="text-xs min-w-[8rem] w-full"
-          size="sm"
           disabled={!!!league}
         >
           <SelectValue
@@ -767,8 +770,7 @@ export const FilterLeague = ({
     return (
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
-          className={`text-xs h-8 ${className}`}
-          size="sm"
+          className={` ${className}`}
           disabled={type !== GAME_TYPE_VALUES.LEAGUE}
         >
           <SelectValue
@@ -799,7 +801,6 @@ export const FilterLeague = ({
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
           className="text-xs min-w-[8rem] w-full"
-          size="sm"
           disabled={type !== GAME_TYPE_VALUES.LEAGUE}
         >
           <SelectValue
@@ -868,7 +869,7 @@ export const FilterDateRange = ({
               id="date"
               variant={"outline"}
               className={cn(
-                "justify-start text-left font-normal text-xs h-8",
+                "justify-start text-left font-normal ",
                 !date && "text-muted-foreground"
               )}
             >
@@ -912,7 +913,7 @@ export const FilterDateRange = ({
               id="date"
               variant={"outline"}
               className={cn(
-                "justify-start text-left font-normal text-xs h-8",
+                "justify-start text-left font-normal ",
                 !date && "text-muted-foreground"
               )}
             >

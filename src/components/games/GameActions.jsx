@@ -65,7 +65,6 @@ export const GameActions = ({
 
   const handleStartGame = () => {
     setShowStartGameConfirmation(true);
-    navigate(`/games/${game.id}/scoring`);
   };
   const handleResumeGame = () => {
     if (!requirePermissionForAction(game, "resume")) {
@@ -107,14 +106,13 @@ export const GameActions = ({
   ]);
   return (
     <>
-      <div className="flex flex-wrap gap-2 items-center justify-end">
+      <div className="grid grid-cols-2 gap-2 w-full items-center justify-end">
         {/* Edit button available only for live and scheduled games, not completed */}
         {!isCompleted && (
           <Button
             onClick={handleEditGame}
             variant="outline"
-            size="sm"
-            className="border-primary/50 text-primary/70 hover:bg-primary/10 hover:text-primary hover:border-primary transition-all duration-300"
+            className="border-secondary text-secondary hover:bg-secondary/20 hover:text-secondary transition-all duration-300"
           >
             <EditIcon />
             Update
@@ -125,8 +123,7 @@ export const GameActions = ({
           <Button
             onClick={handleDeleteGame}
             variant="outline"
-            size="sm"
-            className="border-red-500/50 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500 transition-all duration-300"
+            className=" border-red-500/50 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500 transition-all duration-300"
           >
             <Trash2 />
             Delete
@@ -137,8 +134,7 @@ export const GameActions = ({
           <Button
             onClick={handleCoachAssignmentClick}
             variant="outline"
-            size="sm"
-            className="border-amber-500/50 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+            className="border-primary/50 text-primary/70 hover:bg-primary/10 hover:text-primary hover:border-primary transition-all duration-300"
           >
             <UserCog />
             Assign Coach
@@ -148,7 +144,6 @@ export const GameActions = ({
         {isLive && (
           <Button
             onClick={handleResumeGame}
-            size="sm"
             className="bg-red-500 hover:bg-red-600 text-white border-red-300"
           >
             <Play />
@@ -162,12 +157,7 @@ export const GameActions = ({
           <>
             {/* Only show lineup button for sports that require stats */}
             {sportRequiresStats && (
-              <Button
-                onClick={handleLineupClick}
-                variant="outline"
-                size="sm"
-                className="border-secondary/50 text-secondary/70 hover:text-secondary hover:bg-secondary/10"
-              >
+              <Button onClick={handleLineupClick} variant="secondary">
                 <Users />
                 Lineup
               </Button>
