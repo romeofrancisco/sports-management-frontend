@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -57,15 +58,22 @@ export function EventDetailsDialog({ event, children }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-1" style={{ color: event.color }}>
+      <DialogContent className="sm:max-w-[400px] gap-0">
+      <DialogHeader className="grid grid-cols-[auto_1fr] gap-2">
+          <div className="bg-primary p-2.5 rounded-md text-primary-foreground">
             {getEventTypeIcon(event.type)}
-            {event.title}
-          </DialogTitle>
+          </div>
+          <div>
+            <DialogTitle className="mb-0">
+              {event.title}
+            </DialogTitle>
+            <DialogDescription>
+              Detailed information about the event
+            </DialogDescription>
+          </div>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[80vh]">
+        <ScrollArea className="max-h-[80vh] my-5">
           <div className="space-y-4 px-4">
             <div className="flex items-start gap-2">
               <User className="mt-1 size-4 shrink-0 text-muted-foreground" />
@@ -80,7 +88,7 @@ export function EventDetailsDialog({ event, children }) {
             <div className="flex items-start gap-2">
               <Calendar className="mt-1 size-4 shrink-0 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">Start Date</p>
+                <p className="text-sm font-medium">From</p>
                 <p className="text-sm text-muted-foreground">
                   {format(startDate, "EEEE dd MMMM")}
                   <span className="mx-1">at</span>
@@ -92,7 +100,7 @@ export function EventDetailsDialog({ event, children }) {
             <div className="flex items-start gap-2">
               <Clock className="mt-1 size-4 shrink-0 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">End Date</p>
+                <p className="text-sm font-medium">To</p>
                 <p className="text-sm text-muted-foreground">
                   {format(endDate, "EEEE dd MMMM")}
                   <span className="mx-1">at</span>
@@ -105,7 +113,7 @@ export function EventDetailsDialog({ event, children }) {
               <Text className="mt-1 size-4 shrink-0 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Description</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
                   {event.description}
                 </p>
               </div>

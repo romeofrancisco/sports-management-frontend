@@ -5,7 +5,7 @@ import { useLocalStorage } from "@/components/calendar/hooks";
 const DEFAULT_SETTINGS = {
 	badgeVariant: "colored",
 	view: "day",
-	use24HourFormat: true,
+	use24HourFormat: false,
 	agendaModeGroupBy: "date",
 };
 

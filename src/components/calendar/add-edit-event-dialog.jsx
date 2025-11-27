@@ -24,19 +24,13 @@ import {
   ModalTitle,
   ModalTrigger,
 } from "@/components/calendar/responsive-modal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { COLORS } from "@/components/calendar/constants";
 import { useCalendar } from "@/components/calendar/calendar-context";
 import { useDisclosure } from "@/components/calendar/hooks";
 import { eventSchema } from "@/components/calendar/schemas";
 import { useCreateEvent, useUpdateEvent } from "@/hooks/useEvents";
+import { CalendarPlus } from "lucide-react";
 
 export function AddEditEventDialog({ children, startDate, startTime, event }) {
   const { isOpen, onClose, onToggle } = useDisclosure();
@@ -67,6 +61,9 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
       endDate: new Date(event.endDate),
     };
   }, [startDate, startTime, event, isEditing]);
+
+  const isPending =
+    createEventMutation.isPending || updateEventMutation.isPending;
 
   const form = useForm({
     resolver: zodResolver(eventSchema),
@@ -147,14 +144,21 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
   return (
     <Modal open={isOpen} onOpenChange={onToggle} modal={false}>
       <ModalTrigger asChild>{children}</ModalTrigger>
-      <ModalContent>
-        <ModalHeader>
-          <ModalTitle>{isEditing ? "Edit Event" : "Add New Event"}</ModalTitle>
-          <ModalDescription>
-            {isEditing
-              ? "Modify your existing event."
-              : "Create a new event for your calendar."}
-          </ModalDescription>
+      <ModalContent className="sm:max-w-[400px]">
+        <ModalHeader className="grid grid-cols-[auto_1fr] gap-2">
+          <div className="bg-primary p-2.5 rounded-md">
+            <CalendarPlus className="text-primary-foreground" />
+          </div>
+          <div>
+            <ModalTitle className="mb-0">
+              {isEditing ? "Edit Event" : "Add New Event"}
+            </ModalTitle>
+            <ModalDescription>
+              {isEditing
+                ? "Modify your existing event."
+                : "Create a new event for your calendar."}
+            </ModalDescription>
+          </div>
         </ModalHeader>
 
         <Form {...form}>
@@ -222,8 +226,14 @@ export function AddEditEventDialog({ children, startDate, startTime, event }) {
               Cancel
             </Button>
           </ModalClose>
-          <Button form="event-form" type="submit">
-            {isEditing ? "Save Changes" : "Create Event"}
+          <Button form="event-form" type="submit" disabled={isPending}>
+            {isPending
+              ? isEditing
+                ? "Saving..."
+                : "Creating..."
+              : isEditing
+              ? "Save Changes"
+              : "Create Event"}
           </Button>
         </ModalFooter>
       </ModalContent>

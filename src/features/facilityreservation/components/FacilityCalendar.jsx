@@ -13,21 +13,30 @@ function FacilityCalendarContent() {
 
   // pass selectedDate as ISO string and request full (no pagination) for calendar
   const dateParam = selectedDate ? selectedDate.toISOString() : undefined;
-  const { data: events } = useReservations({ view: view, date: dateParam, no_pagination: 1 });
+  const { data: events } = useReservations({
+    view: view,
+    date: dateParam,
+    no_pagination: 1,
+  });
 
   const eventsRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!events) return;
-    
 
     // Ensure calendar receives plain objects with string datetimes
     const safe = events.map((e) => ({
       id: e.id,
       title: e.title,
       description: e.description,
-      startDate: typeof e.startDate === "string" ? e.startDate : e.startDate?.toString?.() || null,
-      endDate: typeof e.endDate === "string" ? e.endDate : e.endDate?.toString?.() || null,
+      startDate:
+        typeof e.startDate === "string"
+          ? e.startDate
+          : e.startDate?.toString?.() || null,
+      endDate:
+        typeof e.endDate === "string"
+          ? e.endDate
+          : e.endDate?.toString?.() || null,
       color: e.color,
       user: e.user,
       meta: e.meta,
@@ -46,13 +55,10 @@ function FacilityCalendarContent() {
     }
   }, [events, setEvents]);
 
-
   return (
     <DndProvider showConfirmation={true}>
-      <div className="w-full border-2 border-primary/20 rounded-xl">
-        <FacilityCalendarHeader />
-        <CalendarBody />
-      </div>
+      <FacilityCalendarHeader />
+      <CalendarBody />
     </DndProvider>
   );
 }

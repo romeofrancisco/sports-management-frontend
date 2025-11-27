@@ -72,7 +72,7 @@ const FacilityReservation = () => {
       />
 
       {/* Navigation Links */}
-      <div className="mb-4 sm:mb-6">
+      <div>
         <nav className="border-b border-border">
           <div className="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-hide">
             {navigationItems.map((item) => {
