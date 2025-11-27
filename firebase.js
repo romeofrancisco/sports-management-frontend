@@ -34,8 +34,13 @@ export const requestFirebaseNotificationPermission = async () => {
       return null;
     }
 
-    // Register service worker first
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    // Register service worker first (force update to get latest version)
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+      updateViaCache: 'none'
+    });
+    
+    // Check for updates
+    await registration.update();
 
     // Wait for service worker to be ready
     await navigator.serviceWorker.ready;
@@ -46,9 +51,15 @@ export const requestFirebaseNotificationPermission = async () => {
       serviceWorkerRegistration: registration
     });
     
+    if (token) {
+      console.log('[Firebase] FCM token obtained successfully');
+    } else {
+      console.warn('[Firebase] No FCM token available');
+    }
+    
     return token;
   } catch (err) {
-    console.error("FCM permission error:", err);
+    console.error("[Firebase] FCM permission error:", err);
     return null;
   }
 };

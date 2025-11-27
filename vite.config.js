@@ -23,6 +23,13 @@ export default defineConfig({
     commonjsOptions: {
       include: [/node_modules/],
     },
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true, // Removes all console.log
+        drop_debugger: true, //  Removes debugger statements
+      },
+    },
   },
   server: {
     proxy: {

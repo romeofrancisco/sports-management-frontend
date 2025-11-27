@@ -8,6 +8,7 @@ import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
+import { toggleTeamMute as toggleTeamMuteInDB } from "@/utils/notificationSettings";
 
 const ChatWindow = ({ selectedChat, currentUser }) => {
 
@@ -18,16 +19,10 @@ const ChatWindow = ({ selectedChat, currentUser }) => {
     return parsed.map(id => id.toString());
   });
 
-  const toggleTeamMute = useCallback((teamId) => {
-    setMutedTeams((prev) => {
-      const teamIdStr = teamId.toString();
-      const newMuted = prev.includes(teamIdStr)
-        ? prev.filter((id) => id !== teamIdStr)
-        : [...prev, teamIdStr];
-
-      localStorage.setItem("mutedTeams", JSON.stringify(newMuted));
-      return newMuted;
-    });
+  const toggleTeamMute = useCallback(async (teamId) => {
+    // Update IndexedDB (for service worker) and localStorage (for UI)
+    const result = await toggleTeamMuteInDB(teamId);
+    setMutedTeams(result.mutedTeams);
   }, []);
 
   const isTeamMuted =
