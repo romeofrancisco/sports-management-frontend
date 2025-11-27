@@ -4,6 +4,7 @@ import {
   Toolbar,
   Print,
   Ribbon,
+  WordExport,
 } from "@syncfusion/ej2-react-documenteditor";
 import { useSaveDocument } from "@/features/editors/hooks/useEditor";
 import {
@@ -16,9 +17,10 @@ import {
   handlePrint,
   handleEditorCreated,
   handleFileMenuItemSelect,
+  handleDownload,
 } from "./handlers/documentEditorHandlers";
 
-DocumentEditorContainerComponent.Inject(Toolbar, Print, Ribbon);
+DocumentEditorContainerComponent.Inject(Toolbar, Print, Ribbon, WordExport);
 
 const DocumentEditor = ({
   documentId,
@@ -50,12 +52,16 @@ const DocumentEditor = ({
     handlePrint(editorRef);
   };
 
+  const onDownload = () => {
+    handleDownload(editorRef, documentData?.fileName);
+  };
+
   const onEditorCreated = () => {
     handleEditorCreated(editorRef, setIsEditorReady);
   };
 
   const onFileMenuItemSelect = (args) => {
-    handleFileMenuItemSelect(args, { onSave, onPrint });
+    handleFileMenuItemSelect(args, { onSave, onPrint, onDownload });
   };
 
   return (
@@ -68,13 +74,15 @@ const DocumentEditor = ({
       enableToolbar={true}
       fileMenuItemClick={onFileMenuItemSelect}
       fileMenuItems={[
-        "New",
         { text: "Print", id: "print", iconCss: "e-icons e-print" },
         { text: "Save", id: "save", iconCss: "e-icons e-save" },
+        { text: "Download", id: "download", iconCss: "e-icons e-download" },
       ]}
       created={onEditorCreated}
       showPropertiesPane={true}
       toolbarMode="Ribbon"
+      enableSfdtExport={true}
+      enableWordExport={true}
     />
   );
 };
