@@ -39,6 +39,7 @@ import { useTheme } from "@/context/ThemeProvider";
 import { useModal } from "@/hooks/useModal";
 import UserProfileModal from "@/components/modals/UserProfileModal";
 import { Switch } from "@/components/ui/switch";
+import { setGlobalMute } from "@/utils/notificationSettings";
 
 export function NavbarNavUser() {
   const { user } = useSelector((state) => state.auth);
@@ -52,9 +53,10 @@ export function NavbarNavUser() {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
-  const handleChatNotificationToggle = (checked) => {
+  const handleChatNotificationToggle = async (checked) => {
     setChatNotificationsEnabled(checked);
-    localStorage.setItem('chatNotificationsEnabled', JSON.stringify(checked));
+    // Sync to both localStorage and IndexedDB (for service worker access)
+    await setGlobalMute(checked);
   };
 
   const handleLogout = () => {
