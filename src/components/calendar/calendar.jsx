@@ -45,10 +45,8 @@ function CalendarContent() {
 
   return (
     <DndProvider showConfirmation={false}>
-      <div className="w-full border-2 border-primary/20 rounded-xl">
-        <CalendarHeader />
-        <CalendarBody />
-      </div>
+      <CalendarHeader />
+      <CalendarBody />
     </DndProvider>
   );
 }

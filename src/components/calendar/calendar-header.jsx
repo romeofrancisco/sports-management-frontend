@@ -54,7 +54,7 @@ export function CalendarHeader() {
             <Views />
             <div className="flex gap-2">
               {isAdmin() && <UserSelect />}
-              <div className={`${!isAdmin() ? "hidden" : "flex gap-2 lg:gap-1.5"} `}>
+              <div className={`${!isAdmin() ? "hidden md:flex gap-2" : "flex gap-2 lg:gap-1.5"} `}>
                 <FilterEvents />
                 <Settings />
               </div>
