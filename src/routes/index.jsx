@@ -6,6 +6,8 @@ import NavbarProvider from "@/layout/navbar-provider";
 import SetPassword from "@/pages/auth/SetPassword";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
 import ResetPassword from "@/pages/auth/ResetPassword";
+import GoogleCallback from "@/pages/documents/GoogleCallback";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +28,14 @@ export const router = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "/google-callback",
+        element: <GoogleCallback />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
       },
       {
         path: "/*",
