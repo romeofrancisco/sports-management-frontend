@@ -1,25 +1,36 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import DocumentEditor from "@/features/editors/document/DocumentEditor";
-import SpreadSheetEditor from "@/features/editors/spreadsheet/SpreadSheetEditor";
-import { useLoadDocument } from "@/features/editors/hooks/useEditor";
+import { GoogleDocEditor, GoogleSheetEditor } from "@/features/editors/google";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/api";
 import FullPageLoading from "@/components/common/FullPageLoading";
 import PageError from "../PageError";
 import { FileX } from "lucide-react";
-import { FILE_EXTENSIONS } from "@/features/editors/constants/fileTypes";
+
+// File extension constants (without dots, lowercase)
+const WORD_EXTENSIONS = ["doc", "docx"];
+const EXCEL_EXTENSIONS = ["xls", "xlsx"];
 
 const IdentifyEditor = () => {
   const { documentId } = useParams();
-  const editorRef = useRef(null);
-  const [isEditorReady, setIsEditorReady] = useState(true); // Changed to true so query can run immediately
 
-  // Load document data
+  // Fetch document info to determine file type
   const {
     isLoading,
     isError,
     data: documentData,
     error,
-  } = useLoadDocument(documentId, editorRef, isEditorReady);
+  } = useQuery({
+    queryKey: ["document-info", documentId],
+    queryFn: async () => {
+      const { data } = await api.get(`/documents/files/${documentId}/`);
+      if (!data) throw new Error("Document not found");
+      return data;
+    },
+    enabled: !!documentId,
+  });
+
+  console.log("Document Data:", documentData);
 
   // Show loading state
   if (isLoading) return <FullPageLoading />;
@@ -29,33 +40,22 @@ const IdentifyEditor = () => {
     return <PageError error={error} onReset={() => window.location.reload()} />;
 
   // Determine which editor to render based on file type
-  const fileExtension = documentData?.fileExtension?.toLowerCase();
-  const isDocx = FILE_EXTENSIONS.WORD.includes(fileExtension);
-  const isExcel = FILE_EXTENSIONS.EXCEL.includes(fileExtension);
+  // Handle both ".docx" and "DOCX" formats from backend
+  const rawExtension = documentData?.file_extension || "";
+  const fileExtension = rawExtension.replace(/^\./, "").toLowerCase()
+  const isDocx = WORD_EXTENSIONS.includes(fileExtension);
+  const isExcel = EXCEL_EXTENSIONS.includes(fileExtension);
 
-  //Render appropriate editor
+
+
+  // Render Google Docs editor for Word documents
   if (isDocx) {
-    return (
-      <DocumentEditor
-        documentId={documentId}
-        documentData={documentData}
-        editorRef={editorRef}
-        isEditorReady={isEditorReady}
-        setIsEditorReady={setIsEditorReady}
-      />
-    );
+    return <GoogleDocEditor documentId={documentId} />;
   }
 
+  // Render Google Sheets editor for Excel documents
   if (isExcel) {
-    return (
-      <SpreadSheetEditor
-        documentId={documentId}
-        documentData={documentData}
-        editorRef={editorRef}
-        isEditorReady={isEditorReady}
-        setIsEditorReady={setIsEditorReady}
-      />
-    );
+    return <GoogleSheetEditor documentId={documentId} />;
   }
 
   // Fallback for unsupported file types
@@ -70,7 +70,7 @@ const IdentifyEditor = () => {
           {fileExtension?.toUpperCase()} files cannot be edited in this viewer.
         </p>
         <p className="mt-4 text-muted-foreground">
-          Supported formats: DOCX, DOC, XLSX, XLS, CSV
+          Supported formats: DOCX, DOC, XLSX, XLS
         </p>
       </div>
     </div>

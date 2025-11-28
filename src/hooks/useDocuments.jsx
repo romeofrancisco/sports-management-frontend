@@ -124,6 +124,7 @@ export const useUploadFile = () => {
     },
     onSuccess: (data, variables) => {
       // Invalidate the folder contents for the uploaded folder
+      console.log(variables.folder);
       queryClient.invalidateQueries({
         queryKey: ["folder-contents", variables.folder],
       });
@@ -225,7 +226,7 @@ export const useCopyFile = () => {
   const toastIdRef = useRef(null);
 
   return useMutation({
-    mutationFn: async ({ fileId, currentFolder, rootData }) => {
+    mutationFn: async ({ fileId, currentFolder, rootData, tokens }) => {
       let targetFolderId = null;
 
       try {
@@ -250,7 +251,7 @@ export const useCopyFile = () => {
         }
 
         // Perform the copy operation
-        return await copyFile(fileId, targetFolderId);
+        return await copyFile(fileId, targetFolderId, tokens);
       } catch (error) {
         // Re-throw with better error message
         throw new Error(

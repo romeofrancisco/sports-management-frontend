@@ -9,6 +9,7 @@ import {
   X,
   MapPin,
   MoreVertical,
+  Loader2,
 } from "lucide-react";
 import { useFileCard } from "../hooks/useFileCard";
 import DeleteModal from "@/components/common/DeleteModal";
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import FullPageLoading from "@/components/common/FullPageLoading";
 
 const FileCard = ({
   file,
@@ -48,6 +50,7 @@ const FileCard = ({
     displayName,
     showDeleteModal,
     setShowDeleteModal,
+    isOpening,
     inputRef,
     canEdit,
     canDelete,
@@ -78,9 +81,9 @@ const FileCard = ({
   // Handler to open context menu via button click
   const handleMenuButtonClick = (e) => {
     e.stopPropagation();
-    
+
     // Create and dispatch a context menu event
-    const contextMenuEvent = new MouseEvent('contextmenu', {
+    const contextMenuEvent = new MouseEvent("contextmenu", {
       bubbles: true,
       cancelable: true,
       view: window,
@@ -88,7 +91,7 @@ const FileCard = ({
       clientX: e.clientX,
       clientY: e.clientY,
     });
-    
+
     contextMenuTriggerRef.current?.dispatchEvent(contextMenuEvent);
   };
 
@@ -137,6 +140,13 @@ const FileCard = ({
               onTouchEnd={handleTouchEnd}
               onTouchMove={handleTouchMove}
             >
+              {/* Loading overlay when opening */}
+              {isOpening && (
+                <div className="absolute inset-0 z-20 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                </div>
+              )}
+
               {/* Icon */}
               <div className="flex-shrink-0">
                 {fileIcon.type === "image" ? (
@@ -243,7 +253,6 @@ const FileCard = ({
             {/* View/Download Actions */}
             <ContextMenuItem
               onSelect={(e) => {
-                e.preventDefault();
                 setContextMenuOpen(false);
                 setTimeout(() => handleDownload(), 0);
               }}
@@ -254,7 +263,6 @@ const FileCard = ({
             {isEditable() && canEdit && (
               <ContextMenuItem
                 onSelect={(e) => {
-                  e.preventDefault();
                   setContextMenuOpen(false);
                   setTimeout(() => handleEdit(), 0);
                 }}
@@ -271,7 +279,6 @@ const FileCard = ({
                 {canCopy && file.status !== "copy" && (
                   <ContextMenuItem
                     onSelect={(e) => {
-                      e.preventDefault();
                       setContextMenuOpen(false);
                       setTimeout(() => handleCopy(), 0);
                     }}
@@ -283,7 +290,6 @@ const FileCard = ({
                 {canEdit && (
                   <ContextMenuItem
                     onSelect={(e) => {
-                      e.preventDefault();
                       setContextMenuOpen(false);
                       setTimeout(() => handleCut(), 0);
                     }}
@@ -301,7 +307,6 @@ const FileCard = ({
                 <ContextMenuSeparator />
                 <ContextMenuItem
                   onSelect={(e) => {
-                    e.preventDefault();
                     setContextMenuOpen(false);
                     setTimeout(() => handleRenameStart(), 0);
                   }}
@@ -318,7 +323,6 @@ const FileCard = ({
                 <ContextMenuSeparator />
                 <ContextMenuItem
                   onSelect={(e) => {
-                    e.preventDefault();
                     setContextMenuOpen(false);
                     setTimeout(() => handleDeleteClick(), 0);
                   }}
@@ -357,6 +361,9 @@ const FileCard = ({
       >
         <ContextMenuTrigger asChild>
           <div className="relative group">
+            {/* Loading overlay when opening */}
+            {isOpening && <FullPageLoading />}
+
             {/* Three-dot menu button */}
             <Button
               size="icon"

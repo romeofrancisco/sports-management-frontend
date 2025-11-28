@@ -49,6 +49,7 @@ export const handlePaste = ({
   copyMutation,
   setClipboardFile,
   setClipboardAction,
+  tokens,
 }) => {
   if (!clipboardFile) return;
 
@@ -81,6 +82,7 @@ export const handlePaste = ({
         fileId: clipboardFile.id,
         currentFolder,
         rootData,
+        tokens,
       },
       {
         onSuccess: () => {
