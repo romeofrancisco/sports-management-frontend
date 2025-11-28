@@ -10,6 +10,8 @@ import {
   MapPin,
   MoreVertical,
   Loader2,
+  Eye,
+  FileEdit,
 } from "lucide-react";
 import { useFileCard } from "../hooks/useFileCard";
 import DeleteModal from "@/components/common/DeleteModal";
@@ -72,6 +74,8 @@ const FileCard = ({
     getFileExtension,
     getFileIcon,
     isEditable,
+    isViewable,
+    getOpenActionLabel,
     deleteMutation,
   } = useFileCard(file, currentFolder, rootData, onCopy, onCut);
 
@@ -142,9 +146,7 @@ const FileCard = ({
             >
               {/* Loading overlay when opening */}
               {isOpening && (
-                <div className="absolute inset-0 z-20 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                </div>
+                <FullPageLoading />
               )}
 
               {/* Icon */}
@@ -260,15 +262,20 @@ const FileCard = ({
               <DownloadIcon className="mr-2 h-4 w-4" />
               Download
             </ContextMenuItem>
-            {isEditable() && canEdit && (
+            {(isEditable() || isViewable()) && (
               <ContextMenuItem
                 onSelect={(e) => {
+                  e.preventDefault();
                   setContextMenuOpen(false);
                   setTimeout(() => handleEdit(), 0);
                 }}
               >
-                <Edit2 className="mr-2 h-4 w-4" />
-                Open in Editor
+                {isEditable() ? (
+                  <FileEdit className="mr-2 h-4 w-4" />
+                ) : (
+                  <Eye className="mr-2 h-4 w-4" />
+                )}
+                {getOpenActionLabel()}
               </ContextMenuItem>
             )}
 
@@ -503,7 +510,7 @@ const FileCard = ({
             <DownloadIcon className="mr-2 h-4 w-4" />
             Download
           </ContextMenuItem>
-          {isEditable() && (
+          {(isEditable() || isViewable()) && (
             <ContextMenuItem
               onSelect={(e) => {
                 e.preventDefault();
@@ -511,8 +518,12 @@ const FileCard = ({
                 setTimeout(() => handleEdit(), 0);
               }}
             >
-              <Edit2 className="mr-2 h-4 w-4" />
-              Open in Editor
+              {isEditable() ? (
+                <FileEdit className="mr-2 h-4 w-4" />
+              ) : (
+                <Eye className="mr-2 h-4 w-4" />
+              )}
+              {getOpenActionLabel()}
             </ContextMenuItem>
           )}
 

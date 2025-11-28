@@ -74,11 +74,33 @@ export const uploadFile = async (fileData, onUploadProgress) => {
 
 export const downloadFile = async (fileId) => {
   try {
-    // First get the file details to get the Cloudinary URL
+    // First get the file details
     const { data } = await api.get(`/documents/files/${fileId}/`);
     
-    // Return the file URL directly - browser will handle the download
-    // since we added fl_attachment flag in the backend
+    // Check if it's a Google Drive file
+    if (data.google_drive_id) {
+      const ext = (data.file_extension || '').toLowerCase();
+      
+      // Determine the correct export format and base URL
+      if (ext === '.xlsx' || ext === '.xls') {
+        return `https://docs.google.com/spreadsheets/d/${data.google_drive_id}/export?format=xlsx`;
+      } else if (ext === '.pptx' || ext === '.ppt') {
+        return `https://docs.google.com/presentation/d/${data.google_drive_id}/export/pptx`;
+      } else if (ext === '.pdf') {
+        // PDFs stored in Drive - download directly
+        return `https://drive.google.com/uc?export=download&id=${data.google_drive_id}`;
+      } else if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'].includes(ext)) {
+        // Images - download directly from Drive
+        return `https://drive.google.com/uc?export=download&id=${data.google_drive_id}`;
+      } else if (ext === '.docx' || ext === '.doc') {
+        return `https://docs.google.com/document/d/${data.google_drive_id}/export?format=docx`;
+      } else {
+        // Other files - try direct download from Drive
+        return `https://drive.google.com/uc?export=download&id=${data.google_drive_id}`;
+      }
+    }
+    
+    // For Cloudinary files, return the file URL directly
     return data.file;
   } catch (error) {
     throw error;

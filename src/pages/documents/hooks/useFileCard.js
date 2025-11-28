@@ -12,6 +12,7 @@ import pptx from "@/assets/documents/pptx.png";
 import xlsx from "@/assets/documents/xlsx.png";
 import txt from "@/assets/documents/txt.png";
 import csv from "@/assets/documents/csv.png";
+import img from "@/assets/documents/img.png";
 import defaultFile from "@/assets/documents/default.png";
 
 export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
@@ -87,12 +88,73 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   };
 
   const handleEdit = async () => {
-    // Check if file is editable (docx, doc files)
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
-    const editableExtensions = ['.doc', '.docx', '.xls', '.xlsx'];
     
-    if (!editableExtensions.includes(extension)) {
-      toast.error("Only Word documents (.doc, .docx) and Excel files (.xls, .xlsx) can be edited in the editor");
+    // Handle different file types
+    const googleEditableExtensions = ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'];
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
+    const viewableExtensions = ['.pdf', '.txt', '.csv'];
+    
+    // PDFs - Open in Google Drive viewer or browser
+    if (extension === '.pdf') {
+      setIsOpening(true);
+      try {
+        if (file.google_drive_id) {
+          // Open PDF in Google Drive viewer
+          window.open(`https://drive.google.com/file/d/${file.google_drive_id}/view`, '_blank');
+        } else if (file.file) {
+          // Open Cloudinary/direct URL in browser
+          window.open(file.file, '_blank');
+        } else {
+          toast.error("Unable to open PDF");
+        }
+      } finally {
+        setIsOpening(false);
+      }
+      return;
+    }
+    
+    // Images - Open directly in browser
+    if (imageExtensions.includes(extension)) {
+      setIsOpening(true);
+      try {
+        if (file.google_drive_id) {
+          // Open image from Google Drive
+          window.open(`https://drive.google.com/file/d/${file.google_drive_id}/view`, '_blank');
+        } else if (file.file) {
+          // Open Cloudinary/direct URL
+          window.open(file.file, '_blank');
+        } else {
+          toast.error("Unable to open image");
+        }
+      } finally {
+        setIsOpening(false);
+      }
+      return;
+    }
+    
+    // Text/CSV files - Open in browser or Google Docs
+    if (['.txt', '.csv'].includes(extension)) {
+      setIsOpening(true);
+      try {
+        if (file.google_drive_id) {
+          // Open in Google Drive viewer
+          window.open(`https://drive.google.com/file/d/${file.google_drive_id}/view`, '_blank');
+        } else if (file.file) {
+          // Open direct URL
+          window.open(file.file, '_blank');
+        } else {
+          toast.error("Unable to open file");
+        }
+      } finally {
+        setIsOpening(false);
+      }
+      return;
+    }
+    
+    // Google editable files (Word, Excel, PowerPoint)
+    if (!googleEditableExtensions.includes(extension)) {
+      toast.error("This file type cannot be opened in the editor. Use Download instead.");
       return;
     }
     
@@ -249,9 +311,9 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const getFileIcon = () => {
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
     
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
     if (imageExtensions.includes(extension)) {
-      return { type: 'image', src: file.file };
+      return { type: 'image', src: img };
     }
     
     const iconMap = {
@@ -271,8 +333,30 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
 
   const isEditable = () => {
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
+    // Word, Excel, and PowerPoint files can be opened in Google editors
+    return ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'].includes(extension);
+  };
 
-    return ['.doc', '.docx', '.xls', '.xlsx'].includes(extension);
+  // Check if file can be opened/viewed in browser (PDFs, images, text files)
+  const isViewable = () => {
+    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
+    const viewableExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp', '.txt', '.csv'];
+    return viewableExtensions.includes(extension);
+  };
+
+  // Get the appropriate action label for the file
+  const getOpenActionLabel = () => {
+    const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
+    if (['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'].includes(extension)) {
+      return 'Open in Editor';
+    } else if (['.pdf'].includes(extension)) {
+      return 'View PDF';
+    } else if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'].includes(extension)) {
+      return 'View Image';
+    } else if (['.txt', '.csv'].includes(extension)) {
+      return 'View File';
+    }
+    return 'Open';
   };
 
   return {
@@ -319,6 +403,8 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     getFileExtension,
     getFileIcon,
     isEditable,
+    isViewable,
+    getOpenActionLabel,
     
     // Mutations
     deleteMutation,
