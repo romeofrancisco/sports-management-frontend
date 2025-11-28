@@ -4,6 +4,20 @@ import api from "@/api";
 import { toast } from "sonner";
 import { FILE_EXTENSIONS, MIME_TYPES } from "../constants/fileTypes";
 import { SYNCFUSION_SAVE_URLS } from "../constants/documentConfig";
+
+/**
+ * Converts a Blob to a base64 data URL string
+ * @param {Blob} blob - The blob to convert
+ * @returns {Promise<string>} - Base64 data URL string
+ */
+const blobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
 /**
  * Hook to fetch and load a document for editing
  * Handles file download and File object creation

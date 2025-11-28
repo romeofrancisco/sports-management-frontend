@@ -20,6 +20,16 @@ export const handlePrint = (editorRef) => {
   }
 };
 
+export const handleDownload = (editorRef, fileName) => {
+  if (editorRef.current) {
+    const docName = fileName?.replace(/\.[^/.]+$/, "") || "Document";
+    console.log("Downloading document:", docName);
+    editorRef.current.documentEditor.save(docName, "Docx");
+  } else {
+    console.error("Editor reference is not available for download");
+  }
+};
+
 export const handleEditorCreated = (editorRef, setIsEditorReady) => {
   setIsEditorReady(true);
 
@@ -43,6 +53,9 @@ export const handleFileMenuItemSelect = (args, handlers) => {
       break;
     case TOOLBAR_ACTIONS.PRINT:
       handlers.onPrint();
+      break;
+    case TOOLBAR_ACTIONS.DOWNLOAD:
+      handlers.onDownload();
       break;
     default:
       break;

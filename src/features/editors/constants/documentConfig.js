@@ -25,6 +25,12 @@ export const TOOLBAR_ITEMS = {
     text: "Wrap Text",
     id: "wrap_text",
   },
+  DOWNLOAD: {
+    prefixIcon: "e-download icon",
+    tooltipText: "Download the Document",
+    text: "Download",
+    id: "download",
+  },
 };
 
 // ============================================================================
@@ -39,6 +45,9 @@ export const EDITOR_TOOLBAR_CONFIG = [
   TOOLBAR_ITEMS.PRINT,
   // "Separator",
   // // TOOLBAR_ITEMS.WRAP_TEXT,
+  // "Separator",
+  TOOLBAR_ITEMS.DOWNLOAD,
+  "Separator",
   "Undo",
   "Redo",
   "Separator",
@@ -88,4 +97,5 @@ export const TOOLBAR_ACTIONS = {
   SAVE: "save",
   PRINT: "print",
   // WRAP_TEXT: "wrap_text",
+  DOWNLOAD: "download",
 };
