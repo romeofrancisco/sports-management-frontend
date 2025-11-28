@@ -18,6 +18,16 @@ export const loginUser = async (formData) => {
   }
 };
 
+export const googleLoginUser = async (token) => {
+  try {
+    // The backend expects a field named 'credential' or 'id_token'
+    const { data } = await api.post("google-signin/", { credential: token });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const logoutUser = async () => {
   try {
     await api.post("logout/", null);

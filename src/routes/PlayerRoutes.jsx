@@ -12,6 +12,8 @@ import DocumentEditor from "@/features/editors/document/DocumentEditor";
 import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
+import IdentifyEditor from "@/pages/documents/IdentifyEditor";
+import path from "path";
 
 export const playerRoutes = [
   {
@@ -127,12 +129,16 @@ export const playerRoutes = [
     element: <ChatPage />,
   },
   {
-    path: "documents",
+    path: "/documents",
     element: <DocumentsList />,
   },
   {
+    path: "documents/editor",
+    element: <IdentifyEditor />,
+  },
+  {
     path: "documents/editor/:documentId",
-    element: <DocumentEditor />,
+    element: <IdentifyEditor />,
   },
   {
     path: "calendar",

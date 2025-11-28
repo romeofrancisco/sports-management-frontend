@@ -30,6 +30,7 @@ import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
 import FacilityReservation from "@/features/facilityreservation/FacilityReservation";
+import IdentifyEditor from "@/pages/documents/IdentifyEditor";
 
 export const coachRoutes = [
   {
@@ -192,7 +193,7 @@ export const coachRoutes = [
     path: "/tournaments/:tournamentId/games",
     element: <TournamentDetails />,
   },
-    {
+  {
     path: "/tournaments/:tournamentId/games/:gameId",
     element: <TournamentDetails />,
   },
@@ -213,8 +214,12 @@ export const coachRoutes = [
     element: <DocumentsList />,
   },
   {
+    path: "documents/editor",
+    element: <IdentifyEditor />,
+  },
+  {
     path: "documents/editor/:documentId",
-    element: <DocumentEditor />,
+    element: <IdentifyEditor />,
   },
   {
     path: "calendar",

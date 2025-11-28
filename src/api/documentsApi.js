@@ -85,11 +85,11 @@ export const downloadFile = async (fileId) => {
   }
 };
 
-export const copyFile = async (fileId, targetFolderId) => {
+export const copyFile = async (fileId, targetFolderId, tokens) => {
   try {
-    const { data } = await api.post(`/documents/files/${fileId}/copy/`, {
-      target_folder: targetFolderId,
-    });
+    const body = { target_folder: targetFolderId };
+    if (tokens) body.tokens = tokens;
+    const { data } = await api.post(`/documents/files/${fileId}/copy/`, body);
     return data;
   } catch (error) {
     console.log(error);

@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDownloadFile, useCopyFile, useRenameFile, useDeleteFile } from "@/hooks/useDocuments";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { toast } from "sonner";
+import { hasValidTokens, getStoredTokens } from "@/features/editors/hooks/useGoogleEditor";
+import api from "@/api";
 import docx from "@/assets/documents/docx.png";
 import pdf from "@/assets/documents/pdf.png";
 import pptx from "@/assets/documents/pptx.png";
@@ -13,6 +16,7 @@ import defaultFile from "@/assets/documents/default.png";
 
 export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { permissions } = useRolePermissions();
   const downloadMutation = useDownloadFile();
   const copyMutation = useCopyFile();
@@ -24,6 +28,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const [newFileName, setNewFileName] = useState(file.title);
   const [displayName, setDisplayName] = useState(file.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const inputRef = useRef(null);
   const longPressTimerRef = useRef(null);
 
@@ -81,18 +86,83 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     });
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     // Check if file is editable (docx, doc files)
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
-    const editableExtensions = ['doc', 'docx', 'xls', 'xlsx'];
+    const editableExtensions = ['.doc', '.docx', '.xls', '.xlsx'];
     
     if (!editableExtensions.includes(extension)) {
       toast.error("Only Word documents (.doc, .docx) and Excel files (.xls, .xlsx) can be edited in the editor");
       return;
     }
     
-    // Open document editor in new tab
-    window.open(`/documents/editor/${file.id}`, '_blank');
+    // Check if user has Google tokens
+    if (!hasValidTokens()) {
+      // Start Google OAuth flow, then redirect to document
+      toast.info("Connecting to Google Drive...");
+      sessionStorage.setItem("pending_document_id", file.id);
+      try {
+        const redirectUri = `${window.location.origin}/google-callback`;
+        const { data } = await api.get("/documents/google/auth/", {
+          params: { redirect_uri: redirectUri, document_id: file.id },
+        });
+        window.location.href = data.authUrl;
+      } catch (error) {
+        console.error("Failed to start auth:", error);
+        toast.error("Failed to connect to Google Drive");
+      }
+      return;
+    }
+    
+    // Get Google Drive URL and open directly
+    setIsOpening(true);
+    const loadingToast = toast.loading("Opening document in Google Drive...");
+    
+    try {
+      const tokens = getStoredTokens();
+      const { data } = await api.post("/documents/google/open/", {
+        documentId: file.id,
+        tokens,
+      });
+      
+      toast.dismiss(loadingToast);
+      
+      if (data.editUrl || data.webViewLink) {
+        if (data.isCopy) {
+          toast.success("A copy has been created in your folder. You can edit it freely!");
+          // Invalidate folder queries to show the new copy in the file list
+          queryClient.invalidateQueries({ queryKey: ["folders"] });
+          queryClient.invalidateQueries({ queryKey: ["documents"] });
+        }
+        window.open(data.editUrl || data.webViewLink, '_blank');
+      } else {
+        toast.error("Unable to open document in Google Drive");
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      console.error("Failed to open document:", error);
+      const errorMsg = error.response?.data?.error || "Failed to open document";
+      
+      // If auth error, trigger re-auth
+      if (error.response?.status === 401 || error.response?.data?.needsAuth) {
+        toast.info("Reconnecting to Google Drive...");
+        sessionStorage.setItem("pending_document_id", file.id);
+        try {
+          const redirectUri = `${window.location.origin}/google-callback`;
+          const { data } = await api.get("/documents/google/auth/", {
+            params: { redirect_uri: redirectUri, document_id: file.id },
+          });
+          window.location.href = data.authUrl;
+        } catch (authError) {
+          console.error("Failed to start auth:", authError);
+          toast.error("Failed to connect to Google Drive");
+        }
+      } else {
+        toast.error(errorMsg);
+      }
+    } finally {
+      setIsOpening(false);
+    }
   };
 
   const handleCopy = () => {
@@ -175,6 +245,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     return parts.length > 1 ? parts.pop().toUpperCase() : "FILE";
   };
 
+
   const getFileIcon = () => {
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
     
@@ -184,15 +255,15 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     }
     
     const iconMap = {
-      'pdf': pdf,
-      'doc': docx,
-      'docx': docx,
-      'xls': xlsx,
-      'xlsx': xlsx,
-      'ppt': pptx,
-      'pptx': pptx,
-      'txt': txt,
-      'csv': csv,
+      '.pdf': pdf,
+      '.doc': docx,
+      '.docx': docx,
+      '.xls': xlsx,
+      '.xlsx': xlsx,
+      '.ppt': pptx,
+      '.pptx': pptx,
+      '.txt': txt,
+      '.csv': csv,
     };
 
     return { type: 'icon', src: iconMap[extension] || defaultFile };
@@ -201,7 +272,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
   const isEditable = () => {
     const extension = file.file_extension ? file.file_extension.toLowerCase() : "";
 
-    return ['doc', 'docx', 'xls', 'xlsx'].includes(extension);
+    return ['.doc', '.docx', '.xls', '.xlsx'].includes(extension);
   };
 
   return {
@@ -214,6 +285,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     displayName,
     showDeleteModal,
     setShowDeleteModal,
+    isOpening,
     inputRef,
     
     // Permissions

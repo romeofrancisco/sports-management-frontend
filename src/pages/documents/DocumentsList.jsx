@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { toast } from 'sonner';
+import api from '@/api';
+import { hasValidTokens, getStoredTokens } from '@/features/editors/hooks/useGoogleEditor';
 import {
   useRootFolders,
   useFolderContents,
@@ -182,6 +185,33 @@ const DocumentsList = () => {
   };
 
   const onPaste = () => {
+    // When pasting, for Google editable files we should perform Google Drive copy with tokens
+    if (clipboardFile && clipboardAction === 'copy') {
+      const editableExtensions = ['.doc', '.docx', '.xls', '.xlsx'];
+      const ext = clipboardFile.file_extension ? clipboardFile.file_extension.toLowerCase() : '';
+      const requiresGoogle = editableExtensions.includes(ext);
+
+      if (requiresGoogle && !hasValidTokens()) {
+        // Redirect to Google auth; store pending clipboard action for resume
+        sessionStorage.setItem('pending_document_id', clipboardFile.id);
+        sessionStorage.setItem('pending_action', 'paste');
+        sessionStorage.setItem('pending_target_folder', currentFolder ? currentFolder.id : null);
+        toast.info('Connecting to Google Drive...');
+        const redirectUri = `${window.location.origin}/google-callback`;
+        api.get('/documents/google/auth/', {
+          params: { redirect_uri: redirectUri, document_id: clipboardFile.id },
+        }).then(({ data }) => {
+          window.location.href = data.authUrl;
+        }).catch((error) => {
+          console.error('Failed to start auth:', error);
+          toast.error('Failed to connect to Google Drive');
+        });
+        return;
+      }
+    }
+
+    const tokens = hasValidTokens() ? getStoredTokens() : null;
+
     handlers.handlePaste({
       clipboardFile,
       clipboardAction,
@@ -191,6 +221,7 @@ const DocumentsList = () => {
       copyMutation,
       setClipboardFile,
       setClipboardAction,
+      tokens,
     });
   };
 

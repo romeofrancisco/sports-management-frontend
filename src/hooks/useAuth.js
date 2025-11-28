@@ -8,6 +8,7 @@ import {
   changePassword,
   forgotPassword,
   resetPassword,
+  googleLoginUser,
 } from "@/api/authApi";
 import { login, logout } from "@/store/slices/authSlice";
 import { useNavigate } from "react-router";
@@ -31,9 +32,65 @@ export const useLogin = () => {
       });
     },
     onError: (error) => {
-      if (error.response.status === 400) {
+      const status = error.response?.status;
+      const message = error.response?.data?.error;
+      if (status === 400) {
         toast.error("Login Failed", {
-          description: "Incorrect email or password",
+          description: message || "Incorrect email or password",
+          richColors: true,
+        });
+      } else if (status === 403) {
+        toast.error("Access Denied", {
+          description: message || "Your account is not allowed to login. Contact an administrator.",
+          richColors: true,
+        });
+      }
+    },
+  });
+};
+
+export const useGoogleLogin = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  return useMutation({
+    // The mutationFn now calls the Google specific API function
+    mutationFn: (credential) => googleLoginUser(credential),
+
+    onSuccess: (data) => {
+      // Success handler is identical to the standard login,
+      // as the backend returns the same user data and sets cookies.
+      dispatch(login(data));
+      navigate("/");
+      toast.success("Login Successful", {
+        description: `Welcome back, ${data.first_name}!`,
+        richColors: true,
+      });
+    },
+
+    onError: (error) => {
+      const status = error.response?.status;
+      const message = error.response?.data?.error;
+      
+      if (status === 404) {
+        // User not found in database
+        toast.error("Account Not Found", {
+          description: message || "No account exists with this Google email. Please contact an administrator.",
+          richColors: true,
+        });
+      } else if (status === 401) {
+        toast.error("Google Login Failed", {
+          description: "The Google token was invalid or expired.",
+          richColors: true,
+        });
+      } else if (status === 403) {
+        toast.error("Access Denied", {
+          description: message || "Your account is not allowed to login. Contact an administrator.",
+          richColors: true,
+        });
+      } else {
+        toast.error("Login Failed", {
+          description: message || "An unexpected error occurred.",
           richColors: true,
         });
       }

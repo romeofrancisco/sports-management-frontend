@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useUploadFile } from "@/hooks/useDocuments";
+import api from "@/api";
+import { getStoredTokens, hasValidTokens, useGoogleAuth } from "@/features/editors/hooks/useGoogleEditor";
+import { queryClient } from "@/context/QueryProvider";
 import Modal from "@/components/common/Modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +30,9 @@ const MultipleUploadDialog = ({
   const [uploadingIndex, setUploadingIndex] = useState(null);
   const [uploadedCount, setUploadedCount] = useState(0);
   const [failedFiles, setFailedFiles] = useState([]);
-  const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
+  const { mutate: uploadFile, isPending: isUploadingLegacy } = useUploadFile();
+  const { isAuthenticated, startAuth } = useGoogleAuth();
+  const [isUploading, setIsUploading] = useState(false);
 
   const allowedExtensions = [
     "jpg",
@@ -112,7 +117,16 @@ const MultipleUploadDialog = ({
   const uploadAllFiles = async () => {
     const targetFolderId =
       currentFolder?.id || rootData?.personal_folder_id || null;
-
+    const tokens = getStoredTokens();
+    const hasTokens = !!tokens;
+    if (!hasTokens) {
+      toast.error("Connect to Google Drive first", {
+        description: "Please sign in with Google before uploading documents.",
+      });
+      startAuth();
+      return;
+    }
+    setIsUploading(true);
     for (let i = 0; i < files.length; i++) {
       if (files[i].status === "success") continue; // Skip already uploaded
 
@@ -124,63 +138,70 @@ const MultipleUploadDialog = ({
       );
 
       try {
-        await new Promise((resolve, reject) => {
-          uploadFile(
-            {
-              file: files[i].file,
-              title: files[i].title.trim(),
-              description: "",
-              folder: targetFolderId,
-            },
-            {
-              onSuccess: () => {
-                setFiles((prev) =>
-                  prev.map((f, idx) =>
-                    idx === i ? { ...f, status: "success" } : f
-                  )
-                );
-                setUploadedCount((prev) => prev + 1);
-                resolve();
-              },
-              onError: (error) => {
-                let errorMessage = "Failed to upload file";
+        // Build FormData for Google Drive direct create
+        const formData = new FormData();
+        formData.append("file", files[i].file);
+        formData.append("title", files[i].title.trim());
+        if (targetFolderId) formData.append("folder", targetFolderId);
+        formData.append("description", "");
+        formData.append("tokens", JSON.stringify(tokens));
 
-                if (error?.response?.data) {
-                  const errorData = error.response.data;
-
-                  // Check for field-specific errors (like folder: ['error message'])
-                  if (errorData.folder && Array.isArray(errorData.folder)) {
-                    errorMessage = errorData.folder[0];
-                  } else if (errorData.detail) {
-                    errorMessage = errorData.detail;
-                  } else if (errorData.error) {
-                    errorMessage = errorData.error;
-                  } else if (typeof errorData === "string") {
-                    errorMessage = errorData;
-                  }
-                } else if (error.message) {
-                  errorMessage = error.message;
-                }
-
-                setFiles((prev) =>
-                  prev.map((f, idx) =>
-                    idx === i
-                      ? { ...f, status: "error", error: errorMessage }
-                      : f
-                  )
-                );
-                setFailedFiles((prev) => [...prev, files[i].title]);
-                reject(error);
-              },
-            }
-          );
+        const resp = await api.post("/documents/google/create/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
+
+        if (resp.data?.document) {
+          setFiles((prev) =>
+            prev.map((f, idx) =>
+              idx === i ? { ...f, status: "success" } : f
+            )
+          );
+          setUploadedCount((prev) => prev + 1);
+          // Invalidate queries so the UI fetches updated folder contents
+          try {
+            queryClient.invalidateQueries({ queryKey: ["folder-contents", targetFolderId] });
+            queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+          } catch (e) {
+            console.warn("Failed to invalidate queries after upload:", e);
+          }
+        } else {
+          throw new Error("Invalid response from server");
+        }
       } catch (error) {
-        // Error already handled in onError callback
+        let errorMessage = "Failed to upload file";
+        if (error?.response?.data) {
+          const errorData = error.response.data;
+          if (errorData.folder && Array.isArray(errorData.folder)) {
+            errorMessage = errorData.folder[0];
+          } else if (errorData.detail) {
+            errorMessage = errorData.detail;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          } else if (typeof errorData === "string") {
+            errorMessage = errorData;
+          }
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setFiles((prev) =>
+          prev.map((f, idx) =>
+            idx === i
+              ? { ...f, status: "error", error: errorMessage }
+              : f
+          )
+        );
+        setFailedFiles((prev) => [...prev, files[i].title]);
       }
     }
-
     setUploadingIndex(null);
+    setIsUploading(false);
+    // Final invalidation to ensure UI is up-to-date after batch upload
+    try {
+      queryClient.invalidateQueries({ queryKey: ["folder-contents", targetFolderId] });
+      queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+    } catch (e) {
+      console.warn("Failed to invalidate queries after batch upload:", e);
+    }
   };
 
   const canUpload = files.length > 0 && uploadingIndex === null;
