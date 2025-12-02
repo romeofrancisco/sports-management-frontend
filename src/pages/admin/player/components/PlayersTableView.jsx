@@ -10,72 +10,120 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  Trash, 
-  UserPen, 
-  UserSearch, 
-  MoreHorizontal 
-} from "lucide-react";
+import { Trash, UserPen, UserSearch, MoreHorizontal } from "lucide-react";
 import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
 import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 
 const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
   {
-    id: "name",
-    header: () => <h1 className="ps-3">Name</h1>,
+    id: "player",
+    header: () => <h1 className="ps-3">Player</h1>,
     cell: ({ row }) => {
-      const { profile, first_name, last_name } = row.original;
+      const { profile, first_name, last_name, jersey_number, email } =
+        row.original;
       return (
-        <div className="flex gap-2 items-center ps-3">
-          <Avatar>
-            <AvatarImage src={profile} alt={first_name} />
-            <AvatarFallback className="rounded-lg bg-accent">{first_name[0]}{last_name[0]}</AvatarFallback>
-          </Avatar>
-          <span>
-            {first_name} {last_name}
+        <div className="flex gap-3 items-center ps-3">
+          <div className="relative">
+            <Avatar className="size-10 border-primary/20 border-2">
+              <AvatarImage src={profile} alt={first_name} />
+              <AvatarFallback className="rounded-lg bg-accent">
+                {first_name?.[0]}
+                {last_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+            {jersey_number && (
+              <span className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full size-6 flex items-center justify-center border-2 border-background">
+                #{jersey_number}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {first_name} {last_name}
+            </span>
+            <span className="text-muted-foreground text-xs">{email}</span>
+          </div>
+        </div>
+      );
+    },
+    size: 220,
+  },
+  {
+    id: "academic_info",
+    header: "Academic Info",
+    cell: ({ row }) => {
+      const { academic_info } = row.original;
+      if (!academic_info) {
+        return <span className="text-muted-foreground text-sm">—</span>;
+      }
+      const section = academic_info?.section
+        ? ` - ${academic_info.section}`
+        : "";
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="font-medium text-sm">
+            {academic_info?.year_level}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {academic_info?.course}
+            {section}
           </span>
         </div>
       );
     },
-    size: 200,
+    size: 160,
   },
   {
-    id: "year_level",
-    header: "Year Level",
-    cell: ({ row }) => getYearLevelLabel(row.original.year_level),
-    size: 150,
-  },
-  {
-    id: "course",
-    header: "Course",
-    cell: ({ row }) => getCourseLabel(row.original.course),
-    size: 150,
-  },
-  {
-    id: "sport",
-    header: "Sport",
-    cell: ({ row }) => row.original.sport.name,
-    size: 100,
-  },
-  {
-    id: "position",
-    header: "Position",
-    cell: ({ row }) =>
-      row.original.positions?.map((pos) => pos.abbreviation).join(", "),
-    size: 70,
-  },
-  {
-    id: "jersey_number",
-    header: "Jersey #",
-    cell: ({ row }) => row.original.jersey_number,
-    size: 70,
+    id: "sport_position",
+    header: "Sport & Position",
+    cell: ({ row }) => {
+      const { sport, positions } = row.original;
+      const positionText = positions?.map((pos) => pos.abbreviation).join(", ");
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="font-medium text-sm">{sport?.name || "—"}</span>
+          {positionText && (
+            <span className="text-muted-foreground text-xs">
+              {positionText}
+            </span>
+          )}
+        </div>
+      );
+    },
+    size: 140,
   },
   {
     id: "team",
     header: "Team",
-    cell: ({ row }) => row.original.team?.name,
-    size: 100,
+    cell: ({ row }) => {
+      const {logo, name, head_coach_info} = row.original.team;
+      if (!row.original.team) {
+        return (
+          <span className="text-muted-foreground text-sm">Unassigned</span>
+        );
+      }
+      return (
+        <div className="flex gap-3 items-center ps-3">
+          <div className="relative">
+            <Avatar className="size-10 border-primary/20 border-2">
+              <AvatarImage src={logo} alt={name} />
+              <AvatarFallback className="rounded-lg bg-accent">
+                {name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {name}
+            </span>
+            <span className="text-muted-foreground text-xs">{head_coach_info?.full_name}</span>
+            <span className="text-muted-foreground/80 text-xs">{head_coach_info?.email}</span>
+          </div>
+        </div>
+      );
+    },
+    size: 120,
   },
   {
     id: "actions",
@@ -91,9 +139,8 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />            <DropdownMenuItem
-              onClick={() => navigate(`/players/${player.id}`)}
-            >
+            <DropdownMenuSeparator />{" "}
+            <DropdownMenuItem onClick={() => navigate(`/players/${player.id}`)}>
               <UserSearch />
               View Player
             </DropdownMenuItem>
@@ -114,17 +161,17 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
 ];
 
 // Pure table component that receives data and handlers as props
-const PlayersTableView = ({ 
-  players = [], 
+const PlayersTableView = ({
+  players = [],
   totalItems = 0,
   totalPages = 1,
-  currentPage = 1, 
+  currentPage = 1,
   pageSize = 10,
   isLoading = false,
   onPageChange,
   onPageSizeChange,
   onUpdatePlayer,
-  onDeletePlayer
+  onDeletePlayer,
 }) => {
   const navigate = useNavigate();
 
@@ -147,9 +194,12 @@ const PlayersTableView = ({
   };
 
   const columns = getColumns(navigate, handleUpdatePlayer, handleDeletePlayer);
+  console.log("players table view", players);
 
   return (
-    <div className="space-y-4">      {/* Data table */}
+    <div className="space-y-4">
+      {" "}
+      {/* Data table */}
       <DataTable
         columns={columns}
         data={players}
@@ -158,7 +208,6 @@ const PlayersTableView = ({
         showPagination={false} // Disable built-in pagination
         pageSize={pageSize} // Still pass pageSize for row rendering
       />
-
       {/* Pagination */}
       {totalItems > 0 && (
         <TablePagination
