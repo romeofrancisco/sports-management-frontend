@@ -4,14 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users,
-  Trophy,
-  User,
   Target,
   GraduationCap,
   BookOpen,
   ClipboardList,
+  Mars,
+  Venus,
 } from "lucide-react";
-import { getCourseLabel, getYearLevelLabel } from "@/constants/player";
 import PlayerActions from "./PlayerActions";
 
 const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
@@ -68,7 +67,9 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               ></div>
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+              <CardTitle className="text-sm flex items-center font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                {player.sex === "male" && <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />}
+                {player.sex === "female" && <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />}
                 {player.first_name} {player.last_name}
               </CardTitle>
               {/* Jersey number and sport badge with university colors */}

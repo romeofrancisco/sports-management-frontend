@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Trophy, Mail, User, Target } from "lucide-react";
+import { Users, Trophy, Mail, User, Target, Mars, Venus } from "lucide-react";
 import CoachActions from "./CoachActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
@@ -33,19 +33,15 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
                   {coach.last_name?.[0]}
                 </AvatarFallback>
               </Avatar>
-              {/* Status indicator: red if inactive, green if has teams, amber if none */}
-              <div
-                className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-card shadow-sm ${
-                  !coach.is_active
-                    ? "bg-gradient-to-r from-red-400 to-red-500"
-                    : coach.team_count > 0
-                    ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
-                    : "bg-gradient-to-r from-amber-400 to-amber-500"
-                }`}
-              ></div>
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+              <CardTitle className="flex items-center text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                {coach.sex === "male" && (
+                  <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />
+                )}
+                {coach.sex === "female" && (
+                  <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />
+                )}
                 {coach.full_name}
               </CardTitle>
               <div className="flex items-center gap-2 mt-1">
@@ -55,14 +51,6 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <User className="h-3 w-3 text-muted-foreground" />
-                <Badge
-                  variant="secondary"
-                  className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40 capitalize"
-                >
-                  {coach.sex || "N/A"}
-                </Badge>
-                {/* Coach active/inactive status badge */}
                 <Badge 
                   variant={coach.is_active ? "default" : "destructive"}
                   className={`text-xs font-medium px-2 py-0.5 ${

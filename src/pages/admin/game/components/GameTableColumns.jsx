@@ -1,5 +1,5 @@
 import { formatShortDate, formatTime } from "@/utils/formatDate";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import GameTableActions from "./GameTableActions";
 import { GAME_STATUS_VALUES } from "@/constants/game";
@@ -29,14 +29,26 @@ const baseColumns = [
       const { home_team, away_team } = row.original;
       return (
         <div className="grid grid-cols-[3] grid-rows-2 items-center font-medium text-center">
-          <Avatar className="place-self-center">
+          <Avatar className="place-self-center border-primary/20 border-2">
             <AvatarImage src={home_team.logo} />
+            <AvatarFallback src={home_team.logo}>
+              {home_team.name.charAt(0)}
+            </AvatarFallback>
           </Avatar>
-          <span className="text-primary row-start-2">{home_team.abbreviation || "HOME"}</span>
-          <span className="text-muted-foreground font-bold col-start-2 row-start-1 row-span-2">VS</span>
-          <span className="text-secondary row-start-2">{away_team.abbreviation || "AWAY"}</span>
-          <Avatar className="place-self-center">
+          <span className="text-primary row-start-2">
+            {home_team.abbreviation || "HOME"}
+          </span>
+          <span className="text-muted-foreground font-bold col-start-2 row-start-1 row-span-2">
+            VS
+          </span>
+          <span className="text-secondary row-start-2">
+            {away_team.abbreviation || "AWAY"}
+          </span>
+          <Avatar className="place-self-center border-secondary/20 border-2">
             <AvatarImage src={away_team.logo} />
+            <AvatarFallback src={away_team.logo}>
+              {away_team.name.charAt(0)}
+            </AvatarFallback>
           </Avatar>
         </div>
       );
@@ -48,14 +60,14 @@ const baseColumns = [
     header: () => <h1 className="text-center">Sport/Type</h1>,
     cell: ({ row }) => {
       const { sport_slug, type } = row.original;
-      const sportName = sport_slug 
+      const sportName = sport_slug
         ? sport_slug.charAt(0).toUpperCase() + sport_slug.slice(1)
         : "N/A";
       return (
         <div className="text-center">
           <div className="font-medium text-sm">{sportName}</div>
           {type && (
-            <Badge variant="outline" className="text-xs mt-1">
+            <Badge variant="outline" className="text-xs mt-1 capitalize">
               {type}
             </Badge>
           )}
@@ -146,22 +158,35 @@ const getGameTableColumns = ({
           header: () => <h1 className="text-center">Overall Status</h1>,
           cell: ({ row }) => {
             const { lineup_status } = row.original;
-            const bothReady = lineup_status.home_ready && lineup_status.away_ready;
-            const noneReady = !lineup_status.home_ready && !lineup_status.away_ready;
-            
+            const bothReady =
+              lineup_status.home_ready && lineup_status.away_ready;
+            const noneReady =
+              !lineup_status.home_ready && !lineup_status.away_ready;
+
             return (
               <div className="text-center">
-                <Badge 
-                  variant={bothReady ? "default" : noneReady ? "destructive" : "secondary"}
+                <Badge
+                  variant={
+                    bothReady
+                      ? "default"
+                      : noneReady
+                      ? "destructive"
+                      : "secondary"
+                  }
                   className="text-xs"
                 >
-                  {bothReady ? "Ready to Start" : noneReady ? "Not Ready" : "Partially Ready"}
+                  {bothReady
+                    ? "Ready to Start"
+                    : noneReady
+                    ? "Not Ready"
+                    : "Partially Ready"}
                 </Badge>
               </div>
             );
           },
         },
-      ]);    case GAME_STATUS_VALUES.IN_PROGRESS:
+      ]);
+    case GAME_STATUS_VALUES.IN_PROGRESS:
       return withActionCol([
         {
           id: "current_period",
@@ -173,8 +198,8 @@ const getGameTableColumns = ({
           ),
         },
         {
-          id: "live_score",
-          header: "Live Score",
+          id: "score",
+          header: () => <h1 className="text-center">Score</h1>,
           cell: ({ row }) => {
             const { home_team_score, away_team_score } = row.original;
             return (
@@ -190,9 +215,13 @@ const getGameTableColumns = ({
           cell: ({ row }) => {
             const { home_team_score, away_team_score } = row.original;
             const diff = home_team_score - away_team_score;
-            const leader = diff > 0 ? row.original.home_team.abbreviation : 
-                          diff < 0 ? row.original.away_team.abbreviation : "TIE";
-            
+            const leader =
+              diff > 0
+                ? row.original.home_team.abbreviation
+                : diff < 0
+                ? row.original.away_team.abbreviation
+                : "TIE";
+
             return (
               <div className="text-center">
                 <div className="text-sm font-medium">{leader}</div>
@@ -205,24 +234,8 @@ const getGameTableColumns = ({
             );
           },
         },
-        {
-          id: "game_time",
-          header: () => <h1 className="text-center">Elapsed</h1>,
-          cell: ({ row }) => {
-            const startTime = row.original.started_at;
-            if (!startTime) return <div className="text-center">--</div>;
-            
-            const elapsed = Math.floor((new Date() - new Date(startTime)) / 60000); // minutes
-            return (
-              <div className="text-center">
-                <Badge variant="outline" className="animate-pulse">
-                  {elapsed}m
-                </Badge>
-              </div>
-            );
-          },
-        },
-      ]);    case GAME_STATUS_VALUES.COMPLETED:
+      ]);
+    case GAME_STATUS_VALUES.COMPLETED:
       return withActionCol([
         {
           id: "final",
@@ -246,65 +259,15 @@ const getGameTableColumns = ({
             return (
               <div className="text-center">
                 <div className="font-semibold">{winnerTeam.abbreviation}</div>
-                <div className="text-xs text-muted-foreground">{winnerTeam.name}</div>
+                <div className="text-xs text-muted-foreground">
+                  {winnerTeam.name}
+                </div>
               </div>
             );
           },
         },
-        {
-          id: "margin",
-          header: () => <h1 className="text-center">Margin</h1>,
-          cell: ({ row }) => {
-            const { home, away } = row.original.score_summary.total;
-            const margin = Math.abs(home - away);
-            const marginType = margin === 0 ? "TIE" : 
-                             margin <= 3 ? "Close" : 
-                             margin <= 10 ? "Comfortable" : "Blowout";
-            
-            return (
-              <div className="text-center">
-                <div className="font-medium">{margin}</div>
-                <Badge 
-                  variant={margin === 0 ? "secondary" : 
-                          margin <= 3 ? "default" : 
-                          margin <= 10 ? "outline" : "destructive"}
-                  className="text-xs"
-                >
-                  {marginType}
-                </Badge>
-              </div>
-            );
-          },
-        },
-        {
-          id: "duration",
-          header: () => <h1 className="text-center">Duration</h1>,
-          cell: ({ row }) => (
-            <div className="text-center">
-              {formatDuration(row.original.duration) || "N/A"}
-            </div>
-          ),
-        },
-        {
-          id: "periods_breakdown",
-          header: () => <h1 className="text-center">Periods</h1>,
-          cell: ({ row }) => {
-            const periods = row.original.score_summary?.periods || [];
-            if (periods.length === 0) return <div className="text-center">--</div>;
-            
-            return (
-              <div className="text-center text-xs">
-                {periods.map((period, index) => (
-                  <div key={index} className="text-muted-foreground">
-                    {period.label}: {period.home}-{period.away}
-                  </div>
-                ))}
-              </div>
-            );
-          },
-          size: 80,
-        },
-      ]);    case GAME_STATUS_VALUES.POSTPONED:
+      ]);
+    case GAME_STATUS_VALUES.POSTPONED:
       return withActionCol([
         {
           id: "status_note",
@@ -333,7 +296,9 @@ const getGameTableColumns = ({
             const { home_team, away_team } = row.original;
             return (
               <div className="text-center text-sm">
-                <div>{home_team.abbreviation} vs {away_team.abbreviation}</div>
+                <div>
+                  {home_team.abbreviation} vs {away_team.abbreviation}
+                </div>
                 <div className="text-xs text-muted-foreground">
                   {home_team.name} vs {away_team.name}
                 </div>
@@ -349,12 +314,14 @@ const getGameTableColumns = ({
           header: () => <h1 className="text-center">Status</h1>,
           cell: ({ row }) => {
             const status = row.original.status;
-            const statusDisplay = status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
-            
+            const statusDisplay =
+              status.charAt(0).toUpperCase() +
+              status.slice(1).replace("_", " ");
+
             return (
               <div className="text-center">
-                <Badge 
-                  variant={status === 'cancelled' ? 'destructive' : 'secondary'}
+                <Badge
+                  variant={status === "cancelled" ? "destructive" : "secondary"}
                   className="font-medium"
                 >
                   {statusDisplay}
@@ -362,20 +329,6 @@ const getGameTableColumns = ({
               </div>
             );
           },
-        },
-        {
-          id: "recorded_status",
-          header: () => <h1 className="text-center">Recording</h1>,
-          cell: ({ row }) => (
-            <div className="text-center">
-              <Badge 
-                variant={row.original.is_recorded ? "default" : "outline"}
-                className="text-xs"
-              >
-                {row.original.is_recorded ? "Recorded" : "Not Recorded"}
-              </Badge>
-            </div>
-          ),
         },
       ]);
   }
