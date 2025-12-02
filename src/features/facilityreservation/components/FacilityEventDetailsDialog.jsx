@@ -164,6 +164,7 @@ export default function FacilityEventDetailsDialog({ event, children }) {
               "https://res.cloudinary.com/dzebi1atl/image/upload/v1763285456/assets/facility_placeholder_vkotox.svg"
             }
             alt={event.meta?.facility?.name || "Facility"}
+            loading="lazy"
             className="my-4 rounded object-cover w-full h-40 transition-all duration-200 dark:brightness-50"
           />
 

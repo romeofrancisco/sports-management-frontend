@@ -32,6 +32,7 @@ import { NavbarMessages } from "@/components/chat";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "@/hooks/useModal";
 import logo from "/perpetual_logo.png";
+import NavbarNotifications from "@/features/notifications/NavbarNotifications";
 
 const AppNavbar = ({ navItems = [] }) => {
   const location = useLocation();
@@ -357,9 +358,11 @@ const AppNavbar = ({ navItems = [] }) => {
             </NavigationMenu>{" "}
             {/* Right side - Messages and User menu */}
             <div className="flex items-center gap-4">
-              <NavbarMessages />
+              <div className="flex gap-2">
+                <NavbarMessages />
+                <NavbarNotifications />
+              </div>
 
-              {/* Welcome message for larger screens */}
               <div className="hidden xl:block text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">
                   {user?.first_name} {user?.last_name}
