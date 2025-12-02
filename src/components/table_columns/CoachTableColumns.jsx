@@ -2,12 +2,11 @@ import {
   Edit,
   MoreHorizontal,
   Trash,
-  Mail,
-  User,
-  Volleyball,
-  Users,
-  Shield,
   RotateCcw,
+  Trophy,
+  Users,
+  Mars,
+  Venus,
 } from "lucide-react";
 import React from "react";
 import {
@@ -15,38 +14,60 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
   {
-    header: "Coach",
+    header: () => <h1 className="ps-3">Coach</h1>,
     accessorKey: "full_name",
-    size: 200,
+    size: 260,
     meta: { priority: "high" },
     cell: ({ row }) => {
       const coach = row.original;
       return (
-        <div className="flex items-center gap-3 min-w-0">
-          <Avatar className="h-8 w-8 flex-shrink-0">
-            <AvatarImage src={coach.profile} alt={coach.full_name} />
-            <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-              {coach.first_name[0]}{coach.last_name[0]}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="font-medium text-sm text-foreground truncate">
+        <div className="flex gap-3 items-center sm:ps-3">
+          <div className="relative">
+            <Avatar className="size-10 border-primary/20 border-2">
+              <AvatarImage src={coach.profile} alt={coach.full_name} />
+              <AvatarFallback className="rounded-lg bg-accent">
+                {coach.first_name?.[0]}
+                {coach.last_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium">
+              {coach.sex === "male" && (
+                <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />
+              )}
+              {coach.sex === "female" && (
+                <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />
+              )}
               {coach.full_name}
-            </p>
-            <div className="flex items-center gap-1 mt-0.5">
-              <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-              <p className="text-xs text-muted-foreground truncate">
-                {coach.email}
-              </p>
+            </span>
+            <span className="text-muted-foreground text-xs">{coach.email}</span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Badge
+                variant={coach.is_active ? "default" : "destructive"}
+                className={`h-4 px-1.5 text-[10px] ${
+                  coach.is_active
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                    : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                }`}
+              >
+                {coach.is_active ? "Active" : "Inactive"}
+              </Badge>
             </div>
           </div>
         </div>
@@ -54,68 +75,34 @@ const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
     },
   },
   {
-    header: "Gender",
-    accessorKey: "sex",
-    size: 80,
-    meta: { priority: "medium" },
-    cell: ({ getValue }) => (
-      <Badge 
-        variant="outline" 
-        className="h-5 px-2 text-xs bg-primary/5 border-primary/20 text-primary capitalize"
-      >
-        {getValue()}
-      </Badge>
-    ),
-  },
-  {
-    header: "Status",
-    accessorKey: "is_active",
-    size: 80,
-    meta: { priority: "medium" },
-    cell: ({ getValue }) => (
-      <Badge 
-        variant={getValue() ? "default" : "destructive"}
-        className={`h-5 px-2 text-xs ${
-          getValue() 
-            ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
-            : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
-        }`}
-      >
-        {getValue() ? 'Active' : 'Inactive'}
-      </Badge>
-    ),
-  },
-  {
-    header: "Sports",
+    header: "Qualified Sports",
     accessorKey: "sports",
-    size: 150,
+    size: 180,
     meta: { priority: "medium" },
-    cell: ({ getValue }) => {
-      const sports = getValue() || [];
+    cell: ({ row }) => {
+      const sports = row.original.sports || [];
+
       if (sports.length === 0) {
-        return (
-          <span className="text-xs text-muted-foreground italic">
-            No sports assigned
-          </span>
-        );
+        return <span className="text-muted-foreground text-sm">No sports</span>;
       }
+
       return (
-        <div className="flex flex-col gap-1">
-          {sports.slice(0, 2).map((sport) => (
+        <div className="flex items-center gap-1 flex-wrap">
+          {sports.slice(0, 3).map((sport) => (
             <Badge
               key={sport.id}
               variant="secondary"
-              className="h-5 px-2 text-xs bg-secondary/10 border-secondary/20 text-secondary"
+              className="h-5 px-2 text-xs bg-primary/10 border-primary/20 text-primary"
             >
               {sport.name}
             </Badge>
           ))}
-          {sports.length > 2 && (
+          {sports.length > 3 && (
             <Badge
               variant="outline"
               className="h-5 px-2 text-xs text-muted-foreground"
             >
-              +{sports.length - 2}
+              +{sports.length - 3}
             </Badge>
           )}
         </div>
@@ -123,65 +110,93 @@ const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
     },
   },
   {
-    header: "Teams",
+    header: "Teams & Stats",
     accessorKey: "coached_teams",
-    size: 100,
+    size: 200,
     meta: { priority: "medium" },
-    cell: ({ getValue }) => {
-      const teams = getValue() || [];
-      if (teams.length === 0) {
-        return <span className="text-xs text-muted-foreground italic">No teams</span>;
-      }
+    cell: ({ row }) => {
+      const coach = row.original;
+      const teams = coach.coached_teams || [];
+
       return (
-        <TooltipProvider>
-          <div className="flex items-center -space-x-2">
-            {teams.slice(0, 4).map((team) => (
-              <Tooltip key={team.id}>
-                <TooltipTrigger asChild>
-                  <div className="relative cursor-pointer">
-                    {team.logo ? (
-                      <img
-                        src={team.logo}
-                        alt={team.name}
-                        className="w-6 h-6 rounded-full border-2 border-background object-cover shadow"
-                      />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center shadow">
-                        <span className="text-[10px] font-medium text-primary">
-                          {team.name.charAt(0)}
+        <div className="flex flex-col gap-2">
+          {/* Stats row */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs">
+              <Trophy className="h-3.5 w-3.5 text-primary/80" />
+              {teams.length > 1 ? "Teams:" : "Team:"}{" "}
+              <span className="text-xs font-medium">
+                {coach.team_count || 0}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-xs">
+              <Users className="h-3.5 w-3.5 text-muted-foreground" />
+              {coach.player_count > 1 ? "Players:" : "Player:"}{" "}
+              <span className="text-xs text-muted-foreground">
+                {coach.player_count || 0}
+              </span>
+            </div>
+          </div>
+          {/* Teams avatars */}
+          {teams.length === 0 ? (
+            <span className="text-muted-foreground text-xs">
+              No teams assigned
+            </span>
+          ) : (
+            <TooltipProvider>
+              <div className="flex items-center -space-x-2">
+                {teams.slice(0, 4).map((team) => (
+                  <Tooltip key={team.id}>
+                    <TooltipTrigger asChild>
+                      <div className="relative cursor-pointer">
+                        {team.logo ? (
+                          <img
+                            src={team.logo}
+                            alt={team.name}
+                            className="w-6 h-6 rounded-full border-2 border-background object-cover shadow"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center shadow">
+                            <span className="text-[10px] font-medium text-primary">
+                              {team.name?.charAt(0)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">{team.name}</TooltipContent>
+                  </Tooltip>
+                ))}
+                {teams.length > 4 && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center z-10 cursor-pointer">
+                        <span className="text-[10px] text-muted-foreground">
+                          +{teams.length - 4}
                         </span>
                       </div>
-                    )}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="top">{team.name}</TooltipContent>
-              </Tooltip>
-            ))}
-            {teams.length > 4 && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center z-10 cursor-pointer">
-                    <span className="text-[10px] text-muted-foreground">
-                      +{teams.length - 4}
-                    </span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  <div className="text-xs font-medium text-primary-foreground whitespace-pre-line">
-                    {teams.map((team) => `• ${team.name}`).join("\n")}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </div>
-        </TooltipProvider>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <div className="text-xs font-medium whitespace-pre-line">
+                        {teams
+                          .slice(4)
+                          .map((team) => `• ${team.name}`)
+                          .join("\n")}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            </TooltipProvider>
+          )}
+        </div>
       );
     },
   },
   {
     header: "Actions",
     id: "actions",
-    size: 60,
+    size: 40,
     meta: { priority: "high" },
     cell: ({ row }) => {
       const coach = row.original;
@@ -193,29 +208,27 @@ const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className="text-xs md:text-sm cursor-pointer"
-              onClick={() => onEdit(coach)}
-            >
-              <Edit className="mr-2 h-4 w-4" />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onEdit(coach)}>
+              <Edit />
               Update Coach
             </DropdownMenuItem>
             {coach.is_active ? (
               <DropdownMenuItem
                 onClick={() => onDelete(coach)}
-                className="text-destructive text-xs md:text-sm cursor-pointer"
+                className="text-destructive"
               >
-                <Trash className="mr-2 h-4 w-4 text-destructive" />
+                <Trash />
                 Delete Coach
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
                 onClick={() => onReactivate(coach)}
-                className="text-green-600 dark:text-green-400 text-xs md:text-sm cursor-pointer"
+                className="text-green-600 dark:text-green-400"
               >
-                <RotateCcw className="mr-2 h-4 w-4 text-green-600 dark:text-green-400" />
+                <RotateCcw />
                 Reactivate Coach
               </DropdownMenuItem>
             )}

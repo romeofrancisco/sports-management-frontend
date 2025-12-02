@@ -47,6 +47,8 @@ const TrainingSessionsList = () => {
   const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
 
+  console.log("TrainingSessionsList render - sessions:", sessions);
+
   // Function to handle manage session navigation
   const handleManageSession = (session) => {
     navigate(`/sessions/${session.id}/manage/session-metrics`);
@@ -83,7 +85,7 @@ const TrainingSessionsList = () => {
   });
   return (
     <>
-      <Card>
+      <Card className="gap-0">
         <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -138,7 +140,7 @@ const TrainingSessionsList = () => {
           />
         </CardHeader>
 
-        <CardContent className="p-1 md:p-6">
+        <CardContent className="px-0">
           {/* Loading and Error States */}
           {isError ? (
             <div className="text-center py-16">
@@ -151,7 +153,7 @@ const TrainingSessionsList = () => {
               {/* Content based on view mode */}
               {viewMode === "table" ? (
                 <>
-                  <div className="overflow-x-auto">
+                  <div>
                     <DataTable
                       columns={columns}
                       data={sessions}
@@ -199,7 +201,7 @@ const TrainingSessionsList = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
                       {sessions.map((session) => (
                         <TrainingSessionCard
                           key={session.id}
@@ -222,7 +224,7 @@ const TrainingSessionsList = () => {
 
               {/* Pagination */}
               {totalSessions > 0 && (
-                <div className="border-t mt-6 pt-4">
+                <div className="border-t pt-4 px-6">
                   <TablePagination
                     currentPage={currentPage}
                     pageSize={pageSize}

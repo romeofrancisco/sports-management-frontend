@@ -4,8 +4,8 @@ import getCoachTableColumns from "@/components/table_columns/CoachTableColumns";
 import { Card, CardContent } from "@/components/ui/card";
 import TablePagination from "@/components/ui/table-pagination";
 
-const CoachTable = ({ 
-  coaches, 
+const CoachTable = ({
+  coaches,
   totalItems,
   totalPages,
   currentPage,
@@ -13,31 +13,28 @@ const CoachTable = ({
   isLoading,
   onPageChange,
   onPageSizeChange,
-  onUpdate, 
+  onUpdate,
   onDelete,
-  onReactivate 
+  onReactivate,
 }) => {
-  const columns = getCoachTableColumns({ onEdit: onUpdate, onDelete, onReactivate });
+  const columns = getCoachTableColumns({
+    onEdit: onUpdate,
+    onDelete,
+    onReactivate,
+  });
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-primary/10 shadow-xl bg-gradient-to-br from-card/60 via-card/40 to-primary/5">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <DataTable
-              columns={columns}
-              data={coaches || []}
-              loading={isLoading}
-              className="text-xs sm:text-sm"
-              showPagination={false} // Disable built-in pagination
-              pageSize={pageSize} // Still pass pageSize for row rendering
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <DataTable
+        columns={columns}
+        data={coaches || []}
+        loading={isLoading}
+        className="text-xs sm:text-sm"
+        showPagination={false} // Disable built-in pagination
+        pageSize={pageSize} // Still pass pageSize for row rendering
+      />
 
-      {/* Pagination */}
-      {totalItems > 0 && (
+      <div className="px-6">
         <TablePagination
           currentPage={currentPage}
           pageSize={pageSize}
@@ -47,7 +44,7 @@ const CoachTable = ({
           isLoading={isLoading}
           itemName="coaches"
         />
-      )}
+      </div>
     </div>
   );
 };

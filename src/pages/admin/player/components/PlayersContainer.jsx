@@ -62,7 +62,7 @@ const PlayersContainer = () => {
   };
 
   return (
-    <Card className="border-2 border-primary/20">
+    <Card className="border-2 border-primary/20 gap-0">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
         <div className="flex flex-col md:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -110,13 +110,13 @@ const PlayersContainer = () => {
           registerPlayer={handleRegisterPlayer}
         />
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         {isLoading ? (
           <PlayersListSkeleton viewMode={viewMode} itemCount={pageSize} />
         ) : players && players.length > 0 ? (
           viewMode === "cards" ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
                 {players.map((player, index) => (
                   <PlayerCard
                     key={player.id}
@@ -134,19 +134,20 @@ const PlayersContainer = () => {
                   />
                 ))}
               </div>
-
-              {/* Pagination for cards view */}
-              <TablePagination
-                currentPage={currentPage}
-                pageSize={pageSize}
-                totalItems={totalPlayers}
-                onPageChange={setCurrentPage}
-                onPageSizeChange={(newSize) => {
-                  setPageSize(newSize);
-                  setCurrentPage(1);
-                }}
-                itemName="players"
-              />
+              <div className="px-6">
+                {/* Pagination for cards view */}
+                <TablePagination
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalItems={totalPlayers}
+                  onPageChange={setCurrentPage}
+                  onPageSizeChange={(newSize) => {
+                    setPageSize(newSize);
+                    setCurrentPage(1);
+                  }}
+                  itemName="players"
+                />
+              </div>
             </>
           ) : (
             <PlayersTableView

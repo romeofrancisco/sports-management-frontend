@@ -72,7 +72,7 @@ const CoachContainer = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <Card className="gap-0 bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -117,7 +117,7 @@ const CoachContainer = () => {
           createCoach={handleCreateCoach}
         />
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-0">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <ContentLoading />
@@ -127,35 +127,32 @@ const CoachContainer = () => {
             {/* Coaches Content - Cards or Table */}
             {viewMode === "cards" ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {coaches.map((coach, index) => (
-                    <div
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+                  {coaches.map((coach) => (
+                    <CoachCard
                       key={coach.id}
-                      className="animate-in fade-in-50 duration-500"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <CoachCard
-                        coach={coach}
-                        onDelete={handleDeleteCoach}
-                        onUpdate={handleUpdateCoach}
-                        onReactivate={handleReactivateCoach}
-                      />
-                    </div>
+                      coach={coach}
+                      onDelete={handleDeleteCoach}
+                      onUpdate={handleUpdateCoach}
+                      onReactivate={handleReactivateCoach}
+                    />
                   ))}
                 </div>
 
                 {/* Pagination for cards view */}
-                <TablePagination
-                  currentPage={currentPage}
-                  pageSize={pageSize}
-                  totalItems={totalCoaches}
-                  onPageChange={setCurrentPage}
-                  onPageSizeChange={(newSize) => {
-                    setPageSize(newSize);
-                    setCurrentPage(1);
-                  }}
-                  itemName="coaches"
-                />
+                <div className="px-6">
+                  <TablePagination
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    totalItems={totalCoaches}
+                    onPageChange={setCurrentPage}
+                    onPageSizeChange={(newSize) => {
+                      setPageSize(newSize);
+                      setCurrentPage(1);
+                    }}
+                    itemName="coaches"
+                  />
+                </div>
               </>
             ) : (
               <CoachTable
@@ -171,7 +168,6 @@ const CoachContainer = () => {
                   setCurrentPage(1);
                 }}
                 onDelete={handleDeleteCoach}
-                oncoach={handlecoachCoach}
                 onReactivate={handleReactivateCoach}
               />
             )}

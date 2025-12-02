@@ -182,7 +182,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
               notes
             </p>
-            <p className="text-sm text-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {session.notes || "No additional notes"}
             </p>
           </div>

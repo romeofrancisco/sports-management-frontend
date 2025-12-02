@@ -28,7 +28,7 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
 
   const goToGameScoring = () => {
     setSelectedGame(game);
-    navigate(`/games/${game.id}`);
+    navigate(`/games/${game.id}/scoring`);
   };
 
   const gotoGameResult = () => {

@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Eye, 
-  Edit, 
-  Trash2, 
-  MoreHorizontal, 
-  Users, 
-  Trophy, 
-  Shield,
-  RotateCcw
+import {
+  Eye,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  Users,
+  Trophy,
+  Mars,
+  Venus,
+  RotateCcw,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,7 +22,208 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import DataTable from "@/components/common/DataTable";
 import TablePagination from "@/components/ui/table-pagination";
+import { getDivisionLabel } from "@/constants/team";
+
+const ActionsCell = ({
+  team,
+  navigate,
+  onUpdateTeam,
+  onDeleteTeam,
+  onReactivateTeam,
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            navigate(`/teams/${team.slug}`);
+            setOpen(false);
+          }}
+        >
+          <Eye />
+          View Team
+        </DropdownMenuItem>
+        {team.is_active && (
+          <DropdownMenuItem
+            onClick={() => {
+              onUpdateTeam(team);
+              setOpen(false);
+            }}
+          >
+            <Edit />
+            Edit Team
+          </DropdownMenuItem>
+        )}
+        {team.is_active ? (
+          <DropdownMenuItem
+            onClick={() => {
+              onDeleteTeam(team);
+              setOpen(false);
+            }}
+            className="text-destructive focus:text-destructive focus:bg-destructive/10"
+          >
+            <Trash2 />
+            Delete Team
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            onClick={() => {
+              onReactivateTeam(team);
+              setOpen(false);
+            }}
+            className="text-green-600 focus:text-green-600 focus:bg-green-600/10"
+          >
+            <RotateCcw />
+            Reactivate Team
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const getColumns = (navigate, onUpdateTeam, onDeleteTeam, onReactivateTeam) => [
+  {
+    id: "team",
+    header: () => <h1 className="ps-3">Team</h1>,
+    cell: ({ row }) => {
+      const team = row.original;
+      const hasHeadCoach = team.head_coach_name || team.head_coach?.full_name;
+      const hasAssistantCoach =
+        team.assistant_coach_name || team.assistant_coach?.full_name;
+      const hasAnyCoach = hasHeadCoach || hasAssistantCoach;
+
+      return (
+        <div className="flex gap-3 items-center ps-3">
+          <div className="relative">
+            <Avatar className="size-10 border-primary/20 border-2">
+              <AvatarImage src={team.logo} alt={team.name} />
+              <AvatarFallback className="rounded-lg bg-accent font-bold">
+                {team.name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium">{team.name}</span>
+            <p className="text-xs text-muted-foreground">
+              {team.abbreviation && team.abbreviation} -{" "}
+              <span className="font-medium">
+                {getDivisionLabel(team.division)}
+              </span>
+            </p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Badge
+                variant={team.is_active ? "default" : "destructive"}
+                className={`h-4 px-1.5 text-[10px] ${
+                  team.is_active
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                    : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                }`}
+              >
+                {team.is_active ? "Active" : "Inactive"}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      );
+    },
+    size: 260,
+  },
+  {
+    id: "sport_stats",
+    header: "Sport",
+    cell: ({ row }) => {
+      const team = row.original;
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5 text-primary/80" />
+            <span className="text-sm font-medium">
+              {team.sport?.name || team.sport_name || "—"}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">
+              {team.player_count || team.players_count || 0} players
+            </span>
+          </div>
+        </div>
+      );
+    },
+    size: 150,
+  },
+  {
+    id: "coaches",
+    header: "Coaches",
+    cell: ({ row }) => {
+      const { first_name, last_name, full_name, email, profile, sex } =
+        row.original.head_coach_info;
+
+      if (!row.original.head_coach_info) {
+        return (
+          <span className="text-muted-foreground text-sm">
+            No coach assigned
+          </span>
+        );
+      }
+
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            <Avatar className="size-8 border-primary/20 border-2">
+              <AvatarImage src={profile} alt={full_name} />
+              <AvatarFallback className="rounded-lg bg-accent font-bold">
+                {full_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-medium flex items-center">
+                {sex === "male" && (
+                  <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />
+                )}
+                {sex === "female" && (
+                  <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />
+                )}
+                {full_name}
+              </span>
+              <span className="text-xs text-muted-foreground">{email}</span>
+            </div>
+          </div>
+        </div>
+      );
+    },
+    size: 180,
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const team = row.original;
+      return (
+        <ActionsCell
+          team={team}
+          navigate={navigate}
+          onUpdateTeam={onUpdateTeam}
+          onDeleteTeam={onDeleteTeam}
+          onReactivateTeam={onReactivateTeam}
+        />
+      );
+    },
+    size: 40,
+  },
+];
 
 const TeamsTableView = ({
   teams,
@@ -36,123 +238,27 @@ const TeamsTableView = ({
   onDeleteTeam,
   onReactivateTeam,
 }) => {
-  const TeamActions = ({ team }) => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => window.open(`/teams/${team.slug}`, '_blank')}>
-          <Eye className="mr-2 h-4 w-4" />
-          View Team
-        </DropdownMenuItem>
-        {team.is_active && (
-          <DropdownMenuItem onClick={() => onUpdateTeam(team)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Team
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator />
-        {team.is_active ? (
-          <DropdownMenuItem 
-            onClick={() => onDeleteTeam(team)}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete Team
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem 
-            onClick={() => onReactivateTeam(team)}
-            className="text-green-600 focus:text-green-600"
-          >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Reactivate Team
-          </DropdownMenuItem>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  const navigate = useNavigate();
 
-  const getDivisionColor = (division) => {
-    switch (division?.toLowerCase()) {
-      case 'men': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'women': return 'bg-pink-100 text-pink-800 border-pink-200';
-      case 'mixed': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
+  const columns = getColumns(
+    navigate,
+    onUpdateTeam,
+    onDeleteTeam,
+    onReactivateTeam
+  );
 
   return (
     <div className="space-y-4">
-      {/* Table */}
-      <div className="rounded-md border bg-card/50 backdrop-blur-sm">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[300px]">Team</TableHead>
-              <TableHead>Sport</TableHead>
-              <TableHead>Division</TableHead>
-              <TableHead>Members</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {teams.map((team) => (
-              <TableRow key={team.id} className="hover:bg-muted/50">
-                <TableCell className="font-medium">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={team.logo} alt={team.name} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {team.name?.charAt(0)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-semibold text-foreground">{team.name}</div>
-                      <div className="text-sm text-muted-foreground">{team.description || 'No description'}</div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-muted-foreground" />
-                    <span>{team.sport?.name || 'Unknown Sport'}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={getDivisionColor(team.division)}>
-                    <Shield className="mr-1 h-3 w-3" />
-                    {team.division || 'No Division'}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{team.players_count || 0} members</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge 
-                    variant={team.is_active ? "default" : "secondary"}
-                    className={team.is_active ? "bg-green-100 text-green-800 border-green-200" : ""}
-                  >
-                    {team.is_active ? 'Active' : 'Inactive'}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <TeamActions team={team} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>      {/* Pagination */}
+      {console.log(teams)}
+      <DataTable
+        columns={columns}
+        data={teams}
+        isLoading={isLoading}
+        className="border rounded-lg bg-card"
+        showPagination={false}
+        pageSize={pageSize}
+      />
+
       {totalItems > 0 && (
         <TablePagination
           currentPage={currentPage}
