@@ -31,6 +31,7 @@ import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
 import FacilityReservation from "@/features/facilityreservation/FacilityReservation";
 import IdentifyEditor from "@/pages/documents/IdentifyEditor";
+import PlayerRegistrationApprovalPage from "@/features/players/PlayerRegistrationApprovalPage";
 
 export const coachRoutes = [
   {
@@ -229,4 +230,8 @@ export const coachRoutes = [
     path: "facility-reservation/*",
     element: <FacilityReservation />,
   },
+  {
+    path: "player-registrations",
+    element: <PlayerRegistrationApprovalPage />,
+  }
 ];

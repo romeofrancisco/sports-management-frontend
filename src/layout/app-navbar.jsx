@@ -53,6 +53,7 @@ const AppNavbar = ({ navItems = [] }) => {
         "/forgot-password",
         "/reset-password",
         "/privacy-policy",
+        "/signup",
       ];
       const pathname = location.pathname || "";
       const isPublic = publicPrefixes.some(

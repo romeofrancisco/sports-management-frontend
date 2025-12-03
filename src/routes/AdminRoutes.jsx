@@ -37,6 +37,7 @@ import IdentifyEditor from "@/pages/documents/IdentifyEditor";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
 import CourseSections from "@/features/course-sections/CourseSections";
 import FacilityReservation from "@/features/facilityreservation/FacilityReservation";
+import PlayerRegistrationApprovalPage from "@/features/players/PlayerRegistrationApprovalPage";
 
 // Component to redirect to stats section
 const SportRedirect = () => {
@@ -284,5 +285,9 @@ export const adminRoutes = [
   {
     path: "facility-reservation/*",
     element: <FacilityReservation />,
+  },
+  {
+    path: "player-registrations",
+    element: <PlayerRegistrationApprovalPage />,
   },
 ];

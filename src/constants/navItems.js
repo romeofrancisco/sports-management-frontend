@@ -50,6 +50,12 @@ export const adminGroupedNavigation = () => {
           description: "Manage coaching staff and assignments",
         },
         {
+          title: "Registrations",
+          href: "/player-registrations",
+          icon: ClipboardList,
+          description: "Review and approve player registrations",
+        },
+        {
           title: "Leagues",
           href: "/leagues",
           icon: Trophy,
