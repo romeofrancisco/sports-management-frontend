@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Trophy, ChevronRight } from "lucide-react";
+import { Trophy, ChevronRight, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "/perpetual_logo_small.png";
 
@@ -50,7 +50,9 @@ const HeroSection = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link to="/#about">Learn More</Link>
+              <Link to="/#about">
+                Learn More <Info className="w-5 h-5" />
+              </Link>
             </Button>
           </div>
         </div>
