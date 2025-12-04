@@ -306,46 +306,6 @@ const AppNavbar = ({ navItems = [] }) => {
     const active = item.href ? isActive(item.href) : false;
     const isOpen = openCollapsibles.has(item.title);
 
-    // For public navigation (no icons, section links)
-    if (!isAuthenticated) {
-      const sectionId = item.href?.replace("/#", "") || "home";
-      const isActiveSectionStyle = isHomePage && activeSection === sectionId;
-
-      const handleClick = (e) => {
-        e.preventDefault();
-        setMobileMenuOpen(false);
-        const targetId = item.href?.replace("/#", "");
-
-        if (isHomePage) {
-          if (targetId) {
-            const element = document.getElementById(targetId);
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }
-        } else {
-          navigate("/" + (targetId ? `#${targetId}` : ""));
-        }
-      };
-
-      return (
-        <a
-          key={item.title}
-          href={item.href}
-          onClick={handleClick}
-          className={cn(
-            "flex items-center gap-3 p-3 rounded-lg transition-all duration-300",
-            "bg-gradient-to-r from-card/50 to-card/30 border border-border/30",
-            "hover:from-primary/10 hover:to-primary/5 hover:border-primary/30 hover:shadow-md",
-            isActiveSectionStyle &&
-              "from-primary/20 to-primary/10 border-primary/50 shadow-md"
-          )}
-        >
-          <span className="font-medium text-sm">{item.title}</span>
-        </a>
-      );
-    }
-
     if (item.items && item.items.length > 0) {
       return (
         <Collapsible
@@ -456,11 +416,14 @@ const AppNavbar = ({ navItems = [] }) => {
         <Button
           variant="ghost"
           size="icon"
-          className={
-            isAuthenticated
-              ? "lg:hidden h-10 w-10 bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30"
-              : isTransparentMode ? "text-primary-foreground" : "text-foreground"
-          }
+          className={`lg:hidden
+            ${
+              isAuthenticated
+                ? "h-10 w-10 bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30"
+                : isTransparentMode
+                ? "text-primary-foreground "
+                : "text-foreground"
+            }`}
         >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
@@ -472,7 +435,13 @@ const AppNavbar = ({ navItems = [] }) => {
       >
         <SheetHeader className="pb-6">
           <SheetTitle className="text-left font-bold text-lg bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Navigation Menu
+            <div className="flex gap-2 md:gap-5">
+              <img src={logo} alt="UPHSD" className="h-12" />
+              <div className="flex flex-col">
+                <p>Sports Management</p>
+                <span className="text-xs text-muted-foreground">University of Perpetual Help System DALTA</span>
+              </div>
+            </div>
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)] pr-4">

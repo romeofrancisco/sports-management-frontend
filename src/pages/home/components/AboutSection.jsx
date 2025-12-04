@@ -67,7 +67,7 @@ const AboutSection = () => {
   return (
     <section id="about" className="py-16 lg:py-24">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
           {/* Stacked Images - Click to cycle */}
           <div className="relative order-1 lg:order-none h-[350px] lg:h-[400px] flex items-center justify-center">
             <div

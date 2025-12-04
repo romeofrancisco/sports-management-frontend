@@ -12,6 +12,9 @@ import {
   FolderClosed,
   GraduationCap,
   Home,
+  Info,
+  PackageOpen,
+  Mail,
 } from "lucide-react";
 
 export const publicNavigation = () => {
@@ -19,22 +22,27 @@ export const publicNavigation = () => {
     {
       title: "Home",
       href: "/#home",
+      icon: Home,
     },
     {
       title: "About",
       href: "/#about",
+      icon: Info
     },
     {
       title: "Features",
       href: "/#features",
+      icon: PackageOpen,
     },
     {
       title: "Sports",
       href: "/#sports",
+      icon: Volleyball,
     },
     {
       title: "Contact",
       href: "/#contact",
+      icon: Mail
     },
   ];
 };
