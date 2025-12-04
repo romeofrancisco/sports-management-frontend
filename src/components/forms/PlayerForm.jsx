@@ -1,25 +1,75 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import MultiSelect from "../common/ControlledMultiSelect";
 import ControlledInput from "../common/ControlledInput";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledTeamSelect from "../common/ControlledTeamSelect";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, X, FileText, CheckCircle2, Trash2, ExternalLink } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
+import { toast } from "sonner";
 
 import { useCreatePlayer, useUpdatePlayer } from "@/hooks/usePlayers";
 import { useSportPositions } from "@/hooks/useSports";
 import { useSportTeams } from "@/hooks/useTeams";
 import { useAcademicInfoForm } from "@/hooks/useAcademicInfo";
+import { uploadPlayerDocument, fetchPlayerDocuments, deletePlayerDocument } from "@/api/playersApi";
 
 import { SEX } from "@/constants/player";
+
+// Document type options
+const DOCUMENT_TYPES = [
+  { value: "medical_cert", label: "Medical Certificate" },
+  { value: "parent_consent", label: "Parent/Guardian Consent Form" },
+  { value: "other", label: "Other" },
+];
 
 const PlayerForm = ({ sports, onClose, player }) => {
   const isEdit = !!player;
 
   const { mutate: createPlayer, isPending: isCreating } = useCreatePlayer();
   const { mutate: updatePlayer, isPending: isUpdating } = useUpdatePlayer();
+
+  // Document upload state
+  const [documents, setDocuments] = useState([]);
+  const [existingDocuments, setExistingDocuments] = useState([]);
+  const [isUploadingDocs, setIsUploadingDocs] = useState(false);
+  const [isLoadingDocs, setIsLoadingDocs] = useState(false);
+  const [deletingDocId, setDeletingDocId] = useState(null);
+
+  // Fetch existing documents when editing a player
+  useEffect(() => {
+    if (isEdit && player?.slug) {
+      setIsLoadingDocs(true);
+      fetchPlayerDocuments(player.slug)
+        .then((data) => {
+          setExistingDocuments(data.documents || []);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch player documents:", error);
+        })
+        .finally(() => {
+          setIsLoadingDocs(false);
+        });
+    }
+  }, [isEdit, player?.slug]);
+
+  // Handle deleting an existing document
+  const handleDeleteExistingDocument = async (documentId) => {
+    if (!player?.slug) return;
+    
+    setDeletingDocId(documentId);
+    try {
+      await deletePlayerDocument(player.slug, documentId);
+      setExistingDocuments((prev) => prev.filter((d) => d.id !== documentId));
+      toast.success("Document deleted successfully", { richColors: true });
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+      toast.error("Failed to delete document", { richColors: true });
+    } finally {
+      setDeletingDocId(null);
+    }
+  };
 
   const {
     control,
@@ -144,8 +194,80 @@ const PlayerForm = ({ sports, onClose, player }) => {
     }
   }, [selectedSex, selectedSport, setValue, isEdit]);
 
+  // Handle document upload to local state
+  const handleDocumentUpload = (e, documentType) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File too large", {
+        description: "Maximum file size is 10MB",
+        richColors: true,
+      });
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"];
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!allowedTypes.includes(ext)) {
+      toast.error("Invalid file type", {
+        description: `Allowed types: ${allowedTypes.join(", ")}`,
+        richColors: true,
+      });
+      return;
+    }
+
+    // Add to local state
+    setDocuments((prev) => [
+      ...prev.filter((d) => d.type !== documentType),
+      {
+        type: documentType,
+        file: file,
+        title: file.name,
+        status: "pending",
+      },
+    ]);
+  };
+
+  // Remove document from local state
+  const removeDocument = (documentType) => {
+    setDocuments((prev) => prev.filter((d) => d.type !== documentType));
+  };
+
+  // Upload documents after player is created
+  const uploadDocuments = async (playerSlug) => {
+    for (const doc of documents) {
+      try {
+        await uploadPlayerDocument(playerSlug, {
+          document_type: doc.type,
+          title: doc.title,
+          file: doc.file,
+        });
+        
+        setDocuments((prev) =>
+          prev.map((d) =>
+            d.type === doc.type ? { ...d, status: "uploaded" } : d
+          )
+        );
+      } catch (error) {
+        console.error("Failed to upload document:", error);
+        setDocuments((prev) =>
+          prev.map((d) =>
+            d.type === doc.type ? { ...d, status: "error" } : d
+          )
+        );
+        toast.error("Document upload failed", {
+          description: `Failed to upload ${doc.title}`,
+          richColors: true,
+        });
+      }
+    }
+  };
+
   // Submit Handler
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const payload = { ...data };
 
     // Normalize position_ids
@@ -182,7 +304,23 @@ const PlayerForm = ({ sports, onClose, player }) => {
 
     const mutationFn = isEdit ? updatePlayer : createPlayer;
     mutationFn(requestData, {
-      onSuccess: () => onClose(),
+      onSuccess: async (responseData) => {
+        // Get the player slug - for edit it's from the player prop, for create it's from response
+        const playerSlug = isEdit ? player.slug : responseData?.slug;
+        
+        // Upload new documents if there are any
+        if (documents.length > 0 && playerSlug) {
+          setIsUploadingDocs(true);
+          try {
+            await uploadDocuments(playerSlug);
+          } catch (error) {
+            console.error("Failed to upload some documents:", error);
+          } finally {
+            setIsUploadingDocs(false);
+          }
+        }
+        onClose();
+      },
       onError: (e) => {
         const error = e.response?.data;
         if (error) {
@@ -376,11 +514,156 @@ const PlayerForm = ({ sports, onClose, player }) => {
         />
       </div>
 
-      <Button type="submit" disabled={isCreating || isUpdating}>
-        {isCreating || isUpdating ? (
+      {/* DOCUMENTS */}
+      <div className="space-y-4 pt-6 border-t border-border/60">
+        <div>
+          <h2 className="text-lg font-bold text-primary">Documents</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            {isEdit 
+              ? "View existing documents or upload new ones. Documents must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each)."
+              : "Upload required documents for the player. All documents must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each)."
+            }
+          </p>
+        </div>
+
+        {/* Existing Documents (Edit Mode) */}
+        {isEdit && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">Existing Documents</h3>
+            {isLoadingDocs ? (
+              <div className="flex items-center gap-2 p-3 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Loading documents...
+              </div>
+            ) : existingDocuments.length > 0 ? (
+              <div className="grid gap-2">
+                {existingDocuments.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-3 border rounded-lg bg-muted/30"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate max-w-[300px]">{doc.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {doc.description || doc.file_extension}
+                          {doc.uploaded_by && ` • Uploaded by ${doc.uploaded_by}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {doc.file_url && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                        >
+                          <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteExistingDocument(doc.id)}
+                        disabled={deletingDocId === doc.id}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        {deletingDocId === doc.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground p-3 border rounded-lg bg-muted/20">
+                No documents uploaded yet
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Add New Documents */}
+        <div className="space-y-2">
+          {isEdit && <h3 className="text-sm font-medium text-muted-foreground">Add New Documents</h3>}
+          <div className="grid gap-3">
+            {DOCUMENT_TYPES.map((docType) => {
+              const uploadedDoc = documents.find((d) => d.type === docType.value);
+              
+              return (
+                <div
+                  key={docType.value}
+                  className="flex items-center justify-between p-3 border rounded-lg bg-muted/30"
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm">{docType.label}</p>
+                      {uploadedDoc ? (
+                        <p className="text-xs text-green-600 flex items-center gap-1 truncate">
+                          <CheckCircle2 className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate max-w-[300px]">{uploadedDoc.title}</span>
+                        </p>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          No file selected
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {uploadedDoc ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeDocument(docType.value)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    ) : (
+                      <label>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          onChange={(e) => handleDocumentUpload(e, docType.value)}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          asChild
+                        >
+                          <span className="cursor-pointer">
+                            <Upload className="h-4 w-4 mr-1" />
+                            Upload
+                          </span>
+                        </Button>
+                      </label>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <Button type="submit" disabled={isCreating || isUpdating || isUploadingDocs}>
+        {isCreating || isUpdating || isUploadingDocs ? (
           <>
             <Loader2 className="animate-spin mr-2" />
-            Please wait
+            {isUploadingDocs ? "Uploading documents..." : "Please wait"}
           </>
         ) : isEdit ? (
           "Update Player"

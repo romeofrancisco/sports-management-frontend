@@ -54,3 +54,46 @@ export const reactivatePlayer = async (playerId) => {
     throw error;
   }
 };
+
+/**
+ * Upload a document to a player (coach-created player)
+ */
+export const uploadPlayerDocument = async (playerSlug, documentData) => {
+  try {
+    const formData = new FormData();
+    formData.append("document_type", documentData.document_type);
+    formData.append("title", documentData.title);
+    formData.append("file", documentData.file);
+
+    const { data } = await api.post(
+      `players/${playerSlug}/upload-document/`,
+      formData
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Fetch all documents for a player
+ */
+export const fetchPlayerDocuments = async (playerSlug) => {
+  try {
+    const { data } = await api.get(`players/${playerSlug}/documents/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete a document from a player
+ */
+export const deletePlayerDocument = async (playerSlug, documentId) => {
+  try {
+    await api.delete(`players/${playerSlug}/documents/${documentId}/`);
+  } catch (error) {
+    throw error;
+  }
+};

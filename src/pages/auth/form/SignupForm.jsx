@@ -9,12 +9,10 @@ import api from "@/api";
 import ControlledInput from "@/components/common/ControlledInput";
 import ControlledSelect from "@/components/common/ControlledSelect";
 import ControlledMultiSelect from "@/components/common/ControlledMultiSelect";
-
 // Document type options
 const DOCUMENT_TYPES = [
   { value: "medical_cert", label: "Medical Certificate" },
   { value: "parent_consent", label: "Parent/Guardian Consent Form" },
-  { value: "id_document", label: "ID Document" },
   { value: "other", label: "Other" },
 ];
 
@@ -162,7 +160,7 @@ export function SignupForm({ className, ...props }) {
   // Auto-resolve academic_info_id (same logic as PlayerForm)
   useEffect(() => {
     if (!sectionsForCourse || sectionsForCourse.length === 0) return;
-    
+
     const normalizedSection = selectedSection === "" ? null : selectedSection;
     const match =
       sectionsForCourse.find((a) => a.section === normalizedSection) ||
@@ -170,7 +168,6 @@ export function SignupForm({ className, ...props }) {
 
     if (match) {
       setValue("academic_info_id", match.id);
-      console.log("Set academic_info_id:", match.id);
     }
   }, [sectionsForCourse, selectedSection, setValue]);
 
@@ -257,8 +254,11 @@ export function SignupForm({ className, ...props }) {
         formData.append("title", doc.title);
         formData.append("file", doc.file);
 
-        await api.post(`player-registrations/${regId}/upload-document/`, formData);
-        
+        await api.post(
+          `player-registrations/${regId}/upload-document/`,
+          formData
+        );
+
         setDocuments((prev) =>
           prev.map((d) =>
             d.type === doc.type ? { ...d, status: "uploaded" } : d
@@ -267,9 +267,7 @@ export function SignupForm({ className, ...props }) {
       } catch (error) {
         console.error("Failed to upload document:", error);
         setDocuments((prev) =>
-          prev.map((d) =>
-            d.type === doc.type ? { ...d, status: "error" } : d
-          )
+          prev.map((d) => (d.type === doc.type ? { ...d, status: "error" } : d))
         );
       }
     }
@@ -297,15 +295,9 @@ export function SignupForm({ className, ...props }) {
         academic_info_id: formData.academic_info_id || null,
       };
 
-      console.log("Submitting registration with payload:", payload);
-      console.log("Form data academic_info_id:", formData.academic_info_id);
-
       // Create registration
-      const { data } = await api.post(
-        "player-registrations/",
-        payload
-      );
-      
+      const { data } = await api.post("player-registrations/", payload);
+
       const registrationData = data.registration;
       setRegistrationId(registrationData.id);
 
@@ -322,7 +314,7 @@ export function SignupForm({ className, ...props }) {
     } catch (error) {
       console.error("Registration failed:", error);
       const errorData = error.response?.data;
-      
+
       if (errorData) {
         Object.entries(errorData).forEach(([field, message]) => {
           setError(field, {
@@ -331,9 +323,12 @@ export function SignupForm({ className, ...props }) {
           });
         });
       }
-      
+
       toast.error("Registration failed", {
-        description: errorData?.email || errorData?.detail || "Please check the form and try again.",
+        description:
+          errorData?.email ||
+          errorData?.detail ||
+          "Please check the form and try again.",
         richColors: true,
       });
     } finally {
@@ -351,8 +346,8 @@ export function SignupForm({ className, ...props }) {
           </div>
           <h1 className="text-2xl font-bold">Registration Submitted!</h1>
           <p className="text-muted-foreground text-sm max-w-md">
-            Your player registration has been submitted successfully. Please check
-            your email for confirmation. A coach or admin will review your
+            Your player registration has been submitted successfully. Please
+            check your email for confirmation. A coach or admin will review your
             application and you'll be notified once approved.
           </p>
           <Button
@@ -387,7 +382,7 @@ export function SignupForm({ className, ...props }) {
 
         {/* Personal Information */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary border-b pb-2">
+          <h2 className="text-lg font-semibold text-primary">
             Personal Information
           </h2>
 
@@ -445,7 +440,7 @@ export function SignupForm({ className, ...props }) {
               type="date"
               control={control}
               errors={errors}
-              optional
+              rules={{ required: "Date of birth is required" }}
             />
           </div>
 
@@ -464,7 +459,7 @@ export function SignupForm({ className, ...props }) {
 
         {/* Academic Information */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary border-b pb-2">
+          <h2 className="text-lg font-semibold text-primary">
             Academic Information
           </h2>
 
@@ -475,16 +470,20 @@ export function SignupForm({ className, ...props }) {
             control={control}
             options={yearOptions}
             errors={errors}
+            rules={{ required: "Year level is required" }}
           />
 
           <ControlledSelect
             name="course"
             label="Course"
-            placeholder={selectedYear ? "Select course" : "Select year level first"}
+            placeholder={
+              selectedYear ? "Select course" : "Select year level first"
+            }
             control={control}
             options={courseOptions}
             disabled={!selectedYear}
             errors={errors}
+            rules={{ required: "Course is required" }}
           />
 
           <ControlledSelect
@@ -501,6 +500,7 @@ export function SignupForm({ className, ...props }) {
             options={sectionOptions}
             disabled={!selectedCourse || sectionOptions.length === 0}
             errors={errors}
+            optional={true}
           />
         </div>
 
@@ -508,7 +508,7 @@ export function SignupForm({ className, ...props }) {
 
         {/* Player Information */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary border-b pb-2">
+          <h2 className="text-lg font-semibold text-primary">
             Player Information
           </h2>
 
@@ -569,7 +569,7 @@ export function SignupForm({ className, ...props }) {
 
         {/* Document Upload */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary border-b pb-2">
+          <h2 className="text-lg font-semibold text-primary">
             Required Documents
           </h2>
           <p className="text-xs text-muted-foreground !mt-0">
@@ -579,8 +579,10 @@ export function SignupForm({ className, ...props }) {
 
           <div className="grid gap-4">
             {DOCUMENT_TYPES.map((docType) => {
-              const uploadedDoc = documents.find((d) => d.type === docType.value);
-              
+              const uploadedDoc = documents.find(
+                (d) => d.type === docType.value
+              );
+
               return (
                 <div
                   key={docType.value}
@@ -589,12 +591,21 @@ export function SignupForm({ className, ...props }) {
                   <div className="flex items-center gap-3">
                     <FileText className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="font-medium text-sm">{docType.label}</p>
+                      <p
+                        title={docType.label}
+                        className="font-medium text-sm line-clamp-1"
+                      >
+                        {docType.label}
+                      </p>
                       {uploadedDoc ? (
-                        <p className="text-xs text-green-600 flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" />
-                          {uploadedDoc.title}
-                        </p>
+                        <div
+                          title={uploadedDoc.title}
+                          className="text-xs text-green-600 flex items-center gap-1 "
+                        >
+                          <span className="line-clamp-1">
+                            {uploadedDoc.title}
+                          </span>
+                        </div>
                       ) : (
                         <p className="text-xs text-muted-foreground">
                           No file uploaded
@@ -602,7 +613,7 @@ export function SignupForm({ className, ...props }) {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     {uploadedDoc ? (
                       <Button
@@ -619,7 +630,9 @@ export function SignupForm({ className, ...props }) {
                           type="file"
                           className="hidden"
                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          onChange={(e) => handleDocumentUpload(e, docType.value)}
+                          onChange={(e) =>
+                            handleDocumentUpload(e, docType.value)
+                          }
                         />
                         <Button
                           type="button"
@@ -659,7 +672,10 @@ export function SignupForm({ className, ...props }) {
 
         <p className="text-xs text-muted-foreground px-6 text-center">
           Already have an account?{" "}
-          <a href="/login" className="text-primary underline-offset-4 hover:underline">
+          <a
+            href="/login"
+            className="text-primary underline-offset-4 hover:underline"
+          >
             Sign in
           </a>
         </p>

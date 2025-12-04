@@ -23,7 +23,7 @@ export const TeamSelect = ({
   name,
   label,
   placeholder = "Select a team",
-  teams = [], // Keep for backward compatibility, but will be overridden by API
+  teams: propTeams = null, // If provided, use these teams instead of fetching from API
   excludeTeamId = null,
   value,
   onChange,
@@ -36,17 +36,31 @@ export const TeamSelect = ({
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   
-  // Use API-based filtering with debounced search
+  // Only fetch from API if teams are not provided via props
+  const shouldFetchFromApi = propTeams === null;
+  
+  // Use API-based filtering with debounced search (only if no teams prop)
   const searchFilter = useMemo(() => ({
     search: search.trim(),
   }), [search]);
   
-  // Fetch teams from API with search filter
-  const { data: teamsData, isLoading } = useTeams(searchFilter, 1, 50, true);
+  // Fetch teams from API with search filter (disabled if propTeams is provided)
+  const { data: teamsData, isLoading } = useTeams(searchFilter, 1, 50, shouldFetchFromApi);
   const apiTeams = teamsData?.results || [];
   
+  // Use prop teams if provided, otherwise use API teams
+  const baseTeams = propTeams !== null ? propTeams : apiTeams;
+  
+  // Filter by search if using prop teams
+  const searchedTeams = propTeams !== null && search.trim()
+    ? baseTeams.filter((team) => 
+        team.name.toLowerCase().includes(search.toLowerCase()) ||
+        team.sport?.name?.toLowerCase().includes(search.toLowerCase())
+      )
+    : baseTeams;
+  
   // Filter out excluded team
-  const availableTeams = apiTeams?.filter(
+  const availableTeams = searchedTeams?.filter(
     (team) => String(team.id) !== String(excludeTeamId)
   );
   
@@ -128,7 +142,7 @@ export const TeamSelect = ({
             />
             <CommandList>
               <CommandEmpty>
-                {isLoading ? "Loading teams..." : "No teams found."}
+                {shouldFetchFromApi && isLoading ? "Loading teams..." : "No teams found."}
               </CommandEmpty>
               <CommandGroup>
                 {availableTeams.map((team) => (

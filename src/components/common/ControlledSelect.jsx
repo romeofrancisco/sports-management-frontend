@@ -25,14 +25,15 @@ const ControlledSelect = ({
   labelKey = "label",
   size = "",
   disabled = false,
-  rules
+  rules,
+  optional,
 }) => {
   return (
 
     <div className={`grid gap-0.5 ${className}`}>
       {label && (
         <Label htmlFor={name} className="text-sm text-left">
-          {label}
+          {label} {!optional && <span className="text-destructive">*</span>}
         </Label>
       )}
       <span className="text-xs text-muted-foreground font-medium">

@@ -131,7 +131,7 @@ const PlayersFiltersBar = ({
           value={filter.search}
           onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
           className="w-full ps-7"
-          placeholder="Search teams..."
+          placeholder="Search player..."
           hideLabel={true}
         />
       </div>

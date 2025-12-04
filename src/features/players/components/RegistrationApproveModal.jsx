@@ -3,15 +3,10 @@ import Modal from "@/components/common/Modal";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useSportTeams } from "@/hooks/useTeams";
+import { TeamSelect } from "@/components/common/TeamSelect";
+import { getDivisionLabel } from "@/constants/team";
 
 const RegistrationApproveModal = ({
   open,
@@ -26,7 +21,10 @@ const RegistrationApproveModal = ({
   // Get teams for the selected sport and sex (division)
   const sportSlug = registration?.sport?.slug;
   const division = registration?.sex;
-  const { data: teams, isLoading: teamsLoading } = useSportTeams(sportSlug, division);
+  const { data: teams, isLoading: teamsLoading } = useSportTeams(
+    sportSlug,
+    division
+  );
 
   // Reset form when modal opens with new registration
   useEffect(() => {
@@ -56,10 +54,13 @@ const RegistrationApproveModal = ({
       onOpenChange={onOpenChange}
       icon={CheckCircle}
       title="Approve Registration"
-      description={`Approve ${registration.full_name || `${registration.first_name} ${registration.last_name}`}'s registration`}
+      description={`Approve ${
+        registration.full_name ||
+        `${registration.first_name} ${registration.last_name}`
+      }'s registration`}
       contentClassName="sm:max-w-[450px]"
     >
-      <div className="space-y-4">
+      <div className="space-y-4 px-1">
         {/* Applicant Info Summary */}
         <div className="p-3 rounded-lg bg-muted/50 space-y-1">
           <p className="text-sm">
@@ -79,43 +80,25 @@ const RegistrationApproveModal = ({
             </p>
           )}
         </div>
-
-        {/* Team Selection */}
-        <div className="space-y-2">
-          <Label htmlFor="team">
-            Assign Team <span className="text-destructive">*</span>
-          </Label>
-          <Select value={teamId} onValueChange={setTeamId} disabled={teamsLoading}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={teamsLoading ? "Loading teams..." : "Select a team"} />
-            </SelectTrigger>
-            <SelectContent>
-              {teams?.map((team) => (
-                <SelectItem key={team.id} value={team.id.toString()}>
-                  <div className="flex items-center gap-2">
-                    {team.logo && (
-                      <img
-                        src={team.logo}
-                        alt={team.name}
-                        className="size-5 rounded object-cover"
-                      />
-                    )}
-                    <span>{team.name}</span>
-                    <span className="text-muted-foreground text-xs">
-                      ({team.division})
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div>
+          <TeamSelect
+            label={
+              <>
+                Assign Team <span className="text-destructive">*</span>
+              </>
+            }
+            placeholder={teamsLoading ? "Loading teams..." : "Select a team"}
+            teams={teams || []}
+            value={teamId}
+            onChange={setTeamId}
+            disabled={teamsLoading || !teams?.length}
+          />
           {!teams?.length && !teamsLoading && (
-            <p className="text-xs text-muted-foreground">
-              No teams available for {registration.sport?.name} ({division})
+            <p className="text-xs text-muted-foreground mt-0.5">
+              No teams available for {registration.sport?.name} ({getDivisionLabel(division)})
             </p>
           )}
         </div>
-
         {/* Jersey Number */}
         <div className="space-y-2">
           <Label htmlFor="jersey_number">Jersey Number</Label>

@@ -100,8 +100,13 @@ export const downloadFile = async (fileId) => {
       }
     }
     
-    // For Cloudinary files, return the file URL directly
-    return data.file;
+    // For Cloudinary files, use file_url (which fallbacks to cloudinary_url)
+    const fileUrl = data.file_url || data.cloudinary_url || data.file;
+    if (fileUrl) {
+      return fileUrl;
+    }
+    
+    throw new Error("No download URL available for this file");
   } catch (error) {
     throw error;
   }

@@ -110,7 +110,7 @@ const Modal = ({
                   </DialogTitle>
                 )}
                 {description && (
-                  <DialogDescription className="text-sm text-muted-foreground mt-1">
+                  <DialogDescription className="text-sm text-muted-foreground">
                     {description}
                   </DialogDescription>
                 )}

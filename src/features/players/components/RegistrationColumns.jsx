@@ -61,7 +61,7 @@ export const createRegistrationColumns = ({
         }`.toUpperCase();
 
         return (
-          <div className="flex items-center gap-3 max-w-[200px] md:max-w-full">
+          <div className="flex items-center gap-3">
             <Avatar className="size-10 hidden md:inline-flex">
               <AvatarFallback className="bg-primary/10 text-primary font-medium">
                 {initials}
@@ -69,7 +69,7 @@ export const createRegistrationColumns = ({
             </Avatar>
             <div className="flex flex-col min-w-0">
               <span className="font-medium truncate">{fullName}</span>
-              <span className="text-xs text-muted-foreground truncate">
+              <span className="text-xs text-muted-foreground truncate max-w-[100px] md:max-w-[150px] lg:max-w-full">
                 {row.email}
               </span>
             </div>
@@ -212,6 +212,26 @@ export const createRegistrationColumns = ({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+        );
+      },
+    });
+  } else {
+    columns.push({
+      header: "",
+      accessorKey: "id_action",
+      cell: (info) => {
+        const row = info.row.original;
+        return (
+          <div className="flex w-full justify-end">
+            <Button
+            size="sm"
+              className=""
+              variant="outline"
+              onClick={() => onViewDetails(row)}
+            >
+              View Details
+            </Button>
           </div>
         );
       },

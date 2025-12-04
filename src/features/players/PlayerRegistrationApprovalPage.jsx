@@ -42,7 +42,7 @@ const PlayerRegistrationApprovalPage = () => {
   const deleteModal = useModal();
 
   const { isAdmin, isCoach } = useRolePermissions();
-  const canManage = isAdmin() || isCoach();
+  const canManage = isAdmin();
 
   // Build query params
   const params = useMemo(() => {
@@ -68,9 +68,9 @@ const PlayerRegistrationApprovalPage = () => {
   );
 
   // Mutations
-  const { mutate: approveRegistration, isPending: isApproving } = useApproveRegistration();
-  const { mutate: rejectRegistration, isPending: isRejecting } = useRejectRegistration();
-  const { mutate: deleteRegistration, isPending: isDeleting } = useDeleteRegistration();
+  const { mutate: approveRegistration, isPending: isApproving } = useApproveRegistration(params);
+  const { mutate: rejectRegistration, isPending: isRejecting } = useRejectRegistration(params);
+  const { mutate: deleteRegistration, isPending: isDeleting } = useDeleteRegistration(params);
 
   // Handlers
   const handleApprove = (registration) => {
@@ -222,6 +222,8 @@ const PlayerRegistrationApprovalPage = () => {
         open={detailsModal.isOpen}
         onOpenChange={detailsModal.closeModal}
         registration={registrationDetails || selectedRegistration}
+        onApprove={handleApprove}
+        onReject={handleReject}
       />
 
       {/* Delete Modal */}

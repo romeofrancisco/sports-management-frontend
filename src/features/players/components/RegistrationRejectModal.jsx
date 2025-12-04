@@ -42,7 +42,7 @@ const RegistrationRejectModal = ({
       description={`Reject ${registration.full_name || `${registration.first_name} ${registration.last_name}`}'s registration`}
       contentClassName="sm:max-w-[450px]"
     >
-      <div className="space-y-4">
+      <div className="space-y-4 px-1">
         {/* Applicant Info Summary */}
         <div className="p-3 rounded-lg bg-destructive/10 space-y-1">
           <p className="text-sm">
