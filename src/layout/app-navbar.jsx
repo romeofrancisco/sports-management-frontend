@@ -153,7 +153,7 @@ const AppNavbar = ({ navItems = [] }) => {
       const handleClick = (e) => {
         e.preventDefault();
         const targetId = item.href?.replace("/#", "");
-        
+
         if (isHomePage) {
           // If on homepage, scroll to section
           if (targetId) {
@@ -179,7 +179,9 @@ const AppNavbar = ({ navItems = [] }) => {
             "relative px-1 py-2 text-sm font-medium transition-colors duration-300",
             "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full",
             "after:origin-center after:scale-x-0 after:transition-transform after:duration-300",
-            isTransparentMode ? "after:bg-secondary dark:after:bg-primary" : "after:bg-primary",
+            isTransparentMode
+              ? "after:bg-secondary dark:after:bg-primary"
+              : "after:bg-primary",
             isActiveSectionStyle && "after:scale-x-100",
             isTransparentMode
               ? isActiveSectionStyle
@@ -323,7 +325,9 @@ const AppNavbar = ({ navItems = [] }) => {
               )}
             >
               <div className="flex items-center gap-3">
-                <IconComponent className="h-5 w-5 transition-all duration-300" />
+                {IconComponent && (
+                  <IconComponent className="h-5 w-5 transition-all duration-300" />
+                )}
                 <span className="font-medium text-sm">{item.title}</span>
                 {item.badge && (
                   <Badge variant="secondary" className="h-4 px-1.5 text-xs">
@@ -354,7 +358,7 @@ const AppNavbar = ({ navItems = [] }) => {
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <SubIconComponent className="h-4 w-4" />
+                  {SubIconComponent && <SubIconComponent className="h-4 w-4" />}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">
@@ -395,7 +399,7 @@ const AppNavbar = ({ navItems = [] }) => {
         )}
         onClick={() => setMobileMenuOpen(false)}
       >
-        <IconComponent className="h-5 w-5" />
+        {IconComponent && <IconComponent className="h-5 w-5" />}
         <span className="font-medium text-sm">{item.title}</span>
         {item.badge && (
           <Badge variant="secondary" className="ml-auto h-4 px-1.5 text-xs">
@@ -412,7 +416,14 @@ const AppNavbar = ({ navItems = [] }) => {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden h-10 w-10 bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30"
+          className={`lg:hidden
+            ${
+              isAuthenticated
+                ? "h-10 w-10 bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30"
+                : isTransparentMode
+                ? "text-primary-foreground "
+                : "text-foreground"
+            }`}
         >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
@@ -424,7 +435,13 @@ const AppNavbar = ({ navItems = [] }) => {
       >
         <SheetHeader className="pb-6">
           <SheetTitle className="text-left font-bold text-lg bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Navigation Menu
+            <div className="flex gap-2 md:gap-5">
+              <img src={logo} alt="UPHSD" className="h-12" />
+              <div className="flex flex-col">
+                <p>Sports Management</p>
+                <span className="text-xs text-muted-foreground">University of Perpetual Help System DALTA</span>
+              </div>
+            </div>
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
@@ -522,16 +539,16 @@ const AppNavbar = ({ navItems = [] }) => {
               )}
             />
             <Button
+              size="sm"
               className={cn(
                 "cursor-pointer transition-all duration-300",
                 isTransparentMode
                   ? "bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80"
                   : ""
               )}
+              asChild
             >
-              <Link to="/signup" className="block w-full h-full">
-                Register as Player
-              </Link>
+              <Link to="/signup">Register as Player</Link>
             </Button>
             <div
               className={` ${
@@ -548,19 +565,17 @@ const AppNavbar = ({ navItems = [] }) => {
             </div>
           </div>
         ) : (
-            <div
-              className={`lg:ml-61 ${
-                isTransparentMode
-                  ? "text-primary-foreground"
-                  : "text-foreground"
-              }`}
-            >
-              {theme === "light" ? (
-                <Sun className="size-5" onClick={() => setTheme("dark")} />
-              ) : (
-                <Moon className="size-5" onClick={() => setTheme("light")} />
-              )}
-            </div>
+          <div
+            className={`lg:ml-61 ${
+              isTransparentMode ? "text-primary-foreground" : "text-foreground"
+            }`}
+          >
+            {theme === "light" ? (
+              <Sun className="size-5" onClick={() => setTheme("dark")} />
+            ) : (
+              <Moon className="size-5" onClick={() => setTheme("light")} />
+            )}
+          </div>
         )}
       </div>
     </header>

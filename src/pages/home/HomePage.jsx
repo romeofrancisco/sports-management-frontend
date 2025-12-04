@@ -37,7 +37,6 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
-      <StatsSection />
       <AboutSection />
       <FeaturesSection />
       <SportsSection />

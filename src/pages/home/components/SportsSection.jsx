@@ -63,7 +63,7 @@ const SportsSection = () => {
   return (
     <section className="py-16 lg:py-24 bg-muted/30" id="sports">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
           <div>
             <span className="text-secondary font-semibold text-sm uppercase tracking-wider">
               Our Sports
@@ -83,7 +83,7 @@ const SportsSection = () => {
               schedules, and achieve peak performance.
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-8">
+            <div className="flex flex-wrap gap-3">
               {sports.map((sport, index) => (
                 <span
                   key={index}
