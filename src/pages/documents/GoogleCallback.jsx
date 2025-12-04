@@ -9,6 +9,7 @@ import { toast } from "sonner";
 /**
  * Google OAuth2 callback page
  * Handles the redirect from Google after user authorization
+ * Supports both popup flow (sends message to parent) and redirect flow
  */
 export default function GoogleCallback() {
   const navigate = useNavigate();
@@ -18,13 +19,24 @@ export default function GoogleCallback() {
   // Ref to prevent duplicate token exchanges (React Strict Mode causes double mount)
   const isProcessingRef = useRef(false);
 
+  // Check if this is a new tab flow (set by useFileCard when opening auth)
+  // This is more reliable than checking window.opener which can be true for new tabs too
+  const isNewTabFlow = sessionStorage.getItem("google_auth_new_tab") === "true";
+  
+  // Clear the flag immediately so it doesn't persist
+  useEffect(() => {
+    if (isNewTabFlow) {
+      sessionStorage.removeItem("google_auth_new_tab");
+    }
+  }, [isNewTabFlow]);
+
   useEffect(() => {
     const processCallback = async () => {
       const code = searchParams.get("code");
       const stateParam = searchParams.get("state");
       const errorParam = searchParams.get("error");
 
-      console.log("Google callback received:", { code: !!code, state: stateParam, error: errorParam });
+      console.log("Google callback received:", { code: !!code, state: stateParam, error: errorParam, isNewTabFlow });
 
       // Prevent duplicate processing (React Strict Mode or double-click)
       if (isProcessingRef.current) {
@@ -42,14 +54,16 @@ export default function GoogleCallback() {
       }
 
       if (errorParam) {
-        setError(`Google authorization failed: ${errorParam}`);
+        const errorMessage = `Google authorization failed: ${errorParam}`;
+        setError(errorMessage);
         setProcessing(false);
         setTimeout(() => navigate("/documents"), 3000);
         return;
       }
 
       if (!code) {
-        setError("No authorization code received");
+        const errorMessage = "No authorization code received";
+        setError(errorMessage);
         setProcessing(false);
         setTimeout(() => navigate("/documents"), 3000);
         return;
@@ -82,9 +96,11 @@ export default function GoogleCallback() {
 
         if (data.tokens) {
           storeTokens(data.tokens);
+          
+          // Open the document directly in this tab
           toast.success("Connected to Google Drive");
           
-          // Clean up document ID (we'll still use other pending values below)
+          // Clean up document ID
           sessionStorage.removeItem("pending_document_id");
           const pendingAction = sessionStorage.getItem('pending_action');
           const pendingTargetFolder = sessionStorage.getItem('pending_target_folder');
@@ -138,9 +154,8 @@ export default function GoogleCallback() {
               }
 
               if (docData.editUrl || docData.webViewLink) {
-                // Open document in new tab and go back to documents page
-                window.open(docData.editUrl || docData.webViewLink, '_blank');
-                navigate("/documents", { replace: true });
+                // Open document directly in this tab (no new window needed)
+                window.location.href = docData.editUrl || docData.webViewLink;
               } else {
                 navigate("/documents", { replace: true });
               }
@@ -189,7 +204,7 @@ export default function GoogleCallback() {
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-lg font-medium">Connecting to Google Drive...</p>
-          <p className="text-muted-foreground">Please wait</p>
+          <p className="text-muted-foreground">Please wait, opening document...</p>
         </div>
       )}
     </div>

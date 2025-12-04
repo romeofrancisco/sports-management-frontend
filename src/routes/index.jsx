@@ -8,6 +8,7 @@ import ForgotPassword from "@/pages/auth/ForgotPassword";
 import ResetPassword from "@/pages/auth/ResetPassword";
 import GoogleCallback from "@/pages/documents/GoogleCallback";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import PlayerRegistrationPage from "@/pages/auth/PlayerRegistrationPage";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <PlayerRegistrationPage />,
       },
       {
         path: "/set-password/:uid/:token",

@@ -50,6 +50,12 @@ export const adminGroupedNavigation = () => {
           description: "Manage coaching staff and assignments",
         },
         {
+          title: "Registrations",
+          href: "/player-registrations",
+          icon: ClipboardList,
+          description: "Review and approve player registrations",
+        },
+        {
           title: "Leagues",
           href: "/leagues",
           icon: Trophy,
@@ -72,7 +78,7 @@ export const adminGroupedNavigation = () => {
           href: "/course-sections",
           icon: GraduationCap,
           description: "Manage courses and sections for players",
-        }
+        },
       ],
     },
     {
@@ -102,7 +108,7 @@ export const adminGroupedNavigation = () => {
           href: "/facility-reservation",
           icon: CalendarCog,
           description: "Manage facility bookings and reservations",
-        }
+        },
       ],
     },
   ];
@@ -148,7 +154,13 @@ export const coachGroupedNavigation = () => {
           href: "/facility-reservation",
           icon: CalendarCog,
           description: "Reserve facilities for training and games",
-        }
+        },
+        {
+          title: "Registrations",
+          href: "/player-registrations",
+          icon: ClipboardList,
+          description: "Review and approve player registrations",
+        },
       ],
     },
     {

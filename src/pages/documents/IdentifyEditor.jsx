@@ -30,8 +30,6 @@ const IdentifyEditor = () => {
     enabled: !!documentId,
   });
 
-  console.log("Document Data:", documentData);
-
   // Show loading state
   if (isLoading) return <FullPageLoading />;
 

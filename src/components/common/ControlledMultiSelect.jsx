@@ -33,12 +33,13 @@ const ControlledMultiSelect = ({
   labelKey = "name",
   secondaryKey = "",
   disabled = false,
+  optional,
 }) => {
   return (
     <div className={cn("grid gap-0.5", className)}>
       {label && (
         <Label htmlFor={name} className="text-sm text-left">
-          {label}
+          {label} {!optional && <span className="text-destructive">*</span>}
         </Label>
       )}
       <span className="text-muted-foreground text-xs font-medium">

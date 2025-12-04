@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Mars,
   Venus,
+  Mail,
 } from "lucide-react";
 import PlayerActions from "./PlayerActions";
 
@@ -20,7 +21,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
     player.positions?.map((pos) => pos.abbreviation).join(", ") || "N/A";
   return (
     <Card
-      className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 ${
+      className={`relative py-4 overflow-hidden border-2 rounded-xl transition-all duration-300 hover:shadow-lg group bg-card border-border shadow-sm hover:border-primary/30 ${
         !player.is_active ? "opacity-70 border-gray-300" : ""
       }`}
     >
@@ -68,10 +69,18 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
             </div>
             <div className="flex-1 min-w-0">
               <CardTitle className="text-sm flex items-center font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
-                {player.sex === "male" && <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />}
-                {player.sex === "female" && <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />}
+                {player.sex === "male" && (
+                  <Mars className="inline-block size-3 mr-1 text-blue-500" />
+                )}
+                {player.sex === "female" && (
+                  <Venus className="inline-block size-3 mr-1 text-pink-500" />
+                )}
                 {player.first_name} {player.last_name}
               </CardTitle>
+              <div className="text-xs text-muted-foreground">
+                <Mail className="inline-block size-3 mr-1" />
+                <span>{player.email}</span>
+              </div>
               {/* Jersey number and sport badge with university colors */}
               <div className="flex items-center gap-2 mt-1">
                 <Badge
@@ -145,9 +154,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
                 Year Level
               </span>
             </div>
-            <span
-              className="text-xs font-medium px-2 py-1 rounded-md text-primary"
-            >
+            <span className="text-xs font-medium px-2 py-1 rounded-md text-primary">
               {player.academic_info?.year_level}
             </span>
           </div>

@@ -30,6 +30,9 @@ const Modal = ({
   headerGradient = true,
   scrollable = true,
 
+  // Behavior props
+  preventOutsideClose = false, // Prevent closing when clicking outside
+
   // Custom classes
   contentClassName = "",
   headerClassName = "",
@@ -83,6 +86,8 @@ const Modal = ({
         // a compact modal while large content scrolls.
         className={`overflow-hidden p-0 ${contentClassName}`}
         style={{ maxHeight }}
+        onPointerDownOutside={preventOutsideClose ? (e) => e.preventDefault() : undefined}
+        onInteractOutside={preventOutsideClose ? (e) => e.preventDefault() : undefined}
       >
         {showHeader && (title || description || Icon) && (
           <DialogHeader
@@ -105,7 +110,7 @@ const Modal = ({
                   </DialogTitle>
                 )}
                 {description && (
-                  <DialogDescription className="text-sm text-muted-foreground mt-1">
+                  <DialogDescription className="text-sm text-muted-foreground">
                     {description}
                   </DialogDescription>
                 )}
