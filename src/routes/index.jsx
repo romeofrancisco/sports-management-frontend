@@ -9,11 +9,16 @@ import ResetPassword from "@/pages/auth/ResetPassword";
 import GoogleCallback from "@/pages/documents/GoogleCallback";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import PlayerRegistrationPage from "@/pages/auth/PlayerRegistrationPage";
+import HomePage from "@/pages/home/HomePage";
 
 export const router = createBrowserRouter([
   {
     element: <NavbarProvider />,
     children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
       {
         path: "/login",
         element: <LoginPage />,

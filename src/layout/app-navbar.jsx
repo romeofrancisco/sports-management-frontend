@@ -25,7 +25,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Menu, ChevronDown, ChevronRight } from "lucide-react";
+import { Menu, ChevronDown, ChevronRight, Sun, Moon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavbarNavUser } from "./navbar-nav-user";
 import { NavbarMessages } from "@/components/chat";
@@ -33,13 +33,67 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "@/hooks/useModal";
 import logo from "/perpetual_logo.png";
 import NavbarNotifications from "@/features/notifications/NavbarNotifications";
+import { Separator } from "@/components/ui/separator";
+import { useTheme } from "@/context/ThemeProvider";
 
 const AppNavbar = ({ navItems = [] }) => {
   const location = useLocation();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCollapsibles, setOpenCollapsibles] = useState(new Set());
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
+
+  // Check if we're on the homepage
+  const isHomePage = location.pathname === "/";
+
+  // Handle scroll event for transparent header on homepage and section tracking
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show background after scrolling past hero section (approximately 100px)
+      setIsScrolled(window.scrollY > 0);
+
+      // Track active section for homepage navigation
+      if (isHomePage && !isAuthenticated) {
+        const sections = ["home", "about", "features", "sports", "contact"];
+        const scrollPosition = window.scrollY + 100; // Offset for navbar height
+
+        for (const sectionId of sections) {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            const { offsetTop, offsetHeight } = element;
+            if (
+              scrollPosition >= offsetTop &&
+              scrollPosition < offsetTop + offsetHeight
+            ) {
+              setActiveSection(sectionId);
+              break;
+            }
+          }
+        }
+
+        // If at the very top, set home as active
+        if (window.scrollY < 100) {
+          setActiveSection("home");
+        }
+      }
+    };
+
+    if (isHomePage) {
+      window.addEventListener("scroll", handleScroll);
+      // Initial check
+      handleScroll();
+    } else {
+      // Reset scroll state when not on homepage
+      setIsScrolled(true);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isHomePage, isAuthenticated]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -54,20 +108,24 @@ const AppNavbar = ({ navItems = [] }) => {
         "/reset-password",
         "/privacy-policy",
         "/signup",
+        "/",
       ];
       const pathname = location.pathname || "";
       const isPublic = publicPrefixes.some(
         (p) => pathname === p || pathname.startsWith(p + "/")
       );
-      if (!isPublic) {
-        navigate("/login");
+      if (!isPublic && isAuthenticated) {
+        navigate("/dashboard");
       }
     }
   }, [isAuthenticated, navigate, location]);
 
   const isActive = (href) => {
-    if (href === "/") {
-      return location.pathname === "/";
+    if (href === "/dashboard") {
+      return (
+        location.pathname === "/dashboard" ||
+        location.pathname.startsWith("/dashboard/")
+      );
     }
     return location.pathname.startsWith(href);
   };
@@ -85,6 +143,57 @@ const AppNavbar = ({ navItems = [] }) => {
   const renderDesktopNavItem = (item, index) => {
     const IconComponent = item.icon;
     const active = item.href ? isActive(item.href) : false;
+
+    if (!isAuthenticated) {
+      // Extract section id from href (e.g., "/#features" -> "features")
+      const sectionId = item.href?.replace("/#", "") || "home";
+      // Only show active section styling when on homepage
+      const isActiveSectionStyle = isHomePage && activeSection === sectionId;
+
+      const handleClick = (e) => {
+        e.preventDefault();
+        const targetId = item.href?.replace("/#", "");
+        
+        if (isHomePage) {
+          // If on homepage, scroll to section
+          if (targetId) {
+            const element = document.getElementById(targetId);
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth" });
+            } else if (targetId === "" || item.href === "/#") {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }
+        } else {
+          // If on another page, navigate to homepage with hash
+          navigate("/" + (targetId ? `#${targetId}` : ""));
+        }
+      };
+
+      return (
+        <a
+          key={index}
+          href={item.href}
+          onClick={handleClick}
+          className={cn(
+            "relative px-1 py-2 text-sm font-medium transition-colors duration-300",
+            "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full",
+            "after:origin-center after:scale-x-0 after:transition-transform after:duration-300",
+            isTransparentMode ? "after:bg-secondary dark:after:bg-primary" : "after:bg-primary",
+            isActiveSectionStyle && "after:scale-x-100",
+            isTransparentMode
+              ? isActiveSectionStyle
+                ? "text-secondary dark:text-primary"
+                : "text-primary-foreground hover:text-secondary dark:hover:text-primary"
+              : isActiveSectionStyle
+              ? "text-primary"
+              : "text-foreground hover:text-primary"
+          )}
+        >
+          {item.title}
+        </a>
+      );
+    }
 
     if (item.items && item.items.length > 0) {
       // Dropdown menu for items with children
@@ -166,8 +275,7 @@ const AppNavbar = ({ navItems = [] }) => {
             to={item.href}
             className={cn(
               navigationMenuTriggerStyle(),
-              "group h-10 px-4 py-2 bg-gradient-to-r from-background/80 to-background/60 border border-border/50",
-              "hover:from-primary/10 hover:to-primary/5 hover:border-primary/30 hover:shadow-md hover:scale-[1.02]",
+              "group h-10 px-4 py-2 bg-gradient-to-r from-background/80 to-background/60 border border-border/50 hover:from-primary/10 hover:to-primary/5 hover:border-primary/30 hover:shadow-md hover:scale-[1.02]",
               "transition-all duration-300 ease-out backdrop-blur-sm",
               active &&
                 "from-primary/20 to-primary/10 border-primary/50 shadow-md scale-[1.02]"
@@ -326,12 +434,22 @@ const AppNavbar = ({ navItems = [] }) => {
     </Sheet>
   );
 
+  // Determine if navbar should be transparent
+  const isTransparentMode = isHomePage && !isAuthenticated && !isScrolled;
+
   return (
-    <header className="sticky h-16 top-0 px-4 md:px-6 z-50 w-full border-b-2 border-primary/20 bg-gradient-to-r from-background/95 via-background/98 to-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
+    <header
+      className={cn(
+        "fixed h-16 top-0 left-0 right-0 px-4 md:px-6 z-50 w-full transition-all duration-300",
+        isTransparentMode
+          ? "bg-transparent"
+          : "bg-background/90 backdrop-blur-sm shadow-sm"
+      )}
+    >
       <div className="container relative flex h-16 items-center justify-between">
         {/* Left side - Logo and Mobile Menu */}
         <div className="flex items-center gap-4">
-          {isAuthenticated && <MobileNav />}
+          <MobileNav />
           {/* Logo/Brand */}
           <Link
             to="/"
@@ -339,25 +457,35 @@ const AppNavbar = ({ navItems = [] }) => {
           >
             <img src={logo} alt="UPHSD" className="w-7" />
             <div className="hidden sm:inline-block">
-              <div className="font-bold text-lg bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <div
+                className={cn(
+                  "font-bold text-lg bg-clip-text text-transparent transition-all duration-300",
+                  isTransparentMode
+                    ? "bg-gradient-to-r from-white to-white/90 dark:from-primary dark:to-primary/90"
+                    : "bg-gradient-to-r from-primary to-primary/70"
+                )}
+              >
                 Sports Management
               </div>
-              <div className="text-xs text-muted-foreground font-medium">
+              <div
+                className={cn(
+                  "text-xs font-medium transition-all duration-300",
+                  isTransparentMode ? "text-white/70" : "text-muted-foreground"
+                )}
+              >
                 University of Perpetual Help System DALTA
               </div>
             </div>
           </Link>
         </div>
-        {isAuthenticated && (
+        {/* Center - Desktop Navigation */}
+        <NavigationMenu className="hidden lg:flex">
+          <NavigationMenuList className={!isAuthenticated ? "gap-8" : "gap-2"}>
+            {navItems.map(renderDesktopNavItem)}
+          </NavigationMenuList>
+        </NavigationMenu>
+        {isAuthenticated ? (
           <>
-            {" "}
-            {/* Center - Desktop Navigation */}
-            <NavigationMenu className="hidden lg:flex">
-              <NavigationMenuList className="gap-2">
-                {navItems.map(renderDesktopNavItem)}
-              </NavigationMenuList>
-            </NavigationMenu>{" "}
-            {/* Right side - Messages and User menu */}
             <div className="flex items-center gap-4">
               <div className="flex gap-2">
                 <NavbarMessages />
@@ -373,6 +501,66 @@ const AppNavbar = ({ navItems = [] }) => {
               <NavbarNavUser />
             </div>
           </>
+        ) : location.pathname === "/" ? (
+          <div className="flex items-center gap-4">
+            <Link
+              to="/login"
+              className={cn(
+                "text-sm font-medium hover:underline transition-colors duration-300",
+                isTransparentMode
+                  ? "text-white hover:text-secondary"
+                  : "text-primary"
+              )}
+            >
+              Login
+            </Link>
+            <Separator
+              orientation="vertical"
+              className={cn(
+                "min-h-6 transition-colors duration-300",
+                isTransparentMode ? "bg-white/30" : ""
+              )}
+            />
+            <Button
+              className={cn(
+                "cursor-pointer transition-all duration-300",
+                isTransparentMode
+                  ? "bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80"
+                  : ""
+              )}
+            >
+              <Link to="/signup" className="block w-full h-full">
+                Register as Player
+              </Link>
+            </Button>
+            <div
+              className={` ${
+                isTransparentMode
+                  ? "text-primary-foreground"
+                  : "text-foreground"
+              }`}
+            >
+              {theme === "light" ? (
+                <Sun className="size-5" onClick={() => setTheme("dark")} />
+              ) : (
+                <Moon className="size-5" onClick={() => setTheme("light")} />
+              )}
+            </div>
+          </div>
+        ) : (
+            <div
+              className={`lg:ml-61 ${
+                isTransparentMode
+                  ? "text-primary-foreground"
+                  : "text-foreground"
+              }`}
+            >
+              {theme === "light" ? (
+                <Sun className="size-5" onClick={() => setTheme("dark")} />
+              ) : (
+                <Moon className="size-5" onClick={() => setTheme("light")} />
+              )}
+            </div>
         )}
       </div>
     </header>

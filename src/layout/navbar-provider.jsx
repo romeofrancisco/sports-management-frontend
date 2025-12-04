@@ -5,15 +5,18 @@ import {
   adminGroupedNavigation,
   coachGroupedNavigation,
   playerGroupedNavigation,
+  publicNavigation,
 } from "@/constants/navItems";
 import AppNavbar from "./app-navbar";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useLocation } from "react-router-dom";
+import ScrollToTop from "@/routes/ScrollToTop";
 
 const NavbarProvider = () => {
   const { user } = useSelector((state) => state.auth);
   // Get navigation items based on user role
   const getUserNavItems = () => {
-    if (!user) return [];
+    if (!user) return publicNavigation();
 
     const role = user.role?.toLowerCase();
     switch (role) {
@@ -28,6 +31,7 @@ const NavbarProvider = () => {
         return [];
     }
   };
+  const location = useLocation();
 
   const userNavItems = getUserNavItems();
 
@@ -35,7 +39,14 @@ const NavbarProvider = () => {
     <div className="bg-background">
       <AppNavbar navItems={userNavItems} />
       <ErrorBoundary>
-        <main>
+        <main
+          className={`${
+            location.pathname === "/" || location.pathname.includes("/scoring")
+              ? ""
+              : "pt-[64px]"
+          }`}
+        >
+          <ScrollToTop />
           <Outlet />
         </main>
       </ErrorBoundary>

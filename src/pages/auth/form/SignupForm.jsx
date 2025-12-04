@@ -9,6 +9,7 @@ import api from "@/api";
 import ControlledInput from "@/components/common/ControlledInput";
 import ControlledSelect from "@/components/common/ControlledSelect";
 import ControlledMultiSelect from "@/components/common/ControlledMultiSelect";
+import { Link } from "react-router";
 // Document type options
 const DOCUMENT_TYPES = [
   { value: "medical_cert", label: "Medical Certificate" },
@@ -670,14 +671,14 @@ export function SignupForm({ className, ...props }) {
           </Button>
         </div>
 
-        <p className="text-xs text-muted-foreground px-6 text-center">
+        <p className="text-sm text-muted-foreground px-6 text-center">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-primary underline-offset-4 hover:underline"
           >
             Sign in
-          </a>
+          </Link>
         </p>
       </FieldGroup>
     </form>

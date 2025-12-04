@@ -13,11 +13,10 @@ import TournamentsList from "@/pages/admin/tournament/TournamentsList";
 import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 import EventCalendar from "@/features/eventcalendar/EventCalendar";
 import IdentifyEditor from "@/pages/documents/IdentifyEditor";
-import path from "path";
 
 export const playerRoutes = [
   {
-    path: "/",
+    path: "/dashboard",
     element: <PlayerDashboard />,
   },
   {

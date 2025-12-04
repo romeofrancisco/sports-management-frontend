@@ -47,7 +47,7 @@ const SportRedirect = () => {
 
 export const adminRoutes = [
   {
-    path: "/",
+    path: "/dashboard",
     element: <AdminDashboard />,
   },
   {
