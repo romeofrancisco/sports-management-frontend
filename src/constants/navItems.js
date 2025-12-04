@@ -11,14 +11,40 @@ import {
   Calendar,
   FolderClosed,
   GraduationCap,
+  Home,
 } from "lucide-react";
+
+export const publicNavigation = () => {
+  return [
+    {
+      title: "Home",
+      href: "/#home",
+    },
+    {
+      title: "About",
+      href: "/#about",
+    },
+    {
+      title: "Features",
+      href: "/#features",
+    },
+    {
+      title: "Sports",
+      href: "/#sports",
+    },
+    {
+      title: "Contact",
+      href: "/#contact",
+    },
+  ];
+};
 
 // Grouped navigation for better responsive design
 export const adminGroupedNavigation = () => {
   return [
     {
       title: "Dashboard",
-      href: "/",
+      href: "/dashboard",
       icon: Gauge,
     },
     {
@@ -118,7 +144,7 @@ export const coachGroupedNavigation = () => {
   return [
     {
       title: "Dashboard",
-      href: "/",
+      href: "/dashboard",
       icon: Gauge,
     },
     {
@@ -200,7 +226,7 @@ export const playerGroupedNavigation = (team_slug) => {
   return [
     {
       title: "Dashboard",
-      href: "/",
+      href: "/dashboard",
       icon: Gauge,
     },
     {

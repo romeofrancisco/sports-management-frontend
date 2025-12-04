@@ -35,7 +35,7 @@ import PlayerRegistrationApprovalPage from "@/features/players/PlayerRegistratio
 
 export const coachRoutes = [
   {
-    path: "/",
+    path: "/dashboard",
     element: <CoachDashboard />,
   },
   {

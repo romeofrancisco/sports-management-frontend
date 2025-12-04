@@ -25,7 +25,7 @@ export const useLogin = () => {
     mutationFn: (formData) => loginUser(formData),
     onSuccess: (data) => {
       dispatch(login(data));
-      navigate("/");
+      navigate("/dashboard");
       toast.success("Login Successful", {
         description: `Welcome back, ${data.first_name}!`,
         richColors: true,
@@ -61,7 +61,7 @@ export const useGoogleLogin = () => {
       // Success handler is identical to the standard login,
       // as the backend returns the same user data and sets cookies.
       dispatch(login(data));
-      navigate("/");
+      navigate("/dashboard");
       toast.success("Login Successful", {
         description: `Welcome back, ${data.first_name}!`,
         richColors: true,

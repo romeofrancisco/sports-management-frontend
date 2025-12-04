@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useLogin } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import GoogleOneTap from "../components/GoogleOneTap";
+import { Link } from "react-router";
 
 const LoginForm = () => {
   const {
@@ -27,7 +28,7 @@ const LoginForm = () => {
     <>
       {/* Google One Tap - shows automatically as overlay */}
       <GoogleOneTap />
-      
+
       <Card className="overflow-hidden py-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
@@ -71,7 +72,9 @@ const LoginForm = () => {
                   id="password"
                   type="password"
                   autoComplete="current-password"
-                  {...register("password", { required: "Password is required" })}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
                   required
                 />
               </div>
@@ -89,9 +92,18 @@ const LoginForm = () => {
                   "Login"
                 )}
               </Button>
+              <p className="text-sm text-muted-foreground px-6 text-center">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="text-primary underline-offset-4 hover:underline"
+                >
+                  Sign up
+                </Link>
+              </p>
             </div>
           </form>
-          <div className="bg-primary hidden md:block content-center place-items-center">
+          <div className="bg-primary hidden dark:brightness-75 md:block content-center place-items-center">
             <img src="/perpetual_logo.png" alt="UPHSD LOGO" />
           </div>
         </CardContent>

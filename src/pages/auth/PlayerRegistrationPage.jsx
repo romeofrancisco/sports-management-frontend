@@ -1,8 +1,14 @@
 import React from "react";
 import { SignupForm } from "./form/SignupForm";
 import perpetual_logo from "/perpetual_logo_small.png";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 const PlayerRegistrationPage = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (isAuthenticated) return <Navigate to="/" replace />;
+
   return (
     <div className="min-h-[calc(100vh-64px)]">
       {/* Form Section - scrollable */}
@@ -17,11 +23,11 @@ const PlayerRegistrationPage = () => {
       </div>
       
       {/* Image Section - fixed on scroll */}
-      <div className="bg-primary fixed top-0 right-0 bottom-0 w-[38%] xl:w-[33%] hidden lg:grid place-items-center">
+      <div className="bg-primary dark:brightness-75 fixed top-0 right-0 bottom-0 w-[38%] xl:w-[33%] hidden lg:grid place-items-center">
         <img
           src={perpetual_logo}
           alt="Image"
-          className="object-cover w-[70%] dark:brightness-[0.2] dark:grayscale"
+          className="object-cover w-[70%]"
         />
       </div>
     </div>
