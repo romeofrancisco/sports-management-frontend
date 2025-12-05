@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUploadFile } from "@/hooks/useDocuments";
 import api from "@/api";
-import { getStoredTokens, hasValidTokens, useGoogleAuth } from "@/features/editors/hooks/useGoogleEditor";
+import { getStoredTokens, hasValidTokens, useGoogleAuth, clearTokens } from "@/features/editors/hooks/useGoogleEditor";
 import { queryClient } from "@/context/QueryProvider";
 import Modal from "@/components/common/Modal";
 import { Button } from "@/components/ui/button";
@@ -169,8 +169,22 @@ const MultipleUploadDialog = ({
         }
       } catch (error) {
         let errorMessage = "Failed to upload file";
-        if (error?.response?.data) {
-          const errorData = error.response.data;
+        const errorData = error?.response?.data;
+        
+        // Check if token expired
+        if (errorData?.code === "TOKEN_EXPIRED" || error?.response?.status === 401) {
+          clearTokens();
+          toast.error("Google authorization expired", {
+            description: "Please sign in with Google again to continue uploading.",
+            richColors: true,
+          });
+          setIsUploading(false);
+          setUploadingIndex(null);
+          startAuth();
+          return;
+        }
+        
+        if (errorData) {
           if (errorData.folder && Array.isArray(errorData.folder)) {
             errorMessage = errorData.folder[0];
           } else if (errorData.detail) {

@@ -24,6 +24,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Utility function to safely render content
 const safeRender = (content, fallback = "No data available") => {
@@ -191,7 +192,8 @@ const AIAnalysisSection = ({ insights }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+        <ScrollArea>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1 max-h-96 px-2">
           {Object.entries(insights.ai_insights.ai_analysis).map(
             ([key, value], index) => {
               const isExpanded = expandedCards.has(key);
@@ -202,7 +204,7 @@ const AIAnalysisSection = ({ insights }) => {
               return (
                 <div
                   key={key}
-                  className="p-3 xl:p-4 rounded-lg bg-white/70 border border-primary/20 animate-in fade-in-50 duration-500 hover:border-primary/30 transition-all"
+                  className="p-3 xl:p-4 rounded-lg bg-card border border-primary/20 animate-in fade-in-50 duration-500 hover:border-primary/30 transition-all"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -333,6 +335,7 @@ const AIAnalysisSection = ({ insights }) => {
             }
           )}
         </div>
+        </ScrollArea>
         {insights.ai_insights.fallback_used && (
           <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
             <p className="text-sm text-primary-foreground">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "@/components/common/Modal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
   User,
@@ -74,10 +74,11 @@ const RegistrationDetailsModal = ({ open, onOpenChange, registration, onApprove,
           "PPp"
         )}`}
       >
-        <div className="space-y-6 mb-6">
+        <div className="space-y-6 mb-6 px-1">
           {/* Header with Avatar and Status */}
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
+              <AvatarImage src={registration.profile} alt={fullName} />
               <AvatarFallback className="bg-primary/10 text-primary text-xl font-medium">
                 {initials}
               </AvatarFallback>
@@ -87,7 +88,7 @@ const RegistrationDetailsModal = ({ open, onOpenChange, registration, onApprove,
               <p className="text-sm text-muted-foreground">
                 {registration.email}
               </p>
-              <div className="mt-1">{getStatusBadge(registration.status)}</div>
+              {getStatusBadge(registration.status)}
             </div>
           </div>
 
@@ -301,7 +302,7 @@ const RegistrationDetailsModal = ({ open, onOpenChange, registration, onApprove,
           )}
         </div>
         {registration.status === "pending" && (
-          <DialogFooter className="mt-6">
+          <DialogFooter className="mt-6 px-1">
             <Button 
               onClick={() => {
                 onOpenChange(false);

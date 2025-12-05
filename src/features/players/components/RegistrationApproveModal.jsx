@@ -5,8 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useSportTeams } from "@/hooks/useTeams";
+import { useSportPositions } from "@/hooks/useSports";
 import { TeamSelect } from "@/components/common/TeamSelect";
 import { getDivisionLabel } from "@/constants/team";
+import ControlledMultiSelect from "@/components/common/ControlledMultiSelect";
+import { useForm } from "react-hook-form";
 
 const RegistrationApproveModal = ({
   open,
@@ -25,14 +28,29 @@ const RegistrationApproveModal = ({
     sportSlug,
     division
   );
+  
+  // Get positions for the sport
+  const { data: positions, isLoading: positionsLoading } = useSportPositions(sportSlug);
+
+  // Form for controlled multi-select - positions only
+  const { control, watch, reset } = useForm({
+    defaultValues: {
+      position_ids: [],
+    },
+  });
+
+  const selectedPositions = watch("position_ids");
 
   // Reset form when modal opens with new registration
   useEffect(() => {
     if (registration) {
       setTeamId(registration.team?.id?.toString() || "");
       setJerseyNumber(registration.jersey_number?.toString() || "");
+      // Set default positions from registration's preferred positions
+      const defaultPositions = registration.positions?.map(p => p.id) || [];
+      reset({ position_ids: defaultPositions });
     }
-  }, [registration]);
+  }, [registration, reset]);
 
   const handleSubmit = () => {
     if (!teamId) return;
@@ -42,6 +60,7 @@ const RegistrationApproveModal = ({
       data: {
         team_id: parseInt(teamId),
         jersey_number: jerseyNumber ? parseInt(jerseyNumber) : null,
+        position_ids: selectedPositions.map(id => parseInt(id)),
       },
     });
   };
@@ -108,6 +127,19 @@ const RegistrationApproveModal = ({
             placeholder="Enter jersey number"
             value={jerseyNumber}
             onChange={(e) => setJerseyNumber(e.target.value)}
+          />
+        </div>
+
+        {/* Positions */}
+        <div className="space-y-2">
+          <ControlledMultiSelect
+            name="position_ids"
+            label="Positions"
+            control={control}
+            options={positions || []}
+            placeholder={positionsLoading ? "Loading positions..." : "Select positions"}
+            disabled={positionsLoading}
+            optional={true}
           />
         </div>
 

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import {
   hasValidTokens,
   getStoredTokens,
+  clearTokens,
 } from "@/features/editors/hooks/useGoogleEditor";
 import api from "@/api";
 import docx from "@/assets/documents/docx.png";
@@ -150,7 +151,24 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     } catch (error) {
       toast.dismiss(loadingToast);
       console.error("Failed to open document:", error);
-      const errorMsg = error.response?.data?.error || "Failed to open document";
+
+      // Check if token expired
+      const errorData = error.response?.data;
+      if (
+        errorData?.code === "TOKEN_EXPIRED" ||
+        error?.response?.status === 401
+      ) {
+        clearTokens();
+        toast.error("Google authorization expired", {
+          description: "Please sign in with Google again.",
+          richColors: true,
+        });
+        // Start OAuth flow again
+        startOAuthInNewTab(file.id);
+        return;
+      }
+
+      const errorMsg = errorData?.error || "Failed to open document";
       toast.error(errorMsg);
     } finally {
       setIsOpening(false);
@@ -185,7 +203,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
     `);
 
     toast.info("Connecting to Google Drive...");
-    
+
     try {
       const redirectUri = `${window.location.origin}/google-callback`;
       const { data } = await api.get("/documents/google/auth/", {
@@ -194,7 +212,6 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
 
       // Navigate new tab to auth URL - the callback page will handle opening the document
       newTab.location.href = data.authUrl;
-
     } catch (error) {
       console.error("Failed to start auth:", error);
       newTab.close();
@@ -241,12 +258,7 @@ export const useFileCard = (file, currentFolder, rootData, onCopy, onCut) => {
             "_blank"
           );
         } else if (fileUrl) {
-          // Use Office Online Viewer for better PDF experience
-          const encodedUrl = encodeURIComponent(fileUrl);
-          window.open(
-            `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`,
-            "_blank"
-          );
+          window.open(fileUrl, "_blank");
         } else {
           toast.error("Unable to open PDF");
         }

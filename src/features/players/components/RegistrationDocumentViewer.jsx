@@ -26,11 +26,11 @@ const getFileExtension = (doc) => {
   if (doc?.file_extension) {
     return doc.file_extension.replace(".", "").toLowerCase();
   }
-  
+
   // Fallback to extracting from URL
   const url = doc?.file_url || doc?.file || "";
   if (!url) return "";
-  
+
   const cleanUrl = url.split("?")[0];
   const parts = cleanUrl.split(".");
   return parts[parts.length - 1]?.toLowerCase() || "";
@@ -41,9 +41,10 @@ const getFileExtension = (doc) => {
  */
 const getFileType = (doc) => {
   const ext = getFileExtension(doc);
-  
+
   if (["pdf"].includes(ext)) return "pdf";
-  if (["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"].includes(ext)) return "image";
+  if (["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"].includes(ext))
+    return "image";
   if (["doc", "docx"].includes(ext)) return "document";
   if (["xls", "xlsx", "csv"].includes(ext)) return "spreadsheet";
   if (["ppt", "pptx"].includes(ext)) return "presentation";
@@ -60,21 +61,27 @@ const getPreviewUrl = (doc, fileType) => {
   if (doc?.preview_url) {
     return doc.preview_url;
   }
-  
+
   // Fallback: construct Office Online URL from file_url
   const fileUrl = doc?.file_url || doc?.file;
   if (!fileUrl) return null;
-  
+
   // For images, return direct URL
   if (fileType === "image") {
     return fileUrl;
   }
-  
-  // For Office documents and PDFs, use Microsoft Office Online Viewer
-  if (["pdf", "document", "spreadsheet", "presentation"].includes(fileType)) {
-    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+
+  if (fileType === "pdf") {
+    return fileUrl;
   }
-  
+
+  // For Office documents and PDFs, use Microsoft Office Online Viewer
+  if (["document", "spreadsheet", "presentation"].includes(fileType)) {
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+      fileUrl
+    )}`;
+  }
+
   return fileUrl;
 };
 
@@ -157,18 +164,35 @@ const ImagePreview = ({ src, alt }) => {
           }}
         />
       </div>
-      
+
       {/* Bottom Toolbar - Google Style */}
       <div className="flex items-center justify-center gap-2 p-3 bg-[#3c4043] text-white">
-        <Button variant="ghost" size="sm" onClick={handleZoomOut} disabled={zoom <= 25} className="text-white hover:bg-white/10">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleZoomOut}
+          disabled={zoom <= 25}
+          className="text-white hover:bg-white/10"
+        >
           <ZoomOut className="size-4" />
         </Button>
         <span className="text-sm min-w-[50px] text-center">{zoom}%</span>
-        <Button variant="ghost" size="sm" onClick={handleZoomIn} disabled={zoom >= 300} className="text-white hover:bg-white/10">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleZoomIn}
+          disabled={zoom >= 300}
+          className="text-white hover:bg-white/10"
+        >
           <ZoomIn className="size-4" />
         </Button>
         <div className="w-px h-4 bg-white/30 mx-2" />
-        <Button variant="ghost" size="sm" onClick={handleRotate} className="text-white hover:bg-white/10">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleRotate}
+          className="text-white hover:bg-white/10"
+        >
           <RotateCw className="size-4" />
         </Button>
       </div>
@@ -286,13 +310,20 @@ const RegistrationDocumentViewer = ({
 
   const getFileTypeLabel = () => {
     switch (fileType) {
-      case "pdf": return "PDF";
-      case "document": return "Word Document";
-      case "spreadsheet": return "Spreadsheet";
-      case "presentation": return "Presentation";
-      case "image": return "Image";
-      case "text": return "Text File";
-      default: return "File";
+      case "pdf":
+        return "PDF";
+      case "document":
+        return "Word Document";
+      case "spreadsheet":
+        return "Spreadsheet";
+      case "presentation":
+        return "Presentation";
+      case "image":
+        return "Image";
+      case "text":
+        return "Text File";
+      default:
+        return "File";
     }
   };
 
@@ -315,46 +346,49 @@ const RegistrationDocumentViewer = ({
   // Use createPortal to render at document body level
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex flex-col bg-background">
-      {/* Top Header Bar - Dark like Google Classroom */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#3c4043] text-white shrink-0">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onOpenChange(false)}
-            className="text-white hover:bg-white/10"
-          >
-            <X className="size-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <FileIcon className="size-5" />
-            <span className="font-medium truncate max-w-[300px] md:max-w-[500px]">
-              {doc.title}
-            </span>
+      {/* Mobile Header - Only visible on small screens */}
+      <div className="flex items-center justify-between p-3 border-b lg:hidden bg-background shrink-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="p-1.5 rounded bg-primary/10 shrink-0">
+            <FileIcon className="size-4 text-primary" />
           </div>
+          <span className="font-medium text-sm truncate">{doc.title}</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => downloadUrl && window.open(downloadUrl, "_blank")}
-            className="text-white hover:bg-white/10"
             disabled={!downloadUrl}
           >
-            <Download className="size-5" />
+            <Download className="size-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            <X className="size-4" />
           </Button>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Side - Document Preview */}
-        <div className="flex-1 bg-[#525659] overflow-hidden">
+      <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
+        {/* Preview Area */}
+        <div className="flex-1 bg-[#525659] overflow-hidden min-h-[50vh] lg:min-h-0">
           {renderPreview()}
         </div>
 
-        {/* Right Sidebar - Document Info */}
-        <div className="w-[320px] bg-background border-l flex flex-col overflow-hidden shrink-0">
+        {/* Sidebar - Hidden on mobile, visible on lg+ */}
+        <div className="hidden lg:flex w-[320px] bg-background border-l flex-col overflow-hidden shrink-0">
+          {/* Close button for desktop */}
+          <div className="flex items-center justify-end p-2 border-b">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onOpenChange(false)}
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+
           {/* Document Info Header */}
           <div className="p-4 border-b">
             <div className="flex items-start gap-3">
@@ -380,7 +414,9 @@ const RegistrationDocumentViewer = ({
                 Document Type
               </h3>
               <Badge variant="secondary" className="capitalize">
-                {doc.document_type_display || doc.document_type?.replace(/_/g, " ") || "Document"}
+                {doc.document_type_display ||
+                  doc.document_type?.replace(/_/g, " ") ||
+                  "Document"}
               </Badge>
             </div>
 
@@ -394,7 +430,9 @@ const RegistrationDocumentViewer = ({
                     Submitted By
                   </h3>
                   <p className="font-medium">{registrationInfo.full_name}</p>
-                  <p className="text-sm text-muted-foreground">{registrationInfo.email}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {registrationInfo.email}
+                  </p>
                 </div>
                 <Separator />
               </>
@@ -406,16 +444,24 @@ const RegistrationDocumentViewer = ({
                 File Information
               </h3>
               <div className="space-y-1 text-sm">
-                <p><span className="text-muted-foreground">Type:</span> {getFileTypeLabel()}</p>
-                {fileExt && <p><span className="text-muted-foreground">Extension:</span> .{fileExt}</p>}
+                <p>
+                  <span className="text-muted-foreground">Type:</span>{" "}
+                  {getFileTypeLabel()}
+                </p>
+                {fileExt && (
+                  <p>
+                    <span className="text-muted-foreground">Extension:</span> .
+                    {fileExt}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
           {/* Bottom Actions */}
           <div className="p-4 border-t space-y-2 shrink-0">
-            <Button 
-              className="w-full" 
+            <Button
+              className="w-full"
               onClick={() => downloadUrl && window.open(downloadUrl, "_blank")}
               disabled={!downloadUrl}
             >
@@ -423,6 +469,25 @@ const RegistrationDocumentViewer = ({
               Download
             </Button>
           </div>
+        </div>
+
+        {/* Mobile Bottom Sheet - Only visible on small screens */}
+        <div className="lg:hidden bg-background border-t p-3 shrink-0">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="capitalize shrink-0">
+              {doc.document_type_display ||
+                doc.document_type?.replace(/_/g, " ") ||
+                "Document"}
+            </Badge>
+            <span className="text-xs text-muted-foreground truncate flex-1">
+              {getFileTypeLabel()} {fileExt && `(.${fileExt})`}
+            </span>
+          </div>
+          {registrationInfo && (
+            <p className="text-xs text-muted-foreground mt-1 truncate">
+              Submitted by {registrationInfo.full_name}
+            </p>
+          )}
         </div>
       </div>
     </div>,

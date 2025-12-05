@@ -5,7 +5,16 @@ import MultiSelect from "../common/ControlledMultiSelect";
 import ControlledInput from "../common/ControlledInput";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledTeamSelect from "../common/ControlledTeamSelect";
-import { Loader2, Upload, X, FileText, CheckCircle2, Trash2, ExternalLink } from "lucide-react";
+import {
+  Loader2,
+  Upload,
+  X,
+  FileText,
+  CheckCircle2,
+  Trash2,
+  ExternalLink,
+  Eye,
+} from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import { toast } from "sonner";
 
@@ -13,7 +22,12 @@ import { useCreatePlayer, useUpdatePlayer } from "@/hooks/usePlayers";
 import { useSportPositions } from "@/hooks/useSports";
 import { useSportTeams } from "@/hooks/useTeams";
 import { useAcademicInfoForm } from "@/hooks/useAcademicInfo";
-import { uploadPlayerDocument, fetchPlayerDocuments, deletePlayerDocument } from "@/api/playersApi";
+import {
+  uploadPlayerDocument,
+  fetchPlayerDocuments,
+  deletePlayerDocument,
+} from "@/api/playersApi";
+import RegistrationDocumentViewer from "@/features/players/components/RegistrationDocumentViewer";
 
 import { SEX } from "@/constants/player";
 
@@ -36,6 +50,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
   const [isUploadingDocs, setIsUploadingDocs] = useState(false);
   const [isLoadingDocs, setIsLoadingDocs] = useState(false);
   const [deletingDocId, setDeletingDocId] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   // Fetch existing documents when editing a player
   useEffect(() => {
@@ -57,7 +72,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
   // Handle deleting an existing document
   const handleDeleteExistingDocument = async (documentId) => {
     if (!player?.slug) return;
-    
+
     setDeletingDocId(documentId);
     try {
       await deletePlayerDocument(player.slug, documentId);
@@ -245,7 +260,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           title: doc.title,
           file: doc.file,
         });
-        
+
         setDocuments((prev) =>
           prev.map((d) =>
             d.type === doc.type ? { ...d, status: "uploaded" } : d
@@ -254,9 +269,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       } catch (error) {
         console.error("Failed to upload document:", error);
         setDocuments((prev) =>
-          prev.map((d) =>
-            d.type === doc.type ? { ...d, status: "error" } : d
-          )
+          prev.map((d) => (d.type === doc.type ? { ...d, status: "error" } : d))
         );
         toast.error("Document upload failed", {
           description: `Failed to upload ${doc.title}`,
@@ -273,6 +286,16 @@ const PlayerForm = ({ sports, onClose, player }) => {
     // Normalize position_ids
     if (payload.position_ids && !Array.isArray(payload.position_ids)) {
       payload.position_ids = [payload.position_ids];
+    }
+
+    // Convert empty jersey_number to null
+    if (payload.jersey_number === "" || payload.jersey_number === undefined) {
+      payload.jersey_number = null;
+    }
+
+    // Convert empty team_id to null
+    if (payload.team_id === "" || payload.team_id === undefined) {
+      payload.team_id = null;
     }
 
     // Resolve academic_info_id if missing
@@ -307,7 +330,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       onSuccess: async (responseData) => {
         // Get the player slug - for edit it's from the player prop, for create it's from response
         const playerSlug = isEdit ? player.slug : responseData?.slug;
-        
+
         // Upload new documents if there are any
         if (documents.length > 0 && playerSlug) {
           setIsUploadingDocs(true);
@@ -358,7 +381,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-8 px-4 py-6 max-w-2xl mx-auto"
+      className="flex flex-col gap-8"
     >
       {/* PERSONAL DETAILS */}
       <div className="space-y-4">
@@ -437,12 +460,13 @@ const PlayerForm = ({ sports, onClose, player }) => {
           name="section"
           control={control}
           label="Section"
-          placeholder="Select section (optional)"
+          placeholder="Select section"
           options={sectionOptions}
           disabled={!selectedCourse}
           valueKey="value"
           labelKey="label"
           errors={errors}
+          optional={true}
         />
       </div>
 
@@ -489,6 +513,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           }
           disabled={!selectedSport}
           errors={errors}
+          optional={true}
         />
 
         <ControlledInput
@@ -497,6 +522,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           type="number"
           control={control}
           errors={errors}
+          optional={true}
         />
         <ControlledInput
           name="height"
@@ -504,6 +530,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           type="number"
           control={control}
           errors={errors}
+          optional={true}
         />
         <ControlledInput
           name="weight"
@@ -511,6 +538,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           type="number"
           control={control}
           errors={errors}
+          optional={true}
         />
       </div>
 
@@ -519,17 +547,18 @@ const PlayerForm = ({ sports, onClose, player }) => {
         <div>
           <h2 className="text-lg font-bold text-primary">Documents</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            {isEdit 
+            {isEdit
               ? "View existing documents or upload new ones. Documents must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each)."
-              : "Upload required documents for the player. All documents must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each)."
-            }
+              : "Upload required documents for the player. All documents must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each)."}
           </p>
         </div>
 
         {/* Existing Documents (Edit Mode) */}
         {isEdit && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Existing Documents</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Existing Documents
+            </h3>
             {isLoadingDocs ? (
               <div className="flex items-center gap-2 p-3 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -540,36 +569,32 @@ const PlayerForm = ({ sports, onClose, player }) => {
                 {existingDocuments.map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-3 border rounded-lg bg-muted/30"
+                    onClick={() => setSelectedDocument(doc)}
+                    className="flex items-center justify-between p-3 border rounded-lg bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                       <div className="min-w-0">
-                        <p className="font-medium text-sm truncate max-w-[300px]">{doc.title}</p>
+                        <p className="font-medium text-sm truncate max-w-[200px] md:max-w-[300px] lg:max-w-[350px]">
+                          {doc.title}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {doc.description || doc.file_extension}
-                          {doc.uploaded_by && ` • Uploaded by ${doc.uploaded_by}`}
+                          {doc.document_type_display ||
+                            doc.document_type?.replace("_", " ")}
+                          {doc.uploaded_by &&
+                            ` • Uploaded by ${doc.uploaded_by}`}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
-                      {doc.file_url && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                        >
-                          <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDeleteExistingDocument(doc.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteExistingDocument(doc.id);
+                        }}
                         disabled={deletingDocId === doc.id}
                         className="text-destructive hover:text-destructive"
                       >
@@ -593,11 +618,17 @@ const PlayerForm = ({ sports, onClose, player }) => {
 
         {/* Add New Documents */}
         <div className="space-y-2">
-          {isEdit && <h3 className="text-sm font-medium text-muted-foreground">Add New Documents</h3>}
+          {isEdit && (
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Add New Documents
+            </h3>
+          )}
           <div className="grid gap-3">
             {DOCUMENT_TYPES.map((docType) => {
-              const uploadedDoc = documents.find((d) => d.type === docType.value);
-              
+              const uploadedDoc = documents.find(
+                (d) => d.type === docType.value
+              );
+
               return (
                 <div
                   key={docType.value}
@@ -610,7 +641,9 @@ const PlayerForm = ({ sports, onClose, player }) => {
                       {uploadedDoc ? (
                         <p className="text-xs text-green-600 flex items-center gap-1 truncate">
                           <CheckCircle2 className="h-3 w-3 flex-shrink-0" />
-                          <span className="truncate max-w-[300px]">{uploadedDoc.title}</span>
+                          <span className="truncate max-w-[300px]">
+                            {uploadedDoc.title}
+                          </span>
                         </p>
                       ) : (
                         <p className="text-xs text-muted-foreground">
@@ -619,7 +652,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {uploadedDoc ? (
                       <Button
@@ -636,7 +669,9 @@ const PlayerForm = ({ sports, onClose, player }) => {
                           type="file"
                           className="hidden"
                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          onChange={(e) => handleDocumentUpload(e, docType.value)}
+                          onChange={(e) =>
+                            handleDocumentUpload(e, docType.value)
+                          }
                         />
                         <Button
                           type="button"
@@ -659,7 +694,10 @@ const PlayerForm = ({ sports, onClose, player }) => {
         </div>
       </div>
 
-      <Button type="submit" disabled={isCreating || isUpdating || isUploadingDocs}>
+      <Button
+        type="submit"
+        disabled={isCreating || isUpdating || isUploadingDocs}
+      >
         {isCreating || isUpdating || isUploadingDocs ? (
           <>
             <Loader2 className="animate-spin mr-2" />
@@ -671,6 +709,17 @@ const PlayerForm = ({ sports, onClose, player }) => {
           "Register Player"
         )}
       </Button>
+
+      {/* Document Viewer Modal */}
+      <RegistrationDocumentViewer
+        open={!!selectedDocument}
+        onOpenChange={(isOpen) => !isOpen && setSelectedDocument(null)}
+        document={selectedDocument}
+        registrationInfo={{
+          full_name: player ? `${player.first_name} ${player.last_name}` : "",
+          email: player?.email,
+        }}
+      />
     </form>
   );
 };

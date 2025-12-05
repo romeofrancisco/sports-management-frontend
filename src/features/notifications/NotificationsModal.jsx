@@ -124,7 +124,7 @@ const NotificationsModal = ({ open, onOpenChange, onNotificationClick }) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] p-0 flex flex-col">
+      <DialogContent className="gap-0 overflow-hidden p-0 flex flex-col">
         <DialogHeader className="p-4 pb-2 border-b">
           <DialogTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5 text-primary" />
@@ -178,7 +178,7 @@ const NotificationsModal = ({ open, onOpenChange, onNotificationClick }) => {
             </div>
           )}
         </DialogHeader>
-        <ScrollArea className="max-h-[calc(90vh-96px)]">
+        <ScrollArea>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -194,7 +194,7 @@ const NotificationsModal = ({ open, onOpenChange, onNotificationClick }) => {
               </p>
             </div>
           ) : (
-            <div className="divide-y space-y-1">
+            <div className="max-h-[calc(70vh-64px)] space-y-2 mt-3 px-2">
               {notifications.map((notification) => (
                 <NotificationItem
                   key={notification.id}

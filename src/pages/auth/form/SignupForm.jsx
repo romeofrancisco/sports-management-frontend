@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FieldGroup, FieldSeparator } from "@/components/ui/field";
-import { Loader2, Upload, X, FileText, CheckCircle2 } from "lucide-react";
+import { Loader2, Upload, X, FileText, CheckCircle2, User, Image } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/api";
 import ControlledInput from "@/components/common/ControlledInput";
@@ -30,6 +30,8 @@ export function SignupForm({ className, ...props }) {
   const [positions, setPositions] = useState([]);
   const [academicInfo, setAcademicInfo] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [profileImage, setProfileImage] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [registrationId, setRegistrationId] = useState(null);
 
@@ -204,22 +206,22 @@ export function SignupForm({ className, ...props }) {
     setValue("position_ids", []);
   }, [selectedSport, setValue]);
 
-  // Handle document upload
-  const handleDocumentUpload = async (e, documentType) => {
+  // Handle profile image upload
+  const handleProfileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
+    // Validate file size (max 5MB for profile)
+    if (file.size > 5 * 1024 * 1024) {
       toast.error("File too large", {
-        description: "Maximum file size is 10MB",
+        description: "Maximum profile image size is 5MB",
         richColors: true,
       });
       return;
     }
 
-    // Validate file type
-    const allowedTypes = [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"];
+    // Validate file type (images only)
+    const allowedTypes = [".jpg", ".jpeg", ".png", ".webp"];
     const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
     if (!allowedTypes.includes(ext)) {
       toast.error("Invalid file type", {
@@ -229,21 +231,73 @@ export function SignupForm({ className, ...props }) {
       return;
     }
 
-    // Add to local state (will upload after registration is created)
-    setDocuments((prev) => [
-      ...prev.filter((d) => d.type !== documentType),
-      {
+    setProfileImage(file);
+    setProfilePreview(URL.createObjectURL(file));
+  };
+
+  // Remove profile image
+  const removeProfileImage = () => {
+    setProfileImage(null);
+    if (profilePreview) {
+      URL.revokeObjectURL(profilePreview);
+      setProfilePreview(null);
+    }
+  };
+
+  // Handle document upload (supports multiple files for "other" type)
+  const handleDocumentUpload = async (e, documentType) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const validFiles = [];
+
+    for (const file of files) {
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File too large", {
+          description: `${file.name} exceeds maximum size of 10MB`,
+          richColors: true,
+        });
+        continue;
+      }
+
+      // Validate file type
+      const allowedTypes = [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"];
+      const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+      if (!allowedTypes.includes(ext)) {
+        toast.error("Invalid file type", {
+          description: `${file.name}: Allowed types: ${allowedTypes.join(", ")}`,
+          richColors: true,
+        });
+        continue;
+      }
+
+      validFiles.push({
         type: documentType,
         file: file,
         title: file.name,
         status: "pending",
-      },
-    ]);
+        id: `${documentType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      });
+    }
+
+    if (validFiles.length > 0) {
+      if (documentType === "other") {
+        // For "other" type, allow multiple files
+        setDocuments((prev) => [...prev, ...validFiles]);
+      } else {
+        // For specific types, replace existing file of same type
+        setDocuments((prev) => [
+          ...prev.filter((d) => d.type !== documentType),
+          ...validFiles,
+        ]);
+      }
+    }
   };
 
   // Remove document
-  const removeDocument = (documentType) => {
-    setDocuments((prev) => prev.filter((d) => d.type !== documentType));
+  const removeDocument = (documentId) => {
+    setDocuments((prev) => prev.filter((d) => d.id !== documentId));
   };
 
   // Upload documents after registration is created
@@ -279,22 +333,43 @@ export function SignupForm({ className, ...props }) {
     setIsSubmitting(true);
 
     try {
-      // Prepare payload
-      const payload = {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        email: formData.email,
-        sex: formData.sex,
-        date_of_birth: formData.date_of_birth || null,
-        phone_number: formData.phone_number || "",
-        height: formData.height ? parseFloat(formData.height) : null,
-        weight: formData.weight ? parseFloat(formData.weight) : null,
-        sport_id: parseInt(formData.sport_id),
-        position_ids: formData.position_ids?.length
-          ? formData.position_ids.map((id) => parseInt(id))
-          : [],
-        academic_info_id: formData.academic_info_id || null,
-      };
+      // Prepare FormData for multipart upload (for profile image)
+      const payload = new FormData();
+      
+      payload.append("first_name", formData.first_name);
+      payload.append("last_name", formData.last_name);
+      payload.append("email", formData.email);
+      payload.append("sex", formData.sex);
+      
+      if (formData.date_of_birth) {
+        payload.append("date_of_birth", formData.date_of_birth);
+      }
+      if (formData.phone_number) {
+        payload.append("phone_number", formData.phone_number);
+      }
+      if (formData.height) {
+        payload.append("height", parseFloat(formData.height));
+      }
+      if (formData.weight) {
+        payload.append("weight", parseFloat(formData.weight));
+      }
+      
+      payload.append("sport_id", parseInt(formData.sport_id));
+      
+      if (formData.position_ids?.length) {
+        formData.position_ids.forEach((id) => {
+          payload.append("position_ids", parseInt(id));
+        });
+      }
+      
+      if (formData.academic_info_id) {
+        payload.append("academic_info_id", formData.academic_info_id);
+      }
+      
+      // Add profile image if exists
+      if (profileImage) {
+        payload.append("profile", profileImage);
+      }
 
       // Create registration
       const { data } = await api.post("player-registrations/", payload);
@@ -342,8 +417,8 @@ export function SignupForm({ className, ...props }) {
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
         <div className="flex flex-col items-center gap-4 text-center py-8">
-          <div className="rounded-full bg-green-100 p-4">
-            <CheckCircle2 className="h-12 w-12 text-green-600" />
+          <div className="rounded-full bg-muted p-5">
+            <CheckCircle2 className="size-10 text-green-600" />
           </div>
           <h1 className="text-2xl font-bold">Registration Submitted!</h1>
           <p className="text-muted-foreground text-sm max-w-md">
@@ -351,16 +426,24 @@ export function SignupForm({ className, ...props }) {
             check your email for confirmation. A coach or admin will review your
             application and you'll be notified once approved.
           </p>
+          <div className="flex gap-2">
           <Button
             variant="outline"
+            className="flex-1"
             onClick={() => {
               setIsSuccess(false);
               setDocuments([]);
+              setProfileImage(null);
+              setProfilePreview(null);
               reset();
             }}
           >
             Submit Another Registration
           </Button>
+          <Button className="flex-1" asChild>
+            <Link to="/login">Go to Login</Link>
+          </Button>
+          </div>
         </div>
       </div>
     );
@@ -386,6 +469,44 @@ export function SignupForm({ className, ...props }) {
           <h2 className="text-lg font-semibold text-primary">
             Personal Information
           </h2>
+
+          {/* Profile Image Upload */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative">
+              {profilePreview ? (
+                <div className="relative">
+                  <img
+                    src={profilePreview}
+                    alt="Profile preview"
+                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeProfileImage}
+                    className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    onChange={handleProfileUpload}
+                  />
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center gap-1 hover:border-primary transition-colors">
+                    <User className="h-8 w-8 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">Upload</span>
+                  </div>
+                </label>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Profile photo (optional, max 5MB)
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <ControlledInput
@@ -539,6 +660,7 @@ export function SignupForm({ className, ...props }) {
             disabled={!selectedSport}
             errors={errors}
             help_text="You can select up to 3 positions."
+            optional={true}
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -576,79 +698,93 @@ export function SignupForm({ className, ...props }) {
           <p className="text-xs text-muted-foreground !mt-0">
             Upload the required documents for your registration. All documents
             must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each).
+            You can upload multiple files for "Other" documents.
           </p>
 
           <div className="grid gap-4">
             {DOCUMENT_TYPES.map((docType) => {
-              const uploadedDoc = documents.find(
+              const uploadedDocs = documents.filter(
                 (d) => d.type === docType.value
               );
+              const isOtherType = docType.value === "other";
 
               return (
                 <div
                   key={docType.value}
-                  className="flex items-center justify-between p-4 border rounded-lg bg-muted/30"
+                  className="p-4 border rounded-lg bg-muted/30"
                 >
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p
-                        title={docType.label}
-                        className="font-medium text-sm line-clamp-1"
-                      >
-                        {docType.label}
-                      </p>
-                      {uploadedDoc ? (
-                        <div
-                          title={uploadedDoc.title}
-                          className="text-xs text-green-600 flex items-center gap-1 "
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                      <div>
+                        <p
+                          title={docType.label}
+                          className="font-medium text-sm line-clamp-1"
                         >
-                          <span className="line-clamp-1">
-                            {uploadedDoc.title}
-                          </span>
-                        </div>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">
-                          No file uploaded
+                          {docType.label}
                         </p>
-                      )}
+                        {uploadedDocs.length === 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            No file uploaded
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    {uploadedDoc ? (
+                    <label>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        multiple={isOtherType}
+                        onChange={(e) =>
+                          handleDocumentUpload(e, docType.value)
+                        }
+                      />
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        onClick={() => removeDocument(docType.value)}
+                        asChild
                       >
-                        <X className="h-4 w-4" />
+                        <span className="cursor-pointer">
+                          <Upload className="h-4 w-4 mr-1" />
+                          {uploadedDocs.length > 0 && !isOtherType ? "Replace" : "Upload"}
+                        </span>
                       </Button>
-                    ) : (
-                      <label>
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          onChange={(e) =>
-                            handleDocumentUpload(e, docType.value)
-                          }
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          asChild
-                        >
-                          <span className="cursor-pointer">
-                            <Upload className="h-4 w-4 mr-1" />
-                            Upload
-                          </span>
-                        </Button>
-                      </label>
-                    )}
+                    </label>
                   </div>
+
+                  {/* Show uploaded files */}
+                  {uploadedDocs.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {uploadedDocs.map((doc) => (
+                        <div
+                          key={doc.id}
+                          className="flex items-center justify-between bg-background/50 rounded px-3 py-2"
+                        >
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <FileText className="h-4 w-4 text-green-600 flex-shrink-0" />
+                            <span
+                              title={doc.title}
+                              className="text-xs max-w-[250px] md:max-w-[400px] text-green-600 truncate"
+                            >
+                              {doc.title}
+                            </span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 flex-shrink-0"
+                            onClick={() => removeDocument(doc.id)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
