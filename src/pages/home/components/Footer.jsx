@@ -1,8 +1,9 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router";
 
 const Footer = () => {
   return (
-    <footer className="bg-primary dark:bg-primary/70 text-white py-12">
+    <footer className="bg-primary dark:bg-primary/70 text-center py-12">
       {/* <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
@@ -50,13 +51,23 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-white/20 pt-8"> */}
-          <p className="text-white/70 text-sm text-center">
-            © 2024 UPHSD Molino Campus Sports Management System. All rights reserved.
-          </p>
-        {/* </div>
+      <p className="text-white/70 text-sm text-center">
+        © 2025 UPHSD Molino Campus Sports Management System. All rights
+        reserved.
+      </p>
+      <div className="mt-3 text-white/70 text-sm">
+        <Link to="/privacy-policy" className="underline hover:text-white">
+          Privacy Policy
+        </Link>
+        <span class="mx-1">|</span>
+        <Link to="/terms" className="underline hover:text-white">
+          Terms of Service
+        </Link>
+      </div>
+      {/* </div>
       </div> */}
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

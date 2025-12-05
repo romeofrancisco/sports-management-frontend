@@ -10,6 +10,7 @@ import ControlledInput from "@/components/common/ControlledInput";
 import ControlledSelect from "@/components/common/ControlledSelect";
 import ControlledMultiSelect from "@/components/common/ControlledMultiSelect";
 import { Link } from "react-router";
+import ControlledDatePicker from "@/components/common/ControlledDatePicker";
 // Document type options
 const DOCUMENT_TYPES = [
   { value: "medical_cert", label: "Medical Certificate" },
@@ -556,13 +557,12 @@ export function SignupForm({ className, ...props }) {
               rules={{ required: "Sex is required" }}
             />
 
-            <ControlledInput
+            <ControlledDatePicker
               name="date_of_birth"
               label="Date of Birth"
-              type="date"
+              placeholder="Select date of birth"
               control={control}
               errors={errors}
-              rules={{ required: "Date of birth is required" }}
             />
           </div>
 
