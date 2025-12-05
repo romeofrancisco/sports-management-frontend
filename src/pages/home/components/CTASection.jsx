@@ -61,7 +61,7 @@ const CTASection = () => {
                       href="mailto:sports@perpetualdalta.edu.ph"
                       className="text-white/70 text-sm hover:text-secondary transition-colors"
                     >
-                      sports@perpetualdalta.edu.ph
+                      uphsdsportsmanager@gmail.com
                     </a>
                   </div>
                 </div>

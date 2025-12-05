@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
   PopoverTrigger,
-  PopoverModalContent
+  PopoverContent
 } from "@/components/ui/popover"
 import { Label } from "@/components/ui/label"
 
@@ -54,14 +54,14 @@ const ControlledDatePicker = ({
                 {value ? format(new Date(value), "PPP") : <span>{placeholder}</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverModalContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar 
                 mode="single" 
                 selected={value ? new Date(value) : undefined}
                 onSelect={(date) => onChange(date ? format(date, "yyyy-MM-dd") : "")}
                 disabled={disabled}
               />
-            </PopoverModalContent>
+            </PopoverContent>
           </Popover>
         )}
       />

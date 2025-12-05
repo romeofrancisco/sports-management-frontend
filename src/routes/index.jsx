@@ -10,6 +10,7 @@ import GoogleCallback from "@/pages/documents/GoogleCallback";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import PlayerRegistrationPage from "@/pages/auth/PlayerRegistrationPage";
 import HomePage from "@/pages/home/HomePage";
+import Terms from "@/pages/Terms";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: "/privacy-policy",
         element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms",
+        element: <Terms />,
       },
       {
         path: "/*",

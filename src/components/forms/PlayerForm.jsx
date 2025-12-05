@@ -30,6 +30,7 @@ import {
 import RegistrationDocumentViewer from "@/features/players/components/RegistrationDocumentViewer";
 
 import { SEX } from "@/constants/player";
+import ControlledDatePicker from "../common/ControlledDatePicker";
 
 // Document type options
 const DOCUMENT_TYPES = [
@@ -99,6 +100,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       last_name: player?.last_name || "",
       email: player?.email || "",
       sex: player?.sex || "",
+      date_of_birth: player?.date_of_birth || "",
       profile: null,
       sport_slug: player?.sport?.slug || "",
       height: player?.height || "",
@@ -411,6 +413,14 @@ const PlayerForm = ({ sports, onClose, player }) => {
           options={SEX}
           valueKey="value"
           labelKey="label"
+          errors={errors}
+        />
+
+        <ControlledDatePicker
+          name="date_of_birth"
+          label="Date of Birth"
+          placeholder="Select date of birth"
+          control={control}
           errors={errors}
         />
 
