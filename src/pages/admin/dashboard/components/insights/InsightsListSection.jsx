@@ -66,7 +66,7 @@ const getInsightColor = (type) => {
 const getIconColor = (type) => {
   switch (type) {
     case "warning":
-      return "text-secondary-foreground";
+      return "text-secondary";
     case "success":
       return "text-primary";
     case "trend_up":
@@ -74,7 +74,7 @@ const getIconColor = (type) => {
     case "trend_down":
       return "text-destructive";
     default:
-      return "text-secondary-foreground";
+      return "text-foreground";
   }
 };
 
@@ -161,7 +161,7 @@ const InsightsListSection = ({ insights }) => {
                         ? "bg-secondary/10 text-secondary border-secondary/30"
                         : insight.type === "success"
                         ? "bg-primary/10 text-primary border-primary/30"
-                        : "bg-muted/10 text-muted-foreground border-muted/30"
+                        : ""
                     }`}
                   >
                     {insight.type === "warning"

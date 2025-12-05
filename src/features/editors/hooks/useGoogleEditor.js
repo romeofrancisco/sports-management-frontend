@@ -152,23 +152,38 @@ export const useGoogleDocument = (documentId) => {
       try {
         const { data: embedData } = await api.get(`/documents/google/embed/${documentId}/`);
         data = embedData;
-      } catch {
+      } catch (embedError) {
+        // Check if token expired
+        if (embedError.response?.data?.code === "TOKEN_EXPIRED" || embedError.response?.status === 401) {
+          clearTokens();
+          throw new Error("TOKEN_EXPIRED");
+        }
+        
         // Fallback: trigger legacy upload flow to create a Drive copy
-        const resp = await api.post("/documents/google/upload/", {
-          documentId,
-          tokens,
-        });
-        data = resp.data;
-        // Invalidate folder queries to refresh UI after upload
         try {
-          // Use folder id from document info if available
-          const folderId = docInfo?.folder || resp?.data?.document?.folder || null;
-          if (folderId !== undefined) {
-            queryClient.invalidateQueries({ queryKey: ["folder-contents", folderId] });
+          const resp = await api.post("/documents/google/upload/", {
+            documentId,
+            tokens,
+          });
+          data = resp.data;
+          // Invalidate folder queries to refresh UI after upload
+          try {
+            // Use folder id from document info if available
+            const folderId = docInfo?.folder || resp?.data?.document?.folder || null;
+            if (folderId !== undefined) {
+              queryClient.invalidateQueries({ queryKey: ["folder-contents", folderId] });
+            }
+            queryClient.invalidateQueries({ queryKey: ["root-folders"] });
+          } catch (e) {
+            console.warn("Failed to invalidate queries after Google upload:", e);
           }
-          queryClient.invalidateQueries({ queryKey: ["root-folders"] });
-        } catch (e) {
-          console.warn("Failed to invalidate queries after Google upload:", e);
+        } catch (uploadError) {
+          // Check if token expired on upload attempt too
+          if (uploadError.response?.data?.code === "TOKEN_EXPIRED" || uploadError.response?.status === 401) {
+            clearTokens();
+            throw new Error("TOKEN_EXPIRED");
+          }
+          throw uploadError;
         }
       }
 
@@ -220,6 +235,16 @@ export const useSyncFromGoogleDrive = () => {
       queryClient.invalidateQueries(["document-editor", variables.documentId]);
     },
     onError: (error) => {
+      // Check if token expired
+      if (error.response?.data?.code === "TOKEN_EXPIRED" || error?.response?.status === 401) {
+        clearTokens();
+        toast.error("Google authorization expired", {
+          description: "Please sign in with Google again to save your document.",
+          richColors: true,
+        });
+        return;
+      }
+      
       const msg = error.response?.data?.error || error.message || "Save failed";
       toast.error("Failed to save document", {
         description: msg,

@@ -119,8 +119,6 @@ const SystemHealthSection = ({ overview }) => {
                 }`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
-
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 relative">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {issue.title}

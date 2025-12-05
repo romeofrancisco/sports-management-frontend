@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, Trash2, FileText } from "lucide-react";
+import ControlledMultiSelect from "@/components/common/ControlledMultiSelect";
 
 /**
  * Get status badge component
@@ -63,6 +64,7 @@ export const createRegistrationColumns = ({
         return (
           <div className="flex items-center gap-3">
             <Avatar className="size-10 hidden md:inline-flex">
+              <AvatarImage src={row.profile} alt={fullName} />
               <AvatarFallback className="bg-primary/10 text-primary font-medium">
                 {initials}
               </AvatarFallback>

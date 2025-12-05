@@ -62,7 +62,7 @@ export const useApproveRegistration = (params) => {
 /**
  * Hook to reject a player registration
  */
-export const useRejectRegistration = () => {
+export const useRejectRegistration = (params) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -90,7 +90,7 @@ export const useRejectRegistration = () => {
 /**
  * Hook to delete a player registration
  */
-export const useDeleteRegistration = () => {
+export const useDeleteRegistration = (params) => {
   const queryClient = useQueryClient();
 
   return useMutation({

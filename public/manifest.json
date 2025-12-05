@@ -17,6 +17,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "perpetual_logo_monochrome.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
   "gcm_sender_id": "103953800507"
