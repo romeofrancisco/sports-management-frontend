@@ -1,6 +1,6 @@
 {
   "name": "UPHSD Sports Management",
-  "short_name": "SportsManagement",
+  "short_name": "UPHSD",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#800000",
@@ -19,7 +19,7 @@
       "purpose": "maskable"
     },
     {
-      "src": "perpetual_logo_monochrome.png",
+      "src": "status_bar_icon.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "monochrome"

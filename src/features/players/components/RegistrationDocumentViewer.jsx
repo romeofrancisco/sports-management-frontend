@@ -53,36 +53,50 @@ const getFileType = (doc) => {
 };
 
 /**
- * Get the preview URL - uses Microsoft Office Online Viewer for documents
- * Backend already provides the correct preview_url with Office Online format
+ * Transform Cloudinary URL to add inline display flag
+ * This prevents Cloudinary from sending Content-Disposition: attachment
  */
-const getPreviewUrl = (doc, fileType) => {
-  // Backend provides preview_url with Microsoft Office Online Viewer format
-  if (doc?.preview_url) {
-    return doc.preview_url;
+const getCloudinaryInlineUrl = (url) => {
+  if (!url || !url.includes("cloudinary.com")) return url;
+
+  // For Cloudinary URLs, we need to add fl_attachment:false transformation
+  // URL format: https://res.cloudinary.com/cloud_name/image|raw/upload/v123/path/file.ext
+  // We need to insert fl_attachment:false after /upload/
+
+  if (url.includes("/upload/")) {
+    return url.replace("/upload/", "/upload/fl_attachment:false/");
   }
 
-  // Fallback: construct Office Online URL from file_url
+  return url;
+};
+
+/**
+ * Get the preview URL - uses Google Docs Viewer for documents
+ * For Cloudinary-hosted files, we need to use Google Docs Viewer since
+ * Cloudinary serves documents with Content-Disposition: attachment
+ */
+const getPreviewUrl = (doc, fileType) => {
+  // Get the raw file URL
   const fileUrl = doc?.file_url || doc?.file;
   if (!fileUrl) return null;
 
-  // For images, return direct URL
-  if (fileType === "image") {
+  // For images, return direct URL (Cloudinary serves images inline)
+  if (fileType === "image" || fileType === "pdf") {
     return fileUrl;
   }
 
-  if (fileType === "pdf") {
-    return fileUrl;
-  }
+  // Transform the URL to ensure inline display for Cloudinary
+  const inlineUrl = getCloudinaryInlineUrl(fileUrl);
 
-  // For Office documents and PDFs, use Microsoft Office Online Viewer
-  if (["document", "spreadsheet", "presentation"].includes(fileType)) {
+  // For PDFs and Office documents, use Google Docs Viewer
+  // Google Docs Viewer can render these file types in an iframe
+  if (["pdf", "document", "spreadsheet", "presentation"].includes(fileType)) {
     return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-      fileUrl
-    )}`;
+      inlineUrl
+    )}&embedded=true`;
   }
 
-  return fileUrl;
+  return inlineUrl;
 };
 
 /**
