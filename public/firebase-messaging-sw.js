@@ -172,8 +172,8 @@ messaging.onBackgroundMessage(function(payload) {
   
   const notificationOptions = {
     body: notificationBody,
-    icon: '/perpetual_logo_small.png',
-    badge: '/perpetual_logo_small.png',
+    icon: '/perpetual_logo.png',
+    badge: '/status_bar_icon.png',
     data: data,
     requireInteraction: false,
     tag: data.team_id || data.game_id || data.event_id || data.reservation_id || Date.now().toString(),
