@@ -38,7 +38,6 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import SpreadSheetEditor from "@/features/editors/spreadsheet/SpreadSheetEditor";
 
 const DocumentsList = () => {
   const { permissions } = useRolePermissions();

@@ -20,6 +20,7 @@ import {
 } from "@/hooks/useTrainings";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useScrollToTopOnChange } from "@/components/common/ScrollToTopOnChange";
 
 const PlayerMetricsTab = ({
   session,
@@ -115,7 +116,8 @@ const PlayerMetricsTab = ({
         }
       );
     });
-  };  const handleNextPlayer = async () => {
+  };
+  const handleNextPlayer = async () => {
     // Save current player's metrics before navigating
     const currentPlayerId = allPlayers[currentPlayerIndex]?.player?.id;
     const isLastPlayer = currentPlayerIndex === allPlayers.length - 1;
@@ -211,6 +213,8 @@ const PlayerMetricsTab = ({
   const effectiveMetricsCount =
     playerMetrics.length - metricsToRemoveCount + selectedMetricsCount;
 
+  useScrollToTopOnChange(currentPlayerIndex, 500);
+
   // Find missed metrics for the current player from the last session
   const currentPlayerMissedMetrics = useMemo(() => {
     if (
@@ -241,7 +245,7 @@ const PlayerMetricsTab = ({
   return (
     <div className="space-y-6 flex flex-col h-full relative z-10">
       {/* Enhanced Player Navigation & Statistics Dashboard */}
-      <div className="rounded-2xl border-2 border-primary/20 p-6 space-y-6">
+      <div className="flex flex-col gap-4 md:gap-6">
         <div>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-gray-700">
@@ -259,7 +263,7 @@ const PlayerMetricsTab = ({
           </div>
         </div>
         {/* Header with Current Player */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-12 w-12 border-2 border-white shadow-lg">
               <AvatarImage
@@ -311,13 +315,15 @@ const PlayerMetricsTab = ({
               <span className="text-sm font-medium text-gray-700">
                 {allPlayers.length} Total
               </span>
-            </div>            <div className="flex items-center gap-2">
+            </div>{" "}
+            <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <span className="text-sm font-medium text-gray-700">
                 {
                   allPlayers.filter(
                     (record) =>
-                      record.assigned_metrics && record.assigned_metrics.length > 0
+                      record.assigned_metrics &&
+                      record.assigned_metrics.length > 0
                   ).length
                 }{" "}
                 Done
@@ -341,7 +347,8 @@ const PlayerMetricsTab = ({
         {/* Progress Bar with Navigation */}
         <div className="space-y-3">
           {/* Integrated Navigation Controls */}
-          <div className="flex items-center justify-between">            <Button
+          <div className="flex items-center justify-between">
+            <Button
               variant="outline"
               size="sm"
               onClick={handlePreviousPlayer}
@@ -351,23 +358,24 @@ const PlayerMetricsTab = ({
               <ChevronLeft className="h-3 w-3" />
               <span className="text-xs">Previous</span>
             </Button>
-            <div className="text-center">
+            <div className="text-center text-xs md:text-sm">
               {!canProceed ? (
                 <Badge
                   variant="outline"
-                  className="text-sm bg-destructive/20 border-destructive text-destructive"
+                  className="bg-destructive/20 border-destructive text-destructive"
                 >
                   Need at least one metric
                 </Badge>
               ) : (
                 <Badge
                   variant="outline"
-                  className="text-sm bg-green-500/20 border-green-700 text-green-600"
+                  className="bg-green-500/20 border-green-700 text-green-600"
                 >
                   Ready to proceed
                 </Badge>
               )}
-            </div>            <Button
+            </div>{" "}
+            <Button
               variant={canProceed ? "default" : "outline"}
               size="sm"
               onClick={handleNextPlayer}
@@ -383,25 +391,26 @@ const PlayerMetricsTab = ({
                   ? "Complete"
                   : "Next"}
               </span>
-              <ChevronRight className="h-3 w-3" />
+              <ChevronRight />
             </Button>
           </div>
         </div>{" "}
       </div>{" "}
       {/* Missed Metrics from Last Session */}
       {currentPlayerMissedMetrics.length > 0 && (
-        <div className="rounded-xl p-4 border-2 border-amber-200 bg-amber-50/80 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
+        <div className="rounded-xl p-4 bg-amber-500/10 text-amber-700 border border-amber-200/30  shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between mb-3">
+            <h4 className="text-sm font-semibold  flex items-center gap-2">
               <Clock className="h-4 w-4 text-amber-600" />
-              Missed Metrics from Last Session
+              Missed from Last Session
               <Badge
                 variant="outline"
-                className="text-xs bg-amber-100 text-amber-700 border-amber-300"
+                className="text-xs ml-auto bg-amber-800/10 text-amber-800 border-amber-800/40"
               >
                 {currentPlayerMissedMetrics.length} missed
               </Badge>
-            </h4>            <Button
+            </h4>
+            <Button
               variant="outline"
               size="sm"
               disabled={isFormDisabled}
@@ -424,13 +433,18 @@ const PlayerMetricsTab = ({
                   handleTogglePlayerMetric(playerId, metricId);
                 });
               }}
-              className="text-xs px-3 py-1 bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 hover:border-amber-400"
+              className={cn(
+                "text-xs px-3 py-1.5 font-medium transition-all duration-200 mt-2 md:mt-0",
+                "border-amber-400  text-amber-800 hover:bg-amber-100 hover:border-amber-500",
+                "dark:border-amber-500/50 dark:text-amber-300 dark:hover:bg-amber-500/10 dark:hover:border-amber-400/60",
+                "disabled:opacity-50 disabled:cursor-not-allowed"
+              )}
             >
               <Target className="h-3 w-3 mr-1" />
               Assign All Missed
             </Button>
           </div>
-          <p className="text-xs text-amber-700 mb-3">
+          <p className="text-xs mb-3">
             These metrics were assigned but not recorded in the previous
             session. Click to select or use the button above:
           </p>
@@ -441,21 +455,47 @@ const PlayerMetricsTab = ({
               );
               const isSelected = (
                 selectedPlayerMetrics[playerId] || []
-              ).includes(missedMetric.metric_id);              const isClickable = !isAlreadyAssigned && !isFormDisabled;
+              ).includes(missedMetric.metric_id);
+              const isClickable = !isAlreadyAssigned && !isFormDisabled;
 
               return (
-                <Badge
+                <button
                   key={missedMetric.metric_id}
-                  variant="outline"
-                  className={`text-sm px-3 py-1.5 font-medium transition-all duration-200 ${
-                    isAlreadyAssigned
-                      ? "bg-primary/10 text-primary border-primary/20"
-                      : isSelected
-                      ? "bg-secondary/10 text-secondary border-secondary/20 ring-2 ring-secondary/30"
-                      : isFormDisabled
-                      ? "bg-amber-100 text-amber-800 border-amber-300 opacity-60 cursor-not-allowed"
-                      : "bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 cursor-pointer"
-                  }`}
+                  disabled={!isClickable}
+                  className={cn(
+                    "inline-flex w-full md:w-auto items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 border-2 shadow-sm",
+                    "hover:scale-[1.02] active:scale-[0.98]",
+                    isAlreadyAssigned && [
+                      "bg-primary/10",
+                      "border-primary/40 text-primary",
+                      "dark:from-primary/30 dark:to-primary/20",
+                      "dark:border-primary/50",
+                      "cursor-default shadow-primary/10"
+                    ],
+                    isSelected && !isAlreadyAssigned && [
+                      "bg-secondary/10 dark:bg-secondary/5",
+                      "border-secondary/20 text-amber-600",
+                      "dark:from-secondary/30 dark:to-secondary/20",
+                      "dark:border-amber-600/60",
+                      "hover:border-secondary/60 hover:shadow-md"
+                    ],
+                    !isAlreadyAssigned && !isSelected && !isFormDisabled && [
+                      "bg-amber-400/10",
+                      "border-amber-400/20 text-amber-400",
+                      "dark:from-amber-500/20 dark:to-amber-600/15",
+                      "dark:border-amber-500/50 dark:text-amber-300",
+                      "hover:from-amber-100 hover:to-amber-200",
+                      "dark:hover:from-amber-500/30 dark:hover:to-amber-600/25",
+                      "hover:border-amber-500 hover:shadow-md hover:shadow-amber-200/50",
+                      "dark:hover:border-amber-400/60 dark:hover:shadow-amber-500/20",
+                      "cursor-pointer"
+                    ],
+                    isFormDisabled && !isAlreadyAssigned && [
+                      "bg-amber-50 border-amber-200 text-amber-600",
+                      "dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-400",
+                      "opacity-50 cursor-not-allowed"
+                    ]
+                  )}
                   onClick={() => {
                     if (isClickable) {
                       handleTogglePlayerMetric(
@@ -466,29 +506,24 @@ const PlayerMetricsTab = ({
                   }}
                 >
                   {isAlreadyAssigned ? (
-                    <CheckCircle className="h-3 w-3 mr-1" />
+                    <CheckCircle className="h-3.5 w-3.5 flex-shrink-0" />
                   ) : isSelected ? (
-                    <Target className="h-3 w-3 mr-1" />
+                    <Target className="h-3.5 w-3.5 flex-shrink-0" />
                   ) : (
-                    <Clock className="h-3 w-3 mr-1" />
+                    <Clock className="h-3.5 w-3.5 flex-shrink-0" />
                   )}
-                  {missedMetric.metric_name}
-                  {missedMetric.metric_unit && (
-                    <span className="ml-1 text-amber-600">
-                      ({missedMetric.metric_unit})
-                    </span>
-                  )}{" "}
+                  <span className="font-semibold truncate max-w-[200px] md:max-w-auto">{missedMetric.metric_name}</span>
                   {isAlreadyAssigned && (
-                    <span className="ml-1 text-primary text-xs">
-                      ✓ Already assigned
-                    </span>
+                    <Badge variant="outline" className="ml-auto text-[10px] px-1.5 py-0 h-4 bg-primary/10 border-primary/30 text-primary dark:bg-primary/20 dark:border-primary/40">
+                      ✓ Assigned
+                    </Badge>
                   )}
                   {isSelected && !isAlreadyAssigned && (
-                    <span className="ml-1 text-secondary text-xs">
+                    <Badge variant="outline" className="ml-auto text-[10px] px-1.5 py-0 h-4 bg-secondary/10 border-secondary/30 text-amber-600 dark:bg-amber-900/10 dark:border-amber-900/40">
                       Selected
-                    </span>
+                    </Badge>
                   )}
-                </Badge>
+                </button>
               );
             })}
           </div>
@@ -497,7 +532,7 @@ const PlayerMetricsTab = ({
       {/* Enhanced Player's Assigned Metrics */}
       {playerMetrics.length > 0 && (
         <div className="rounded-xl p-4 border-2 border-primary/20 shadow-sm">
-          <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-1pl">
+          <h4 className="text-sm font-semibold text-foreground mb-3 gap-1 flex items-center gap-1pl">
             <CheckCircle className="h-4 w-4 text-primary" />
             Currently Assigned Metrics
           </h4>
@@ -527,20 +562,16 @@ const PlayerMetricsTab = ({
       )}
       {/* Enhanced Metric Selection */}
       <div className="space-y-4 flex-1 flex flex-col">
-        {" "}
         <div className="flex items-center gap-2">
-          <h4 className="text-sm font-semibold text-foreground">
-            Select Metrics to Assign:
-          </h4>
           <Badge variant="outline" className="text-xs">
             {filteredMetrics.length} available
           </Badge>
           {currentPlayerMissedMetrics.length > 0 && (
             <Badge
               variant="outline"
-              className="text-xs bg-amber-100 text-amber-800 border-amber-300"
+              className="text-xs bg-amber-500/10 text-amber-500 border-amber-500/40"
             >
-              <Clock className="h-3 w-3 mr-1" />
+              <Clock className="h-3 w-3" />
               {currentPlayerMissedMetrics.length} from last session
             </Badge>
           )}
@@ -564,7 +595,8 @@ const PlayerMetricsTab = ({
               ? !isMarkedForRemoval
               : isSelected;
 
-            return (              <div
+            return (
+              <div
                 key={metric.id}
                 className={cn(
                   "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-md",
@@ -585,12 +617,21 @@ const PlayerMetricsTab = ({
                   !isFormDisabled && "cursor-pointer",
                   isFormDisabled && "cursor-not-allowed opacity-60"
                 )}
-                onClick={!isFormDisabled ? () => handleTogglePlayerMetric(playerId, metric.id) : undefined}
+                onClick={
+                  !isFormDisabled
+                    ? () => handleTogglePlayerMetric(playerId, metric.id)
+                    : undefined
+                }
               >
                 {/* Background hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>                <SimpleCheckbox
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>{" "}
+                <SimpleCheckbox
                   checked={isChecked}
-                  onChange={!isFormDisabled ? () => handleTogglePlayerMetric(playerId, metric.id) : undefined}
+                  onChange={
+                    !isFormDisabled
+                      ? () => handleTogglePlayerMetric(playerId, metric.id)
+                      : undefined
+                  }
                   disabled={isFormDisabled}
                   className="relative z-10"
                 />
@@ -691,46 +732,52 @@ const PlayerMetricsTab = ({
           })}
         </div>
         {/* Bottom Navigation for Better UX */}
-        <div className="flex items-center rounded-xl shadow-sm justify-between p-4 border-2 border-primary/20">          <Button
+        {/* Integrated Navigation Controls */}
+        <div className="flex items-center justify-between">
+          <Button
             variant="outline"
-            size="default"
+            size="sm"
             onClick={handlePreviousPlayer}
             disabled={currentPlayerIndex === 0}
+            className="flex items-center gap-2 px-3 py-1.5 border-gray-300 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50"
           >
-            <ChevronLeft className="h-4 w-4" />
-            <span>Previous Player</span>
+            <ChevronLeft className="h-3 w-3" />
+            <span className="text-xs">Previous</span>
           </Button>
-          <div className="text-center">
-            <div className="text-sm text-muted-foreground mb-1">
-              Player {currentPlayerIndex + 1} of {allPlayers.length}
-            </div>
+          <div className="text-center text-xs md:text-sm">
             {!canProceed ? (
               <Badge
                 variant="outline"
-                className="text-sm bg-destructive/20 border-destructive text-destructive"
+                className="bg-destructive/20 border-destructive text-destructive"
               >
                 Need at least one metric
               </Badge>
             ) : (
               <Badge
                 variant="outline"
-                className="text-sm bg-green-500/20 border-green-700 text-green-600"
+                className="bg-green-500/20 border-green-700 text-green-600"
               >
                 Ready to proceed
               </Badge>
             )}
-          </div>          <Button
-            variant={canProceed ? "default" : "destructive"}
-            size="default"
+          </div>{" "}
+          <Button
+            variant={canProceed ? "default" : "outline"}
+            size="sm"
             onClick={handleNextPlayer}
             disabled={!canProceed}
+            className={`flex items-center py-1.5 transition-all duration-200 ${
+              canProceed
+                ? "bg-primary hover:bg-primary/90"
+                : "border-red-300 text-red-600 hover:bg-red-50"
+            }`}
           >
-            <span>
+            <span className="text-xs">
               {currentPlayerIndex === allPlayers.length - 1
                 ? "Complete"
-                : "Next Player"}
+                : "Next"}
             </span>
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight />
           </Button>
         </div>
       </div>

@@ -57,7 +57,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
     return (
       <Card className="h-full pt-0 flex flex-col shadow-xl border-2 border-primary/30 bg-card">
         <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 text-white rounded-t-xl shadow-lg py-5">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col justify-between">
             <CardTitle className="flex items-center gap-3">
               <div className="">
                 <Target className="h-6 w-6" />
@@ -92,8 +92,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
   }
   return (
     <Card className="h-full gap-0 pt-0 flex flex-col shadow-xl border-2 border-primary/30 bg-card transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 overflow-hidden">
-      <CardHeader className="text-foreground rounded-t-xl border-b-2 border-primary/30 py-5">
-        <div className="flex items-center justify-between">
+      <CardHeader className="text-foreground p-4 md:p-6 rounded-t-xl border-b-2 border-primary/30 py-5">
+        <div className="flex flex-col md:flex-row gap-3 justify-between">
           <CardTitle className="flex items-center gap-3">
             <div className="p-3 bg-primary rounded-lg text-primary-foreground">
               <User className="size-6" />
@@ -118,28 +118,26 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
             </Button>
           )}
         </div>
-        <div className="mt-4 p-4 bg-primary/10 rounded-lg backdrop-blur-sm border border-primary/30">
+        <div className="mt-2 p-4 bg-primary/10 rounded-lg backdrop-blur-sm border border-primary/30">
           <p className="text-sm inline-flex items-center gap-1 leading-relaxed text-primary">
-            <BadgeInfo className="size-4" /> Assign specific metrics to
-            individual players based on their roles or training focus areas.
-            Configure these before the training session so players can prepare
-            accordingly.
+            Assign specific metrics to individual players based on their roles
+            or training focus areas. Configure these before the training session
+            so players can prepare accordingly.
           </p>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col h-full p-6 bg-background">
+      <CardContent className="flex flex-col h-full space-y-4 md:space-y-6 p-4 md:p-6 bg-background">
         {/* Configuration Status Card */}
         <div className="animate-in fade-in-50 duration-500 delay-100">
           {!canSkip && (
-            <div className="p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
+            <div className="p-4 bg-amber-500/10 text-amber-700 border border-amber-200/30 rounded-xl">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-amber-100 rounded-lg border border-amber-300">
+                <div className="p-2 bg-amber-600/20 rounded-md mt-1">
                   <AlertCircle className="h-4 w-4 text-amber-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-amber-800">
-                    Configuration Required
-                  </h4>                  <p className="text-sm text-amber-700 mt-1">
+                  <h4 className="font-semibold">Configuration Required</h4>
+                  <p className="text-sm  mt-1">
                     Some players don't have any assigned metrics. Please assign
                     metrics to all players or configure session metrics first to
                     proceed.

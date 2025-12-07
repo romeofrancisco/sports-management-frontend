@@ -12,7 +12,11 @@ import {
   useTrainingCategories,
 } from "@/hooks/useTrainings";
 
-const SessionMetricsTab = ({ session, onSaveSuccess, isFormDisabled = false }) => {
+const SessionMetricsTab = ({
+  session,
+  onSaveSuccess,
+  isFormDisabled = false,
+}) => {
   const {
     sessionMetrics,
     sessionMetricIds,
@@ -106,229 +110,202 @@ const SessionMetricsTab = ({ session, onSaveSuccess, isFormDisabled = false }) =
     }
 
     return filtered;
-  }, [allMetrics, selectedCategoryId]);  return (
+  }, [allMetrics, selectedCategoryId]);
+  return (
     <div className="space-y-6 flex-1 relative z-10 h-full">
-      
-      
-      
-        {/* Currently assigned session metrics */}
-        {sessionMetrics.length > 0 && (
-          <div className="rounded-xl p-4 border-2 border-primary/30 shadow-sm">
-            <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              Metrics Currently Assigned to All Players
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {sessionMetrics.map((metric) => (
-                <Badge
-                  key={metric.id}
-                  className="text-sm px-3 py-1.5 font-medium bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 transition-all duration-200"
-                >
-                  {metric.name} ({metric.metric_unit?.code || "-"})
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-        {/* Enhanced Category Filter */}
-        <div className="rounded-xl border-2 border-primary/30 shadow-sm p-4">
-          <div className="flex flex-wrap gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Filter className="h-4 w-4 text-primary" />
-              </div>
-              <span className="text-sm font-semibold text-foreground">
-                Filter by category:
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
+      {/* Currently assigned session metrics */}
+      {sessionMetrics.length > 0 && (
+        <div className="rounded-xl p-4 border-2 border-primary/30 shadow-sm">
+          <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-primary" />
+            Metrics Currently Assigned to All Players
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {sessionMetrics.map((metric) => (
               <Badge
-                variant={selectedCategoryId === null ? "default" : "outline"}
+                key={metric.id}
+                className="text-sm px-3 py-1.5 font-medium bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 transition-all duration-200"
+              >
+                {metric.name} ({metric.metric_unit?.code || "-"})
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* Enhanced Category Filter */}
+      <div className="rounded-xl border-2 border-primary/30 shadow-sm p-4">
+        <div className="flex flex-wrap gap-3 items-center">
+          <div className="flex items-center gap-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Filter className="h-4 w-4 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">
+              Filter by category:
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Badge
+              variant={selectedCategoryId === null ? "default" : "outline"}
+              className={cn(
+                "cursor-pointer transition-all duration-200 hover:shadow-md",
+                selectedCategoryId === null
+                  ? "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+                  : "hover:bg-primary/10 hover:border-primary/30"
+              )}
+              onClick={() => setSelectedCategoryId(null)}
+            >
+              All Categories
+            </Badge>
+            {categories?.map((category) => (
+              <Badge
+                key={category.id}
+                variant={
+                  selectedCategoryId === category.id ? "default" : "outline"
+                }
                 className={cn(
                   "cursor-pointer transition-all duration-200 hover:shadow-md",
-                  selectedCategoryId === null
+                  selectedCategoryId === category.id
                     ? "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
                     : "hover:bg-primary/10 hover:border-primary/30"
                 )}
-                onClick={() => setSelectedCategoryId(null)}
+                onClick={() => setSelectedCategoryId(category.id)}
               >
-                All Categories
+                {category.name}
               </Badge>
-              {categories?.map((category) => (
-                <Badge
-                  key={category.id}
-                  variant={
-                    selectedCategoryId === category.id ? "default" : "outline"
-                  }
-                  className={cn(
-                    "cursor-pointer transition-all duration-200 hover:shadow-md",
-                    selectedCategoryId === category.id
-                      ? "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
-                      : "hover:bg-primary/10 hover:border-primary/30"
-                  )}
-                  onClick={() => setSelectedCategoryId(category.id)}
-                >
-                  {category.name}
-                </Badge>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
-        {/* Enhanced Metrics Selection */}
-        {metricsLoading ? (
-          <div className="flex items-center justify-center py-12 bg-gradient-to-r from-card/30 to-card/50 rounded-xl border border-border/20">
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">
-                Loading metrics...
-              </p>
-            </div>
+      </div>
+      {/* Enhanced Metrics Selection */}
+      {metricsLoading ? (
+        <div className="flex items-center justify-center py-12 bg-gradient-to-r from-card/30 to-card/50 rounded-xl border border-border/20">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground">Loading metrics...</p>
           </div>
-        ) : (
-          <div className="space-y-4 flex-1">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-foreground">
-                Available Metrics:
-              </h4>
-              <Badge variant="outline" className="text-xs">
-                {filteredMetrics.length} metrics found
-              </Badge>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto pr-2">
-              {filteredMetrics.map((metric) => {
-                const isMetricSelected = selectedMetrics.includes(metric.id);
-                const isAssignedToAllPlayers = sessionMetricIds.includes(
-                  metric.id
-                );
-
-                return (                  <div
-                    key={metric.id}
-                    className={cn(
-                      "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200",
-                      !isFormDisabled && "cursor-pointer hover:shadow-md",
-                      isFormDisabled && "cursor-not-allowed opacity-60",
-                      isAssignedToAllPlayers &&
-                        "bg-primary/10 border-primary/30 shadow-sm",
-                      !isAssignedToAllPlayers &&
-                        isMetricSelected &&
-                        "bg-secondary/10 border-secondary/20 shadow-sm",
-                      !isAssignedToAllPlayers &&
-                        !isMetricSelected &&
-                        "bg-gradient-to-r from-card to-card/80 border-border hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10"
-                    )}
-                    {...(!isFormDisabled && {
-                      onClick: () => handleToggleSessionMetric(metric.id)
-                    })}
-                  >
-                    {/* Background hover effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>                    <SimpleCheckbox
-                      id={`metric-${metric.id}`}
-                      checked={isMetricSelected}
-                      onChange={!isFormDisabled ? () => handleToggleSessionMetric(metric.id) : undefined}
-                      disabled={isFormDisabled}
-                      className="relative z-10"
-                    />
-
-                    <div className="flex-1 relative z-10">                      <Label
-                        htmlFor={`metric-${metric.id}`}
-                        className={cn(
-                          "text-sm font-semibold leading-none flex items-center gap-2",
-                          !isFormDisabled && "cursor-pointer",
-                          isFormDisabled && "cursor-not-allowed",
-                          isAssignedToAllPlayers && "text-primary",
-                          !isAssignedToAllPlayers &&
-                            isMetricSelected &&
-                            "text-secondary",
-                          !isAssignedToAllPlayers &&
-                            !isMetricSelected &&
-                            "text-foreground"
-                        )}
-                      >
-                        {metric.name}
-                        {isAssignedToAllPlayers && (
-                          <Badge
-                            variant="outline"
-                            className="text-xs text-primary bg-primary/10 border-primary/30"
-                          >
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Assigned to All
-                          </Badge>
-                        )}
-                      </Label>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {metric.description} ({metric.metric_unit?.code || "-"})
-                      </p>
-                    </div>
-
-                    <div className="relative z-10">
-                      {metric.category_name && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-muted/50 border-muted-foreground/20"
-                        >
-                          {metric.category_name ||
-                            (typeof metric.category === "object"
-                              ? metric.category.name
-                              : "")}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {/* Enhanced Save Section */}
-        <div className="rounded-xl border-2 border-primary/30 shadow-sm p-4">
+        </div>
+      ) : (
+        <div className="space-y-4 flex-1">
           <div className="flex items-center justify-between">
-            <div className="flex gap-2">
-              <p className="text-sm font-medium text-foreground mb-1">
-                {getButtonInfo().description}
-              </p>
-              {changesInfo.hasChanges && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  {changesInfo.adding > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="text-secondary bg-secondary/10 border-secondary/20 hover:bg-secondary/20"
-                    >
-                      <span className="w-2 h-2 bg-secondary rounded-full mr-1"></span>
-                      +{changesInfo.adding} adding
-                    </Badge>
+            <h4 className="text-sm font-semibold text-foreground">
+              Available Metrics:
+            </h4>
+            <Badge variant="outline" className="text-xs">
+              {filteredMetrics.length} metrics found
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto pr-2">
+            {filteredMetrics.map((metric) => {
+              const isMetricSelected = selectedMetrics.includes(metric.id);
+              const isAssignedToAllPlayers = sessionMetricIds.includes(
+                metric.id
+              );
+
+              return (
+                <div
+                  key={metric.id}
+                  className={cn(
+                    "relative overflow-hidden group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200",
+                    !isFormDisabled && "cursor-pointer hover:shadow-md",
+                    isFormDisabled && "cursor-not-allowed opacity-60",
+                    isAssignedToAllPlayers &&
+                      "bg-primary/10 border-primary/30 shadow-sm",
+                    !isAssignedToAllPlayers &&
+                      isMetricSelected &&
+                      "bg-secondary/10 border-secondary/20 shadow-sm",
+                    !isAssignedToAllPlayers &&
+                      !isMetricSelected &&
+                      "bg-gradient-to-r from-card to-card/80 border-border hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10"
                   )}
-                  {changesInfo.removing > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="text-primary bg-primary/10 border-primary/30 hover:bg-primary/20"
+                  {...(!isFormDisabled && {
+                    onClick: () => handleToggleSessionMetric(metric.id),
+                  })}
+                >
+                  {/* Background hover effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>{" "}
+                  <SimpleCheckbox
+                    id={`metric-${metric.id}`}
+                    checked={isMetricSelected}
+                    onChange={
+                      !isFormDisabled
+                        ? () => handleToggleSessionMetric(metric.id)
+                        : undefined
+                    }
+                    disabled={isFormDisabled}
+                    className="relative z-10"
+                  />
+                  <div className="flex-1 relative z-10">
+                    {" "}
+                    <Label
+                      htmlFor={`metric-${metric.id}`}
+                      className={cn(
+                        "text-sm font-semibold leading-none flex items-center gap-2",
+                        !isFormDisabled && "cursor-pointer",
+                        isFormDisabled && "cursor-not-allowed",
+                        isAssignedToAllPlayers && "text-primary",
+                        !isAssignedToAllPlayers &&
+                          isMetricSelected &&
+                          "text-secondary",
+                        !isAssignedToAllPlayers &&
+                          !isMetricSelected &&
+                          "text-foreground"
+                      )}
                     >
-                      <span className="w-2 h-2 bg-primary rounded-full mr-1"></span>
-                      -{changesInfo.removing} removing
-                    </Badge>
-                  )}
+                      {metric.name}
+                    </Label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {metric.description} ({metric.metric_unit?.code || "-"})
+                    </p>
+                  </div>
+                  <div className="relative z-10">
+                    {metric.category_name && (
+                      <Badge
+                        variant="outline"
+                        className="text-xs bg-muted/50 border-muted-foreground/20"
+                      >
+                        {metric.category_name ||
+                          (typeof metric.category === "object"
+                            ? metric.category.name
+                            : "")}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>            <Button
-              onClick={handleSaveSessionMetrics}
-              disabled={getButtonInfo().disabled || isFormDisabled}
-              variant={
-                changesInfo.removing > 0 && changesInfo.adding === 0
-                  ? "destructive"
-                  : "default"
-              }
-              className={cn(
-                "transition-all duration-200 shadow-lg hover:shadow-xl",
-                !getButtonInfo().disabled &&
-                  !isFormDisabled &&
-                  changesInfo.adding > 0 &&
-                  "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-              )}
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              {getButtonInfo().text}
-            </Button>
-          </div>        </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {/* Enhanced Save Section */}
+      <div className="rounded-xl border-2 border-primary/30 shadow-sm p-4">
+        <div className="flex flex-col md:flex-row items-center gap-2 justify-between">
+          <div className="flex gap-2">
+            <p className="text-sm font-medium text-foreground mb-1">
+              {getButtonInfo().description}
+            </p>
+          </div>{" "}
+          <Button
+            onClick={handleSaveSessionMetrics}
+            disabled={getButtonInfo().disabled || isFormDisabled}
+            variant={
+              changesInfo.removing > 0 && changesInfo.adding === 0
+                ? "destructive"
+                : "default"
+            }
+            className={cn(
+              "transition-all duration-200 shadow-lg hover:shadow-xl w-full md:w-auto",
+              !getButtonInfo().disabled &&
+                !isFormDisabled &&
+                changesInfo.adding > 0 &&
+                "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+            )}
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            {getButtonInfo().text}
+          </Button>
+        </div>{" "}
+      </div>
     </div>
   );
 };

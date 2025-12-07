@@ -19,12 +19,12 @@ const MetricsProgressHeader = ({
   ).length;
 
   return (
-    <div className="p-6 bg-card border-b border-primary/10">
+    <div className="mb-6">
       {/* Combined Header Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+      <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 items-start lg:items-center">
         {/* Left: Player Info */}
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 border-3 border-card shadow-lg ring-2 ring-primary/20">
+        <div className="flex items-center gap-3 sm:gap-4 w-full">
+          <Avatar className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 border-2 sm:border-3 border-card shadow-lg ring-2 ring-primary/20 flex-shrink-0">
             <AvatarImage
               src={
                 currentPlayer?.player?.profile ||
@@ -33,9 +33,9 @@ const MetricsProgressHeader = ({
               alt={`${currentPlayer?.player?.first_name} ${currentPlayer?.player?.last_name}`}
               className="object-cover"
             />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-lg">
+            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm sm:text-base md:text-lg">
               {currentPlayer?.player?.profile ? (
-                <User className="h-8 w-8" />
+                <User className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" />
               ) : (
                 `${currentPlayer?.player?.first_name?.[0] || ""}${
                   currentPlayer?.player?.last_name?.[0] || ""
@@ -43,12 +43,12 @@ const MetricsProgressHeader = ({
               )}
             </AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <h3 className="text-xl font-bold text-foreground">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
               {currentPlayer?.player?.first_name}{" "}
               {currentPlayer?.player?.last_name}
             </h3>
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
               <span className="text-muted-foreground">
                 {metricsToShow.length} metrics to record
               </span>
@@ -56,17 +56,12 @@ const MetricsProgressHeader = ({
           </div>
         </div>
 
-        {/* Center: Metrics Status */}
-        <div className="flex justify-center items-center">
+        {/* Center: Metrics Status - Full width on mobile */}
+        <div className="flex justify-center items-center w-full lg:w-auto">
           <MetricsStatusBadge
             metricValues={metricValues}
             metricsToShow={metricsToShow}
           />
-        </div>
-
-        {/* Right: Player Statistics */}
-        <div className="flex justify-end">
-          <PlayerStatistics playersWithMetrics={playersWithMetrics} />
         </div>
       </div>
     </div>

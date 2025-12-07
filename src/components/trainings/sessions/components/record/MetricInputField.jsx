@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Target, BookOpen } from "lucide-react";
+import { Target, BookOpen, NotebookPen } from "lucide-react";
 import RealTimeImprovementIndicator from "./RealTimeImprovementIndicator";
 import { useMetricInput } from "./hooks/metric-input/useMetricInput";
 import {
@@ -55,7 +55,7 @@ const MetricInputField = ({
 
   return (
     <div
-      className="border-primary/20 rounded-xl border-2"
+      className="border-primary/20 bg-card rounded-xl border-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -74,18 +74,18 @@ const MetricInputField = ({
                   className="text-lg sm:text-xl font-bold text-foreground cursor-pointer truncate"
                 >
                   {metric.name}
+                  {metric.metric_unit && (
+                    <Badge
+                      variant="outline"
+                      className="text-xs font-medium px-2 py-1 self-start"
+                    >
+                      {metric.metric_unit.code}
+                    </Badge>
+                  )}
                 </Label>
-                {metric.metric_unit && (
-                  <Badge
-                    variant="outline"
-                    className="text-xs font-medium px-2 py-1 self-start"
-                  >
-                    {metric.metric_unit.code}
-                  </Badge>
-                )}
               </div>
               {metric.description && (
-                <p className="text-sm text-muted-foreground leading-relaxed mt-1 truncate">
+                <p className="text-sm text-muted-foreground leading-relaxed truncate">
                   {metric.description}
                 </p>
               )}
@@ -103,7 +103,7 @@ const MetricInputField = ({
                 currentStatus={performanceStatus?.status}
               />
             ) : (
-              <div className="w-full h-[80px] bg-muted/20 dark:bg-muted/10 rounded-lg border border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 flex items-center justify-center">
+              <div className="w-full px-2 h-[80px] bg-muted/20 dark:bg-muted/10 rounded-lg border border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 flex items-center justify-center">
                 <p className="text-xs text-muted-foreground/70 dark:text-muted-foreground/50">
                   Enter a value to see real-time performance analysis and
                   improvement tracking
@@ -136,7 +136,7 @@ const MetricInputField = ({
                   onBlur={() => setIsFocused(false)}
                   placeholder="Enter measurement..."
                   disabled={isFormDisabled}
-                 className={getInputTextClasses(performanceStatus)}
+                  className={getInputTextClasses(performanceStatus)}
                 />
 
                 {/* Value Status Indicator */}
@@ -168,7 +168,7 @@ const MetricInputField = ({
         {/* Enhanced Notes Section */}
         <div className="space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-border/50">
           <div className="flex items-center gap-2 sm:gap-3">
-            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+            <NotebookPen className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
             <Label
               htmlFor={`notes-${metric.id}`}
               className="text-sm sm:text-base font-semibold text-foreground"
@@ -177,7 +177,7 @@ const MetricInputField = ({
             </Label>
             <Badge
               variant="secondary"
-              className="text-xs px-2 sm:px-3 py-1 font-medium"
+              className="text-xs px-2 sm:px-3 py-1 font-medium dark:brightness-75"
             >
               Optional
             </Badge>
