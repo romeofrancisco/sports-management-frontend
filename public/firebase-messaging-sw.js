@@ -1,19 +1,16 @@
 // firebase-messaging-sw.js
 // Version: 3.2.0 - Persist settings to IndexedDB so they survive SW restarts
 const SW_VERSION = '3.2.0';
-console.log('[SW] Service Worker loading, version:', SW_VERSION);
 
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
 // Force the new service worker to activate immediately
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing version:', SW_VERSION);
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating version:', SW_VERSION);
   event.waitUntil(
     clients.claim().then(() => {
       // Load settings from IndexedDB on activation
@@ -69,9 +66,8 @@ async function saveSettingsToDB() {
       tx.onerror = () => reject(tx.error);
     });
     db.close();
-    console.log('[SW v' + SW_VERSION + '] Settings saved to IndexedDB');
   } catch (error) {
-    console.error('[SW] Error saving to IndexedDB:', error);
+    // Error saving to IndexedDB
   }
 }
 
@@ -89,21 +85,17 @@ async function loadSettingsFromDB() {
     
     if (result && result.value) {
       muteSettings = result.value;
-      console.log('[SW v' + SW_VERSION + '] Loaded settings from IndexedDB:', JSON.stringify(muteSettings));
     }
   } catch (error) {
-    console.error('[SW] Error loading from IndexedDB:', error);
+    // Error loading from IndexedDB
   }
 }
 
 // Listen for settings updates from the main app
 self.addEventListener('message', (event) => {
-  console.log('[SW v' + SW_VERSION + '] Received message:', event.data);
-  
   if (event.data && event.data.type === 'UPDATE_MUTE_SETTINGS') {
     muteSettings.globalEnabled = event.data.globalEnabled;
     muteSettings.mutedTeams = event.data.mutedTeams || [];
-    console.log('[SW v' + SW_VERSION + '] Mute settings updated:', JSON.stringify(muteSettings));
     // Persist to IndexedDB
     saveSettingsToDB();
   }
@@ -117,11 +109,8 @@ self.addEventListener('message', (event) => {
  * Check if notifications should be shown based on mute settings
  */
 function shouldShowNotification(data) {
-  console.log('[SW v' + SW_VERSION + '] Checking - globalEnabled:', muteSettings.globalEnabled, 'mutedTeams:', muteSettings.mutedTeams, 'team_id:', data.team_id);
-  
   // Check global mute
   if (muteSettings.globalEnabled === false) {
-    console.log('[SW v' + SW_VERSION + '] BLOCKED: Global notifications disabled');
     return false;
   }
   
@@ -130,12 +119,10 @@ function shouldShowNotification(data) {
   if (teamId && muteSettings.mutedTeams.length > 0) {
     const teamIdStr = teamId.toString();
     if (muteSettings.mutedTeams.includes(teamIdStr)) {
-      console.log('[SW v' + SW_VERSION + '] BLOCKED: Team', teamId, 'is muted');
       return false;
     }
   }
   
-  console.log('[SW v' + SW_VERSION + '] ALLOWED');
   return true;
 }
 
@@ -143,20 +130,16 @@ function shouldShowNotification(data) {
 // Since we use data-only messages (no 'notification' field from backend),
 // we have FULL CONTROL over whether to show notifications
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[SW v' + SW_VERSION + '] Background message received:', payload);
-  
   // Get the data for mute checking
   const data = payload.data || {};
   
   // Check mute settings FIRST before anything else
   if (!shouldShowNotification(data)) {
-    console.log('[SW v' + SW_VERSION + '] Notification BLOCKED - not showing');
     return; // Exit early - don't show anything
   }
   
   // If notification field exists (shouldn't happen with our backend), skip to avoid duplicates
   if (payload.notification) {
-    console.log('[SW v' + SW_VERSION + '] Has notification field - skip');
     return;
   }
   
@@ -167,8 +150,6 @@ messaging.onBackgroundMessage(function(payload) {
   if (!notificationTitle) {
     return;
   }
-  
-  console.log('[SW v' + SW_VERSION + '] Showing notification:', notificationTitle);
   
   const notificationOptions = {
     body: notificationBody,
@@ -184,7 +165,6 @@ messaging.onBackgroundMessage(function(payload) {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', function(event) {
-  console.log('[SW] Notification clicked:', event.notification);
   event.notification.close();
 
   // Get the click action URL from notification data
@@ -201,8 +181,6 @@ self.addEventListener('notificationclick', function(event) {
   } catch (e) {
     // clickAction is already a path, use as-is
   }
-
-  console.log('[SW] Navigating to:', clickAction);
   
   // Open or focus the app window
   event.waitUntil(

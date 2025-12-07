@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, use } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../../ui/card";
 import { usePlayerMetricsData } from "./record/hooks/usePlayerMetricsData";
@@ -18,6 +18,7 @@ import {
   createFinishTrainingHandler,
   handleCompletionModalClose,
 } from "./record/utils/trainingCompletionUtils";
+import { useScrollToTopOnChange } from "@/components/common/ScrollToTopOnChange";
 
 const PlayerMetricsRecording = ({
   session,
@@ -40,6 +41,8 @@ const PlayerMetricsRecording = ({
     totalMetrics: 0,
     completedCount: 0
   });
+
+  useScrollToTopOnChange(currentPlayerIndex, 450);
 
   // Reference to get navigation functions from the form
   const formNavigationRef = useRef();
@@ -184,7 +187,7 @@ const PlayerMetricsRecording = ({
         allPlayersComplete={allPlayersComplete}
         hasEmptyCurrentPlayer={currentFormState.hasEmptyCurrentPlayer}
       />
-      <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
+      <CardContent className="space-y-4 sm:space-y-6 flex flex-col h-full p-4 md:p-6 bg-background">
         {/* Enhanced Player Navigation & Statistics Dashboard */}
         <div className="space-y-6">
           <ProgressOverview

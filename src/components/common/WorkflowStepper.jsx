@@ -32,7 +32,7 @@ const WorkflowStepper = ({
             return (
               <React.Fragment key={step.id}>
                 {/* Step indicator */}
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center mb-auto">
                   <button
                     onClick={() => {
                       if (!isDisabled && step.path) {
@@ -51,9 +51,11 @@ const WorkflowStepper = ({
                         : isDisabled
                         ? "bg-muted border-muted-foreground/20 text-muted-foreground"
                         : "bg-background border-muted-foreground/40 text-muted-foreground hover:border-muted-foreground/60"
-                    )}                    title={
+                    )}
+                    title={
                       isDisabled
-                        ? step.validationMessage || `Complete previous steps first`
+                        ? step.validationMessage ||
+                          `Complete previous steps first`
                         : `Go to ${step.title}`
                     }
                   >
@@ -66,7 +68,7 @@ const WorkflowStepper = ({
                     )}
                   </button>
                   {/* Step label */}
-                  <div className="mt-2 text-center">
+                  <div className="mt-2 text-center hidden sm:block">
                     {" "}
                     <div
                       className={cn(
@@ -74,19 +76,20 @@ const WorkflowStepper = ({
                         isCompleted
                           ? "text-primary"
                           : isCurrent
-                          ? "text-secondary-foreground"
+                          ? "text-foreground"
                           : "text-muted-foreground"
                       )}
                     >
                       {step.title}
-                    </div>                    {step.description && (
+                    </div>
+                    {step.description && (
                       <div
                         className={cn(
                           "text-xs mt-1",
                           isCompleted
                             ? "text-primary/80"
                             : isCurrent
-                            ? "text-secondary-foreground/80"
+                            ? "text-foreground/80"
                             : isDisabled
                             ? "text-muted-foreground/70"
                             : "text-muted-foreground"
@@ -97,7 +100,7 @@ const WorkflowStepper = ({
                     )}
                     {/* Validation message for disabled steps */}
                     {isDisabled && step.validationMessage && (
-                      <div className="text-xs mt-1 px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-md">
+                      <div className="text-xs mt-1 px-2 py-1 bg-amber-500/10 text-amber-700 border border-amber-200/30 rounded-md max-w-[250px]">
                         {step.validationMessage}
                       </div>
                     )}

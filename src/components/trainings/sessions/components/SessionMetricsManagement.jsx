@@ -40,9 +40,9 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
 
   if (!session) return null;
   return (
-    <Card className="h-full pt-0 gap-0 flex flex-col shadow-xl border-2 border-primary/30 bg-card transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 overflow-hidden">
-      <CardHeader className="border-b-2 border-primary/30 shadow-lg py-5">
-        <div className="flex items-center justify-between">
+    <Card className="h-full p-0 gap-0 flex shadow-xl border-2 border-primary/30 bg-card transition-all duration-300 hover:shadow-2xl animate-in fade-in-50 duration-500 overflow-hidden">
+      <CardHeader className="border-b-2 p-4 md:p-6 border-primary/30 shadow-lg py-5">
+        <div className="flex flex-col md:flex-row gap-3 justify-between">
           <CardTitle className="flex items-center gap-3">
             <div className="p-3 rounded-lg bg-primary text-primary-foreground">
               <Settings className="size-6" />
@@ -65,16 +65,15 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
             Skip Step
           </Button>
         </div>
-        <div className="mt-4 p-4 rounded-lg border border-primary/30 bg-primary/10">
+        <div className="mt-2 p-4 rounded-lg border border-primary/30 bg-primary/10">
           <p className="text-sm inline-flex items-center gap-1 leading-relaxed text-primary">
-            <BadgeInfo className="size-4" /> Configure metrics that will be
-            available to all players in this training session. These metrics
-            define what performance indicators can be tracked across the entire
-            session.
+            Configure metrics that will be available to all players in this
+            training session. These metrics define what performance indicators
+            can be tracked across the entire session.
           </p>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6 flex flex-col h-full p-6 bg-background">
+      <CardContent className="space-y-6 flex flex-col h-full p-2 md:p-6 bg-background">
         {/* Session Metrics Configuration */}{" "}
         <div className="animate-in fade-in-50 duration-500 delay-200 flex-1 h-full">
           <SessionMetricsTab

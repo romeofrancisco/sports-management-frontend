@@ -17,51 +17,45 @@ const getAttendanceColumns = (
   onStatusChange,
   onNotesChange,
   disabled = false
-) => [  {
+) => [
+  {
     accessorKey: "player_name",
     header: "Player",
     cell: ({ row }) => {
       const player = row.original.player || {};
-      const playerName = row.original.player_name || player.full_name || 
-        `${player.first_name || ""} ${player.last_name || ""}`.trim() || "Unknown Player";
-        return (
+      const playerName =
+        row.original.player_name ||
+        player.full_name ||
+        `${player.first_name || ""} ${player.last_name || ""}`.trim() ||
+        "Unknown Player";
+      return (
         <div className="flex items-center gap-3 py-1">
-          <Avatar className="h-8 w-8 border-2 border-primary/20">
-            <AvatarImage 
-              src={player?.profile || player?.user?.profile} 
-              alt={playerName} 
+          <Avatar className="hidden md:block size-10 border-2 border-primary/20">
+            <AvatarImage
+              src={player?.profile || player?.user?.profile}
+              alt={playerName}
             />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm">
+            <AvatarFallback>
               {player?.jersey_number ? (
                 <span className="text-xs">#{player.jersey_number}</span>
               ) : player?.profile ? (
                 <User className="h-4 w-4" />
               ) : (
-                `${player?.first_name?.[0] || ''}${player?.last_name?.[0] || ''}`.toUpperCase() || '??'
+                `${player?.first_name?.[0] || ""}${
+                  player?.last_name?.[0] || ""
+                }`.toUpperCase() || "??"
               )}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-foreground truncate">
+            <div className="font-medium text-foreground truncate max-w-[100px] md:max-w-[250px] lg:max-w-[350px]">
               {playerName}
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              {player.jersey_number && (
-                <span>#{player.jersey_number}</span>
-              )}
-              {player.position && (
-                <span className="flex items-center gap-1">
-                  <Target className="h-3 w-3" />
-                  {player.position}
-                </span>
-              )}
             </div>
           </div>
         </div>
       );
     },
     size: 220,
-    className: "w-[220px] min-w-[220px]",
   },
   {
     accessorKey: "notes",
@@ -83,7 +77,7 @@ const getAttendanceColumns = (
         return (
           <div className="w-full max-w-[250px]">
             <Textarea
-              className="min-h-[32px] text-xs w-full max-h-[3rem]"
+              className="min-h-[32px] text-xs min-w-[200px] w-full max-h-[3rem]"
               value={localValue}
               placeholder="Add notes..."
               onChange={handleChange}

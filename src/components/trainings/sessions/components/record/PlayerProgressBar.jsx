@@ -3,15 +3,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../../ui/avatar";
 import { Check, Loader2 } from "lucide-react";
 import PlayerProgressBarSkeleton from "./PlayerProgressBarSkeleton";
 
-const PlayerProgressBar = ({ 
-  playersWithMetrics, 
-  currentPlayerIndex, 
-  navigateToPlayer, 
-  isNavigating = false 
+const PlayerProgressBar = ({
+  playersWithMetrics,
+  currentPlayerIndex,
+  navigateToPlayer,
+  isNavigating = false,
 }) => {
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between w-full">
+    <div className="p-3 sm:p-6 md:p-8 overflow-x-auto">
+      <div className="flex items-center justify-between w-full min-w-max sm:min-w-0 gap-2">
         {playersWithMetrics.map((playerRecord, index) => {
           const isActive = index === currentPlayerIndex;
           const hasData =
@@ -32,7 +32,7 @@ const PlayerProgressBar = ({
                   onClick={() => !isNavigating && navigateToPlayer?.(index)}
                   disabled={isNavigating}
                   className={`
-                    relative flex items-center justify-center w-10 h-10 rounded-full border-3 transition-all duration-300 overflow-hidden
+                    relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 transition-all duration-300 overflow-hidden
                     ${
                       !isActive &&
                       !isNavigating &&
@@ -81,17 +81,12 @@ const PlayerProgressBar = ({
                       )}
                     </AvatarFallback>
                   </Avatar>
-
-                  {/* Active indicator */}
-                  {isActive && (
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary rounded-full border-2 border-card shadow-sm"></div>
-                  )}
                 </button>
 
                 {/* Player name with enhanced styling */}
-                <div className="mt-2 text-center min-w-0 max-w-16">
+                <div className="mt-1.5 sm:mt-2 text-center min-w-0 max-w-12 sm:max-w-16">
                   <div
-                    className={`text-xs font-medium truncate transition-colors duration-200 ${
+                    className={`text-[10px] sm:text-xs font-medium truncate transition-colors duration-200 ${
                       isActive
                         ? "text-primary font-semibold"
                         : hasData
@@ -101,25 +96,15 @@ const PlayerProgressBar = ({
                   >
                     {playerRecord.player?.first_name}
                   </div>
-                  {/* Status indicator */}
-                  <div
-                    className={`mt-1 w-2 h-0.5 mx-auto rounded-full transition-colors duration-200 ${
-                      isActive
-                        ? "bg-primary"
-                        : hasData
-                        ? "bg-green-500"
-                        : "bg-muted"
-                    }`}
-                  ></div>
                 </div>
               </div>
 
               {/* Enhanced connector line */}
               {index < playersWithMetrics.length - 1 && (
-                <div className="flex-1 flex items-center mx-2">
+                <div className="flex-1 flex items-center mx-1 sm:mx-2">
                   <div
                     className={`
-                    w-full h-1 rounded-full transition-all duration-300 relative overflow-hidden
+                    w-full h-0.5 sm:h-1 rounded-full transition-all duration-300 relative overflow-hidden
                     ${hasData ? "bg-green-500" : "bg-muted"}
                   `}
                   >

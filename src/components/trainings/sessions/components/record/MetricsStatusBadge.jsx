@@ -18,19 +18,21 @@ const MetricsStatusBadge = ({ metricValues, metricsToShow }) => {
     return (
       <Badge
         variant="outline"
-        className="text-sm px-4 py-2 bg-green-500/10 border-green-500/20 text-green-600 font-semibold flex items-center gap-2"
+        className="text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 bg-green-500/10 border-green-500/20 text-green-600 font-semibold flex items-center gap-1.5 sm:gap-2"
       >
-        <CheckCircle className="w-4 h-4" />
-        Ready to proceed ({recordedMetrics}/{totalMetrics})
+        <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        <span className="hidden xs:inline">Ready to proceed</span>
+        <span className="xs:hidden">Ready</span>
+        ({recordedMetrics}/{totalMetrics})
       </Badge>
     );
   } else if (recordedMetrics > 0) {
     return (
       <Badge
         variant="outline"
-        className="text-sm px-4 py-2 bg-amber-500/10 border-amber-500/20 text-amber-600 font-semibold flex items-center gap-2"
+        className="text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 bg-amber-500/10 border-amber-500/20 text-amber-600 font-semibold flex items-center gap-1.5 sm:gap-2"
       >
-        <Clock className="w-4 h-4" />
+        <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         In Progress ({recordedMetrics}/{totalMetrics})
       </Badge>
     );
@@ -38,9 +40,9 @@ const MetricsStatusBadge = ({ metricValues, metricsToShow }) => {
     return (
       <Badge
         variant="outline"
-        className="text-sm px-4 py-2 bg-muted/50 border-muted text-muted-foreground font-semibold flex items-center gap-2"
+        className="text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 bg-muted/50 border-muted text-muted-foreground font-semibold flex items-center gap-1.5 sm:gap-2"
       >
-        <Circle className="w-4 h-4" />
+        <Circle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         Not Started (0/{totalMetrics})
       </Badge>
     );

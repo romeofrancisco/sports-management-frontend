@@ -175,7 +175,7 @@ const MetricsRecordingForm = forwardRef(({
   }
 
   return (
-    <div className="h-full bg-card rounded-xl border-2 border-primary/20 overflow-hidden relative">
+    <>
       {/* Saving overlay */}
       {isSavingForNavigation || isSaving && (
         <FullPageLoading
@@ -187,19 +187,8 @@ const MetricsRecordingForm = forwardRef(({
         <MetricsRecordingFormSkeleton metricsCount={4} />
       ) : (
         <div className="h-full flex flex-col">
-          {/* Metrics Progress Header */}
-          <MetricsProgressHeader 
-            completedMetrics={completedMetrics}
-            totalMetrics={metricsToShow.length}
-            currentPlayer={currentPlayer}
-            metricsToShow={metricsToShow}
-            metricValues={metricValues}
-            hasChanges={hasChanges}
-            playersWithMetrics={playersWithMetrics}
-          />
-
           {/* Metrics List */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 p-4 sm:p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
             {metricsToShow.map((metric) => (
               <MetricInputField
                 key={`${currentPlayer?.id}-${metric.id}-input`}
@@ -218,7 +207,7 @@ const MetricsRecordingForm = forwardRef(({
 
           {/* Status Message - Shows both complete and incomplete states */}
           {!hasZeroValues && (
-            <div className="p-3 sm:p-6">
+            <div className="mt-6">
               <MetricsStatusMessage
                 currentPlayerIndex={currentPlayerIndex}
                 playersWithMetrics={playersWithMetrics}
@@ -251,7 +240,7 @@ const MetricsRecordingForm = forwardRef(({
           )}
         </div>
       )}
-    </div>
+    </>
   );
 });
 

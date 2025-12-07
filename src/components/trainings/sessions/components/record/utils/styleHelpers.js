@@ -60,13 +60,13 @@ export const getInputBorderClasses = (
   if (hasValue || isFocused) {
     return cn(
       baseClasses,
-      "border-primary/30 focus-within:ring-primary/20 dark:focus-within:ring-primary/10"
+      "border-primary/30 focus-within:ring-primary/10"
     );
   }
 
   return cn(
     baseClasses,
-    "border-border focus-within:ring-primary/20 dark:focus-within:ring-primary/10"
+    "border-border focus-within:ring-primary/10"
   );
 };
 
@@ -75,7 +75,7 @@ export const getInputBorderClasses = (
  */
 export const getInputTextClasses = (performanceStatus) => {
   const baseClasses =
-    "text-lg sm:text-xl font-semibold h-10 sm:h-12 border-0 bg-transparent focus:ring-0 focus:outline-none rounded-none px-4 sm:px-6 transition-colors duration-300";
+    "h-10 sm:h-12 border-0 bg-transparent focus:ring-0 focus:outline-none rounded-none px-4 sm:px-6 transition-colors duration-300";
 
   return cn(
     baseClasses,
@@ -155,7 +155,7 @@ export const getTextareaClasses = (performanceStatus, notes) => {
   if (notes) {
     return cn(
       baseClasses,
-      "focus-visible:ring-0 bg-secondary/20 dark:bg-secondary/10 border-primary/20"
+      "focus-visible:ring-0 border-primary/20"
     );
   }
 

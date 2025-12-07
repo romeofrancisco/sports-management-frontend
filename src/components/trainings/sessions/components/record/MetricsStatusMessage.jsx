@@ -68,137 +68,108 @@ const MetricsStatusMessage = ({
       };
 
   return (
-    <div className={`p-4 sm:p-6 ${theme.container} rounded-xl border`}>
-      <div className="text-center">
-        {/* Icon */}
-        {isFullyComplete ? (
-          <CheckCircle2
-            className={`h-8 w-8 sm:h-10 sm:w-10 ${theme.icon} mb-3 mx-auto`}
-          />
-        ) : (
-          <Clock
-            className={`h-8 w-8 sm:h-10 sm:w-10 ${theme.icon} mb-3 mx-auto`}
-          />
-        )}
+    <div className={`p-4 sm:p-5 ${theme.container} rounded-xl border shadow-sm`}>
+      {/* Status Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3">
+          {isFullyComplete ? (
+            <div className={`p-2 rounded-lg ${theme.icon} bg-primary/10`}>
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+          ) : (
+            <div className={`p-2 rounded-lg ${theme.icon} bg-amber-500/10`}>
+              <Clock className="h-5 w-5" />
+            </div>
+          )}
+          <div>
+            <h3 className={`text-sm sm:text-base font-semibold ${theme.title}`}>
+              {isFullyComplete ? "Metrics Complete" : "Recording Metrics"}
+            </h3>
+            <p className={`text-xs ${theme.description}`}>
+              {completedMetrics} of {totalMetrics} completed
+            </p>
+          </div>
+        </div>
 
-        {/* Title */}
-        <h3
-          className={`text-base sm:text-lg font-semibold ${theme.title} mb-2`}
-        >
-          {isFullyComplete
-            ? "All Metrics Recorded!"
-            : "Metrics Recording In Progress"}
-        </h3>
-
-        {/* Description */}
-        <p className={`text-xs sm:text-sm ${theme.description} mb-4`}>
-          {isFullyComplete
-            ? "Great job! All performance metrics have been captured for this player."
-            : hasChanges
-            ? `Keep going! You've completed ${completedMetrics} of ${totalMetrics} metrics (${progressPercentage}%).`
-            : "Ready to start recording metrics for this player."}
-        </p>
-
-        {/* Main Content - Progress Bar and Navigation */}
-        <div className="mb-4">
-          {/* Progress Bar */}
-          {totalMetrics > 0 && (
-            <div className="mb-4">
-              <div className={`w-full ${theme.progress} rounded-full h-2 mb-2`}>
+        {/* Progress Indicator */}
+        {totalMetrics > 0 && (
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-full sm:w-32 lg:w-40">
+              <div className={`${theme.progress} rounded-full h-2`}>
                 <div
                   className={`${theme.progressFill} h-2 rounded-full transition-all duration-300`}
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className={`text-xs ${theme.progressText} mb-4`}>
-                {isFullyComplete
-                  ? `${completedMetrics} of ${totalMetrics} metrics completed`
-                  : `${remainingMetrics} metric${
-                      remainingMetrics !== 1 ? "s" : ""
-                    } remaining`}
-              </p>
             </div>
-          )}
-
-          {/* Navigation Buttons */}
-          {playersWithMetrics && currentPlayerIndex !== undefined && (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onPreviousPlayer}
-                disabled={isFirstPlayer}
-                className={`flex items-center gap-2 w-full sm:w-auto ${theme.button}`}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous Player
-              </Button>
-
-              <div
-                className={`px-3 py-1 ${theme.badge} rounded-full text-xs sm:text-sm font-medium border`}
-              >
-                {currentPlayerIndex + 1} of {totalPlayers}
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (isLastPlayer && isSessionCompleted) {
-                    handleViewSummary();
-                  } else if (
-                    isLastPlayer &&
-                    !isSessionCompleted &&
-                    allPlayersComplete &&
-                    !hasEmptyCurrentPlayer
-                  ) {
-                    onFinishTraining();
-                  } else {
-                    onNextPlayer();
-                  }
-                }}
-                disabled={
-                  hasZeroValues ||
-                  (!hasValidMetrics && hasChanges) ||
-                  (isLastPlayer && !isSessionCompleted && (!allPlayersComplete || hasEmptyCurrentPlayer))
-                }
-                className={`flex items-center gap-2 w-full sm:w-auto ${theme.button}`}
-              >
-                {isLastPlayer && isSessionCompleted ? (
-                  <>
-                    View Training Summary
-                    <ChevronRight className="h-4 w-4" />
-                  </>
-                ) : isLastPlayer && !isSessionCompleted ? (
-                  <>
-                    Finish Training
-                    <ChevronRight className="h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    Next Player
-                    <ChevronRight className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Footer - Status Information */}
-        <div className="text-center">
-          <p className={`text-xs ${theme.tip}`}>
-            💡 <strong>Tip:</strong>{" "}
-            {isFullyComplete
-              ? isLastPlayer && !isSessionCompleted && !allPlayersComplete
-                ? "Complete metrics for all players to finish the training session"
-                : "All metrics have been successfully recorded for this player"
-              : isLastPlayer && !isSessionCompleted
-              ? "Complete metrics for all players to finish the training session"
-              : "You can navigate between players even with incomplete metrics"}
-          </p>
-        </div>
+            <span className={`text-lg font-bold ${theme.progressText} min-w-[3rem] text-right`}>
+              {progressPercentage}%
+            </span>
+          </div>
+        )}
       </div>
+
+      {/* Navigation Controls */}
+      {playersWithMetrics && currentPlayerIndex !== undefined && (
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onPreviousPlayer}
+            disabled={isFirstPlayer}
+            className={`flex items-center gap-1.5 px-3 py-2 ${theme.button} transition-all`}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Previous</span>
+          </Button>
+
+          <div
+            className={`flex-1 text-center px-3 py-2 ${theme.badge} rounded-lg text-sm font-semibold border min-w-[4rem]`}
+          >
+            <span className="hidden xs:inline">{currentPlayerIndex + 1} of {totalPlayers}</span>
+            <span className="xs:hidden">{currentPlayerIndex + 1}/{totalPlayers}</span>
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (isLastPlayer && isSessionCompleted) {
+                handleViewSummary();
+              } else if (
+                isLastPlayer &&
+                !isSessionCompleted &&
+                allPlayersComplete &&
+                !hasEmptyCurrentPlayer
+              ) {
+                onFinishTraining();
+              } else {
+                onNextPlayer();
+              }
+            }}
+            disabled={
+              hasZeroValues ||
+              (!hasValidMetrics && hasChanges) ||
+              (isLastPlayer &&
+                !isSessionCompleted &&
+                (!allPlayersComplete || hasEmptyCurrentPlayer))
+            }
+            className={`flex items-center gap-1.5 px-3 py-2 ${theme.button} transition-all`}
+          >
+            <span className="hidden sm:inline">
+              {isLastPlayer && isSessionCompleted
+                ? "View Summary"
+                : isLastPlayer && !isSessionCompleted
+                ? "Finish"
+                : "Next"}
+            </span>
+            <span className="sm:hidden">
+              {isLastPlayer ? "Finish" : "Next"}
+            </span>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
