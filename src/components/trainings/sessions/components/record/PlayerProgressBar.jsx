@@ -14,7 +14,18 @@ const PlayerProgressBar = ({
       <div className="flex items-center justify-between w-full min-w-max sm:min-w-0 gap-2">
         {playersWithMetrics.map((playerRecord, index) => {
           const isActive = index === currentPlayerIndex;
-          const hasData =
+          const isComplete =
+            playerRecord.metric_records &&
+            playerRecord.metric_records.length > 0 &&
+            playerRecord.metric_records.every(
+              (record) =>
+                record.value !== null &&
+                record.value !== "" &&
+                !isNaN(parseFloat(record.value))
+            );
+          
+          const hasPartialData =
+            !isComplete &&
             playerRecord.metric_records &&
             playerRecord.metric_records.length > 0 &&
             playerRecord.metric_records.some(
@@ -41,8 +52,10 @@ const PlayerProgressBar = ({
                     ${
                       isActive
                         ? "border-primary shadow-lg scale-125 ring-4 ring-primary/20"
-                        : hasData
+                        : isComplete
                         ? "border-green-500 hover:border-green-600 shadow-md hover:shadow-lg"
+                        : hasPartialData
+                        ? "border-secondary hover:border-secondary/80 shadow-md hover:shadow-lg"
                         : "border-muted hover:border-muted-foreground hover:shadow-md"
                     }
                     ${isNavigating ? "opacity-50 cursor-not-allowed" : ""}
@@ -64,15 +77,17 @@ const PlayerProgressBar = ({
                         ${
                           isActive
                             ? "bg-primary text-primary-foreground"
-                            : hasData
+                            : isComplete
                             ? "bg-green-500 text-white"
+                            : hasPartialData
+                            ? "bg-secondary text-secondary-foreground"
                             : "bg-muted text-muted-foreground"
                         }
                       `}
                     >
                       {isActive && isNavigating ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : hasData ? (
+                      ) : isComplete ? (
                         <Check className="w-4 h-4" />
                       ) : (
                         `${playerRecord.player?.first_name?.[0] || ""}${
@@ -89,8 +104,10 @@ const PlayerProgressBar = ({
                     className={`text-[10px] sm:text-xs font-medium truncate transition-colors duration-200 ${
                       isActive
                         ? "text-primary font-semibold"
-                        : hasData
+                        : isComplete
                         ? "text-green-600"
+                        : hasPartialData
+                        ? "text-secondary"
                         : "text-muted-foreground"
                     }`}
                   >
@@ -105,11 +122,14 @@ const PlayerProgressBar = ({
                   <div
                     className={`
                     w-full h-0.5 sm:h-1 rounded-full transition-all duration-300 relative overflow-hidden
-                    ${hasData ? "bg-green-500" : "bg-muted"}
+                    ${isComplete ? "bg-green-500" : hasPartialData ? "bg-secondary" : "bg-muted"}
                   `}
                   >
-                    {hasData && (
+                    {isComplete && (
                       <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
+                    )}
+                    {hasPartialData && !isComplete && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-secondary/60 to-secondary rounded-full"></div>
                     )}
                   </div>
                 </div>
