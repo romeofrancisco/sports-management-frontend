@@ -155,14 +155,14 @@ const FileCard = ({
                   <img
                     src={fileIcon.src}
                     alt={displayName}
-                    className="h-10 w-10 object-cover rounded"
+                    className="h-10 w-10 dark:brightness-75 object-cover rounded"
                     draggable={false}
                   />
                 ) : (
                   <img
                     src={fileIcon.src}
                     alt={getFileExtension()}
-                    className="h-10 w-10 object-contain"
+                    className="h-10 w-10 object-contain dark:brightness-75"
                     draggable={false}
                   />
                 )}
@@ -399,14 +399,14 @@ const FileCard = ({
                       <img
                         src={fileIcon.src}
                         alt={displayName}
-                        className="h-16 w-16 object-cover rounded group-hover:scale-110 transition-transform"
+                        className="h-16 w-16 dark:brightness-75 object-cover rounded group-hover:scale-110 transition-transform"
                         draggable={false}
                       />
                     ) : (
                       <img
                         src={fileIcon.src}
                         alt={getFileExtension()}
-                        className="h-16 w-16 object-contain group-hover:scale-110 transition-transform"
+                        className="h-16 w-16 object-contain dark:brightness-75 group-hover:scale-110 transition-transform"
                         draggable={false}
                       />
                     )}
