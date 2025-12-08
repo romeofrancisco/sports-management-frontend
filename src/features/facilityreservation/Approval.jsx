@@ -251,9 +251,30 @@ const Approval = () => {
 
             default:
               return (
-                <Badge className="bg-yellow-300 text-yellow-800 border-0">
-                  Pending
-                </Badge>
+                <>
+                  {isAdmin() ? (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleChangeStatus(row.id, "approved")}
+                        className="bg-green-700 hover:bg-green-800 text-white"
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleChangeStatus(row.id, "rejected")}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  ) : (
+                    <Badge className="bg-yellow-300 text-yellow-800 border-0">
+                      Pending
+                    </Badge>
+                  )}
+                </>
               );
           }
         },
@@ -268,63 +289,42 @@ const Approval = () => {
       accessorKey: "id_action",
       cell: (info) => {
         const row = info.row.original;
-        const status = row?.status || row?.meta?.status;
-
-        if (status !== "pending")
-          return (
-            <div className="flex items-center gap-2 justify-end mr-5">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      statusUpdate.openModal();
-                      setUpdateStatus(row);
-                    }}
-                    disabled={
-                      row.start_datetime &&
-                      new Date(row.start_datetime) < new Date()
-                    }
-                  >
-                    <Edit />
-                    Update Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => {
-                      deleteModal.openModal();
-                      setDeleteId(row.id);
-                    }}
-                  >
-                    <Trash2 />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
 
         return (
           <div className="flex items-center gap-2 justify-end mr-5">
-            <Button
-              size="sm"
-              onClick={() => handleChangeStatus(row.id, "approved")}
-              className="bg-green-700 hover:bg-green-800 text-white"
-            >
-              Approve
-            </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={() => handleChangeStatus(row.id, "rejected")}
-            >
-              Reject
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    statusUpdate.openModal();
+                    setUpdateStatus(row);
+                  }}
+                  disabled={
+                    row.start_datetime &&
+                    new Date(row.start_datetime) < new Date()
+                  }
+                >
+                  <Edit />
+                  Update Status
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => {
+                    deleteModal.openModal();
+                    setDeleteId(row.id);
+                  }}
+                >
+                  <Trash2 />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         );
       },
@@ -427,10 +427,7 @@ const Approval = () => {
           onClick={async () => {
             if (!updateStatus) return;
             try {
-              await handleChangeStatus(
-                updateStatus.id,
-                updateStatus.status
-              );
+              await handleChangeStatus(updateStatus.id, updateStatus.status);
               // close modal and clear selection
               statusUpdate.closeModal();
               setUpdateStatus(null);
