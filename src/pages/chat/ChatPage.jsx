@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { useTeamChats } from "@/hooks/useChat";
-import { TeamChatList, ChatWindow, PlayerChatWindow } from "@/components/chat";
+import { TeamChatList, ChatWindow, PlayerChatWindow, BroadcastMessageDialog } from "@/components/chat";
+import { Button } from "@/components/ui/button";
+import { Megaphone } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ChatPage = () => {
   const { teamId } = useParams();
   const { user } = useSelector((state) => state.auth);
   const { isPlayer } = useRolePermissions();
+  const [broadcastOpen, setBroadcastOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const { data: teamChats = [], isLoading } = useTeamChats();
 
@@ -30,17 +35,27 @@ const ChatPage = () => {
   // For admin/coach, show full chat interface with team list
   return (
     <>
+      {/* Broadcast Message Dialog */}
+      <BroadcastMessageDialog
+        open={broadcastOpen}
+        onOpenChange={setBroadcastOpen}
+      />
+
       {/* Main Content */}
       <div className="flex-1 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
         <div className="grid grid-cols-[auto_1fr] lg:grid-cols-4">
           {/* Team List */}
           <div className="lg:col-span-1">
             <div className="h-[calc(100vh-4rem)] border-r-2 border-primary/20">
-              <TeamChatList
-                teamChats={teamChats}
-                selectedChat={selectedChat}
-                loading={isLoading}
-              />
+              {/* Broadcast Button */}
+              <div className="h-[calc(100%-4rem)]">
+                <TeamChatList
+                  teamChats={teamChats}
+                  selectedChat={selectedChat}
+                  loading={isLoading}
+                  setBroadcastOpen={setBroadcastOpen}
+                />
+              </div>
             </div>
           </div>
 
