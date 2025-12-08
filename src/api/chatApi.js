@@ -57,10 +57,22 @@ export const createChatWebSocket = (teamId, onMessage, onError) => {
   };
 };
 
+// Get teams available for broadcast
+export const getBroadcastTeams = () => {
+  return api.get('/chat/broadcast/');
+};
+
+// Broadcast message to multiple teams
+export const broadcastMessage = (data) => {
+  return api.post('/chat/broadcast/', data);
+};
+
 export default {
   getTeamChats,
   getTeamMessages,
   sendMessage,
   markMessagesAsRead,
   createChatWebSocket,
+  getBroadcastTeams,
+  broadcastMessage,
 };

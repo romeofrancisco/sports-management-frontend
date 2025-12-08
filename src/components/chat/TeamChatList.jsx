@@ -7,8 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "../ui/input";
 import { filterAndSortTeamChats } from "./utils";
+import { Megaphone } from "lucide-react";
+import { Button } from "../ui/button";
 
-const TeamChatList = ({ teamChats, selectedChat, loading }) => {
+const TeamChatList = ({ teamChats, selectedChat, loading, setBroadcastOpen }) => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
@@ -42,6 +44,15 @@ const TeamChatList = ({ teamChats, selectedChat, loading }) => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+
+        <Button
+          variant="outline"
+          className="w-full gap-2 bg-primary/5 hover:bg-primary/10 border-primary/20 mt-2"
+          onClick={() => setBroadcastOpen(true)}
+        >
+          <Megaphone className="size-4" />
+          <span className="hidden lg:inline">Broadcast Message</span>
+        </Button>
       </div>
 
       {/* Content */}

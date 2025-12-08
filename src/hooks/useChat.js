@@ -9,6 +9,8 @@ import {
   getTeamMessages,
   sendMessage,
   markMessagesAsRead,
+  getBroadcastTeams,
+  broadcastMessage,
 } from "@/api/chatApi";
 
 // Query keys for chat
@@ -220,5 +222,45 @@ export const useInfiniteTeamMessages = (teamId, enabled = true) => {
     refetchOnReconnect: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
+  });
+};
+
+// Hook to get teams available for broadcast
+export const useBroadcastTeams = () => {
+  return useQuery({
+    queryKey: [...chatKeys.all, "broadcast-teams"],
+    queryFn: async () => {
+      const response = await getBroadcastTeams();
+      return response.data;
+    },
+  });
+};
+
+// Hook to broadcast message to multiple teams
+export const useBroadcastMessage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ message, teamIds, broadcastAll }) => {
+      const response = await broadcastMessage({
+        message,
+        team_ids: teamIds,
+        broadcast_all: broadcastAll,
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate team chats to refresh latest messages
+      queryClient.invalidateQueries({ queryKey: chatKeys.teamChats() });
+      
+      // Invalidate messages for each team that received the broadcast
+      if (data.messages) {
+        data.messages.forEach((msg) => {
+          queryClient.invalidateQueries({
+            queryKey: chatKeys.teamMessages(msg.team_id),
+          });
+        });
+      }
+    },
   });
 };

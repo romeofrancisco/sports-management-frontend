@@ -45,7 +45,7 @@ export function formatDateLabel(timestamp) {
     // If it's this week, show day name and time
     return (
       date.toLocaleDateString([], { weekday: "short" }).toUpperCase() +
-      " AT " +
+      " at " +
       date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     );
   }  // If it's not this week, show full date and time
@@ -56,7 +56,7 @@ export function formatDateLabel(timestamp) {
       day: "numeric", 
       ...(isCurrentYear ? {} : { year: "numeric" })
     }) +
-    " AT " +
+    " at " +
     date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   );
 }

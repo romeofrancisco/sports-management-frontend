@@ -6,3 +6,4 @@ export { default as PlayerChatWindow } from './PlayerChatWindow';
 export { default as MessagesList } from './MessagesList';
 export { default as MessageInput } from './MessageInput';
 export { default as ChatMessage } from './ChatMessage';
+export { default as BroadcastMessageDialog } from './BroadcastMessageDialog';
