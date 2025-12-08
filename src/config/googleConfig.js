@@ -10,11 +10,11 @@ export const GOOGLE_CONFIG = {
   // API Key for Google APIs
   apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
   
-  // Scopes required for Google Drive and Docs/Sheets
+  // Scopes required for Google Drive
+  // Using only drive.file (non-sensitive) to avoid "Google hasn't verified this app" warning
+  // drive.file allows access to files created by this app or explicitly opened by user
   scopes: [
     'https://www.googleapis.com/auth/drive.file',        // Access files created by app
-    'https://www.googleapis.com/auth/documents',         // Google Docs access
-    'https://www.googleapis.com/auth/spreadsheets',      // Google Sheets access
   ].join(' '),
   
   // Discovery docs for Google APIs
