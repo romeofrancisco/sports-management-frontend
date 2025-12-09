@@ -525,7 +525,7 @@ export function SignupForm({ className, ...props }) {
               placeholder="Enter last name"
               control={control}
               errors={errors}
-              rules={{ required: "Last name is required" }}
+              optional={true}
             />
           </div>
 
@@ -562,7 +562,8 @@ export function SignupForm({ className, ...props }) {
               label="Date of Birth"
               placeholder="Select date of birth"
               control={control}
-              errors={errors}
+              error={errors.date_of_birth}
+              rules={{required: "Date of birth is required"}}
             />
           </div>
 

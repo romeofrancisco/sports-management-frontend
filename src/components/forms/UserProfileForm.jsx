@@ -69,6 +69,9 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
   };
 
   const onSubmit = (data) => {
+    console.log("Form submitted with data:", data);
+    console.log("Form errors:", errors);
+
     // Create FormData for file upload
     const formData = {
       first_name: data.first_name,
@@ -80,6 +83,7 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
       ...(data.profile && { profile: data.profile }),
     };
 
+    console.log("Sending formData:", formData);
     updateProfile(formData);
   };
 
@@ -104,6 +108,25 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
 
   const profileFile = watch("profile");
 
+  // Check if required fields are filled
+  const isFormValid = (() => {
+    const firstName = watched[0]; // first_name
+    const email = watched[2]; // email
+    const sex = watched[3]; // sex
+    const dateOfBirth = watched[4]; // date_of_birth
+
+    // Check all required fields
+    if (!firstName || firstName.trim() === "") return false;
+    if (!email || email.trim() === "") return false;
+    if (!sex) return false;
+    if (!dateOfBirth) return false;
+
+    // Check for validation errors
+    if (Object.keys(errors).length > 0) return false;
+
+    return true;
+  })();
+
   const hasChanges = (() => {
     // if a new profile file selected, that's a change
     if (profileFile) return true;
@@ -117,23 +140,49 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
     ];
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      const initial = (initialValues[key] ?? "").toString().trim();
-      const current = (watched?.[i] ?? "").toString().trim();
+      // Normalize values for comparison
+      let initial = initialValues[key];
+      let current = watched?.[i];
+
+      // Handle null/undefined/empty string as equivalent
+      if (!initial && !current) continue;
+
+      // Convert to string for comparison, handling date objects
+      if (initial instanceof Date)
+        initial = initial.toISOString().split("T")[0];
+      if (current instanceof Date)
+        current = current.toISOString().split("T")[0];
+
+      initial = (initial ?? "").toString().trim();
+      current = (current ?? "").toString().trim();
+
+      console.log(
+        `Comparing ${key}: initial="${initial}" vs current="${current}"`
+      );
       if (initial !== current) return true;
     }
     return false;
   })();
 
+  console.log(
+    "hasChanges:",
+    hasChanges,
+    "isPending:",
+    isPending,
+    "user:",
+    user
+  );
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-1 mt-1">
       {/* Profile Picture */}
       <section className="flex flex-col items-center gap-4">
-        <Avatar className="h-24 w-24 ring-2 ring-border shadow-md">
+        <Avatar className="h-24 w-24 border-2 border-primary/20 shadow-md">
           <AvatarImage
             src={profilePreview || user?.profile}
             alt={`${user?.first_name} ${user?.last_name}`}
           />
-          <AvatarFallback className="text-lg font-semibold">
+          <AvatarFallback className="text-2xl font-semibold">
             {user?.first_name?.[0]}
             {user?.last_name?.[0]}
           </AvatarFallback>
@@ -186,13 +235,13 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
             label="Last Name"
             placeholder="Enter last name"
             rules={{
-              required: "Last name is required",
               minLength: {
                 value: 2,
                 message: "Last name must be at least 2 characters",
               },
             }}
             error={errors.last_name}
+            optional={true}
           />
 
           <ControlledSelect
@@ -211,6 +260,7 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
             label="Date of Birth"
             placeholder="Select your birth date"
             error={errors.date_of_birth}
+            rules={{ required: "Date of birth is required" }}
           />
         </div>
       </section>
@@ -243,6 +293,7 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
             label="Phone Number"
             placeholder="Enter phone number (optional)"
             error={errors.phone_number}
+            optional={true}
           />
         </div>
       </section>
@@ -254,7 +305,7 @@ const UserProfileForm = ({ onClose, user, changePassword }) => {
           <Lock />
           Change Password
         </Button>
-        <Button type="submit" disabled={isPending || !hasChanges}>
+        <Button type="submit" disabled={isPending || !hasChanges || !isFormValid}>
           {isPending && <Loader2 className="animate-spin" />}
           Update Profile
         </Button>

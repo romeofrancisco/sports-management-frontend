@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const sports = [
-  "Basketball",
-  "Volleyball",
-  "Swimming",
-  "Taekwondo",
-  "Table Tennis",
-  "Badminton",
-  "Football",
-  "Chess",
-];
+import { useSports } from "@/hooks/useSports";
 
 const sportsImages = [
   "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843028/assets/591465304_1404743477833891_1926459002178898204_n_v66ddv.jpg",
@@ -22,6 +12,7 @@ const SportsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const intervalRef = useRef(null);
+  const { data: sports, isLoading } = useSports();
 
   // Preload all images
   useEffect(() => {
@@ -84,23 +75,31 @@ const SportsSection = () => {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              {sports.map((sport, index) => (
-                <span
-                  key={index}
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default"
-                >
-                  {sport}
-                </span>
-              ))}
+              {isLoading
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <span className="px-10 py-3 animate-pulse bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default" />
+                  ))
+                : sports?.map((sport, index) => (
+                    <span
+                      key={index}
+                      className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default"
+                    >
+                      {sport.name}
+                    </span>
+                  ))}
             </div>
           </div>
 
           {/* Carousel with stacked cards effect */}
           <div className="relative h-[350px] lg:h-[400px] dark:brightness-60">
             {/* Main carousel */}
-            <div 
+            <div
               className="relative h-full rounded-2xl overflow-hidden"
-              style={{ backgroundImage: `url(${sportsImages[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              style={{
+                backgroundImage: `url(${sportsImages[0]})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
             >
               {/* Images */}
               <div className="relative h-full w-full">

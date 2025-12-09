@@ -24,7 +24,7 @@ const ControlledDatePicker = ({
   className = ""
 }) => {
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("space-y-1", className)}>
       {label && (
         <Label className="text-sm font-medium">
           {label}
@@ -67,7 +67,7 @@ const ControlledDatePicker = ({
       />
       
       {error && (
-        <p className="text-sm text-destructive">{error.message}</p>
+        <p className="text-xs text-destructive">{error.message}</p>
       )}
     </div>
   )

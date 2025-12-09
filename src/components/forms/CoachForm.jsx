@@ -9,6 +9,8 @@ import ControlledSelect from "../common/ControlledSelect";
 import ControlledMultiSelect from "../common/ControlledMultiSelect";
 import { SEX } from "@/constants/player";
 import ControlledInput from "../common/ControlledInput";
+import ControlledDatePicker from "../common/ControlledDatePicker";
+import { date } from "zod";
 
 const CoachForm = ({ onClose, coach = null }) => {
   const isEdit = !!coach;
@@ -27,6 +29,7 @@ const CoachForm = ({ onClose, coach = null }) => {
       first_name: coach?.first_name || "",
       last_name: coach?.last_name || "",
       sex: coach?.sex || "",
+      date_of_birth: coach?.date_of_birth || null,
       email: coach?.email || "",
       sport_ids: coach?.sports?.map((sport) => sport.id) || [],
       profile: null,
@@ -99,26 +102,26 @@ const CoachForm = ({ onClose, coach = null }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 px-1"
-    >
-      {/* First Name */}
-      <ControlledInput
-        name="first_name"
-        label="First Name"
-        placeholder="Enter first name"
-        control={control}
-        errors={errors}
-      />
-      {/* Last Name */}
-      <ControlledInput
-        name="last_name"
-        label="Last Name"
-        placeholder="Enter last name"
-        control={control}
-        errors={errors}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1">
+      <div className="grid grid-cols-2 gap-2">
+        {/* First Name */}
+        <ControlledInput
+          name="first_name"
+          label="First Name"
+          placeholder="Enter first name"
+          control={control}
+          errors={errors}
+        />
+        {/* Last Name */}
+        <ControlledInput
+          name="last_name"
+          label="Last Name"
+          placeholder="Enter last name"
+          control={control}
+          errors={errors}
+          optional={true}
+        />
+      </div>
       {/* Sex */}
       <ControlledSelect
         name="sex"
@@ -128,6 +131,15 @@ const CoachForm = ({ onClose, coach = null }) => {
         groupLabel="Sex"
         options={SEX}
         errors={errors}
+      />{" "}
+      {/* Date of Birth */}
+      <ControlledDatePicker
+        name="date_of_birth"
+        label="Date of Birth"
+        placeholder="Select date of birth"
+        control={control}
+        errors={errors}
+        rules={{ required: "Date of birth is required" }}
       />{" "}
       {/* Email */}
       <ControlledInput
@@ -214,10 +226,11 @@ const CoachForm = ({ onClose, coach = null }) => {
         accept="image/*"
         control={control}
         errors={errors}
+        optional={true}
       />{" "}
       <Button
         type="submit"
-        className="mt-4"
+        className="mb-5 md:mb-0 mt-2 w-full"
         disabled={isCreating || isUpdating || sportsLoading}
       >
         {isCreating || isUpdating ? (
