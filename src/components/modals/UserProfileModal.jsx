@@ -39,7 +39,10 @@ const UserProfileModal = ({ isOpen, onClose }) => {
       title="User Profile"
       icon={getRoleIcon}
       description="Update your personal information"
-      onOpenChange={onClose}
+      onOpenChange={() => {
+        onClose();
+        setChangePassword(false);
+      }}
       size="md"
     >
       {changePassword ? (

@@ -91,7 +91,7 @@ const Modal = ({
       >
         {showHeader && (title || description || Icon) && (
           <DialogHeader
-            className={`px-6 pt-6 pb-4 border-b border-border/50 ${
+            className={`px-6 pt-6 pb-4 text-start border-b border-border/50 ${
               headerGradient
                 ? "bg-gradient-to-r from-background via-primary/5 to-background"
                 : "bg-background"

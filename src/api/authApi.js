@@ -57,7 +57,7 @@ export const updateUserProfile = async (profileData) => {
       }
     });
 
-    const { data } = await api.put("get-user/", formData, {
+    const { data } = await api.patch("get-user/", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

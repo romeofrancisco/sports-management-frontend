@@ -2,8 +2,18 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import api from "@/api";
+import { useQuery } from "@tanstack/react-query";
 
 const CTASection = () => {
+  const { data: contactInfo } = useQuery({
+    queryKey: ["cta-metrics"],
+    queryFn: async () => {
+      const response = await api.get("contact-info");
+      return response.data;
+    },
+  });
+
   return (
     <section
       className="py-16 lg:py-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90 dark:from-primary/60 dark:via-primary/55 dark:to-primary/50 relative overflow-hidden"
@@ -55,28 +65,34 @@ const CTASection = () => {
                   <div className="p-2 bg-secondary/20 rounded-lg">
                     <Mail className="h-5 w-5 text-secondary" />
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <p className="text-white font-medium">Email</p>
-                    <a
-                      href="mailto:sports@perpetualdalta.edu.ph"
-                      className="text-white/70 text-sm hover:text-secondary transition-colors"
-                    >
-                      uphsdsportsmanager@gmail.com
-                    </a>
+                    {contactInfo?.emails?.map((email, index) => (
+                      <a
+                        key={index}
+                        href={`mailto:${email}`}
+                        className="text-white/70 text-sm hover:text-secondary transition-colors"
+                      >
+                        {email}
+                      </a>
+                    ))}
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-secondary/20 rounded-lg">
                     <Phone className="h-5 w-5 text-secondary" />
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <p className="text-white font-medium">Phone</p>
-                    <a
-                      href="tel:+6324770691"
-                      className="text-white/70 text-sm hover:text-secondary transition-colors"
-                    >
-                      (02) 477-0691
-                    </a>
+                    {contactInfo?.phone_numbers?.map((phone, index) => (
+                      <a
+                        key={index}
+                        href={`tel:${phone}`}
+                        className="text-white/70 text-sm hover:text-secondary transition-colors"
+                      >
+                        {phone}
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>

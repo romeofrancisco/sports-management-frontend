@@ -386,7 +386,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       className="flex flex-col gap-8"
     >
       {/* PERSONAL DETAILS */}
-      <div className="space-y-4">
+      <div className="space-y-4 px-1">
         <h2 className="text-lg font-bold text-primary">Personal Details</h2>
         <div className="grid grid-cols-2 gap-3">
           <ControlledInput
@@ -402,6 +402,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
             placeholder="Enter last name"
             control={control}
             errors={errors}
+            optional={true}
           />
         </div>
 
