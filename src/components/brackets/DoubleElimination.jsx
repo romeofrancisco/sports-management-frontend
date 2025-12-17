@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DoubleEliminationBracket,
   Match,
@@ -8,38 +8,17 @@ import { formatDate } from "@/utils/formatDate";
 import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
-// Hook to get container width
-function useContainerWidth() {
-  const containerRef = useRef(null);
-  const [width, setWidth] = useState(800); // Default width
-
+// small hook to get window size for SVG viewport
+function useWindowSize() {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        setWidth(containerWidth);
-      }
-    };
-
-    // Initial measurement
-    updateWidth();
-
-    // Update on resize
-    window.addEventListener("resize", updateWidth);
-
-    // Also update when content might change (optional)
-    const resizeObserver = new ResizeObserver(updateWidth);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
+    function onResize() {
+      setSize([window.innerWidth, window.innerHeight]);
     }
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-      resizeObserver.disconnect();
-    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
-
-  return { containerRef, width };
+  return size;
 }
 
 // Custom match component styled like RoundRobin's TeamSeed
@@ -110,35 +89,28 @@ const CustomMatch = ({ match }) => {
 };
 
 export const DoubleElimination = ({ bracket }) => {
-  const { containerRef, width } = useContainerWidth();
-  // Use container width directly without subtracting padding, with a reasonable minimum
-  const finalWidth = Math.max(width, 400);
-  // Make height responsive based on expected bracket size, but cap it
-  const finalHeight = Math.min(Math.max(width * 0.6, 400), 800);
+  const [width, height] = useWindowSize();
+  const finalWidth = Math.max(width - 14);
+  const finalHeight = Math.max(height - 100, 500);
 
   // Use matches from bracket prop, or empty structure if not available
   const matches = bracket?.matches || { upper: [], lower: [] };
 
   return (
-    <div ref={containerRef} className="w-full overflow-x-auto overflow-y-hidden">
-      <div className="min-w-full">
-        <DoubleEliminationBracket
-          matches={matches}
-          matchComponent={CustomMatch}
-          svgWrapper={({ children, ...props }) => (
-            <SVGViewer
-              width={finalWidth}
-              height={finalHeight}
-              SVGBackground="var(--background)"
-              style={{ maxWidth: '100%', height: 'auto' }}
-              {...props}
-            >
-              {children}
-            </SVGViewer>
-          )}
-        />
-      </div>
-    </div>
+    <DoubleEliminationBracket
+      matches={matches}
+      matchComponent={CustomMatch}
+      svgWrapper={({ children, ...props }) => (
+        <SVGViewer
+          width={finalWidth}
+          height={finalHeight}
+          SVGBackground="var(--background)"
+          {...props}
+        >
+          {children}
+        </SVGViewer>
+      )}
+    />
   );
 };
 
