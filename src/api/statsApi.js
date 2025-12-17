@@ -139,6 +139,15 @@ export const deleteFormula = async (formulaId) => {
   }
 };
 
+export const reactivateFormula = async (formulaId) => {
+  try {
+    const { data } = await api.post(`formulas/${formulaId}/reactivate/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchBoxscore = async (gameId) => {
   try {
     const { data } = await api.get(

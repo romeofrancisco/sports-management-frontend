@@ -90,29 +90,27 @@ const CustomMatch = ({ match }) => {
 
 export const DoubleElimination = ({ bracket }) => {
   const [width, height] = useWindowSize();
-  const finalWidth = Math.max(width - 80, 900);
-  const finalHeight = Math.max(height, 600);
+  const finalWidth = Math.max(width - 14);
+  const finalHeight = Math.max(height - 100, 500);
 
   // Use matches from bracket prop, or empty structure if not available
   const matches = bracket?.matches || { upper: [], lower: [] };
 
   return (
-    <div style={{ width: "100%", height: "100%", overflowX: "auto" }}>
-      <DoubleEliminationBracket
-        matches={matches}
-        matchComponent={CustomMatch}
-        svgWrapper={({ children, ...props }) => (
-          <SVGViewer
-            width={finalWidth}
-            height={finalHeight}
-            SVGBackground="var(--background)"
-            {...props}
-          >
-            {children}
-          </SVGViewer>
-        )}
-      />
-    </div>
+    <DoubleEliminationBracket
+      matches={matches}
+      matchComponent={CustomMatch}
+      svgWrapper={({ children, ...props }) => (
+        <SVGViewer
+          width={finalWidth}
+          height={finalHeight}
+          SVGBackground="var(--background)"
+          {...props}
+        >
+          {children}
+        </SVGViewer>
+      )}
+    />
   );
 };
 
