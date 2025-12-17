@@ -3,6 +3,7 @@ import {
   deleteFormula,
   fetchFormulas,
   updateFormula,
+  reactivateFormula,
 } from "@/api/statsApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -42,8 +43,27 @@ export const useUpdateFormula = () => {
 export const useDeleteFormula = () => {
   return useMutation({
     mutationFn: ({ id }) => deleteFormula(id),
+    onSuccess: (data) => {
+      if (data.status === 'deactivated') {
+        toast.warning("Formula Deactivated", {
+          description: "Formula has associated game data and was deactivated instead of deleted.",
+          richColors: true,
+        });
+      } else {
+        toast.info("Formula Deleted", {
+          richColors: true,
+        });
+      }
+      queryClient.invalidateQueries(["formulas"]);
+    },
+  });
+};
+
+export const useReactivateFormula = () => {
+  return useMutation({
+    mutationFn: ({ id }) => reactivateFormula(id),
     onSuccess: () => {
-      toast.info("Formula Deleted", {
+      toast.success("Formula Reactivated", {
         richColors: true,
       });
       queryClient.invalidateQueries(["formulas"]);

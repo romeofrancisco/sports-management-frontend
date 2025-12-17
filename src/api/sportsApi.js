@@ -187,6 +187,15 @@ export const deleteSportStat = async (statId) => {
   }
 };
 
+export const reactivateSportStat = async (statId) => {
+  try {
+    const { data } = await api.post(`sport-stats/${statId}/reactivate/`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createSportStats = async (statData) => {
   try {
     const { data } = await api.post("sport-stats/", statData);

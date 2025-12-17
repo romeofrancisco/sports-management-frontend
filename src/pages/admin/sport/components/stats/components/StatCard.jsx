@@ -17,9 +17,12 @@ import {
   Check,
   X,
   Activity,
+  RefreshCw,
 } from "lucide-react";
+import { useReactivateSportStat } from "@/hooks/useStats";
 
 const StatCard = ({ stat, onEdit, onDelete }) => {
+  const reactivateMutation = useReactivateSportStat();
   return (
     <Card
       className={cn(
@@ -36,7 +39,10 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h4
-              className="font-semibold text-sm leading-tight line-clamp-1 mb-1"
+              className={cn(
+                "font-semibold text-sm leading-tight line-clamp-1 mb-1",
+                !stat.is_active && "text-muted-foreground"
+              )}
               title={stat.name}
             >
               {stat.name}
@@ -50,7 +56,15 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {!stat.is_active && (
+              <Badge
+                variant="outline"
+                className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 text-xs font-medium"
+              >
+                Inactive
+              </Badge>
+            )}
             {stat.point_value > 0 && (
               <Badge
                 variant="outline"
@@ -135,24 +149,41 @@ const StatCard = ({ stat, onEdit, onDelete }) => {
       {/* Footer - Action Buttons */}
       <CardFooter className="pt-2 border-t">
         <div className="flex gap-2 w-full">
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1 text-xs h-7"
-            onClick={() => onEdit(stat)}
-          >
-            <Edit />
-            Edit
-          </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => onDelete(stat)}
-            className="flex-1 text-xs h-7"
-          >
-            <Trash2 />
-            Delete
-          </Button>
+          {!stat.is_active ? (
+            <>
+              <Button
+                size="sm"
+                variant="default"
+                className="flex-1 text-xs h-7 bg-green-600 hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900"
+                onClick={() => reactivateMutation.mutate({ id: stat.id })}
+                disabled={reactivateMutation.isPending}
+              >
+                <RefreshCw className={cn("h-3 w-3", reactivateMutation.isPending && "animate-spin")} />
+                Reactivate
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1 text-xs h-7"
+                onClick={() => onEdit(stat)}
+              >
+                <Edit />
+                Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => onDelete(stat)}
+                className="flex-1 text-xs h-7"
+              >
+                <Trash2 />
+                Delete
+              </Button>
+            </>
+          )}
         </div>
       </CardFooter>
     </Card>

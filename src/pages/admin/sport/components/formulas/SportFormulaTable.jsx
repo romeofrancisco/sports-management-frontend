@@ -24,7 +24,21 @@ const SportFormulaTable = ({
     {
       accessorKey: "name",
       header: "Formula Name",
-      cell: ({ getValue }) => <div className="font-medium">{getValue()}</div>,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className={`font-medium ${!row.original.is_active ? 'text-muted-foreground' : ''}`}>
+            {row.original.name}
+          </div>
+          {!row.original.is_active && (
+            <Badge
+              variant="outline"
+              className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 text-xs"
+            >
+              Inactive
+            </Badge>
+          )}
+        </div>
+      ),
     },
     {
       accessorKey: "expression",

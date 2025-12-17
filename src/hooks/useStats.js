@@ -21,6 +21,7 @@ import {
   fetchStatCategories,
   updateSportStats,
   updateStatCategory,
+  reactivateSportStat,
 } from "@/api/sportsApi";
 import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
@@ -286,8 +287,27 @@ export const useCreateSportStats = () => {
 export const useDeleteSportStat = () => {
   return useMutation({
     mutationFn: ({ id }) => deleteSportStat(id),
+    onSuccess: (data) => {
+      if (data.status === 'deactivated') {
+        toast.warning("Stat Deactivated", {
+          description: "Stat has associated game data and was deactivated instead of deleted.",
+          richColors: true,
+        });
+      } else {
+        toast.info("Stat Deleted", {
+          richColors: true,
+        });
+      }
+      queryClient.invalidateQueries(["sport-stats"]);
+    },
+  });
+};
+
+export const useReactivateSportStat = () => {
+  return useMutation({
+    mutationFn: ({ id }) => reactivateSportStat(id),
     onSuccess: () => {
-      toast.info("Stat Deleted", {
+      toast.success("Stat Reactivated", {
         richColors: true,
       });
       queryClient.invalidateQueries(["sport-stats"]);
