@@ -43,7 +43,7 @@ const PlayerImprovementsSection = ({
     );
   };
   return (
-    <Card className="bg-gradient-to-br from-card via-card/95 to-card/90 rounded-xl gap-0 shadow-xl border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden ">
+    <Card>
       <CardHeader className="pb-4">
         <div className="flex items-start gap-3">
           <div className="p-3 rounded-xl bg-primary shadow-sm">
@@ -65,7 +65,6 @@ const PlayerImprovementsSection = ({
                 key={index}
                 className="bg-gradient-to-br from-card via-card/95 to-card/90 border-2 border-primary/20 backdrop-blur-sm relative overflow-hidden break-inside-avoid mb-4"
               >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-xl opacity-60"></div>
                 <CardContent className="p-4 relative">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-3">
@@ -79,7 +78,7 @@ const PlayerImprovementsSection = ({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h4 className="font-semibold text-lg text-foreground">
+                        <h4 className="font-semibold text-base md:text-lg text-foreground">
                           {player.player_name}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
@@ -113,17 +112,12 @@ const PlayerImprovementsSection = ({
                               </>
                             )}
                           </Badge>
-                          {player.metrics_recorded > 0 && (
-                            <span className="text-sm text-muted-foreground font-medium">
-                              {player.metrics_recorded} metrics recorded
-                            </span>
-                          )}
                         </div>
                       </div>
-                    </div>{" "}
+                    </div>
                     <div className="text-right">
                       {player.overall_improvement_percentage !== 0 && (
-                        <div className="space-y-1">
+                        <div className="flex flex-col items-end gap-1">
                           <p className="text-xs text-muted-foreground font-medium">
                             Overall Progress
                           </p>
@@ -131,7 +125,7 @@ const PlayerImprovementsSection = ({
                             variant={getImprovementVariant(
                               player.overall_improvement_percentage
                             )}
-                            className="text-sm px-3 py-1.5 flex items-center gap-1"
+                            className="text-xs md:text-sm px-2 py-1.5 flex items-center gap-1"
                           >
                             {player.overall_improvement_percentage > 0 ? (
                               <TrendingUp className="h-3 w-3" />
@@ -143,13 +137,6 @@ const PlayerImprovementsSection = ({
                               : ""}
                             {player.overall_improvement_percentage}%
                           </Badge>
-                          <p className="text-xs text-muted-foreground">
-                            {player.metrics_recorded > 1
-                              ? `Avg of ${player.metrics_recorded} metrics`
-                              : player.metrics_recorded === 1
-                              ? "Single metric"
-                              : "No metrics"}
-                          </p>
                         </div>
                       )}
                       {player.overall_improvement_percentage === 0 &&
@@ -160,15 +147,10 @@ const PlayerImprovementsSection = ({
                             </p>
                             <Badge
                               variant="outline"
-                              className="text-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-800"
+                              className="text-xs md:text-sm px-2 py-1.5 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-800"
                             >
                               No Change
                             </Badge>
-                            <p className="text-xs text-muted-foreground">
-                              {player.metrics_recorded > 1
-                                ? `Avg of ${player.metrics_recorded} metrics`
-                                : "Single metric"}
-                            </p>
                           </div>
                         )}
                     </div>
@@ -243,7 +225,7 @@ const PlayerImprovementsSection = ({
                                   <p className="text-xs text-muted-foreground font-medium">
                                     Current Value
                                   </p>
-                                  <p className="text-lg font-bold text-foreground">
+                                  <p className="text-base md:text-lg font-bold text-foreground">
                                     {metric.current_value}{" "}
                                     <span className="text-sm font-normal text-muted-foreground">
                                       {metric.unit}
@@ -256,7 +238,7 @@ const PlayerImprovementsSection = ({
                                       <p className="text-xs text-muted-foreground font-medium">
                                         Previous Value
                                       </p>
-                                      <p className="text-lg font-medium text-muted-foreground">
+                                      <p className="text-base md:text-lg font-medium text-muted-foreground">
                                         {metric.previous_value}{" "}
                                         <span className="text-sm font-normal">
                                           {metric.unit}
@@ -274,7 +256,7 @@ const PlayerImprovementsSection = ({
                                         Raw Difference:
                                       </span>
                                       <span
-                                        className={`text-sm font-semibold ${
+                                        className={`text-xs md:text-sm font-semibold ${
                                           metric.raw_difference === 0
                                             ? "text-muted-foreground"
                                             : metric.is_improvement
@@ -390,8 +372,9 @@ const PlayerImprovementsSection = ({
                                   ))}
                                 </div>
                                 <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                                  These metrics will need to be recorded during
-                                  makeup sessions or future training.
+                                  These training metrics will need to be
+                                  recorded during makeup sessions or future
+                                  training.
                                 </p>
                               </div>
                             </div>
@@ -409,8 +392,8 @@ const PlayerImprovementsSection = ({
                                   <Target className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                                   <div className="flex-1">
                                     <p className="text-sm font-medium text-blue-800 mb-2">
-                                      Incomplete Metrics ({missedMetrics.length}{" "}
-                                      missed)
+                                      Incomplete Training Metrics (
+                                      {missedMetrics.length} missed)
                                     </p>
                                     <div className="flex flex-wrap gap-1">
                                       {missedMetrics.map((metric, index) => (
