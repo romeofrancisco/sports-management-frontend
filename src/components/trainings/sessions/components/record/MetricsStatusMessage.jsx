@@ -83,7 +83,7 @@ const MetricsStatusMessage = ({
           )}
           <div>
             <h3 className={`text-sm sm:text-base font-semibold ${theme.title}`}>
-              {isFullyComplete ? "Metrics Complete" : "Recording Metrics"}
+              {isFullyComplete ? " Training Metrics Complete" : "Recording Training Metrics"}
             </h3>
             <p className={`text-xs ${theme.description}`}>
               {completedMetrics} of {totalMetrics} completed

@@ -55,7 +55,7 @@ const PlayerMetricsTab = ({
   }, [session?.metrics]);
 
   // Use all metrics as filtered metrics for now (could add filtering later)
-  const filteredMetrics = allMetrics || []; // Navigation handlers
+  const filteredMetrics = allMetrics.filter((metric) => metric.is_active) || []; // Navigation handlers
   const handlePreviousPlayer = async () => {
     // Save current player's metrics before navigating (without triggering onSaveSuccess)
     const currentPlayerId = allPlayers[currentPlayerIndex]?.player?.id;

@@ -141,7 +141,7 @@ export const MetricUnitsManager = () => {
       <DeleteConfirmDialog
         open={modals.delete.isOpen}
         onOpenChange={modals.delete.closeModal}
-        unit={unitToDelete}
+        item={unitToDelete}
         onSuccess={handleDeleteSuccess}
       />
     </TabLayout>

@@ -33,11 +33,12 @@ const TrainingCategoriesExplanation = () => (
       About Training Categories
     </h4>
     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-      Training categories help organize and group related training metrics and
-      activities. They provide structure to your training program and make it
-      easier to analyze performance across different aspects of training.
-      Categories can be used to separate physical, technical, tactical, and
-      mental training components.
+      Normalization weights are multipliers applied to percentage-based
+      improvements to prevent metrics with naturally large changes (such as
+      repetitions) from disproportionately influencing overall improvement
+      calculations. Lower values (e.g., 0.1–0.5) should be used for metrics that
+      typically show large percentage changes, while values closer to 1.0 are
+      appropriate for metrics with smaller or more stable percentage changes.
     </p>
   </TabCard>
 );
@@ -101,14 +102,8 @@ export const TrainingCategoriesManager = () => {
 
     deleteCategoryMutation.mutate(categoryToDelete.id, {
       onSuccess: () => {
-        refetch();
         modals.delete.closeModal();
         setCategoryToDelete(null);
-        toast.success("Category deleted successfully");
-      },
-      onError: (error) => {
-        console.error("Delete error:", error);
-        toast.error("Failed to delete category");
       },
     });
   };

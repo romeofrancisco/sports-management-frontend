@@ -11,6 +11,7 @@ import {
   useTrainingMetrics,
   useTrainingCategories,
 } from "@/hooks/useTrainings";
+import ContentEmpty from "@/components/common/ContentEmpty";
 
 const SessionMetricsTab = ({
   session,
@@ -56,23 +57,23 @@ const SessionMetricsTab = ({
     if (!hasChanges) {
       return {
         text: "No Changes to Save",
-        description: `${totalSelected} metrics currently assigned`,
+        description: `${totalSelected} Training metrics currently assigned`,
         disabled: true,
       };
     }
 
     if (adding > 0 && removing > 0) {
       return {
-        text: `Update Metrics (${adding} Add, ${removing} Remove)`,
-        description: `Will result in ${totalSelected} total metrics`,
+        text: `Update Training Metrics (${adding} Add, ${removing} Remove)`,
+        description: `Will result in ${totalSelected} total training metrics`,
         disabled: false,
       };
     }
 
     if (adding > 0) {
       return {
-        text: `Add ${adding} Metric${adding > 1 ? "s" : ""}`,
-        description: `${totalSelected} metrics will be assigned`,
+        text: `Add ${adding} Training Metric${adding > 1 ? "s" : ""}`,
+        description: `${totalSelected} training metrics will be assigned`,
         disabled: false,
       };
     }
@@ -82,15 +83,15 @@ const SessionMetricsTab = ({
         text: `Remove ${removing} Metric${removing > 1 ? "s" : ""}`,
         description:
           totalSelected > 0
-            ? `${totalSelected} metrics will remain assigned`
-            : "All metrics will be removed",
+            ? `${totalSelected} training metrics will remain assigned`
+            : "All training metrics will be removed",
         disabled: false,
       };
     }
 
     return {
       text: "Save Changes",
-      description: `${totalSelected} metrics selected`,
+      description: `${totalSelected} training metrics selected`,
       disabled: false,
     };
   };
@@ -109,7 +110,7 @@ const SessionMetricsTab = ({
       });
     }
 
-    return filtered;
+    return filtered.filter((metric) => metric.is_active);
   }, [allMetrics, selectedCategoryId]);
   return (
     <div className="space-y-6 flex-1 relative z-10 h-full">
@@ -118,7 +119,7 @@ const SessionMetricsTab = ({
         <div className="rounded-xl p-4 border-2 border-primary/30 shadow-sm">
           <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            Metrics Currently Assigned to All Players
+            Training Metrics Currently Assigned to All Players
           </h4>
           <div className="flex flex-wrap gap-2">
             {sessionMetrics.map((metric) => (
@@ -156,23 +157,25 @@ const SessionMetricsTab = ({
             >
               All Categories
             </Badge>
-            {categories?.map((category) => (
-              <Badge
-                key={category.id}
-                variant={
-                  selectedCategoryId === category.id ? "default" : "outline"
-                }
-                className={cn(
-                  "cursor-pointer transition-all duration-200 hover:shadow-md",
-                  selectedCategoryId === category.id
-                    ? "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
-                    : "hover:bg-primary/10 hover:border-primary/30"
-                )}
-                onClick={() => setSelectedCategoryId(category.id)}
-              >
-                {category.name}
-              </Badge>
-            ))}
+            {categories
+              ?.filter((category) => category.is_active)
+              .map((category) => (
+                <Badge
+                  key={category.id}
+                  variant={
+                    selectedCategoryId === category.id ? "default" : "outline"
+                  }
+                  className={cn(
+                    "cursor-pointer transition-all duration-200 hover:shadow-md",
+                    selectedCategoryId === category.id
+                      ? "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+                      : "hover:bg-primary/10 hover:border-primary/30"
+                  )}
+                  onClick={() => setSelectedCategoryId(category.id)}
+                >
+                  {category.name}
+                </Badge>
+              ))}
           </div>
         </div>
       </div>
@@ -181,17 +184,14 @@ const SessionMetricsTab = ({
         <div className="flex items-center justify-center py-12 bg-gradient-to-r from-card/30 to-card/50 rounded-xl border border-border/20">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">Loading metrics...</p>
+            <p className="text-sm text-muted-foreground">Loading training metrics...</p>
           </div>
         </div>
-      ) : (
+      ) : filteredMetrics.length > 0 ? (
         <div className="space-y-4 flex-1">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-foreground">
-              Available Metrics:
-            </h4>
+          <div className="flex items-center justify-end">
             <Badge variant="outline" className="text-xs">
-              {filteredMetrics.length} metrics found
+              {filteredMetrics.length} training metrics found
             </Badge>
           </div>
 
@@ -276,6 +276,11 @@ const SessionMetricsTab = ({
             })}
           </div>
         </div>
+      ) : (
+        <ContentEmpty
+          title="No training metrics found"
+          description="No training metrics are currently available for this session. Please add training metrics to assign them to this session."
+        />
       )}
       {/* Enhanced Save Section */}
       <div className="rounded-xl border-2 border-primary/30 shadow-sm p-4">

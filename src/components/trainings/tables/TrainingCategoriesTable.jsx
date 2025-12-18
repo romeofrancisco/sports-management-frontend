@@ -10,8 +10,9 @@ import {
 import { Button } from "../../ui/button";
 import { Skeleton } from "../../ui/skeleton";
 import { Badge } from "../../ui/badge";
-import { Edit, Trash, Shield, User } from "lucide-react";
+import { Edit, Trash, Shield, User, RefreshCw } from "lucide-react";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
+import { useReactivateTrainingCategory } from "../../../hooks/useTrainings";
 
 /**
  * Table component for displaying training categories with role-based permissions
@@ -23,8 +24,31 @@ export const TrainingCategoriesTable = ({
   onEdit,
   onDelete,
 }) => {
-  const { canModifyTrainingCategory, getTrainingCategoryTooltip } =
-    useRolePermissions();
+  const {
+    canModifyTrainingCategory,
+    getTrainingCategoryTooltip,
+    isAdmin,
+    user,
+  } = useRolePermissions();
+  const reactivateMutation = useReactivateTrainingCategory();
+
+  const handleReactivate = (category) => {
+    reactivateMutation.mutate(category.id);
+  };
+
+  const canSeeInactive = (category) => {
+    if (!category.is_active) {
+      // Admin sees all inactive
+      if (isAdmin()) return true;
+      // Creator sees their own inactive
+      if (category.created_by === user?.id) return true;
+      return false;
+    }
+    return true;
+  };
+
+  // Filter categories based on role permissions
+  const visibleCategories = categories?.filter(canSeeInactive) || [];
 
   // Loading skeleton
   if (isLoading) {
@@ -43,7 +67,7 @@ export const TrainingCategoriesTable = ({
   }
 
   // Empty state
-  if (!categories || categories.length === 0) {
+  if (!visibleCategories || visibleCategories.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-muted-foreground mb-4">
@@ -84,14 +108,26 @@ export const TrainingCategoriesTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.map((category) => {
+            {visibleCategories.map((category) => {
               const canModify = canModifyTrainingCategory(category);
 
               return (
-                <TableRow key={category.id}>
+                <TableRow
+                  key={category.id}
+                  className={!category.is_active ? "opacity-60" : ""}
+                >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
-                      {category.name}
+                      <span
+                        className={!category.is_active ? "line-through" : ""}
+                      >
+                        {category.name}
+                      </span>
+                      {!category.is_active && (
+                        <Badge variant="secondary" className="text-xs">
+                          Inactive
+                        </Badge>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -119,24 +155,41 @@ export const TrainingCategoriesTable = ({
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(category)}
-                        disabled={!canModify}
-                        title={getTrainingCategoryTooltip(category, "edit")}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(category)}
-                        disabled={!canModify}
-                        title={getTrainingCategoryTooltip(category, "delete")}
-                      >
-                        <Trash className="w-4 h-4" />
-                      </Button>
+                      {!category.is_active ? (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleReactivate(category)}
+                          disabled={reactivateMutation.isPending}
+                          title="Reactivate this category"
+                        >
+                          <RefreshCw />
+                        </Button>
+                      ) : (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onEdit(category)}
+                            disabled={!canModify}
+                            title={getTrainingCategoryTooltip(category, "edit")}
+                          >
+                            <Edit />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onDelete(category)}
+                            disabled={!canModify}
+                            title={getTrainingCategoryTooltip(
+                              category,
+                              "delete"
+                            )}
+                          >
+                            <Trash />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -148,18 +201,34 @@ export const TrainingCategoriesTable = ({
 
       {/* Mobile Card Layout */}
       <div className="sm:hidden space-y-3">
-        {categories.map((category) => {
+        {visibleCategories.map((category) => {
           const canModify = canModifyTrainingCategory(category);
 
           return (
             <div
               key={category.id}
-              className="border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card"
+              className={`border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card ${
+                !category.is_active ? "opacity-60" : ""
+              }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium truncate">{category.name}</h3>
+                    <h3
+                      className={`font-medium truncate ${
+                        !category.is_active ? "line-through" : ""
+                      }`}
+                    >
+                      {category.name}
+                    </h3>
+                    {!category.is_active && (
+                      <Badge
+                        variant="secondary"
+                        className="text-xs px-1.5 py-0.5 h-5"
+                      >
+                        Inactive
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground line-clamp-3">
                     {category.description || "No description"}
@@ -186,24 +255,38 @@ export const TrainingCategoriesTable = ({
                 </div>
 
                 <div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(category)}
-                    disabled={!canModify}
-                    title={getTrainingCategoryTooltip(category, "edit")}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(category)}
-                    disabled={!canModify}
-                    title={getTrainingCategoryTooltip(category, "delete")}
-                  >
-                    <Trash className="w-4 h-4" />
-                  </Button>
+                  {!category.is_active ? (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleReactivate(category)}
+                      disabled={reactivateMutation.isPending}
+                      title="Reactivate this category"
+                    >
+                      <RefreshCw />
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(category)}
+                        disabled={!canModify}
+                        title={getTrainingCategoryTooltip(category, "edit")}
+                      >
+                        <Edit />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onDelete(category)}
+                        disabled={!canModify}
+                        title={getTrainingCategoryTooltip(category, "delete")}
+                      >
+                        <Trash />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

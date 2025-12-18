@@ -64,7 +64,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
               </div>
               <div>
                 <h2 className="text-xl font-bold tracking-tight">
-                  Player Metrics Configuration
+                  Player Training Metrics Configuration
                 </h2>
                 <p className="text-primary-foreground/80 text-sm font-normal mt-1">
                   Step 2 of training session setup
@@ -120,7 +120,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
         </div>
         <div className="mt-2 p-4 bg-primary/10 rounded-lg backdrop-blur-sm border border-primary/30">
           <p className="text-sm inline-flex items-center gap-1 leading-relaxed text-primary">
-            Assign specific metrics to individual players based on their roles
+            Assign specific training metrics to individual players based on their roles
             or training focus areas. Configure these before the training session
             so players can prepare accordingly.
           </p>
