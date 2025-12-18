@@ -27,11 +27,12 @@ const TrainingMetricsExplanation = () => (
       About Training Metrics
     </h4>
     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-      Training metrics define the specific performance indicators used to track
-      player progress during training sessions. Each metric has a direction
-      (higher/lower is better) and weight that determines its importance in
-      overall evaluations. Metrics are organized by categories to help structure
-      training assessments effectively.
+      Training metrics represent measurable exercises or tests used during
+      training sessions to evaluate player performance. Each metric defines
+      whether higher or lower values indicate better results and includes a
+      weight that determines its impact on overall performance evaluations.
+      Metrics are grouped into categories to organize and standardize training
+      assessments.
     </p>
   </TabCard>
 );
@@ -97,12 +98,12 @@ export const TrainingMetricsManager = () => {
       <TabHeader
         title="Training Metrics"
         icon={Dumbbell}
-        description="Configure and manage training performance metrics for tracking player progress"
+        description="Manage training metrics"
         actions={
           canCreateTrainingMetrics() && (
             <Button onClick={handleCreate}>
               <Plus />
-              Add Metric
+              Add Training Metric
             </Button>
           )
         }

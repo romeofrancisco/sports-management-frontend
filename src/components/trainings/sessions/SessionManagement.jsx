@@ -77,7 +77,7 @@ const SessionManagement = () => {
           isEndingTraining={isEndingTraining}
         />
 
-        <div className="container mx-auto py-6">
+        <div className="container mx-auto">
           <MemoizedWorkflowStepper
             steps={memoizedWorkflowData.steps}
             currentStep={memoizedWorkflowData.currentStep}

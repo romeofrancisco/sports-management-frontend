@@ -5,6 +5,7 @@ import {
   createMetricUnit,
   updateMetricUnit,
   deleteMetricUnit,
+  reactivateMetricUnit,
 } from "../api/trainingsApi";
 import { toast } from "sonner";
 
@@ -73,6 +74,28 @@ export function useDeleteMetricUnit() {
       toast.error(
         error.response?.data?.detail || 
         "Failed to delete unit"
+      );
+    },
+  });
+}
+export function useReactivateMetricUnit() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: reactivateMetricUnit,
+    onSuccess: (data) => {
+      toast.success("Unit reactivated successfully", {
+        description: `${data.unit_name} has been reactivated.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries({ queryKey: ["metricUnits"] });
+    },
+    onError: (error) => {
+      toast.error(
+        "Failed to reactivate unit",
+        {
+          description: error.response?.data?.detail || error.message,
+        }
       );
     },
   });

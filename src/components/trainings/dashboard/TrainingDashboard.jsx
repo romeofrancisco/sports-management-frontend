@@ -49,10 +49,10 @@ const TrainingDashboard = () => {
       description: "Manage training categories",
     },
     {
-      label: "Metrics",
+      label: "Training Metrics",
       icon: Dumbbell,
       path: "/trainings/metrics",
-      description: "Configure performance metrics",
+      description: "Manage training metrics",
     },
     {
       label: "Units",
@@ -62,7 +62,7 @@ const TrainingDashboard = () => {
     },
   ];
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div>
       <div className="container mx-auto p-1 md:p-6 space-y-6">
         {/* Header Section */}
         <UniversityPageHeader
@@ -140,7 +140,7 @@ const TrainingDashboard = () => {
                         />
                       </div>
 
-                      <p className="text-sm text-muted-foreground mt-2 font-medium">
+                      <p className="text-sm text-muted-foreground font-medium">
                         {item.description}
                       </p>
 

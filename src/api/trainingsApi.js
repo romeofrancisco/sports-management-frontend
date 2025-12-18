@@ -68,6 +68,9 @@ export const updateMetricUnit = async ({ id, ...unitData }) =>
 export const deleteMetricUnit = async (id) => 
   handleApiCall(() => api.delete(`trainings/metric-units/${id}/`));
 
+export const reactivateMetricUnit = async (id) => 
+  handleApiCall(() => api.post(`trainings/metric-units/${id}/reactivate/`));
+
 // Training Categories
 export const fetchTrainingCategories = async () => 
   handleApiCall(() => api.get("trainings/categories/"));
@@ -84,6 +87,9 @@ export const updateTrainingCategory = async ({ id, ...categoryData }) =>
 export const deleteTrainingCategory = async (id) => 
   handleApiCall(() => api.delete(`trainings/categories/${id}/`));
 
+export const reactivateTrainingCategory = async (id) => 
+  handleApiCall(() => api.post(`trainings/categories/${id}/reactivate/`));
+
 // Training Metrics
 export const fetchTrainingMetrics = async (params = {}) => 
   handleApiCall(() => api.get("trainings/metrics/", { params: cleanParams(params) }));
@@ -99,6 +105,9 @@ export const updateTrainingMetric = async ({ id, ...metricData }) =>
 
 export const deleteTrainingMetric = async (id) => 
   handleApiCall(() => api.delete(`trainings/metrics/${id}/`));
+
+export const reactivateTrainingMetric = async (id) => 
+  handleApiCall(() => api.post(`trainings/metrics/${id}/reactivate/`));
 
 // Training Sessions
 export const fetchTrainingSessions = async (params = {}) => {

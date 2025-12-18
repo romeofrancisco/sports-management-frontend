@@ -10,15 +10,36 @@ import {
 import { Button } from "../../ui/button";
 import { Skeleton } from "../../ui/skeleton";
 import { Badge } from "../../ui/badge";
-import { Edit, Trash, Shield, User } from "lucide-react";
+import { Edit, Trash, Shield, User, RefreshCw } from "lucide-react";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
+import { useReactivateMetricUnit } from "../../../hooks/useMetricUnits";
 
 /**
  * Table component for displaying metric units with role-based permissions
  * Responsive design with mobile-optimized layout
  */
 export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
-  const { canModifyMetricUnit, getMetricUnitTooltip } = useRolePermissions();
+  const { canModifyMetricUnit, getMetricUnitTooltip, isAdmin, user } =
+    useRolePermissions();
+  const reactivateMutation = useReactivateMetricUnit();
+
+  const handleReactivate = (unit) => {
+    reactivateMutation.mutate(unit.id);
+  };
+
+  const canSeeInactive = (unit) => {
+    if (!unit.is_active) {
+      // Admin sees all inactive
+      if (isAdmin()) return true;
+      // Creator sees their own inactive
+      if (unit.created_by === user?.id) return true;
+      return false;
+    }
+    return true;
+  };
+
+  // Filter units based on role permissions
+  const visibleUnits = units.filter(canSeeInactive);
   if (isLoading) {
     return (
       <div className="space-y-3">
@@ -28,11 +49,14 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
             <Skeleton key={i} className="h-12 w-full" />
           ))}
         </div>
-        
+
         {/* Mobile skeleton */}
         <div className="sm:hidden space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="border-2 border-primary/20 rounded-lg px-4 py-3">
+            <div
+              key={i}
+              className="border-2 border-primary/20 rounded-lg px-4 py-3"
+            >
               <div className="flex items-center justify-between mb-2">
                 <Skeleton className="h-4 w-32" />
                 <div className="flex gap-1">
@@ -77,15 +101,32 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {units.length > 0 ? (
-                units.map((unit) => (
-                  <TableRow key={unit.id}>
+              {visibleUnits.length > 0 ? (
+                visibleUnits.map((unit) => (
+                  <TableRow
+                    key={unit.id}
+                    className={!unit.is_active ? "opacity-60" : ""}
+                  >
                     <TableCell className="font-medium text-sm">
                       {unit.code}
                     </TableCell>
-                    <TableCell className="text-sm">{unit.name}</TableCell>
                     <TableCell className="text-sm">
-                      ×{(parseFloat(unit.normalization_weight) || 1.0).toFixed(2)}
+                      <div className="flex items-center gap-2">
+                        <span className={!unit.is_active ? "line-through" : ""}>
+                          {unit.name}
+                        </span>
+                        {!unit.is_active && (
+                          <Badge variant="secondary" className="text-xs">
+                            Inactive
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      ×
+                      {(parseFloat(unit.normalization_weight) || 1.0).toFixed(
+                        2
+                      )}
                     </TableCell>
                     <TableCell className="hidden sm:table-cell text-sm">
                       <div className="flex items-center gap-1">
@@ -113,26 +154,39 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 w-8 p-0"
-                          onClick={() => onEdit(unit)}
-                          disabled={!canModifyMetricUnit(unit)}
-                          title={getMetricUnitTooltip(unit, "edit")}
-                        >
-                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="h-8 w-8 p-0"
-                          onClick={() => onDelete(unit)}
-                          disabled={!canModifyMetricUnit(unit)}
-                          title={getMetricUnitTooltip(unit, "delete")}
-                        >
-                          <Trash className="h-3 w-3 sm:h-4 sm:w-4" />
-                        </Button>
+                        {!unit.is_active ? (
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => handleReactivate(unit)}
+                            disabled={reactivateMutation.isPending}
+                            title="Reactivate this unit"
+                          >
+                            <RefreshCw />
+                          </Button>
+                        ) : (
+                          <>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => onEdit(unit)}
+                              disabled={!canModifyMetricUnit(unit)}
+                              title={getMetricUnitTooltip(unit, "edit")}
+                            >
+                              <Edit />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => onDelete(unit)}
+                              disabled={!canModifyMetricUnit(unit)}
+                              title={getMetricUnitTooltip(unit, "delete")}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -173,7 +227,7 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
 
       {/* Mobile Card Layout */}
       <div className="sm:hidden space-y-3">
-        {units.length === 0 ? (
+        {visibleUnits.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-muted-foreground mb-4">
               <svg
@@ -192,24 +246,44 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
             </div>
             <h3 className="text-lg font-medium mb-2">No units found</h3>
             <p className="text-muted-foreground mb-4">
-              No metric units have been created yet. Add your first unit to get started.
+              No metric units have been created yet. Add your first unit to get
+              started.
             </p>
           </div>
         ) : (
-          units.map((unit) => {
+          visibleUnits.map((unit) => {
             const canModify = canModifyMetricUnit(unit);
 
             return (
               <div
                 key={unit.id}
-                className="border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card"
+                className={`border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card ${
+                  !unit.is_active ? "opacity-60" : ""
+                }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium truncate">{unit.name}</h3>
+                      <h3
+                        className={`font-medium truncate ${
+                          !unit.is_active ? "line-through" : ""
+                        }`}
+                      >
+                        {unit.name}
+                      </h3>
+                      {!unit.is_active && (
+                        <Badge
+                          variant="secondary"
+                          className="text-xs px-1.5 py-0.5 h-5"
+                        >
+                          Inactive
+                        </Badge>
+                      )}
                       {unit.is_default && (
-                        <Badge variant="secondary" className="text-xs px-1.5 py-0.5 h-5">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs px-1.5 py-0.5 h-5"
+                        >
                           <Shield className="w-2.5 h-2.5" />
                         </Badge>
                       )}
@@ -231,7 +305,10 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
                   <div className="flex items-center gap-1">
                     <span className="text-muted-foreground">Weight:</span>
                     <Badge variant="outline" className="text-xs">
-                      ×{(parseFloat(unit.normalization_weight) || 1.0).toFixed(2)}
+                      ×
+                      {(parseFloat(unit.normalization_weight) || 1.0).toFixed(
+                        2
+                      )}
                     </Badge>
                   </div>
                 </div>
@@ -255,24 +332,39 @@ export const MetricUnitsTable = ({ units, isLoading, onEdit, onDelete }) => {
                   </div>
 
                   <div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(unit)}
-                      disabled={!canModify}
-                      title={getMetricUnitTooltip(unit, "edit")}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(unit)}
-                      disabled={!canModify}
-                      title={getMetricUnitTooltip(unit, "delete")}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
+                    {!unit.is_active ? (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleReactivate(unit)}
+                        disabled={reactivateMutation.isPending}
+                        title="Reactivate this unit"
+                      >
+                        <RefreshCw />
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(unit)}
+                          disabled={!canModify}
+                          title={getMetricUnitTooltip(unit, "edit")}
+                        >
+                          <Edit />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(unit)}
+                          disabled={!canModify}
+                          title={getMetricUnitTooltip(unit, "delete")}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

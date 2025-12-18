@@ -8,11 +8,13 @@ import {
   createTrainingCategory,
   updateTrainingCategory,
   deleteTrainingCategory,
+  reactivateTrainingCategory,
   fetchTrainingMetrics,
   fetchTrainingMetric,
   createTrainingMetric,
   updateTrainingMetric,
   deleteTrainingMetric,
+  reactivateTrainingMetric,
   fetchTrainingSessions,
   fetchTrainingSession,
   fetchTrainingSessionInfo,
@@ -123,6 +125,25 @@ export const useDeleteTrainingCategory = () => {
   });
 };
 
+export const useReactivateTrainingCategory = () => {
+  return useMutation({
+    mutationFn: reactivateTrainingCategory,
+    onSuccess: (data) => {
+      toast.success("Category reactivated successfully!", {
+        description: `${data.category_name} has been reactivated.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["training-categories"]);
+    },
+    onError: (error) => {
+      toast.error("Failed to reactivate category", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
 // Training Metrics
 export const useTrainingMetrics = (categoryId = null, enabled = true) => {
   const params = useMemo(
@@ -210,6 +231,25 @@ export const useDeleteTrainingMetric = () => {
     },
     onError: (error) => {
       toast.error("Failed to delete metric", {
+        description: error.response?.data?.detail || error.message,
+        richColors: true,
+      });
+    },
+  });
+};
+
+export const useReactivateTrainingMetric = () => {
+  return useMutation({
+    mutationFn: reactivateTrainingMetric,
+    onSuccess: (data) => {
+      toast.success("Metric reactivated successfully!", {
+        description: `${data.metric_name} has been reactivated.`,
+        richColors: true,
+      });
+      queryClient.invalidateQueries(["training-metrics"]);
+    },
+    onError: (error) => {
+      toast.error("Failed to reactivate metric", {
         description: error.response?.data?.detail || error.message,
         richColors: true,
       });

@@ -21,9 +21,9 @@ const MetricsSummarySection = ({ metricsSummary }) => {
               <Target className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle>Metrics Summary</CardTitle>
+              <CardTitle>Training Metrics Summary</CardTitle>
               <CardDescription>
-                Performance metrics captured and analysis breakdown
+                Performance training metrics captured and analysis breakdown
               </CardDescription>
             </div>
           </div>
@@ -58,7 +58,7 @@ const MetricsSummarySection = ({ metricsSummary }) => {
               
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Unique Metrics
+                  Unique Training Metrics
                 </CardTitle>
                 <div className="p-2 rounded-lg border bg-primary/10 text-primary border-primary/30">
                   <TrendingUp className="h-4 w-4 text-primary" />
@@ -69,7 +69,7 @@ const MetricsSummarySection = ({ metricsSummary }) => {
                   {metricsSummary.unique_metrics}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Different metrics tracked
+                  Different training metrics tracked
                 </p>
               </CardContent>
             </Card>
@@ -101,7 +101,7 @@ const MetricsSummarySection = ({ metricsSummary }) => {
               <div>
                 <h4 className="font-semibold mb-4 flex items-center gap-2">
                   <Target className="h-5 w-5 text-primary" />
-                  Metrics Breakdown
+                  Training Metrics Breakdown
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {metricsSummary.metrics_breakdown.map((metric, index) => (

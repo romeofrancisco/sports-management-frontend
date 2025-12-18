@@ -24,12 +24,12 @@ const EffectivenessScoreCard = ({ effectivenessScore }) => {
         
         <CardContent className="relative">
           <div className="text-center my-4">
-            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+            <div className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
               {effectivenessScore.score}%
             </div>
             <Badge
               variant="outline"
-              className="bg-primary/10 text-primary border-primary/30 text-sm px-3 py-1 border-2 font-semibold"
+              className="bg-primary/10 text-primary border-primary/30 text-sm px-2 py-1 border-2 font-semibold"
             >
               {effectivenessScore.level.replace("_", " ").toUpperCase()}
             </Badge>

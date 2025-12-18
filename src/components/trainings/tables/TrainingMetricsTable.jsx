@@ -18,8 +18,10 @@ import {
   Target,
   TrendingDown,
   TrendingUp,
+  RefreshCw,
 } from "lucide-react";
 import { useRolePermissions } from "../../../hooks/useRolePermissions";
+import { useReactivateTrainingMetric } from "../../../hooks/useTrainings";
 
 /**
  * Table component for displaying training metrics with role-based permissions
@@ -31,8 +33,27 @@ export const TrainingMetricsTable = ({
   onEdit,
   onDelete,
 }) => {
-  const { canModifyTrainingMetric, getTrainingMetricTooltip } =
+  const { canModifyTrainingMetric, getTrainingMetricTooltip, isAdmin, user } =
     useRolePermissions();
+  const reactivateMutation = useReactivateTrainingMetric();
+
+  const handleReactivate = (metric) => {
+    reactivateMutation.mutate(metric.id);
+  };
+
+  const canSeeInactive = (metric) => {
+    if (!metric.is_active) {
+      // Admin sees all inactive
+      if (isAdmin()) return true;
+      // Creator sees their own inactive
+      if (metric.created_by === user?.id) return true;
+      return false;
+    }
+    return true;
+  };
+
+  // Filter metrics based on role permissions
+  const visibleMetrics = metrics?.filter(canSeeInactive) || [];
 
   if (isLoading) {
     return (
@@ -97,7 +118,7 @@ export const TrainingMetricsTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {metrics.length === 0 ? (
+            {visibleMetrics.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-8">
                   <div className="flex flex-col items-center gap-2">
@@ -112,16 +133,32 @@ export const TrainingMetricsTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              metrics.map((metric) => {
+              visibleMetrics.map((metric) => {
                 const canModify = canModifyTrainingMetric(metric);
                 const tooltip = getTrainingMetricTooltip?.(metric);
 
                 return (
-                  <TableRow key={metric.id} className="hover:bg-muted/50">
+                  <TableRow
+                    key={metric.id}
+                    className={`hover:bg-muted/50 ${
+                      !metric.is_active ? "opacity-60" : ""
+                    }`}
+                  >
                     {/* Name */}
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <span className="truncate">{metric.name}</span>
+                        <span
+                          className={`truncate ${
+                            !metric.is_active ? "line-through" : ""
+                          }`}
+                        >
+                          {metric.name}
+                        </span>
+                        {!metric.is_active && (
+                          <Badge variant="secondary" className="text-xs">
+                            Inactive
+                          </Badge>
+                        )}
                       </div>
                     </TableCell>
 
@@ -212,26 +249,39 @@ export const TrainingMetricsTable = ({
                     {/* Actions */}
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(metric)}
-                          disabled={!canModify}
-                          title={tooltip}
-                          className="h-8 w-8 p-0"
-                        >
-                          <Edit className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete(metric)}
-                          disabled={!canModify}
-                          title={tooltip}
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                        >
-                          <Trash className="h-3 w-3" />
-                        </Button>
+                        {!metric.is_active ? (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleReactivate(metric)}
+                            disabled={reactivateMutation.isPending}
+                            title="Reactivate this metric"
+                          >
+                            <RefreshCw />
+                          </Button>
+                        ) : (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onEdit(metric)}
+                              disabled={!canModify}
+                              title={tooltip}
+                            >
+                              <Edit />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onDelete(metric)}
+                              disabled={!canModify}
+                              title={tooltip}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -244,7 +294,7 @@ export const TrainingMetricsTable = ({
 
       {/* Mobile-friendly view for small screens */}
       <div className="sm:hidden space-y-3">
-        {metrics.length === 0 ? (
+        {visibleMetrics.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-muted-foreground mb-4">
               <Target className="mx-auto h-12 w-12" />
@@ -256,24 +306,32 @@ export const TrainingMetricsTable = ({
             </p>
           </div>
         ) : (
-          metrics.map((metric) => {
+          visibleMetrics.map((metric) => {
             const canModify = canModifyTrainingMetric(metric);
 
             return (
               <div
                 key={metric.id}
-                className="border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card"
+                className={`border-2 border-primary/20 rounded-lg px-4 py-3 space-y-3 bg-card ${
+                  !metric.is_active ? "opacity-60" : ""
+                }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium truncate">{metric.name}</h3>
-                      {metric.is_default && (
+                      <h3
+                        className={`font-medium truncate ${
+                          !metric.is_active ? "line-through" : ""
+                        }`}
+                      >
+                        {metric.name}
+                      </h3>
+                      {!metric.is_active && (
                         <Badge
                           variant="secondary"
                           className="text-xs px-1.5 py-0.5 h-5"
                         >
-                          <Shield className="w-2.5 h-2.5" />
+                          Inactive
                         </Badge>
                       )}
                     </div>
@@ -345,24 +403,39 @@ export const TrainingMetricsTable = ({
                   </div>
 
                   <div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(metric)}
-                      disabled={!canModify}
-                      title={getTrainingMetricTooltip?.(metric, "edit")}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(metric)}
-                      disabled={!canModify}
-                      title={getTrainingMetricTooltip?.(metric, "delete")}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
+                    {!metric.is_active ? (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleReactivate(metric)}
+                        disabled={reactivateMutation.isPending}
+                        title="Reactivate this metric"
+                      >
+                        <RefreshCw />
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onEdit(metric)}
+                          disabled={!canModify}
+                          title={getTrainingMetricTooltip?.(metric, "edit")}
+                        >
+                          <Edit />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onDelete(metric)}
+                          disabled={!canModify}
+                          title={getTrainingMetricTooltip?.(metric, "delete")}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
