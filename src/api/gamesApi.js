@@ -96,10 +96,11 @@ export const createSubstitution = async (substituteData) => {
   }
 };
 
-export const manageGame = async (gameId, action) => {
+export const manageGame = async (gameId, action, extraData = {}) => {
   try {
     const { data } = await api.post(`games/${gameId}/manage/`, {
       action: action,
+      ...extraData,
     });
     return data;
   } catch (error) {

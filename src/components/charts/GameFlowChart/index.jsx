@@ -103,12 +103,6 @@ const GameFlowChart = ({ game }) => {
 
   // Early returns AFTER all hooks
   if (isLoading) return <Loading />;
-  if (!flow)
-    return (
-      <p className="text-center text-muted-foreground">
-        No game data available
-      </p>
-    );
 
   const endEvent = periodEvents.findLast(
     (e) => e.stat_name === "End of Game" || e.stat_name === "End of Set"

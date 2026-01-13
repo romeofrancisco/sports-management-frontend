@@ -486,6 +486,7 @@ export const getSeasonStandingsColumns = ({
       // }
     );
   }
+  console.log(seasonDetails);
 
   // Add points column only for round robin
   if (seasonDetails?.bracket_type === BRACKET_TYPES.ROUND_ROBIN) {

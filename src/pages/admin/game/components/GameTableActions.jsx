@@ -14,12 +14,13 @@ import {
   ChartColumn,
   StepForward,
   Play,
+  AlertTriangle,
 } from "lucide-react";
 import { GAME_STATUS_VALUES } from "@/constants/game";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
-  const { permissions } = useRolePermissions();
+  const { isAdmin, permissions } = useRolePermissions();
   
   const handleOpen = (modalType) => {
     setSelectedGame(game);
@@ -42,6 +43,9 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
   const isInProgress = status === GAME_STATUS_VALUES.IN_PROGRESS;
   const isCompleted = status === GAME_STATUS_VALUES.COMPLETED;
   const isPostponed = status === GAME_STATUS_VALUES.POSTPONED;
+  
+  // Check if game is a league or tournament game (for default wins)
+  const isLeagueOrTournamentGame = game.type === "league" || game.type === "tournament";
 
   // Permission checks
   const canStartGame = permissions.games.start(game);
@@ -86,6 +90,13 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
                 </DropdownMenuItem>
               )
             )}
+            {/* Default Win Option - Admin only, league/tournament games */}
+            {isAdmin() && isLeagueOrTournamentGame && (
+              <DropdownMenuItem onClick={() => handleOpen("defaultWin")}>
+                <AlertTriangle />
+                Default Win
+              </DropdownMenuItem>
+            )}
           </>
         )}
 
@@ -112,6 +123,13 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
               <CalendarSync />
               Reschedule
             </DropdownMenuItem>
+            {/* Default Win Option - Admin only, league/tournament games */}
+            {isAdmin() && isLeagueOrTournamentGame && (
+              <DropdownMenuItem onClick={() => handleOpen("defaultWin")}>
+                <AlertTriangle />
+                Default Win
+              </DropdownMenuItem>
+            )}
           </>
         )}
         

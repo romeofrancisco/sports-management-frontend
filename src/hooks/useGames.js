@@ -109,8 +109,8 @@ export const useManageGame = (gameId) => {
   const period = getPeriodLabel(scoring_type);
 
   return useMutation({
-    mutationFn: (action) => manageGame(gameId, action),
-    onSuccess: (_, action) => {
+    mutationFn: ({ action, extraData = {} }) => manageGame(gameId, action, extraData),
+    onSuccess: (_, { action }) => {
       queryClient.invalidateQueries(["game", gameId]);
 
       switch (action) {
@@ -123,14 +123,30 @@ export const useManageGame = (gameId) => {
         case GAME_ACTIONS.NEXT_PERIOD:
           toast.success(`Advanced to the next ${period}`, { richColors: true });
           break;
+        case GAME_ACTIONS.DEFAULT_HOME_WIN:
+          toast.success("Default win recorded for home team", { richColors: true });
+          break;
+        case GAME_ACTIONS.DEFAULT_AWAY_WIN:
+          toast.success("Default win recorded for away team", { richColors: true });
+          break;
+        case GAME_ACTIONS.DOUBLE_DEFAULT:
+          toast.info("Double default recorded - no winner", { richColors: true });
+          break;
+        case GAME_ACTIONS.FORFEIT:
+          toast.success("Game forfeited successfully", { richColors: true });
+          break;
         default:
           break;
       }
     },
-    onError: (error, action) => {
+    onError: (error, { action }) => {
       const errorTitle =
         action === GAME_ACTIONS.COMPLETE
           ? "Cannot Complete Game"
+          : action === GAME_ACTIONS.FORFEIT
+          ? "Cannot Forfeit Game"
+          : action.includes("default")
+          ? "Cannot Record Default"
           : `Cannot Advance to Next ${period}`;
 
       toast.info(errorTitle, {

@@ -12,6 +12,7 @@ import {
   StatusSection,
   StatusSectionSkeleton,
 } from "@/components/games";
+import { GAME_STATUS_VALUES, isGameFinished } from "@/constants/game";
 import GameModal from "@/components/modals/GameModal";
 
 const TournamentGames = ({ tournamentId }) => {
@@ -159,13 +160,13 @@ const TournamentGames = ({ tournamentId }) => {
               <StatusSection
                 status="in_progress"
                 games={filteredGames.filter(
-                  (game) => game.status === "in_progress"
+                  (game) => game.status === GAME_STATUS_VALUES.IN_PROGRESS
                 )}
                 variant="default"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {filteredGames
-                    .filter((game) => game.status === "in_progress")
+                    .filter((game) => game.status === GAME_STATUS_VALUES.IN_PROGRESS)
                     .map((game, i) => (
                       <GameCard
                         key={game.id || `live-${i}`}
@@ -180,13 +181,13 @@ const TournamentGames = ({ tournamentId }) => {
               <StatusSection
                 status="scheduled"
                 games={filteredGames.filter(
-                  (game) => game.status === "scheduled"
+                  (game) => game.status === GAME_STATUS_VALUES.SCHEDULED
                 )}
                 variant="default"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {filteredGames
-                    .filter((game) => game.status === "scheduled")
+                    .filter((game) => game.status === GAME_STATUS_VALUES.SCHEDULED)
                     .map((game, i) => (
                       <GameCard
                         key={game.id || `scheduled-${i}`}
@@ -197,26 +198,82 @@ const TournamentGames = ({ tournamentId }) => {
                 </div>
               </StatusSection>
 
-              {/* Completed Games Section */}
+              {/* Completed Games Section (includes defaults and forfeits) */}
               <StatusSection
                 status="completed"
                 games={filteredGames.filter(
-                  (game) => game.status === "completed"
+                  (game) => isGameFinished(game.status)
                 )}
                 variant="default"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {filteredGames
-                    .filter((game) => game.status === "completed")
-                    .map((game, i) => (
-                      <GameCard
-                        key={game.id || `completed-${i}`}
-                        game={game}
-                        onEditGame={handleEditGame}
-                      />
-                    ))}
+                <div className="space-y-6">
+                  {/* Regular Completed & Forfeited Games */}
+                  {filteredGames.filter(
+                    (game) => game.status === GAME_STATUS_VALUES.COMPLETED || game.status === GAME_STATUS_VALUES.FORFEITED
+                  ).length > 0 && (
+                    <div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {filteredGames
+                          .filter((game) => game.status === GAME_STATUS_VALUES.COMPLETED || game.status === GAME_STATUS_VALUES.FORFEITED)
+                          .map((game, i) => (
+                            <GameCard
+                              key={game.id || `completed-${i}`}
+                              game={game}
+                              onEditGame={handleEditGame}
+                            />
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Default Games */}
+                  {filteredGames.filter(
+                    (game) => game.status === GAME_STATUS_VALUES.DEFAULT_HOME_WIN || 
+                             game.status === GAME_STATUS_VALUES.DEFAULT_AWAY_WIN || 
+                             game.status === GAME_STATUS_VALUES.DOUBLE_DEFAULT
+                  ).length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-3">Default Games</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {filteredGames
+                          .filter((game) => game.status === GAME_STATUS_VALUES.DEFAULT_HOME_WIN || 
+                                           game.status === GAME_STATUS_VALUES.DEFAULT_AWAY_WIN || 
+                                           game.status === GAME_STATUS_VALUES.DOUBLE_DEFAULT)
+                          .map((game, i) => (
+                            <GameCard
+                              key={game.id || `default-${i}`}
+                              game={game}
+                              onEditGame={handleEditGame}
+                            />
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </StatusSection>
+
+              {/* Postponed Games Section */}
+              {filteredGames.filter((game) => game.status === GAME_STATUS_VALUES.POSTPONED).length > 0 && (
+                <StatusSection
+                  status="postponed"
+                  games={filteredGames.filter(
+                    (game) => game.status === GAME_STATUS_VALUES.POSTPONED
+                  )}
+                  variant="default"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {filteredGames
+                      .filter((game) => game.status === GAME_STATUS_VALUES.POSTPONED)
+                      .map((game, i) => (
+                        <GameCard
+                          key={game.id || `postponed-${i}`}
+                          game={game}
+                          onEditGame={handleEditGame}
+                        />
+                      ))}
+                  </div>
+                </StatusSection>
+              )}
             </div>
           ) : (
             <div>

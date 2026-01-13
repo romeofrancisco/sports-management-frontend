@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const TeamLogo = ({ team, isScheduled, isReady, lineupType }) => {
+export const  TeamLogo = ({ team, isScheduled, isReady, lineupType }) => {
   // Only show lineup status for scheduled games
   const showLineupStatus = isScheduled !== undefined && isScheduled;
 

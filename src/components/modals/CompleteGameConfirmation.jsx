@@ -19,7 +19,7 @@ const CompleteGameConfirmation = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleCompleteGame = () => {
-    completeGame(GAME_ACTIONS.COMPLETE, {
+    completeGame({ action: GAME_ACTIONS.COMPLETE }, {
       onSuccess: () => {
         navigate(`/games/${gameId}/game-result`, { replace: true });
         onClose();

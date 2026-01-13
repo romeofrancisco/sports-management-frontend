@@ -8,6 +8,7 @@ import {
   EditIcon,
   UserCog,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
@@ -16,6 +17,7 @@ import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
 import CoachAssignmentModal from "@/components/modals/CoachAssignmentModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
+import DefaultWinModal from "@/components/modals/DefaultWinModal";
 
 export const GameActions = ({
   game,
@@ -23,6 +25,7 @@ export const GameActions = ({
   isLive,
   isScheduled,
   bothReady,
+  isDefault,
   onEditGame,
 }) => {
   const navigate = useNavigate();
@@ -34,6 +37,7 @@ export const GameActions = ({
   const startingLineupModal = useModal();
   const coachAssignmentModal = useModal();
   const deleteGameModal = useModal();
+  const defaultWinModal = useModal();
 
   const isLeagueGame = game?.type === "league" || game?.type === "tournament";
   const isPracticeGame = game?.type === "practice";
@@ -85,12 +89,20 @@ export const GameActions = ({
   const handleDeleteGame = () => {
     setSelectedGame(game);
     deleteGameModal.openModal();
-  }; // Clear selectedGame when modal is fully closed
+  };
+
+  const handleDefaultWin = () => {
+    setSelectedGame(game);
+    defaultWinModal.openModal();
+  };
+
+  // Clear selectedGame when modal is fully closed
   useEffect(() => {
     if (
       !startingLineupModal.isOpen &&
       !coachAssignmentModal.isOpen &&
       !deleteGameModal.isOpen &&
+      !defaultWinModal.isOpen &&
       selectedGame
     ) {
       const timer = setTimeout(() => {
@@ -102,13 +114,14 @@ export const GameActions = ({
     startingLineupModal.isOpen,
     coachAssignmentModal.isOpen,
     deleteGameModal.isOpen,
+    defaultWinModal.isOpen,
     selectedGame,
   ]);
   return (
     <>
       <div className="grid grid-cols-2 gap-2 w-full items-center justify-end">
         {/* Edit button available only for live and scheduled games, not completed */}
-        {!isCompleted && (
+        {!isCompleted && !isDefault && (
           <Button
             onClick={handleEditGame}
             variant="outline"
@@ -130,7 +143,7 @@ export const GameActions = ({
           </Button>
         )}
         {/* Coach Assignment for League Games - Admin Only */}
-        {isAdmin() && isLeagueGame && !isCompleted && (
+        {isAdmin() && isLeagueGame && !isCompleted && !isDefault && (
           <Button
             onClick={handleCoachAssignmentClick}
             variant="outline"
@@ -168,6 +181,17 @@ export const GameActions = ({
                 Start Game
               </Button>
             )}
+            {/* Default Win Option - Admin only, league/tournament games */}
+            {isLeagueGame && (
+              <Button 
+                onClick={handleDefaultWin} 
+                variant="outline"
+                className="border-amber-500/50 text-amber-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-500 transition-all duration-300"
+              >
+                <AlertTriangle />
+                Default
+              </Button>
+            )}
           </>
         )}
       </div>{" "}
@@ -200,6 +224,14 @@ export const GameActions = ({
         isOpen={deleteGameModal.isOpen}
         onClose={() => {
           deleteGameModal.closeModal();
+        }}
+        game={selectedGame}
+      />
+      {/* Default Win Modal */}
+      <DefaultWinModal
+        isOpen={defaultWinModal.isOpen}
+        onClose={() => {
+          defaultWinModal.closeModal();
         }}
         game={selectedGame}
       />

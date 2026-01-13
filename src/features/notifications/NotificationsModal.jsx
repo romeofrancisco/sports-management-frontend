@@ -194,7 +194,7 @@ const NotificationsModal = ({ open, onOpenChange, onNotificationClick }) => {
               </p>
             </div>
           ) : (
-            <div className="max-h-[calc(70vh-64px)] space-y-2 mt-3 px-2">
+            <div className="max-h-[calc(60vh-64px)] space-y-2 mt-3 px-2">
               {notifications.map((notification) => (
                 <NotificationItem
                   key={notification.id}
