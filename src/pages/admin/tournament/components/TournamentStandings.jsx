@@ -33,7 +33,7 @@ const TournamentStandings = ({ tournament, standings }) => {
 
   // Prepare tournamentDetails object similar to seasonDetails
   const tournamentDetails = {
-    bracket_type: tournament?.bracket?.elimination_type,
+    bracket_type: tournament?.bracket_type,
   };
 
   // Get columns from the reusable module with teamFormData passed in

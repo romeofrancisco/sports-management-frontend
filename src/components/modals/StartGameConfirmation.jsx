@@ -26,7 +26,7 @@ const StartGameConfirmation = ({ isOpen, onClose, game }) => {
       return;
     }
 
-    startGame(GAME_ACTIONS.START, {
+    startGame({ action: GAME_ACTIONS.START }, {
       onSuccess: () => {
         onClose(); // Close the modal first
         navigate(`/games/${game.id}/scoring`); // Then navigate to scoring page

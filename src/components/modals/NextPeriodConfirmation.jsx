@@ -19,7 +19,7 @@ const NextPeriodConfirmation = ({ isOpen, onClose }) => {
   const { mutate: nextPeriod } = useManageGame(gameId);
 
   const handleNextPeriod = () => {
-    nextPeriod(GAME_ACTIONS.NEXT_PERIOD, {
+    nextPeriod({ action: GAME_ACTIONS.NEXT_PERIOD }, {
       onSuccess: () => {
         onClose();
       }

@@ -7,6 +7,7 @@ import GameModal from "@/components/modals/GameModal";
 import DeleteGameModal from "@/components/modals/DeleteGameModal";
 import StartingLineupModal from "@/components/modals/StartingLineupModal";
 import StartGameConfirmation from "@/components/modals/StartGameConfirmation";
+import DefaultWinModal from "@/components/modals/DefaultWinModal";
 import TablePagination from "@/components/ui/table-pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -110,6 +111,7 @@ const GameTable = () => {
     update: useModal(),
     startingLineup: useModal(),
     startGame: useModal(),
+    defaultWin: useModal(),
   };
 
   const columns = getGameTableColumns({
@@ -430,6 +432,11 @@ const GameTable = () => {
       <StartGameConfirmation
         isOpen={modals.startGame.isOpen}
         onClose={modals.startGame.closeModal}
+        game={selectedGame}
+      />
+      <DefaultWinModal
+        isOpen={modals.defaultWin.isOpen}
+        onClose={modals.defaultWin.closeModal}
         game={selectedGame}
       />
     </div>

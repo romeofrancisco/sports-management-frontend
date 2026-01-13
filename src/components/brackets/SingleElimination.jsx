@@ -47,9 +47,11 @@ const CustomMatch = ({ match }) => {
   const home = participants[0] || null;
   const away = participants[1] || null;
 
+  console.log("Match Data:", match);
+
   const getResult = (team) => {
-    if (!match || !team) return "";
-    if (team.isWinner) return "WON";
+    if (match.state === "SCHEDULED") return "";
+    if (team?.isWinner) return "WON";
     return "LOST";
   };
 
@@ -57,7 +59,7 @@ const CustomMatch = ({ match }) => {
     const result = getResult(team);
     const opacity = !team
       ? "opacity-70 italic"
-      : team.isWinner
+      : team?.isWinner
       ? "opacity-100"
       : "opacity-70";
 

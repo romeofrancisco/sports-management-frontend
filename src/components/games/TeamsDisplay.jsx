@@ -7,6 +7,7 @@ import { AnimatedScore } from "./AnimatedScore.jsx";
 export const TeamsDisplay = ({
   homeTeam,
   awayTeam,
+  isDefault,
   isCompleted,
   isLive,
   isScheduled,
@@ -20,7 +21,7 @@ export const TeamsDisplay = ({
   // Helper function to get the correct period label based on sport scoring type
   const getPeriodLabel = (currentPeriod, sportScoringType) => {
     if (!currentPeriod) return "";
-    
+
     if (sportScoringType === "sets") {
       return `Set ${currentPeriod}`;
     } else {
@@ -39,9 +40,9 @@ export const TeamsDisplay = ({
             isReady={homeReady}
             lineupType="home"
           />
-          {isCompleted && winnerTeamId === homeTeam.id && (
-            <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-0.5">
-              <TrophyIcon className="h-2.5 w-2.5 text-white" />
+          {winnerTeamId === homeTeam.id && (
+            <div className="absolute -top-2 -right-2 bg-amber-500 rounded-full p-1">
+              <TrophyIcon className="size-4 text-white" />
             </div>
           )}
         </div>
@@ -84,7 +85,8 @@ export const TeamsDisplay = ({
             >
               Final
             </Badge>
-          </div>        ) : isLive ? (
+          </div>
+        ) : isLive ? (
           <div className="text-center">
             {game.current_period && (
               <div className="text-xs text-muted-foreground mb-1 font-medium">
@@ -105,6 +107,10 @@ export const TeamsDisplay = ({
             <Badge variant="destructive" className="text-xs animate-pulse mt-1">
               Live
             </Badge>
+          </div>
+        ) : isDefault ? (
+          <div className="px-4 py-2 rounded-full bg-amber-100 border border-amber-200">
+            <span className="text-amber-700 font-semibold">DEFAULT</span>
           </div>
         ) : (
           <div className="px-4 py-2 rounded-full bg-primary/10 border border-primary/20">

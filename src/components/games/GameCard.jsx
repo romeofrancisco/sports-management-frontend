@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Card,
   CardContent,
@@ -16,6 +17,7 @@ import {
   Medal,
   MapPinned,
   Dumbbell,
+  AlertTriangle,
 } from "lucide-react";
 import { TeamsDisplay } from "./TeamsDisplay";
 import { GameActions } from "./GameActions";
@@ -27,15 +29,26 @@ import { formatTo12HourTime } from "@/utils/formatTime";
 
 export const GameCard = React.memo(
   ({ game, onEditGame }) => {
+    // Get current user from auth state
+    const { user } = useSelector((state) => state.auth);
+    
     // Local state for real-time updates
     const [liveGameData, setLiveGameData] = useState(game);
     const [showScoreNotification, setShowScoreNotification] = useState(false);
 
     const homeTeam = liveGameData.home_team || {};
     const awayTeam = liveGameData.away_team || {};
-    const isCompleted = liveGameData.status === "completed";
+    const isCompleted =
+      liveGameData.status === "completed" ||
+      liveGameData.status === "forfeited";
     const isLive = liveGameData.status === "in_progress";
     const isScheduled = liveGameData.status === "scheduled";
+    const isDefault =
+      liveGameData.status === "default_home_win" ||
+      liveGameData.status === "default_away_win" ||
+      liveGameData.status === "double_default";
+    const isForfeited = liveGameData.status === "forfeited";
+
 
     const homeScore =
       liveGameData.sport_scoring_type === "points"
@@ -116,6 +129,32 @@ export const GameCard = React.memo(
         };
       }
 
+      if (isDefault) {
+        return {
+          badge: (
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-150 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-700">
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              DEFAULT
+            </Badge>
+          ),
+          cardClass:
+            "border-amber-200 shadow-amber-100/50 bg-gradient-to-br from-amber-50/30 to-background ring-1 ring-amber-100 dark:border-amber-800 dark:shadow-amber-900/20 dark:from-amber-950/20 dark:ring-amber-800/50",
+        };
+      }
+
+      if (isForfeited) {
+        return {
+          badge: (
+            <Badge className="bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-150 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-700">
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              FORFEITED
+            </Badge>
+          ),
+          cardClass:
+            "border-orange-200 shadow-orange-100/50 bg-gradient-to-br from-orange-50/30 to-background ring-1 ring-orange-100 dark:border-orange-800 dark:shadow-orange-900/20 dark:from-orange-950/20 dark:ring-orange-800/50",
+        };
+      }
+
       if (isCompleted) {
         return {
           badge: (
@@ -154,6 +193,16 @@ export const GameCard = React.memo(
     };
     const statusConfig = getStatusConfig();
     const { isAdmin, isCoach } = useRolePermissions();
+    
+    // Check if current coach is assigned to this game
+    const isAssignedCoach = () => {
+      if (!isCoach() || !user || !liveGameData.assigned_coaches) return false;
+      return liveGameData.assigned_coaches.some(coach => coach.id === user.id);
+    };
+    
+    // Determine if user can see game actions
+    const canSeeGameActions = isAdmin() || isAssignedCoach();
+    
     // Determine if we are on the /games page
     const isGamesPage =
       typeof window !== "undefined" && window.location.pathname === "/games";
@@ -220,6 +269,7 @@ export const GameCard = React.memo(
               isCompleted={isCompleted}
               isLive={isLive}
               isScheduled={isScheduled}
+              isDefault={isDefault}
               homeScore={homeScore}
               awayScore={awayScore}
               winnerTeamId={winnerTeamId}
@@ -259,7 +309,7 @@ export const GameCard = React.memo(
             {/* Game Actions */}
 
             {/* Score Summary and View Result for Completed Games */}
-            {isCompleted && liveGameData.score_summary?.periods && (
+            {(isCompleted || isForfeited) && liveGameData.score_summary?.periods && (
               <div className="space-y-4 mt-4">
                 <ScoreSummary
                   game={liveGameData}
@@ -272,10 +322,11 @@ export const GameCard = React.memo(
           </div>
         </CardContent>
 
-        {(isAdmin() || isCoach()) && (
+        {canSeeGameActions && (
           <CardFooter>
             <GameActions
               game={liveGameData}
+              isDefault={isDefault}
               isCompleted={isCompleted}
               isLive={isLive}
               isScheduled={isScheduled}

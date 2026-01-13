@@ -9,6 +9,7 @@ import {
   Undo2,
   BarChart3,
   Layout,
+  AlertTriangle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ import BulkStatRecordingModal from "@/components/modals/BulkStatRecordingModal";
 import { useDispatch, useSelector } from "react-redux";
 import CompleteGameConfirmation from "@/components/modals/CompleteGameConfirmation";
 import SubstitutionModal from "@/components/modals/SubstitutionModal";
+import ForfeitGameModal from "@/components/modals/ForfeitGameModal";
 import { reset } from "@/store/slices/playerStatSlice";
 import { getPeriodLabel } from "@/constants/sport";
 import { useUndoLastStat } from "@/hooks/useStats";
@@ -39,6 +41,7 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
     substitute: useModal(),
     nextPeriod: useModal(),
     completeGame: useModal(),
+    forfeit: useModal(),
   };
 
   const undoLastStatMutation = useUndoLastStat(game_id);
@@ -120,6 +123,14 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
             <Flag className="mr-2 h-4 w-4" />
             <span>Complete Game</span>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem 
+            onClick={() => handleStatAction("forfeit")}
+            className="text-red-600 focus:text-red-600"
+          >
+            <AlertTriangle className="mr-2 h-4 w-4" />
+            <span>Forfeit Game</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {requires_stats && (
@@ -141,6 +152,10 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
       <CompleteGameConfirmation
         isOpen={modals.completeGame.isOpen}
         onClose={modals.completeGame.closeModal}
+      />
+      <ForfeitGameModal
+        isOpen={modals.forfeit.isOpen}
+        onClose={modals.forfeit.closeModal}
       />
     </>
   );
