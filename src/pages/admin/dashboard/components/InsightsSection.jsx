@@ -24,50 +24,33 @@ const InsightsSection = ({
   const shouldShowNoInsights = () => {
     if (!insights) return true;
 
-    if (aiEnabled) {
-      // When AI is enabled, only show NoInsights if we have insights data but no AI analysis
-      // If insights is null or undefined, we should show loading or error state instead
-      if (insights && !insights?.ai_insights?.ai_analysis) {
-        // Check if there's an error in the AI analysis
-        const hasAiError =
-          insights?.ai_insights?.fallback_used ||
-          insights?.insights?.some?.((i) =>
-            i.title?.includes("AI Analysis Error")
-          );
+    // Check if any content is available
+    const hasSystemWarnings =
+      insights.system_health_warnings &&
+      insights.system_health_warnings.length > 0;
+    const hasInsights = insights.insights && insights.insights.length > 0;
+    const hasRecommendations =
+      insights.recommendations && insights.recommendations.length > 0;
+    const hasAttendanceTrends = insights.attendance_trends;
+    const hasAiAnalysis = insights?.ai_insights?.ai_analysis;
 
-        // Only show "no insights" if there's no error and no AI analysis
-        return !hasAiError;
-      }
-      return false;
-    } else {
-      // When AI is disabled, check if any built-in insights are available
-      const hasSystemWarnings =
-        insights.system_health_warnings &&
-        insights.system_health_warnings.length > 0;
-      const hasInsights = insights.insights && insights.insights.length > 0;
-      const hasRecommendations =
-        insights.recommendations && insights.recommendations.length > 0;
-      const hasAttendanceTrends = insights.attendance_trends;
-
-      return (
-        !hasSystemWarnings &&
-        !hasInsights &&
-        !hasRecommendations &&
-        !hasAttendanceTrends
-      );
-    }
+    // Show "no insights" only if there's truly no content
+    return (
+      !hasSystemWarnings &&
+      !hasInsights &&
+      !hasRecommendations &&
+      !hasAttendanceTrends &&
+      !hasAiAnalysis
+    );
   };
-  // Check if AI analysis failed or is using fallback
-  const hasAiError =
+  // Check if AI analysis is using fallback (not a complete failure, just degraded)
+  const hasAiFallback =
     aiEnabled &&
     insights &&
-    (insights?.ai_insights?.fallback_used ||
-      insights?.insights?.some?.((i) =>
-        i.title?.includes("AI Analysis Error")
-      ));
+    insights?.ai_insights?.fallback_used;
 
-  // If there's an API error, show error state
-  if (hasAiError) {
+  // Check if there's a complete API failure (no data at all)
+  if (hasApiError && !insights) {
     return (
       <Card>
         <CardContent>
@@ -98,23 +81,21 @@ const InsightsSection = ({
           <LoadingState />
         ) : (
           <div className="space-y-4">
+            {/* Show warning if AI is using fallback mode */}
+            {hasAiFallback && (
+              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  <span className="font-medium">AI Analysis Limited:</span>
+                  {" "}Using fallback analysis due to API quota limits. AI insights will resume automatically when quota resets.
+                </p>
+              </div>
+            )}
             {/* AI Analysis Section - Show when AI is enabled and analysis is available */}
             {aiEnabled && insights?.ai_insights?.ai_analysis && (
               <AIAnalysisSection insights={insights} />
             )}
-            {/* Show error message if AI analysis failed but still show other insights */}
-            {hasAiError && (
-              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <p className="text-sm text-destructive">
-                  <span className="font-medium">AI Analysis Unavailable:</span>
-                  {insights?.ai_insights?.fallback_used
-                    ? " Using fallback analysis. AI insights will resume automatically."
-                    : " AI analysis encountered an error. Showing standard insights below."}
-                </p>
-              </div>
-            )}
-            {/* System Health Warnings - Show when AI is disabled OR when AI fails */}
-            {(!aiEnabled || hasAiError) && (
+            {/* System Health Warnings - Show when AI is disabled OR when AI is using fallback */}
+            {(!aiEnabled || hasAiFallback) && (
               <SystemWarningsSection
                 warnings={insights?.system_health_warnings}
               />
@@ -131,7 +112,7 @@ const InsightsSection = ({
             />
             {/* No Insights State - Show when no relevant content is available */}
             {shouldShowNoInsights() && (
-              <NoInsightsState aiEnabled={aiEnabled && !hasAiError} />
+              <NoInsightsState aiEnabled={aiEnabled && !hasAiFallback} />
             )}
           </div>
         )}

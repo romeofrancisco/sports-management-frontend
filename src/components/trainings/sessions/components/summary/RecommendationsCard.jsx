@@ -20,7 +20,8 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
   
   // Extract AI insights from the response
   const aiInsights = aiInsightsData?.ai_insights || null;
-  const hasAiInsights = aiInsights && aiInsights.ai_analysis && !aiInsights.fallback_used;
+  const hasAiInsights = aiInsights && aiInsights.ai_analysis;
+  const isUsingFallback = aiInsights?.fallback_used;
 
   // Handle toggle change
   const handleToggleChange = (checked) => {
@@ -158,6 +159,18 @@ const RecommendationsCard = ({ recommendations, sessionId }) => {
     
     return (
       <div className="space-y-4">
+        {/* Show warning if using fallback mode */}
+        {isUsingFallback && (
+          <Card className="border-2 border-amber-500/20 bg-amber-500/10">
+            <CardContent>
+              <p className="text-sm text-amber-700 dark:text-amber-400">
+                <span className="font-medium">AI Analysis Limited:</span>
+                {" "}Using fallback analysis due to API quota limits. Full AI insights will resume automatically when quota resets.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+        
         {Object.entries(ai_analysis).map(([category, analysis]) => (
           <Card key={category} className="border border-primary/50 bg-gradient-to-r from-primary/5 to-primary/10">
             <CardContent>
