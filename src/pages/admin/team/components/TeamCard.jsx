@@ -125,7 +125,7 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
             </div>
           </div>
 
-          <div className="ml-2">
+          <div className="absolute top-0 right-5">
             <TeamActions
               team={team}
               onView={onView}
