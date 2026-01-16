@@ -24,14 +24,14 @@ const TrainingMetricsExplanation = () => (
   <TabCard>
     <h4 className="text-sm sm:text-base font-medium flex items-center gap-2 mb-3">
       <AlertCircle className="h-4 w-4 text-muted-foreground" />
-      About Training Metrics
+      About Training Excercises
     </h4>
     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-      Training metrics represent measurable exercises or tests used during
+      Training excercises represent measurable exercises or tests used during
       training sessions to evaluate player performance. Each metric defines
       whether higher or lower values indicate better results and includes a
       weight that determines its impact on overall performance evaluations.
-      Metrics are grouped into categories to organize and standardize training
+      Excercises are grouped into categories to organize and standardize training
       assessments.
     </p>
   </TabCard>
@@ -96,14 +96,14 @@ export const TrainingMetricsManager = () => {
   return (
     <TabLayout>
       <TabHeader
-        title="Training Metrics"
+        title="Training Excercises"
         icon={Dumbbell}
-        description="Manage training metrics"
+        description="Manage training excercises"
         actions={
           canCreateTrainingMetrics() && (
             <Button onClick={handleCreate}>
               <Plus />
-              Add Training Metric
+              Add Training Excercise  
             </Button>
           )
         }
@@ -137,7 +137,7 @@ export const TrainingMetricsManager = () => {
         item={metricToDelete}
         onSuccess={handleMetricDeleted}
         deleteMutation={deleteMetricMutation}
-        title="Delete Training Metric"
+        title="Delete Training Excercise"
         description={`Are you sure you want to delete "${metricToDelete?.name}"? This action cannot be undone and may affect existing training records.`}
       />
     </TabLayout>

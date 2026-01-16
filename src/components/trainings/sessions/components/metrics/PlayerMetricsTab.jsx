@@ -148,7 +148,7 @@ const PlayerMetricsTab = ({
     // Prevent navigation if player has no metrics
     if (effectiveMetricsCount === 0) {
       toast.error(
-        `${currentPlayer?.first_name} ${currentPlayer?.last_name} needs at least one metric assigned to proceed.`
+        `${currentPlayer?.first_name} ${currentPlayer?.last_name} needs at least one excercise assigned to proceed.`
       );
       return;
     }
@@ -186,12 +186,12 @@ const PlayerMetricsTab = ({
           <div className="flex items-center gap-2">
             <Target className="h-5 w-5" />
             <h3 className="text-lg font-bold">
-              Player-Specific Metric Assignment
+              Player-Specific Excercise Assignment
             </h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            Assign specific metrics to individual players. This is useful when
-            different players need to track different metrics.
+            Assign specific excercises to individual players. This is useful when
+            different players need to track different excercises.
           </p>
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -286,7 +286,7 @@ const PlayerMetricsTab = ({
               </h3>
               <div className="flex items-center gap-3 text-sm">
                 <span className="text-gray-600">
-                  {effectiveMetricsCount} metrics assigned
+                  {effectiveMetricsCount} excercises assigned
                 </span>
                 {selectedMetricsCount > 0 && (
                   <Badge
@@ -364,7 +364,7 @@ const PlayerMetricsTab = ({
                   variant="outline"
                   className="bg-destructive/20 border-destructive text-destructive"
                 >
-                  Need at least one metric
+                  Need at least one excercise
                 </Badge>
               ) : (
                 <Badge
@@ -445,7 +445,7 @@ const PlayerMetricsTab = ({
             </Button>
           </div>
           <p className="text-xs mb-3">
-            These metrics were assigned but not recorded in the previous
+            These excercises were assigned but not recorded in the previous
             session. Click to select or use the button above:
           </p>
           <div className="flex flex-wrap gap-2">
@@ -534,7 +534,7 @@ const PlayerMetricsTab = ({
         <div className="rounded-xl p-4 border-2 border-primary/20 shadow-sm">
           <h4 className="text-sm font-semibold text-foreground mb-3 gap-1 flex items-center gap-1pl">
             <CheckCircle className="h-4 w-4 text-primary" />
-            Currently Assigned Metrics
+            Currently Assigned Excercises
           </h4>
           <div className="flex flex-wrap gap-2">
             {playerMetrics.map((metric) => {
@@ -750,7 +750,7 @@ const PlayerMetricsTab = ({
                 variant="outline"
                 className="bg-destructive/20 border-destructive text-destructive"
               >
-                Need at least one metric
+                Need at least one excercise
               </Badge>
             ) : (
               <Badge
