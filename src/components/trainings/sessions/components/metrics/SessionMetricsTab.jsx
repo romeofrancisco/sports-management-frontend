@@ -57,41 +57,41 @@ const SessionMetricsTab = ({
     if (!hasChanges) {
       return {
         text: "No Changes to Save",
-        description: `${totalSelected} Training metrics currently assigned`,
+        description: `${totalSelected} Training excercises currently assigned`,
         disabled: true,
       };
     }
 
     if (adding > 0 && removing > 0) {
       return {
-        text: `Update Training Metrics (${adding} Add, ${removing} Remove)`,
-        description: `Will result in ${totalSelected} total training metrics`,
+        text: `Update Training Excercises (${adding} Add, ${removing} Remove)`,
+        description: `Will result in ${totalSelected} total training excercises assigned`,
         disabled: false,
       };
     }
 
     if (adding > 0) {
       return {
-        text: `Add ${adding} Training Metric${adding > 1 ? "s" : ""}`,
-        description: `${totalSelected} training metrics will be assigned`,
+        text: `Add ${adding} Training Excercise${adding > 1 ? "s" : ""}`,
+        description: `${totalSelected} training excercises will be assigned`,
         disabled: false,
       };
     }
 
     if (removing > 0) {
       return {
-        text: `Remove ${removing} Metric${removing > 1 ? "s" : ""}`,
+        text: `Remove ${removing} Training Excercise${removing > 1 ? "s" : ""}`,
         description:
           totalSelected > 0
-            ? `${totalSelected} training metrics will remain assigned`
-            : "All training metrics will be removed",
+            ? `${totalSelected} training excercises will remain assigned`
+            : "All training excercises will be removed",
         disabled: false,
       };
     }
 
     return {
       text: "Save Changes",
-      description: `${totalSelected} training metrics selected`,
+      description: `${totalSelected} training excercises selected`,
       disabled: false,
     };
   };
@@ -119,7 +119,7 @@ const SessionMetricsTab = ({
         <div className="rounded-xl p-4 border-2 border-primary/30 shadow-sm">
           <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            Training Metrics Currently Assigned to All Players
+            Training Excercises Currently Assigned to All Players
           </h4>
           <div className="flex flex-wrap gap-2">
             {sessionMetrics.map((metric) => (
@@ -184,14 +184,14 @@ const SessionMetricsTab = ({
         <div className="flex items-center justify-center py-12 bg-gradient-to-r from-card/30 to-card/50 rounded-xl border border-border/20">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">Loading training metrics...</p>
+            <p className="text-sm text-muted-foreground">Loading training excercises...</p>
           </div>
         </div>
       ) : filteredMetrics.length > 0 ? (
         <div className="space-y-4 flex-1">
           <div className="flex items-center justify-end">
             <Badge variant="outline" className="text-xs">
-              {filteredMetrics.length} training metrics found
+              {filteredMetrics.length} training excercises found
             </Badge>
           </div>
 
@@ -255,7 +255,7 @@ const SessionMetricsTab = ({
                       {metric.name}
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {metric.description} ({metric.metric_unit?.code || "-"})
+                      {metric.description} ({metric.metric_unit_data?.code || "-"})
                     </p>
                   </div>
                   <div className="relative z-10">

@@ -109,43 +109,6 @@ const PlayerCard = ({ player, onClick }) => {
             <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
           </div>
         </div>
-        {/* Academic Information */}
-        <div className="pt-2 border-t border-border/50 space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <GraduationCap className="h-3 w-3 text-muted-foreground" />
-              <span className="text-muted-foreground font-medium">
-                Year Level
-              </span>
-            </div>
-            <span
-              className={`text-xs font-medium px-2 py-1 rounded-md ${
-                player.sex === "female"
-                  ? "bg-secondary/15 text-secondary"
-                  : "bg-primary/15 text-primary"
-              }`}
-            >
-              {getYearLevelLabel(player.year_level)}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <BookOpen className="h-3 w-3 text-muted-foreground" />
-              <span className="text-muted-foreground font-medium">Course</span>
-            </div>
-            <span
-              className={`text-xs font-medium px-2 py-1 rounded-md truncate max-w-24 ${
-                player.sex === "female"
-                  ? "bg-secondary/15 text-secondary"
-                  : "bg-primary/15 text-primary"
-              }`}
-              title={getCourseLabel(player.course)}
-            >
-              {getCourseLabel(player.course)}
-            </span>
-          </div>
-        </div>
       </CardHeader>
     </Card>
   );

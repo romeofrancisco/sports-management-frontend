@@ -123,7 +123,7 @@ export const coachRoutes = [
     element: <TrainingCategoriesPage />,
   },
   {
-    path: "/trainings/metrics",
+    path: "/trainings/excercises",
     element: <TrainingMetricsPage />,
   },
   {

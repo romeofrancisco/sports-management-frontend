@@ -49,10 +49,10 @@ const TrainingDashboard = () => {
       description: "Manage training categories",
     },
     {
-      label: "Training Metrics",
+      label: "Training Exercises",
       icon: Dumbbell,
-      path: "/trainings/metrics",
-      description: "Manage training metrics",
+      path: "/trainings/excercises",
+      description: "Manage training exercises",
     },
     {
       label: "Units",

@@ -49,7 +49,7 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
             </div>
             <div>
               <h2 className="text-xl font-bold tracking-tight">
-                Configure Session Training Metrics
+                Configure Session Training Excercises
               </h2>
               <p className="text-sm font-normal">
                 Step 1 of training session setup
@@ -67,8 +67,8 @@ const SessionMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
         </div>
         <div className="mt-2 p-4 rounded-lg border border-primary/30 bg-primary/10">
           <p className="text-sm inline-flex items-center gap-1 leading-relaxed text-primary">
-            Configure training metrics that will be available to all players in this
-            training session. These training metrics define what performance indicators
+            Configure training excercises that will be available to all players in this
+            training session. These training excercises define what performance indicators
             can be tracked across the entire session.
           </p>
         </div>

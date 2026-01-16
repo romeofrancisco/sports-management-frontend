@@ -64,7 +64,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
               </div>
               <div>
                 <h2 className="text-xl font-bold tracking-tight">
-                  Player Training Metrics Configuration
+                  Player Training Excercises Configuration
                 </h2>
                 <p className="text-primary-foreground/80 text-sm font-normal mt-1">
                   Step 2 of training session setup
@@ -100,7 +100,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
             </div>
             <div>
               <h2 className="text-xl font-bold tracking-tight">
-                Player Metrics Configuration
+                Player Training Excercises Configuration
               </h2>
               <p className="text-foreground text-sm font-normal">
                 Step 2 of training session setup
@@ -120,7 +120,7 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
         </div>
         <div className="mt-2 p-4 bg-primary/10 rounded-lg backdrop-blur-sm border border-primary/30">
           <p className="text-sm inline-flex items-center gap-1 leading-relaxed text-primary">
-            Assign specific training metrics to individual players based on their roles
+            Assign specific training excercises to individual players based on their roles
             or training focus areas. Configure these before the training session
             so players can prepare accordingly.
           </p>
@@ -138,8 +138,8 @@ const PlayerMetricsManagement = ({ session, onSaveSuccess, workflowData }) => {
                 <div className="flex-1">
                   <h4 className="font-semibold">Configuration Required</h4>
                   <p className="text-sm  mt-1">
-                    Some players don't have any assigned metrics. Please assign
-                    metrics to all players or configure session metrics first to
+                    Some players don't have any assigned excercises. Please assign
+                    excercises to all players or configure session excercises first to
                     proceed.
                   </p>
                 </div>

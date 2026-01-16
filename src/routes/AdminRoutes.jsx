@@ -239,7 +239,7 @@ export const adminRoutes = [
     element: <TrainingCategoriesPage />,
   },
   {
-    path: "/trainings/metrics",
+    path: "/trainings/excercises",
     element: <TrainingMetricsPage />,
   },
   {

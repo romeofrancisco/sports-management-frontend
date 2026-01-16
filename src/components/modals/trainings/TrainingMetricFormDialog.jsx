@@ -98,7 +98,7 @@ const TrainingMetricFormDialog = ({
       <DialogContent className="w-[95vw] max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
-            {metric ? "Edit" : "Create"} Training Metric
+            {metric ? "Edit" : "Create"} Training Excercise
           </DialogTitle>
         </DialogHeader>
 
