@@ -40,7 +40,7 @@ const GoogleOneTap = () => {
           auto_select: false,
           cancel_on_tap_outside: true,
           itp_support: true,
-          use_fedcm_for_prompt: true, // Use FedCM (will be mandatory soon)
+          use_fedcm_for_prompt: false, // Disable FedCM to avoid CORS/network errors on desktop
         });
         
         initRef.current = true;

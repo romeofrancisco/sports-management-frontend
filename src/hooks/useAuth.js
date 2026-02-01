@@ -110,6 +110,8 @@ export const useLogout = () => {
         await persistor.purge();
 
         // Then clear queries and state
+        localStorage.removeItem("google_drive_tokens");
+        
         queryClient.clear();
         dispatch(logout());
 
