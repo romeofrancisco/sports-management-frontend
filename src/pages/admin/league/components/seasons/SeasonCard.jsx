@@ -41,7 +41,7 @@ const SeasonCard = ({ season, onEdit, onDelete, getStatusBadge }) => {
               </div>
               <div>
                 <div className="flex gap-1 items-center">
-                  <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate" title={season.name || `Season ${season.year}`}>
                     {season.name || `Season ${season.year}`}
                   </h3>
                   <Badge
@@ -162,7 +162,7 @@ const SeasonCard = ({ season, onEdit, onDelete, getStatusBadge }) => {
                         className="w-5 h-5 rounded-full object-cover border border-primary/20"
                       />
                     )}
-                    <span className="text-foreground">{team.name}</span>
+                    <span className="text-foreground truncate max-w-[100px]">{team.name}</span>
                   </div>
                 ))}
                 {season.teams_list.length > 3 && (

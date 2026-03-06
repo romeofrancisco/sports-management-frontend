@@ -35,14 +35,14 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
               </Avatar>
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="flex items-center text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+              <CardTitle className="flex items-center text-sm font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0">
                 {coach.sex === "male" && (
-                  <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />
+                  <Mars className="inline-block h-4 w-4 mr-1 flex-shrink-0 text-blue-500" />
                 )}
                 {coach.sex === "female" && (
-                  <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />
+                  <Venus className="inline-block h-4 w-4 mr-1 flex-shrink-0 text-pink-500" />
                 )}
-                {coach.full_name}
+                <span className="truncate">{coach.full_name}</span>
               </CardTitle>
               <div className="flex items-center gap-2 mt-1">
                 <Mail className="h-3 w-3 text-muted-foreground" />

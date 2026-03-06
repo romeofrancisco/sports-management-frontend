@@ -17,8 +17,7 @@ const PageError = ({ error, errorInfo, onReset, errorType }) => {
       return "The server encountered an error. Please try again later or contact support if the issue persists.";
     }
     return (
-      error?.message ||
-      "We're sorry, but an unexpected error has occurred. Please try again later or contact support if the issue persists."
+      "Unable to connect to the server. Please check your internet connection or try again later."
     );
   };
 

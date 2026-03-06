@@ -97,8 +97,8 @@ const TeamCard = ({ team, stats = {}, formData = [], onClick }) => {
             </TooltipProvider>
           </div>
 
-          <div className="flex-1">
-            <h3 className="font-semibold text-base text-foreground">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-base text-foreground truncate" title={team_name}>
               {team_name}
             </h3>
             <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">

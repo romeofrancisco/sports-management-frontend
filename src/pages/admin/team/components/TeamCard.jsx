@@ -54,8 +54,8 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
                 }`}
               ></div>
             </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+            <div className="flex-1 min-w-0 max-w-[50%]">
+              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300" title={team.name}>
                 {team.name}
               </CardTitle>
               <div className="flex items-center gap-2 mt-1">
@@ -78,7 +78,7 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
                 </Badge>
               </div>
               {/* Additional team info */}
-              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+              <div className="flex flex-col mt-2 gap-1 text-xs text-muted-foreground">
                 {team.sport_name && (
                   <div className="flex items-center gap-1">
                     <Trophy className="h-3 w-3" />

@@ -162,9 +162,9 @@ const SessionCard = ({ sessionGroup }) => {
             </span>
           </div>
           {session.location && (
-            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3" />
-              <span>{session.location}</span>
+            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground min-w-0">
+              <MapPin className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{session.location}</span>
             </div>
           )}
         </div>{" "}

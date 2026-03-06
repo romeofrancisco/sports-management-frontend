@@ -65,8 +65,8 @@ const PlayerInfo = ({ player, additionalStats }) => (
         {getPlayerInitials(player.player_name)}
       </AvatarFallback>
     </Avatar>
-    <div className="flex flex-col">
-      <span className="text-xs font-medium text-foreground">
+    <div className="flex flex-col min-w-0">
+      <span className="text-xs font-medium text-foreground truncate">
         {player.player_name}
       </span>
       {additionalStats && (
@@ -128,12 +128,12 @@ const TopLeaderCard = ({ player, stats, mainStat, additionalStats, icon }) => {
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1">
-            <h4 className="text-lg font-semibold text-foreground">
+          <div className="flex-1 min-w-0">
+            <h4 className="text-lg font-semibold text-foreground truncate" title={player.player_name}>
               {player.player_name}
             </h4>
             {player.team_name && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground truncate" title={player.team_name}>
                 {player.team_name}
               </p>
             )}
@@ -195,8 +195,8 @@ const SimpleLeaderCard = ({ player, stats, rank }) => {
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex-1">
-          <div className="text-sm font-medium text-foreground">
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-foreground truncate">
             {player.short_name || player.player_name}
           </div>
           <div className="text-xs text-muted-foreground">

@@ -217,16 +217,16 @@ export const GameCard = React.memo(
       switch (liveGameData.type) {
         case "league":
           return (
-            <Badge>
-              <Trophy />
-              {liveGameData.league.name} - {liveGameData.season.name}
+            <Badge className="max-w-full">
+              <Trophy className="flex-shrink-0" />
+              <span className="truncate">{liveGameData.league.name} - {liveGameData.season.name}</span>
             </Badge>
           );
         case "tournament":
           return (
-            <Badge>
-              <Medal />
-              {liveGameData.tournament.name}
+            <Badge className="max-w-full">
+              <Medal className="flex-shrink-0" />
+              <span className="truncate">{liveGameData.tournament.name}</span>
             </Badge>
           );
         default:
@@ -296,9 +296,9 @@ export const GameCard = React.memo(
               </span>
             </div>
 
-            <div className="flex items-center gap-1">
-              <MapPinned className="size-3 text-primary" />
-              <span className="text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 min-w-0">
+              <MapPinned className="size-3 text-primary flex-shrink-0" />
+              <span className="text-xs text-muted-foreground truncate">
                 {liveGameData.location || "TBA"}
               </span>
             </div>

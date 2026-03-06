@@ -68,7 +68,7 @@ const SessionInfoCard = ({ sessionInfo }) => {
                   <p className="text-xs text-muted-foreground font-medium">
                     Team
                   </p>
-                  <p className="font-semibold text-foreground text-sm">
+                  <p className="font-semibold text-foreground text-sm truncate">
                     {sessionInfo.team.name}
                   </p>
                 </div>
@@ -82,7 +82,7 @@ const SessionInfoCard = ({ sessionInfo }) => {
                   <p className="text-xs text-muted-foreground font-medium">
                     Location
                   </p>
-                  <p className="font-semibold text-foreground text-sm">
+                  <p className="font-semibold text-foreground text-sm truncate">
                     {sessionInfo.location}
                   </p>
                 </div>
@@ -96,7 +96,7 @@ const SessionInfoCard = ({ sessionInfo }) => {
                   <p className="text-xs text-muted-foreground font-medium mb-1">
                     Session Notes
                   </p>
-                  <p className="text-sm text-foreground leading-relaxed">
+                  <p className="text-sm text-foreground leading-relaxed line-clamp-3">
                     {sessionInfo.notes}
                   </p>
                 </div>

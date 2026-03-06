@@ -129,12 +129,12 @@ const TeamHealthCard = ({ healthData = {} }) => {
             </h4>
             <div className="space-y-2 max-h-24 overflow-y-auto">
               {recent_injuries.slice(0, 3).map((injury, index) => (
-                <div key={index} className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                  <div>
-                    <p className="text-xs font-medium text-yellow-800 dark:text-yellow-300">
+                <div key={index} className="flex items-center justify-between gap-2 p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-yellow-800 dark:text-yellow-300 truncate">
                       {injury.player_name || 'Unknown Player'}
                     </p>
-                    <p className="text-xs text-yellow-600 dark:text-yellow-400">
+                    <p className="text-xs text-yellow-600 dark:text-yellow-400 truncate">
                       {injury.injury_type || 'Injury'}
                     </p>
                   </div>

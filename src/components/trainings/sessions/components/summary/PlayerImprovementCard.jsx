@@ -44,8 +44,8 @@ const PlayerImprovementCard = ({ player }) => {
           </AvatarFallback>
         </Avatar>
         
-        <div className="flex-1">
-          <h4 className="font-semibold text-gray-900 text-lg mb-1">
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-gray-900 text-lg mb-1 truncate" title={player.name}>
             {player.name}
           </h4>
           <Badge variant={statusConfig.variant} className="text-xs">
@@ -65,7 +65,7 @@ const PlayerImprovementCard = ({ player }) => {
             {player.metrics.map((metric, index) => (
               <div key={index} className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-gray-900 text-sm">
+                  <span className="font-medium text-gray-900 text-sm truncate">
                     {metric.metric_name}
                   </span>
                   {metric.improvement_percentage !== null && (
