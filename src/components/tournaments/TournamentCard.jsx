@@ -252,7 +252,7 @@ const TournamentCard = ({ tournament, index, viewMode }) => {
 
         {/* Tournament Name & Sport */}
         <div className="text-center space-y-1">
-          <CardTitle className="text-base font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+          <CardTitle className="text-base font-bold text-foreground group-hover:text-primary transition-colors duration-300 truncate" title={tournament.name}>
             {tournament.name}
           </CardTitle>
           <div className="flex items-center justify-center gap-2">

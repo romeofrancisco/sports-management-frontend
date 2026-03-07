@@ -121,7 +121,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
                 {statusInfo.statusText}
               </Badge>
             </div>
-            <CardDescription className="mb-2">
+            <CardDescription className="mb-2 line-clamp-2">
               {session.description || "No description provided"}
             </CardDescription>
             <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-muted-foreground">
@@ -182,7 +182,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
               notes
             </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
               {session.notes || "No additional notes"}
             </p>
           </div>

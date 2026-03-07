@@ -80,7 +80,8 @@ const LeagueOverviewCards = ({ overviewData }) => {
 
               <CardContent className="relative z-10">
                 <div
-                  className={`text-2xl md:text-3xl font-bold ${stat.iconColor} drop-shadow-sm tracking-tight`}
+                  className={`text-2xl md:text-3xl font-bold ${stat.iconColor} drop-shadow-sm tracking-tight truncate`}
+                  title={typeof stat.value === "number" ? stat.value.toLocaleString() : stat.value}
                 >
                   {typeof stat.value === "number"
                     ? stat.value.toLocaleString()

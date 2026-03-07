@@ -85,9 +85,9 @@ const PlayerStatisticsCard = ({ players = [], stats = {} }) => {
                   {getPlayerInitials(top_performer)}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{top_performer.name}</p>
-                <p className="text-xs text-muted-foreground">{top_performer.position}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate">{top_performer.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{top_performer.position}</p>
               </div>
               <Badge variant="outline" className="text-green-600 border-green-600">
                 {top_performer.performance}%
@@ -114,9 +114,9 @@ const PlayerStatisticsCard = ({ players = [], stats = {} }) => {
                         {getPlayerInitials(player)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <p className="text-xs font-medium">{player.name || 'Unknown Player'}</p>
-                      <p className="text-xs text-muted-foreground">{player.position || 'Position'}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{player.name || 'Unknown Player'}</p>
+                      <p className="text-xs text-muted-foreground truncate">{player.position || 'Position'}</p>
                     </div>
                     <Badge variant={badge.variant} className={`text-xs ${badge.color}`}>
                       {badge.label}

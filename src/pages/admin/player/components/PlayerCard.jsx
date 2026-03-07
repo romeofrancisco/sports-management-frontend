@@ -68,18 +68,18 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               ></div>
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm flex items-center font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+              <CardTitle className="text-sm flex items-center font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0 max-w-[80%]">
                 {player.sex === "male" && (
-                  <Mars className="inline-block size-3 mr-1 text-blue-500" />
+                  <Mars className="inline-block size-3 mr-1 flex-shrink-0 text-blue-500" />
                 )}
                 {player.sex === "female" && (
-                  <Venus className="inline-block size-3 mr-1 text-pink-500" />
+                  <Venus className="inline-block size-3 mr-1 flex-shrink-0 text-pink-500" />
                 )}
-                {player.first_name} {player.last_name}
+                <span className="truncate">{player.first_name} {player.last_name}</span>
               </CardTitle>
-              <div className="text-xs text-muted-foreground">
-                <Mail className="inline-block size-3 mr-1" />
-                <span>{player.email}</span>
+              <div className="text-xs text-muted-foreground flex items-center min-w-0 max-w-[80%]">
+                <Mail className="inline-block size-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{player.email}</span>
               </div>
               {/* Jersey number and sport badge with university colors */}
               <div className="flex items-center gap-2 mt-1">
@@ -122,11 +122,11 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
                   </div>
                   {player.team?.name && (
                     <div
-                      className="flex items-center gap-1"
+                      className="flex items-center gap-1 min-w-0"
                       title={`Team: ${player.team.name}`}
                     >
-                      <Users className="h-3 w-3" />
-                      <span className="truncate max-w-20">
+                      <Users className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate max-w-24">
                         {player.team.name}
                       </span>
                     </div>
@@ -165,7 +165,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               <span className="text-muted-foreground font-medium">Course</span>
             </div>
             <span
-              className="text-xs font-medium px-2 py-1 rounded-md text-primary"
+              className="text-xs font-medium px-2 py-1 rounded-md text-primary truncate max-w-[120px]"
               title={player.academic_info?.course}
             >
               {player.academic_info?.course}
