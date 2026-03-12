@@ -39,6 +39,8 @@ const DOCUMENT_TYPES = [
   { value: "other", label: "Other" },
 ];
 
+const NO_SECTION_VALUE = "__none__";
+
 const PlayerForm = ({ sports, onClose, player }) => {
   const isEdit = !!player;
 
@@ -94,6 +96,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
     watch,
     setError,
     setValue,
+    reset,
   } = useForm({
     defaultValues: {
       first_name: player?.first_name || "",
@@ -111,10 +114,42 @@ const PlayerForm = ({ sports, onClose, player }) => {
       // Academic info
       year_level: player?.academic_info?.year_level || "",
       course: player?.academic_info?.course || "",
-      section: player?.academic_info?.section || null,
+      section: player?.academic_info?.section ?? NO_SECTION_VALUE,
       academic_info_id: player?.academic_info?.id || null,
     },
   });
+
+  const isHydratingForm = useRef(false);
+
+  // Keep form values in sync with the latest player payload when opening/editing.
+  useEffect(() => {
+    isHydratingForm.current = true;
+
+    reset({
+      first_name: player?.first_name || "",
+      last_name: player?.last_name || "",
+      email: player?.email || "",
+      sex: player?.sex || "",
+      date_of_birth: player?.date_of_birth || "",
+      profile: null,
+      sport_slug: player?.sport?.slug || "",
+      height: player?.height || "",
+      weight: player?.weight || "",
+      jersey_number: player?.jersey_number || "",
+      team_id: player?.team?.id || "",
+      position_ids: player?.positions?.map((pos) => pos.id) || [],
+      year_level: player?.academic_info?.year_level || "",
+      course: player?.academic_info?.course || "",
+      section: player?.academic_info?.section ?? NO_SECTION_VALUE,
+      academic_info_id: player?.academic_info?.id || null,
+    });
+
+    const timeout = setTimeout(() => {
+      isHydratingForm.current = false;
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [player, reset]);
 
   // Watch cascading values
   const selectedSport = watch("sport_slug");
@@ -165,7 +200,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       ...new Set(sectionsForCourse.map((a) => a.section || "")),
     ];
     return sections.map((s) => ({
-      value: s || null,
+      value: s || NO_SECTION_VALUE,
       label: s || "None",
     }));
   }, [sectionsForCourse]);
@@ -173,7 +208,10 @@ const PlayerForm = ({ sports, onClose, player }) => {
   // Auto-resolve academic_info_id
   useEffect(() => {
     if (!sectionsForCourse) return;
-    const normalizedSection = selectedSection === "" ? null : selectedSection;
+    const normalizedSection =
+      selectedSection === "" || selectedSection === NO_SECTION_VALUE
+        ? null
+        : selectedSection;
     const match =
       sectionsForCourse.find((a) => a.section === normalizedSection) ||
       sectionsForCourse.find((a) => a.section == null);
@@ -188,6 +226,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       yearDidMount.current = true;
       return;
     }
+    if (isHydratingForm.current) return;
     setValue("course", "");
     setValue("section", "");
     setValue("academic_info_id", null);
@@ -199,6 +238,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
       courseDidMount.current = true;
       return;
     }
+    if (isHydratingForm.current) return;
     setValue("section", "");
     setValue("academic_info_id", null);
   }, [selectedCourse, setValue]);
@@ -302,7 +342,10 @@ const PlayerForm = ({ sports, onClose, player }) => {
 
     // Resolve academic_info_id if missing
     if (!payload.academic_info_id) {
-      const normalizedSection = payload.section === "" ? null : payload.section;
+      const normalizedSection =
+        payload.section === "" || payload.section === NO_SECTION_VALUE
+          ? null
+          : payload.section;
       const match =
         sectionsForCourse?.find((a) => a.section === normalizedSection) ||
         sectionsForCourse?.find((a) => a.section == null) ||
@@ -359,26 +402,6 @@ const PlayerForm = ({ sports, onClose, player }) => {
       },
     });
   };
-
-  // Initialize form values on edit after all data is loaded
-  useEffect(() => {
-    if (!player || !allAcademic) return;
-
-    // Set the top-level academic values
-    setValue("year_level", player.academic_info?.year_level || "");
-    setValue("course", player.academic_info?.course || "");
-    setValue("section", player.academic_info?.section || null);
-
-    // Resolve academic_info_id once sections are loaded
-    if (sectionsForCourse && sectionsForCourse.length > 0) {
-      const normalizedSection = player.academic_info?.section || null;
-      const match =
-        sectionsForCourse.find((a) => a.section === normalizedSection) ||
-        sectionsForCourse.find((a) => a.section == null);
-
-      if (match) setValue("academic_info_id", match.id);
-    }
-  }, [player, allAcademic, sectionsForCourse, setValue]);
 
   return (
     <form
