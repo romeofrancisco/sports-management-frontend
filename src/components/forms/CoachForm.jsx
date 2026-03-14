@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { useCreateCoach, useUpdateCoach } from "@/hooks/useCoaches";
 import { useSports } from "@/hooks/useSports";
 import { convertToFormData } from "@/utils/convertToFormData";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, User, X } from "lucide-react";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledMultiSelect from "../common/ControlledMultiSelect";
 import { SEX } from "@/constants/player";
 import ControlledInput from "../common/ControlledInput";
 import ControlledDatePicker from "../common/ControlledDatePicker";
-import { date } from "zod";
+import { toast } from "sonner";
 
 const CoachForm = ({ onClose, coach = null }) => {
   const isEdit = !!coach;
@@ -24,6 +24,7 @@ const CoachForm = ({ onClose, coach = null }) => {
     handleSubmit,
     formState: { errors },
     setError,
+    setValue,
   } = useForm({
     defaultValues: {
       first_name: coach?.first_name || "",
@@ -35,11 +36,81 @@ const CoachForm = ({ onClose, coach = null }) => {
       profile: null,
     },
   });
+
+  const [profilePreviewUrl, setProfilePreviewUrl] = useState("");
+
+  const currentProfileImage = useMemo(() => {
+    const source =
+      coach?.profile_url ||
+      coach?.profile_photo ||
+      coach?.profile ||
+      coach?.image ||
+      coach?.avatar;
+
+    if (!source) return "";
+    if (typeof source === "string") return source;
+    if (typeof source === "object") {
+      return source.url || source.file_url || source.image || "";
+    }
+
+    return "";
+  }, [coach]);
+
+  useEffect(() => {
+    return () => {
+      if (profilePreviewUrl) {
+        URL.revokeObjectURL(profilePreviewUrl);
+      }
+    };
+  }, [profilePreviewUrl]);
+
+  const handleProfileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File too large", {
+        description: "Maximum profile image size is 5MB",
+        richColors: true,
+      });
+      return;
+    }
+
+    const allowedTypes = [".jpg", ".jpeg", ".png", ".webp"];
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!allowedTypes.includes(ext)) {
+      toast.error("Invalid file type", {
+        description: `Allowed types: ${allowedTypes.join(", ")}`,
+        richColors: true,
+      });
+      return;
+    }
+
+    if (profilePreviewUrl) {
+      URL.revokeObjectURL(profilePreviewUrl);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setProfilePreviewUrl(objectUrl);
+    setValue("profile", file, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const removeProfileImage = () => {
+    if (profilePreviewUrl) {
+      URL.revokeObjectURL(profilePreviewUrl);
+    }
+
+    setProfilePreviewUrl("");
+    setValue("profile", null, { shouldValidate: true, shouldDirty: true });
+  };
+
   const onSubmit = (data) => {
     console.log("Form data before processing:", data);
 
     // Check if there's a file upload
-    const hasFileUpload = data.profile && data.profile.length > 0;
+    const hasFileUpload =
+      data.profile instanceof File ||
+      (data.profile instanceof FileList && data.profile.length > 0);
 
     if (hasFileUpload) {
       // Use FormData for file uploads
@@ -103,6 +174,69 @@ const CoachForm = ({ onClose, coach = null }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1">
+      <div className="flex flex-col items-center gap-3 pt-4">
+        <div className="relative">
+          {profilePreviewUrl || currentProfileImage ? (
+            <div className="relative">
+              <img
+                src={profilePreviewUrl || currentProfileImage}
+                alt="Profile preview"
+                className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+              />
+              {profilePreviewUrl && (
+                <button
+                  type="button"
+                  onClick={removeProfileImage}
+                  className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          ) : (
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={handleProfileUpload}
+              />
+              <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center gap-1 hover:border-primary transition-colors">
+                <User className="h-8 w-8 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">Upload</span>
+              </div>
+            </label>
+          )}
+        </div>
+        {(profilePreviewUrl || currentProfileImage) && (
+          <label className="cursor-pointer">
+            <input
+              type="file"
+              className="hidden"
+              accept=".jpg,.jpeg,.png,.webp"
+              onChange={handleProfileUpload}
+            />
+            <Button type="button" size="sm" variant="outline" asChild>
+              <span className="cursor-pointer">
+                <Upload className="h-4 w-4 mr-1" />
+                Change Photo
+              </span>
+            </Button>
+          </label>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Profile photo (optional, max 5MB)
+        </p>
+        {profilePreviewUrl && isEdit && currentProfileImage && (
+          <p className="text-xs text-muted-foreground">
+            Saving this form will replace the current profile photo.
+          </p>
+        )}
+        {errors?.profile && (
+          <p className="text-xs text-destructive">{errors.profile.message}</p>
+        )}
+      </div>
+
       <div className="grid grid-cols-2 gap-2">
         {/* First Name */}
         <ControlledInput
@@ -218,16 +352,6 @@ const CoachForm = ({ onClose, coach = null }) => {
             )}
         </div>
       )}
-      {/* Profile */}
-      <ControlledInput
-        name="profile"
-        label="Profile"
-        type="file"
-        accept="image/*"
-        control={control}
-        errors={errors}
-        optional={true}
-      />{" "}
       <Button
         type="submit"
         className="mb-5 md:mb-0 mt-2 w-full"

@@ -3,7 +3,12 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, Mail, User, Target, Mars, Venus } from "lucide-react";
 import CoachActions from "./CoachActions";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
 const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
@@ -23,7 +28,7 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
       <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
       <CardHeader className="relative p-5 space-y-4">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 min-w-0 pr-8">
             {/* Avatar with status */}
             <div className="relative">
               <Avatar className="h-12 w-12 ring-2 ring-primary/30 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/50">
@@ -34,32 +39,34 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
                 </AvatarFallback>
               </Avatar>
             </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="flex items-center text-sm font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0">
+            <div className="flex flex-col min-w-0 flex-1">
+              <CardTitle className="text-sm flex items-center font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0 w-full">
                 {coach.sex === "male" && (
-                  <Mars className="inline-block h-4 w-4 mr-1 flex-shrink-0 text-blue-500" />
+                  <Mars className="inline-block size-3 mr-1 flex-shrink-0 text-blue-500" />
                 )}
                 {coach.sex === "female" && (
-                  <Venus className="inline-block h-4 w-4 mr-1 flex-shrink-0 text-pink-500" />
+                  <Venus className="inline-block size-3 mr-1 flex-shrink-0 text-pink-500" />
                 )}
-                <span className="truncate">{coach.full_name}</span>
+                <span className="truncate">
+                  {coach.first_name} {coach.last_name}
+                </span>
               </CardTitle>
-              <div className="flex items-center gap-2 mt-1">
-                <Mail className="h-3 w-3 text-muted-foreground" />
+              <div className="text-xs text-muted-foreground flex items-center min-w-0 w-full">
+                <Mail className="h-3 w-3 text-muted-foreground mr-1" />
                 <span className="text-xs text-muted-foreground truncate">
                   {coach.email || "No email"}
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <Badge 
+                <Badge
                   variant={coach.is_active ? "default" : "destructive"}
                   className={`text-xs font-medium px-2 py-0.5 ${
-                    coach.is_active 
-                      ? 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
-                      : 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                    coach.is_active
+                      ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                      : "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
                   }`}
                 >
-                  {coach.is_active ? 'Active' : 'Inactive'}
+                  {coach.is_active ? "Active" : "Inactive"}
                 </Badge>
               </div>
             </div>
@@ -140,9 +147,7 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
                         )}
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="top">
-                      {team.name}
-                    </TooltipContent>
+                    <TooltipContent side="top">{team.name}</TooltipContent>
                   </Tooltip>
                 ))}
                 {coach.coached_teams.length > 4 && (
@@ -156,7 +161,9 @@ const CoachCard = ({ coach, onDelete, onUpdate, onReactivate }) => {
                     </TooltipTrigger>
                     <TooltipContent side="top">
                       <div className="text-xs font-medium text-primary-foreground whitespace-pre-line">
-                        {coach.coached_teams.map((team) => `• ${team.name}`).join("\n")}
+                        {coach.coached_teams
+                          .map((team) => `• ${team.name}`)
+                          .join("\n")}
                       </div>
                     </TooltipContent>
                   </Tooltip>
