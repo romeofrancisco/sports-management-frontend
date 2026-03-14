@@ -14,6 +14,7 @@ import {
   Trash2,
   ExternalLink,
   Eye,
+  User,
 } from "lucide-react";
 import { convertToFormData } from "@/utils/convertToFormData";
 import { toast } from "sonner";
@@ -157,6 +158,77 @@ const PlayerForm = ({ sports, onClose, player }) => {
   const selectedYear = watch("year_level");
   const selectedCourse = watch("course");
   const selectedSection = watch("section");
+
+  const [profilePreviewUrl, setProfilePreviewUrl] = useState("");
+
+  const currentProfileImage = useMemo(() => {
+    const source =
+      player?.profile_url ||
+      player?.profile_photo ||
+      player?.profile ||
+      player?.image ||
+      player?.avatar;
+
+    if (!source) return "";
+
+    if (typeof source === "string") {
+      return source;
+    }
+
+    if (typeof source === "object") {
+      return source.url || source.file_url || source.image || "";
+    }
+
+    return "";
+  }, [player]);
+
+  useEffect(() => {
+    return () => {
+      if (profilePreviewUrl) {
+        URL.revokeObjectURL(profilePreviewUrl);
+      }
+    };
+  }, [profilePreviewUrl]);
+
+  const handleProfileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File too large", {
+        description: "Maximum profile image size is 5MB",
+        richColors: true,
+      });
+      return;
+    }
+
+    const allowedTypes = [".jpg", ".jpeg", ".png", ".webp"];
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!allowedTypes.includes(ext)) {
+      toast.error("Invalid file type", {
+        description: `Allowed types: ${allowedTypes.join(", ")}`,
+        richColors: true,
+      });
+      return;
+    }
+
+    if (profilePreviewUrl) {
+      URL.revokeObjectURL(profilePreviewUrl);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setProfilePreviewUrl(objectUrl);
+    setValue("profile", file, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const removeProfileImage = () => {
+    if (profilePreviewUrl) {
+      URL.revokeObjectURL(profilePreviewUrl);
+    }
+
+    setProfilePreviewUrl("");
+    setValue("profile", null, { shouldValidate: true, shouldDirty: true });
+  };
 
   const division = selectedSex;
 
@@ -360,7 +432,8 @@ const PlayerForm = ({ sports, onClose, player }) => {
 
     // Handle file upload
     const hasFile =
-      payload.profile instanceof File || payload.profile instanceof FileList;
+      payload.profile instanceof File ||
+      (payload.profile instanceof FileList && payload.profile.length > 0);
     let requestData;
     if (hasFile) {
       const formData = convertToFormData(payload);
@@ -411,6 +484,70 @@ const PlayerForm = ({ sports, onClose, player }) => {
       {/* PERSONAL DETAILS */}
       <div className="space-y-4 px-1">
         <h2 className="text-lg font-bold text-primary">Personal Details</h2>
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            {profilePreviewUrl || currentProfileImage ? (
+              <div className="relative">
+                <img
+                  src={profilePreviewUrl || currentProfileImage}
+                  alt="Profile preview"
+                  className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                />
+                {profilePreviewUrl && (
+                  <button
+                    type="button"
+                    onClick={removeProfileImage}
+                    className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={handleProfileUpload}
+                />
+                <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center gap-1 hover:border-primary transition-colors">
+                  <User className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Upload</span>
+                </div>
+              </label>
+            )}
+          </div>
+          {(profilePreviewUrl || currentProfileImage) && (
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={handleProfileUpload}
+              />
+              <Button type="button" size="sm" variant="outline" asChild>
+                <span className="cursor-pointer">
+                  <Upload className="h-4 w-4 mr-1" />
+                  {profilePreviewUrl || currentProfileImage
+                    ? "Change Photo"
+                    : "Upload Photo"}
+                </span>
+              </Button>
+            </label>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Profile photo (optional, max 5MB)
+          </p>
+          {profilePreviewUrl && isEdit && currentProfileImage && (
+            <p className="text-xs text-muted-foreground">
+              Saving this form will replace the current profile photo.
+            </p>
+          )}
+          {errors?.profile && (
+            <p className="text-xs text-destructive">{errors.profile.message}</p>
+          )}
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <ControlledInput
             name="first_name"
@@ -446,6 +583,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           placeholder="Select date of birth"
           control={control}
           errors={errors}
+          required="Date of birth is required"
         />
 
         <ControlledInput
@@ -456,14 +594,6 @@ const PlayerForm = ({ sports, onClose, player }) => {
           errors={errors}
         />
 
-        <ControlledInput
-          name="profile"
-          label="Profile Photo"
-          type="file"
-          accept="image/*"
-          control={control}
-          errors={errors}
-        />
       </div>
 
       {/* ACADEMIC DETAILS */}

@@ -19,23 +19,36 @@ const ControlledDatePicker = ({
   label, 
   placeholder = "Pick a date", 
   rules = {}, 
+  required = false,
   error,
+  errors,
   disabled = false,
   className = ""
 }) => {
+  const resolvedRules = { ...rules }
+
+  if (required) {
+    resolvedRules.required =
+      typeof required === "string"
+        ? required
+        : `${label || "This field"} is required`
+  }
+
+  const fieldError = error || errors?.[name]
+
   return (
     <div className={cn("space-y-1", className)}>
       {label && (
         <Label className="text-sm font-medium">
           {label}
-          {rules.required && <span className="text-destructive ml-1">*</span>}
+          {resolvedRules.required && <span className="text-destructive ml-1">*</span>}
         </Label>
       )}
       
       <Controller
         control={control}
         name={name}
-        rules={rules}
+        rules={resolvedRules}
         render={({ field: { onChange, value } }) => (
           <Popover>
             <PopoverTrigger asChild>
@@ -46,7 +59,7 @@ const ControlledDatePicker = ({
                 data-empty={!value}
                 className={cn(
                   "data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal",
-                  error && "border-destructive focus-visible:ring-destructive",
+                  fieldError && "border-destructive focus-visible:ring-destructive",
                   className
                 )}
               >
@@ -65,9 +78,9 @@ const ControlledDatePicker = ({
           </Popover>
         )}
       />
-      
-      {error && (
-        <p className="text-xs text-destructive">{error.message}</p>
+      {}
+      {fieldError && (
+        <p className="text-xs text-destructive">{fieldError.message}</p>
       )}
     </div>
   )

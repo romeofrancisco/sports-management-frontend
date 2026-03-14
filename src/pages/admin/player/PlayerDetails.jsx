@@ -113,6 +113,7 @@ const PlayerDetails = () => {
   const teamInfo = playerOverview?.team_info || {};
   // Create user object from player details data
   const user = {
+    profile: playerDetailsData?.profile,
     first_name: playerDetailsData?.first_name || "",
     last_name: playerDetailsData?.last_name || "",
     full_name:
