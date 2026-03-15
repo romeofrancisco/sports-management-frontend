@@ -174,6 +174,34 @@ const getColumns = (
     size: 140,
   },
   {
+    id: "physical_profile",
+    header: "Birthdate / Height / Weight",
+    cell: ({ row }) => {
+      const { date_of_birth, height, weight } = row.original;
+      const birthdate = date_of_birth
+        ? new Date(date_of_birth).toLocaleDateString()
+        : "—";
+
+      return (
+        <div className="flex flex-col gap-0.5 text-xs">
+          <span>
+            <span className="text-muted-foreground">Birthdate: </span>
+            <span className="font-medium">{birthdate}</span>
+          </span>
+          <span>
+            <span className="text-muted-foreground">Height: </span>
+            <span className="font-medium">{height ? `${height} cm` : "—"}</span>
+          </span>
+          <span>
+            <span className="text-muted-foreground">Weight: </span>
+            <span className="font-medium">{weight ? `${weight} kg` : "—"}</span>
+          </span>
+        </div>
+      );
+    },
+    size: 190,
+  },
+  {
     id: "team",
     header: "Team",
     cell: ({ row }) => {
