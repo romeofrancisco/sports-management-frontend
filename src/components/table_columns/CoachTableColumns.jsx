@@ -75,6 +75,25 @@ const getCoachTableColumns = ({ onEdit, onDelete, onReactivate }) => [
     },
   },
   {
+    header: "Date of Birth",
+    accessorKey: "date_of_birth",
+    size: 120,
+    meta: { priority: "medium" },
+    cell: ({ row }) => {
+      const dob = row.original.date_of_birth;
+      if (!dob) {
+        return <span className="text-muted-foreground text-sm">N/A</span>;
+      }
+      const date = new Date(dob);
+      const formattedDate = date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      return <span>{formattedDate}</span>;
+    },
+  },
+  {
     header: "Qualified Sports",
     accessorKey: "sports",
     size: 180,
