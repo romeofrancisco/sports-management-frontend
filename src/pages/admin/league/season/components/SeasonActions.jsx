@@ -204,7 +204,7 @@ const SeasonActions = ({ season }) => {
                 </DropdownMenuItem>
               </>
             )}
-            {(isUpcoming || isOngoing || isPaused) && (
+            {/* {(isUpcoming || isOngoing || isPaused) && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -218,7 +218,7 @@ const SeasonActions = ({ season }) => {
                   <span>Cancel Season</span>
                 </DropdownMenuItem>
               </>
-            )}
+            )} */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>{" "}

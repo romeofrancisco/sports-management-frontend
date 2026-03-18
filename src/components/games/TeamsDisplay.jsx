@@ -46,13 +46,13 @@ export const TeamsDisplay = ({
             </div>
           )}
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="font-semibold text-base truncate leading-tight">
+        <div className="min-w-0 flex-1 max-w-full">
+          <h3 className="font-semibold text-base truncate leading-tight hidden sm:block" title={homeTeam.name}>
             {homeTeam.name || "Home"}
-          </div>
-          <div className="text-sm text-center text-muted-foreground mt-0.5">
+          </h3>
+          <h3 className="text-sm text-center truncate text-muted-foreground mt-0.5">
             {homeTeam.abbreviation || "HOME"}
-          </div>
+          </h3>
         </div>
       </div>
 
@@ -121,8 +121,8 @@ export const TeamsDisplay = ({
 
       {/* Away Team */}
       <div className="flex flex-col-reverse items-center gap-3 min-w-0 flex-1 justify-end">
-        <div className="min-w-0 text-right flex-1">
-          <div className="font-semibold text-base truncate leading-tight">
+        <div className="min-w-0 text-right flex-1 max-w-full">
+          <div className="font-semibold text-base truncate leading-tight hidden sm:block" title={awayTeam.name}>
             {awayTeam.name || "Away"}
           </div>
           <div className="text-sm text-center text-muted-foreground mt-0.5">

@@ -16,6 +16,52 @@ import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 import { useRef } from "react";
 
+const stripListSyntax = (message) => {
+  if (typeof message !== "string") return "Failed to manage season";
+  const trimmed = message.trim();
+  const listLikeMatch = trimmed.match(/^\[\s*['\"](.+?)['\"]\s*\]$/);
+  if (listLikeMatch?.[1]) {
+    return listLikeMatch[1];
+  }
+  return trimmed;
+};
+
+const getBackendErrorMessage = (error) => {
+  const data = error?.response?.data;
+  if (!data) return "Failed to manage season";
+
+  if (typeof data === "string") return stripListSyntax(data);
+  if (Array.isArray(data)) return stripListSyntax(String(data[0] || "Failed to manage season"));
+
+  const preferredFields = ["detail", "error", "non_field_errors", "action"];
+  for (const field of preferredFields) {
+    const value = data[field];
+    if (typeof value === "string") return stripListSyntax(value);
+    if (Array.isArray(value) && value.length > 0) {
+      return stripListSyntax(String(value[0]));
+    }
+  }
+
+  for (const value of Object.values(data)) {
+    if (typeof value === "string") return stripListSyntax(value);
+    if (Array.isArray(value) && value.length > 0) {
+      return stripListSyntax(String(value[0]));
+    }
+  }
+
+  return "Failed to manage season";
+};
+
+const getSeasonActionErrorTitle = (action) => {
+  const titles = {
+    start: "Cannot Start Season",
+    complete: "Cannot Complete Season",
+    pause: "Cannot Pause Season",
+    cancel: "Cannot Cancel Season",
+  };
+  return titles[action] || "Season Action Failed";
+};
+
 export const useSeasons = (league, page = 1, pageSize = 10) => {
   return useQuery({
     queryKey: ["seasons", league, page, pageSize],
@@ -127,10 +173,11 @@ export const useManageSeason = () => {
 
       toast.success(`Season ${actionText} successfully`);
     },
-    onError: (error) => {
-      // Get error message from the response if available
-      const message = error.response?.data?.detail || "Failed to manage season";
-      toast.error(message);
+    onError: (error, variables) => {
+      toast.info(getSeasonActionErrorTitle(variables?.action), {
+        richColors: true,
+        description: getBackendErrorMessage(error),
+      });
     },
   });
 };

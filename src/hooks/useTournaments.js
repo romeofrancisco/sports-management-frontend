@@ -20,6 +20,52 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/context/QueryProvider";
 import { toast } from "sonner";
 
+const stripListSyntax = (message) => {
+  if (typeof message !== "string") return "An error occurred.";
+  const trimmed = message.trim();
+  const listLikeMatch = trimmed.match(/^\[\s*['\"](.+?)['\"]\s*\]$/);
+  if (listLikeMatch?.[1]) {
+    return listLikeMatch[1];
+  }
+  return trimmed;
+};
+
+const getBackendErrorMessage = (error) => {
+  const data = error?.response?.data;
+  if (!data) return "An error occurred.";
+
+  if (typeof data === "string") return stripListSyntax(data);
+  if (Array.isArray(data)) return stripListSyntax(String(data[0] || "An error occurred."));
+
+  const preferredFields = ["detail", "error", "non_field_errors", "action"];
+  for (const field of preferredFields) {
+    const value = data[field];
+    if (typeof value === "string") return stripListSyntax(value);
+    if (Array.isArray(value) && value.length > 0) {
+      return stripListSyntax(String(value[0]));
+    }
+  }
+
+  for (const value of Object.values(data)) {
+    if (typeof value === "string") return stripListSyntax(value);
+    if (Array.isArray(value) && value.length > 0) {
+      return stripListSyntax(String(value[0]));
+    }
+  }
+
+  return "An error occurred.";
+};
+
+const getTournamentActionErrorTitle = (action) => {
+  const titles = {
+    start: "Cannot Start Tournament",
+    complete: "Cannot Complete Tournament",
+    pause: "Cannot Pause Tournament",
+    cancel: "Cannot Cancel Tournament",
+  };
+  return titles[action] || "Tournament Action Failed";
+};
+
 export const useTournaments = () => {
   return useQuery({
     queryKey: ["tournaments"],
@@ -183,10 +229,9 @@ export const useManageTournament = () => {
         richColors: true,
       });
     },
-    onError: (error) => {
-      toast.error("Error performing action", {
-        description:
-          error.response?.data?.detail || error.message || "An error occurred.",
+    onError: (error, variables) => {
+      toast.info(getTournamentActionErrorTitle(variables?.action), {
+        description: getBackendErrorMessage(error),
         richColors: true,
       });
     },
