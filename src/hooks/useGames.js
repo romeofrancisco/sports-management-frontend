@@ -108,6 +108,29 @@ export const useManageGame = (gameId) => {
   const { scoring_type } = useSelector((state) => state.sport);
   const period = getPeriodLabel(scoring_type);
 
+  const getBackendErrorMessage = (error) => {
+    const data = error?.response?.data;
+    if (!data) return "Something went wrong.";
+
+    if (typeof data === "string") return data;
+    if (Array.isArray(data)) return data[0] || "Something went wrong.";
+    if (typeof data.error === "string") return data.error;
+
+    const preferredFields = ["action", "detail", "non_field_errors"];
+    for (const field of preferredFields) {
+      const value = data[field];
+      if (typeof value === "string") return value;
+      if (Array.isArray(value) && value.length > 0) return value[0];
+    }
+
+    for (const value of Object.values(data)) {
+      if (typeof value === "string") return value;
+      if (Array.isArray(value) && value.length > 0) return value[0];
+    }
+
+    return "Something went wrong.";
+  };
+
   return useMutation({
     mutationFn: ({ action, extraData = {} }) => manageGame(gameId, action, extraData),
     onSuccess: (_, { action }) => {
@@ -145,12 +168,14 @@ export const useManageGame = (gameId) => {
           ? "Cannot Complete Game"
           : action === GAME_ACTIONS.FORFEIT
           ? "Cannot Forfeit Game"
+          : action === GAME_ACTIONS.START
+          ? "Cannot Start Game"
           : action.includes("default")
           ? "Cannot Record Default"
           : `Cannot Advance to Next ${period}`;
 
       toast.info(errorTitle, {
-        description: error?.response?.data?.error || "Something went wrong.",
+        description: getBackendErrorMessage(error),
         richColors: true,
       });
     },

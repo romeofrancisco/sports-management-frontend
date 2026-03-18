@@ -83,7 +83,7 @@ const TournamentActions = ({ tournament }) => {
           </>
         )}
 
-        {canCancel && (
+        {/* {canCancel && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -95,7 +95,7 @@ const TournamentActions = ({ tournament }) => {
               Cancel Tournament
             </DropdownMenuItem>
           </>
-        )}
+        )} */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
