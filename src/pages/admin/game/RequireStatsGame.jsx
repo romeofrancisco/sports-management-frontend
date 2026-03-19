@@ -11,6 +11,30 @@ import { GAME_STATUS_VALUES } from "@/constants/game";
 import { Home, ArrowLeft, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const toReadableStatPhrase = (statDetails) => {
+  const statName = statDetails?.name?.trim() || "stat";
+  const statCode = statDetails?.code?.trim() || "";
+
+  if (/_MA$/i.test(statCode) && !/\bmade\b/i.test(statName)) {
+    return `${statName} made`;
+  }
+
+  if (/_MS$/i.test(statCode) && !/\bmiss(ed)?\b/i.test(statName)) {
+    return `${statName} missed`;
+  }
+
+  return statName;
+};
+
+const formatLatestStatText = (latestStatRecord) => {
+  if (!latestStatRecord) return "No stats recorded yet.";
+
+  const playerName = latestStatRecord.player_name || "Unknown player";
+  const statDetails = latestStatRecord?.stat_details;
+
+  return `${playerName} recorded: ${toReadableStatPhrase(statDetails)}.`;
+};
+
 const RequireStatsGame = ({ game, isConnected }) => {
   const { gameId } = useParams();
   const navigate = useNavigate();
@@ -85,6 +109,26 @@ const RequireStatsGame = ({ game, isConnected }) => {
 
 
   const { home_players, away_players } = currentPlayers;
+  const latestStatRecord = Array.isArray(game?.player_stats)
+    ? game.player_stats.reduce((latest, current) => {
+        if (!latest) return current;
+
+        const latestTime = new Date(latest.timestamp).getTime();
+        const currentTime = new Date(current.timestamp).getTime();
+
+        if (Number.isNaN(latestTime) && Number.isNaN(currentTime)) {
+          return (current?.id || 0) > (latest?.id || 0) ? current : latest;
+        }
+
+        if (Number.isNaN(latestTime)) return current;
+        if (Number.isNaN(currentTime)) return latest;
+
+        return currentTime > latestTime ? current : latest;
+      }, null)
+    : null;
+
+  const latestStatText = formatLatestStatText(latestStatRecord);
+
   return (
     <div className="relative h-full content-center">
       {/* Dark overlay when in layout mode */}
@@ -112,6 +156,11 @@ const RequireStatsGame = ({ game, isConnected }) => {
           >
             <Home className="h-5 w-5" />
           </Button>
+        </div>
+        <div className="bg-muted py-1 px-4 rounded-md">
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {latestStatText}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {/* WebSocket connection status */}
