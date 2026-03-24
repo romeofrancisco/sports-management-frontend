@@ -80,6 +80,18 @@ export const fetchBracket = async (season) => {
   }
 };
 
+export const deleteSeasonBracket = async (league_id, season_id) => {
+  try {
+    const { data } = await api.delete(
+      `leagues/${league_id}/seasons/${season_id}/delete_bracket/`
+    );
+    return data;
+  } catch (error) {
+    console.log("Error deleting season bracket:", error);
+    throw error;
+  }
+};
+
 export const manageSeason = async (league_id, season_id, action) => {
   try {
     const { data } = await api.post(`leagues/${league_id}/seasons/${season_id}/manage/`, {

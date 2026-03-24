@@ -47,8 +47,6 @@ const CustomMatch = ({ match }) => {
   const home = participants[0] || null;
   const away = participants[1] || null;
 
-  console.log("Match Data:", match);
-
   const getResult = (team) => {
     if (match.state === "SCHEDULED") return "";
     if (team?.isWinner) return "WON";
@@ -118,6 +116,8 @@ const SingleElimination = ({ bracket }) => {
 
   // Use matches from bracket prop, or empty array if not available
   const matches = bracket?.matches || [];
+
+  console.log(bracket)
 
   return (
     <div ref={containerRef} className="w-full overflow-x-auto overflow-y-hidden">
