@@ -6,16 +6,18 @@ import {
   CheckSquare,
   XSquare,
   Settings,
-  Share2,
   Trophy,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useManageSeason } from "@/hooks/useSeasons";
+import { useDeleteSeasonBracket } from "@/hooks/useSeasons";
 import { useModal } from "@/hooks/useModal";
 import { getStatusColor } from "@/utils/seasonUtils";
 import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
 import SeasonModal from "@/components/modals/SeasonModal";
+import DeleteModal from "@/components/common/DeleteModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,6 +53,9 @@ const SeasonActions = ({ season }) => {
 
   // Season management hooks
   const { mutate: manageSeason, isPending } = useManageSeason();
+  const { mutate: deleteBracket, isPending: isDeletingBracket } =
+    useDeleteSeasonBracket();
+  const [showDeleteBracketConfirm, setShowDeleteBracketConfirm] = useState(false);
 
   if (!season) return null;
 
@@ -114,6 +119,23 @@ const SeasonActions = ({ season }) => {
   const isPaused = season.status === "paused";
   const isCompleted = season.status === "completed";
   const isCanceled = season.status === "canceled";
+  const canDeleteBracket = season.has_bracket;
+
+  const handleDeleteBracket = () => {
+    deleteBracket(
+      {
+        leagueId: league,
+        seasonId: season.id,
+      },
+      {
+        onSuccess: () => {
+          setShowDeleteBracketConfirm(false);
+          setDropdownOpen(false);
+        },
+      }
+    );
+  };
+
   return (
     <>
       <div className="flex items-center gap-3">
@@ -204,6 +226,23 @@ const SeasonActions = ({ season }) => {
                 </DropdownMenuItem>
               </>
             )}
+
+            {canDeleteBracket && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex items-center gap-2 text-red-600"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    setShowDeleteBracketConfirm(true);
+                  }}
+                  disabled={isDeletingBracket}
+                >
+                  <Trash2 size={14} />
+                  <span>Delete Bracket</span>
+                </DropdownMenuItem>
+              </>
+            )}
             {/* {(isUpcoming || isOngoing || isPaused) && (
               <>
                 <DropdownMenuSeparator />
@@ -276,6 +315,18 @@ const SeasonActions = ({ season }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DeleteModal
+        open={showDeleteBracketConfirm}
+        onOpenChange={setShowDeleteBracketConfirm}
+        onConfirm={handleDeleteBracket}
+        title="Delete Bracket"
+        description="This will delete the bracket and all games created by that bracket. You can only delete it when no bracket game is ongoing or completed."
+        confirmText="Delete Bracket"
+        cancelText="Cancel"
+        itemType="bracket"
+        isLoading={isDeletingBracket}
+      />
     </>
   );
 };

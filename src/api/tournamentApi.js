@@ -179,3 +179,13 @@ export const fetchTournamentBracket = async (tournamentId) => {
     throw error;
   }
 };
+
+export const deleteTournamentBracket = async (tournamentId) => {
+  try {
+    const { data } = await api.delete(`/tournaments/${tournamentId}/delete_bracket/`);
+    return data;
+  } catch (error) {
+    console.error("Error deleting tournament bracket:", error);
+    throw error;
+  }
+};

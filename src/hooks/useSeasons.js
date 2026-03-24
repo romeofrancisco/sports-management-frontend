@@ -4,6 +4,7 @@ import {
   fetchSeasons,
   updateSeason,
   deleteSeason,
+  deleteSeasonBracket,
   fetchSeasonDetails,
   fetchSeasonStandings,
   manageSeason,
@@ -177,6 +178,41 @@ export const useManageSeason = () => {
       toast.info(getSeasonActionErrorTitle(variables?.action), {
         richColors: true,
         description: getBackendErrorMessage(error),
+      });
+    },
+  });
+};
+
+export const useDeleteSeasonBracket = () => {
+  return useMutation({
+    mutationFn: ({ leagueId, seasonId }) =>
+      deleteSeasonBracket(leagueId, seasonId),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["seasons", variables.leagueId]);
+      queryClient.invalidateQueries([
+        "season-details",
+        variables.leagueId,
+        variables.seasonId,
+      ]);
+      queryClient.invalidateQueries([
+        "bracket",
+        variables.leagueId,
+        variables.seasonId,
+      ]);
+      queryClient.invalidateQueries([
+        "season-games",
+        variables.leagueId,
+        variables.seasonId,
+      ]);
+
+      toast.success(data?.detail || "Bracket deleted successfully", {
+        richColors: true,
+      });
+    },
+    onError: (error) => {
+      toast.error("Cannot Delete Bracket", {
+        description: getBackendErrorMessage(error),
+        richColors: true,
       });
     },
   });

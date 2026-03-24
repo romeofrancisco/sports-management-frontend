@@ -15,6 +15,7 @@ import {
   fetchTournamentTeamStatistics,
   fetchTournamentGames,
   fetchTournamentBracket,
+  deleteTournamentBracket,
 } from "@/api/tournamentApi";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/context/QueryProvider";
@@ -35,7 +36,8 @@ const getBackendErrorMessage = (error) => {
   if (!data) return "An error occurred.";
 
   if (typeof data === "string") return stripListSyntax(data);
-  if (Array.isArray(data)) return stripListSyntax(String(data[0] || "An error occurred."));
+  if (Array.isArray(data))
+    return stripListSyntax(String(data[0] || "An error occurred."));
 
   const preferredFields = ["detail", "error", "non_field_errors", "action"];
   for (const field of preferredFields) {
@@ -84,11 +86,17 @@ export const useCreateTournament = () => {
       });
     },
     onError: (error) => {
-      toast.error("Error creating tournament", {
-        description:
-          error.message || "An error occurred while creating the tournament.",
-        richColors: true,
-      });
+      error.status === 400
+        ? toast.error("Validation Error", {
+            description: "Please check the tournament details and try again.",
+            richColors: true,
+          })
+        : toast.error("Error creating tournament", {
+            description:
+              error.message ||
+              "An error occurred while creating the tournament.",
+            richColors: true,
+          });
     },
   });
 };
@@ -112,11 +120,17 @@ export const useUpdateTournament = () => {
       });
     },
     onError: (error) => {
-      toast.error("Error updating tournament", {
-        description:
-          error.message || "An error occurred while updating the tournament.",
-        richColors: true,
-      });
+      error.status === 400
+        ? toast.error("Validation Error", {
+            description: "Please check the tournament details and try again.",
+            richColors: true,
+          })
+        : toast.error("Error updating tournament", {
+            description:
+              error.message ||
+              "An error occurred while updating the tournament.",
+            richColors: true,
+          });
     },
   });
 };
@@ -251,5 +265,27 @@ export const useTournamentBracket = (tournamentId, options = {}) => {
     queryKey: ["tournamentBracket", tournamentId],
     queryFn: () => fetchTournamentBracket(tournamentId),
     enabled: !!tournamentId && options.enabled !== false,
+  });
+};
+
+export const useDeleteTournamentBracket = () => {
+  return useMutation({
+    mutationFn: ({ tournamentId }) => deleteTournamentBracket(tournamentId),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["tournamentDetails", variables.tournamentId]);
+      queryClient.invalidateQueries(["tournamentBracket", variables.tournamentId]);
+      queryClient.invalidateQueries(["tournamentGames", variables.tournamentId]);
+      queryClient.invalidateQueries(["tournaments"]);
+
+      toast.success(data?.detail || "Bracket deleted successfully", {
+        richColors: true,
+      });
+    },
+    onError: (error) => {
+      toast.error("Cannot Delete Bracket", {
+        description: getBackendErrorMessage(error),
+        richColors: true,
+      });
+    },
   });
 };
