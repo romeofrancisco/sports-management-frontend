@@ -15,12 +15,7 @@ import OverviewCards from "@/components/common/OverviewCards";
 import { Button } from "@/components/ui/button";
 import BracketDisplay from "@/components/brackets/BracketDisplay";
 import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
-
-const BRACKET_TYPES = {
-  SINGLE: "single_elimination",
-  ROUND_ROBIN: "round_robin",
-  DOUBLE: "double_elimination",
-};
+import { BRACKET_TYPES } from "@/constants/bracket";
 
 const TournamentBracket = ({ tournament }) => {
   const { isOpen, openModal, closeModal } = useModal();
