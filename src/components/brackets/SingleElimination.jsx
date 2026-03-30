@@ -41,6 +41,13 @@ function useContainerWidth() {
   return { containerRef, width };
 }
 
+function getContentMinWidth(matchCount) {
+  if (matchCount > 64) return 2200;
+  if (matchCount > 32) return 1700;
+  if (matchCount > 16) return 1300;
+  return 900;
+}
+
 // Reuse the same visual style as DoubleElimination's CustomMatch
 const CustomMatch = ({ match }) => {
   const participants = match?.participants || [];
@@ -109,15 +116,17 @@ const CustomMatch = ({ match }) => {
 
 const SingleElimination = ({ bracket }) => {
   const { containerRef, width } = useContainerWidth();
-  // Use container width directly with a reasonable minimum
-  const finalWidth = Math.max(width, 400);
-  // Make height responsive based on expected bracket size, but cap it
-  const finalHeight = Math.min(Math.max(width * 0.6, 400), 800);
 
   // Use matches from bracket prop, or empty array if not available
   const matches = bracket?.matches || [];
+  const matchCount = matches.length;
+  const contentMinWidth = getContentMinWidth(matchCount);
 
-  console.log(bracket)
+  // Fit the parent container first; expand only when bracket density requires more space.
+  const finalWidth = Math.max(Math.max(width - 8, 320), contentMinWidth);
+
+  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 900;
+  const finalHeight = Math.max(Math.min(viewportHeight - 180, 900), 420);
 
   return (
     <div ref={containerRef} className="w-full overflow-x-auto overflow-y-hidden">
@@ -130,7 +139,6 @@ const SingleElimination = ({ bracket }) => {
               width={finalWidth}
               height={finalHeight}
               SVGBackground="var(--background)"
-              style={{ maxWidth: '100%', height: 'auto' }}
               {...props}
             >
               {children}
