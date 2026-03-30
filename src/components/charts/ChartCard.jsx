@@ -42,7 +42,7 @@ const ChartCard = ({
                 {title}
               </CardTitle>
               {description && (
-                <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
+                <CardDescription className="text-muted-foreground line-clamp-1 text-sm" title={description}>
                   {description}
                 </CardDescription>
               )}

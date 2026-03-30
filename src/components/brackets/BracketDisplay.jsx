@@ -3,6 +3,8 @@ import SingleElimination from "@/components/brackets/SingleElimination";
 import DoubleElimination from "./DoubleElimination";
 import RoundRobin from "@/components/brackets/RoundRobin";
 import { BRACKET_TYPES } from "@/constants/bracket";
+import { Expand } from "lucide-react";
+import { Button } from "../ui/button";
 
 /**
  * Component that displays the appropriate bracket visualization based on elimination type
