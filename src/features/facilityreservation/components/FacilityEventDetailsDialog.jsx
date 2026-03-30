@@ -50,8 +50,8 @@ export default function FacilityEventDetailsDialog({ event, children }) {
       r.status === "approved"
         ? "green"
         : r.status === "rejected"
-        ? "red"
-        : "orange",
+          ? "red"
+          : "orange",
     meta: {
       status: r.status,
       facility: r.facility,
@@ -72,7 +72,7 @@ export default function FacilityEventDetailsDialog({ event, children }) {
       // same day: show date once, then times
       description = `${format(startDate, "PP")}, ${format(
         startDate,
-        "p"
+        "p",
       )} - ${format(endDate, "p")}`;
     } else {
       // different days: show full start and end datetimes
@@ -130,7 +130,7 @@ export default function FacilityEventDetailsDialog({ event, children }) {
                               <p>{format(s, "PP")},</p>
                               <p className="text-muted-foreground">{`${format(
                                 s,
-                                "p"
+                                "p",
                               )} - ${format(e, "p")}`}</p>
                             </div>
                           </>
@@ -208,7 +208,18 @@ export default function FacilityEventDetailsDialog({ event, children }) {
           {new Date(event.startDate) > new Date() &&
             event.meta?.status !== "cancelled" &&
             canManage && (
-              <div className="w-full flex gap-2 mt-4 md:px-4 px-0">
+              <div className="w-full flex flex-col lg:flex-row gap-2 mt-4 md:px-4 px-0">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    // close details drawer then open edit dialog programmatically
+                    onToggle();
+                    setTimeout(() => setEditOpen(true), 50);
+                  }}
+                >
+                  Update Reservation
+                </Button>
                 <Button
                   variant="destructive"
                   className="flex-1"
@@ -230,10 +241,10 @@ export default function FacilityEventDetailsDialog({ event, children }) {
                           onError: (err) => {
                             toast.error(
                               err?.response?.data?.detail ||
-                                "Failed to cancel reservation"
+                                "Failed to cancel reservation",
                             );
                           },
-                        }
+                        },
                       );
                     } catch (err) {
                       console.error(err);
@@ -243,17 +254,6 @@ export default function FacilityEventDetailsDialog({ event, children }) {
                   disabled={isUpdating}
                 >
                   Cancel Reservation
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => {
-                    // close details drawer then open edit dialog programmatically
-                    onToggle();
-                    setTimeout(() => setEditOpen(true), 50);
-                  }}
-                >
-                  Update Reservation
                 </Button>
               </div>
             )}
