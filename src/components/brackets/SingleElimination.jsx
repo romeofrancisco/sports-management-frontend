@@ -7,47 +7,6 @@ import { formatDate } from "@/utils/formatDate";
 import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
-// Hook to get container width
-function useContainerWidth() {
-  const containerRef = useRef(null);
-  const [width, setWidth] = useState(800); // Default width
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        setWidth(containerWidth);
-      }
-    };
-
-    // Initial measurement
-    updateWidth();
-
-    // Update on resize
-    window.addEventListener("resize", updateWidth);
-
-    // Also update when content might change (optional)
-    const resizeObserver = new ResizeObserver(updateWidth);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-      resizeObserver.disconnect();
-    };
-  }, []);
-
-  return { containerRef, width };
-}
-
-function getContentMinWidth(matchCount) {
-  if (matchCount > 64) return 2200;
-  if (matchCount > 32) return 1700;
-  if (matchCount > 16) return 1300;
-  return 900;
-}
-
 // Reuse the same visual style as DoubleElimination's CustomMatch
 const CustomMatch = ({ match }) => {
   const participants = match?.participants || [];
@@ -65,8 +24,8 @@ const CustomMatch = ({ match }) => {
     const opacity = !team
       ? "opacity-70 italic"
       : team?.isWinner
-      ? "opacity-100"
-      : "opacity-70";
+        ? "opacity-100"
+        : "opacity-70";
 
     return (
       <div
@@ -114,39 +73,45 @@ const CustomMatch = ({ match }) => {
   );
 };
 
+function useWindowSize() {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
+  useEffect(() => {
+    function onResize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return size;
+}
+
 const SingleElimination = ({ bracket }) => {
-  const { containerRef, width } = useContainerWidth();
+  const [width, height] = useWindowSize();
+  const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
+  const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
+  const finalHeight = Math.max(height - 150, 400);
 
   // Use matches from bracket prop, or empty array if not available
   const matches = bracket?.matches || [];
-  const matchCount = matches.length;
-  const contentMinWidth = getContentMinWidth(matchCount);
 
-  // Fit the parent container first; expand only when bracket density requires more space.
-  const finalWidth = Math.max(Math.max(width - 8, 320), contentMinWidth);
-
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 900;
-  const finalHeight = Math.max(Math.min(viewportHeight - 180, 900), 420);
+  console.log(bracket);
 
   return (
-    <div ref={containerRef} className="w-full overflow-x-auto overflow-y-hidden">
-      <div className="min-w-full">
-        <SingleEliminationBracket
-          matches={matches}
-          matchComponent={CustomMatch}
-          svgWrapper={({ children, ...props }) => (
-            <SVGViewer
-              width={finalWidth}
-              height={finalHeight}
-              SVGBackground="var(--background)"
-              {...props}
-            >
-              {children}
-            </SVGViewer>
-          )}
-        />
-      </div>
-    </div>
+    <SingleEliminationBracket
+      matches={matches}
+      matchComponent={CustomMatch}
+      svgWrapper={({ children, ...props }) => (
+        <SVGViewer
+          width={finalWidth}
+          height={finalHeight}
+          SVGBackground="var(--background)"
+          style={{ maxWidth: "100%", height: "auto" }}
+          {...props}
+        >
+          {children}
+        </SVGViewer>
+      )}
+    />
   );
 };
 
