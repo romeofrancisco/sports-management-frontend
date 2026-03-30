@@ -17,6 +17,8 @@ const TournamentModal = ({ open, onOpenChange, tournament = null }) => {
   const { mutate: createTournament, isPending: isCreating } = useCreateTournament();
   const { mutate: updateTournament, isPending: isUpdating } = useUpdateTournament();
 
+  console.log("TournamentModal rendered with tournament:", tournament);
+
   const {
     control,
     handleSubmit,
@@ -350,7 +352,7 @@ const TournamentModal = ({ open, onOpenChange, tournament = null }) => {
               handleToggleAllTeams={onToggleAllTeams}
               handleToggleTeam={onToggleTeam}
               error={errors.teams}
-              disabled={isPending}
+              disabled={isPending || tournament?.has_bracket}
               control={control}
             />
             <p className="text-xs text-muted-foreground">
