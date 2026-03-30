@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DoubleEliminationBracket,
   Match,
@@ -8,87 +8,43 @@ import { formatDate } from "@/utils/formatDate";
 import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
-// Track container size so the bracket fits its parent across breakpoints.
-function useElementSize(ref) {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-
+// small hook to get window size for SVG viewport
+function useWindowSize() {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useEffect(() => {
-    if (!ref.current) return;
-
-    const updateSize = () => {
-      const rect = ref.current?.getBoundingClientRect();
-      if (!rect) return;
-      setSize({ width: rect.width, height: rect.height });
-    };
-
-    updateSize();
-
-    const observer = new ResizeObserver(updateSize);
-    observer.observe(ref.current);
-
-    const onWindowResize = () => updateSize();
-    window.addEventListener("resize", onWindowResize);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", onWindowResize);
-    };
-  }, [ref]);
-
+    function onResize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
   return size;
 }
 
-function getMatchCount(matches) {
-  if (!matches) return 0;
-  if (Array.isArray(matches)) return matches.length;
-  if (typeof matches === "object") {
-    return Object.values(matches).reduce((total, value) => {
-      return total + (Array.isArray(value) ? value.length : 0);
-    }, 0);
-  }
-  return 0;
-}
-
-export const DoubleElimination = ({ bracket, isFullscreen = false }) => {
-  const containerRef = useRef(null);
-  const { width: containerWidth, height: containerHeight } = useElementSize(containerRef);
+export const DoubleElimination = ({ bracket }) => {
+  const [width, height] = useWindowSize();
+  const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
+  const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
+  const finalHeight = Math.max(height - 150, 400);
 
   // Use matches from bracket prop, or empty structure if not available
   const matches = bracket?.matches || { upper: [], lower: [] };
 
-  const matchCount = getMatchCount(matches);
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 900;
-
-  // Scale required drawing width by amount of content, then fit container with horizontal scroll fallback.
-  const contentMinWidth =
-    matchCount > 60 ? 2000 :
-    matchCount > 36 ? 1600 :
-    matchCount > 20 ? 1300 : 1000;
-
-  const availableWidth = Math.max(containerWidth - 8, 320);
-  const availableHeight = Math.max(containerHeight - 8, 320);
-  const finalWidth = Math.max(availableWidth, contentMinWidth);
-  const finalHeight = isFullscreen
-    ? Math.max(availableHeight, 420)
-    : Math.max(Math.min(viewportHeight - 180, 900), 420);
-
   return (
-    <div ref={containerRef} className="w-full h-full overflow-x-auto overflow-y-auto">
-      <DoubleEliminationBracket
-        matches={matches}
-        matchComponent={CustomMatch}
-        svgWrapper={({ children, ...props }) => (
-          <SVGViewer
-            width={finalWidth}
-            height={finalHeight}
-            SVGBackground="var(--background)"
-            {...props}
-          >
-            {children}
-          </SVGViewer>
-        )}
-      />
-    </div>
+    <DoubleEliminationBracket
+      matches={matches}
+      matchComponent={CustomMatch}
+      svgWrapper={({ children, ...props }) => (
+        <SVGViewer
+          width={finalWidth}
+          height={finalHeight}
+          SVGBackground="var(--background)"
+          {...props}
+        >
+          {children}
+        </SVGViewer>
+      )}
+    />
   );
 }
 
