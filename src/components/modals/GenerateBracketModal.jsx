@@ -19,7 +19,8 @@ import { ELIMINATION_TYPES } from "@/constants/bracket";
 import { Button } from "../ui/button";
 import { useForm, Controller } from "react-hook-form";
 import { useCreateBracket } from "@/hooks/useBrackets";
-import { Loader2 } from "lucide-react";
+import { GitFork, Loader2 } from "lucide-react";
+import Modal from "../common/Modal";
 
 const GenerateBracketModal = ({
   isOpen,
@@ -34,7 +35,7 @@ const GenerateBracketModal = ({
   const { mutate: createBracket, isPending } = useCreateBracket(
     isTournament ? null : league,
     isTournament ? null : season,
-    isTournament ? tournament : null
+    isTournament ? tournament : null,
   );
 
   const {
@@ -77,9 +78,7 @@ const GenerateBracketModal = ({
 
     const payload = {
       elimination_type: data.elimination_type,
-      ...(isTournament
-        ? { tournament }
-        : { season }),
+      ...(isTournament ? { tournament } : { season }),
     };
 
     createBracket(payload, {
@@ -92,68 +91,66 @@ const GenerateBracketModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => { setServerError(null); onClose(); }}>
-      <DialogContent className="sm:max-w-[450px]">
-        <DialogHeader>
-          <DialogTitle>Generate Bracket</DialogTitle>
-          <DialogDescription>
-            Select the elimination type to create a bracket.
-          </DialogDescription>
-        </DialogHeader>
+    <Modal
+      open={isOpen}
+      onOpenChange={onClose}
+      title="Generate Bracket"
+      description={`Generate a new bracket for this ${isTournament ? "tournament" : "season"}.`}
+      size="sm"
+      icon={GitFork}
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {serverError && (
+          <p className="text-destructive text-sm bg-destructive/10 p-2 rounded-md">
+            {serverError}
+          </p>
+        )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {serverError && (
-            <p className="text-destructive text-sm bg-destructive/10 p-2 rounded-md">
-              {serverError}
-            </p>
+        {/* Elimination Type Select */}
+        <Controller
+          name="elimination_type"
+          control={control}
+          rules={{ required: "Elimination type is required." }}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Elimination Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Elimination Types</SelectLabel>
+                  {ELIMINATION_TYPES.map((elim) => (
+                    <SelectItem key={elim.value} value={elim.value}>
+                      {elim.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           )}
+        />
+        {errors.elimination_type && (
+          <p className="text-destructive text-xs">
+            {errors.elimination_type.message}
+          </p>
+        )}
 
-          {/* Elimination Type Select */}
-          <Controller
-            name="elimination_type"
-            control={control}
-            rules={{ required: "Elimination type is required." }}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Elimination Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Elimination Types</SelectLabel>
-                    {ELIMINATION_TYPES.map((elim) => (
-                      <SelectItem key={elim.value} value={elim.value}>
-                        {elim.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.elimination_type && (
-            <p className="text-destructive text-xs">
-              {errors.elimination_type.message}
-            </p>
+        <Button
+          type="submit"
+          className="w-full flex items-center justify-center gap-2"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="animate-spin size-4" />
+              Generating...
+            </>
+          ) : (
+            "Generate Bracket"
           )}
-
-          <Button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2"
-            disabled={isPending}
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="animate-spin size-4" />
-                Generating...
-              </>
-            ) : (
-              "Generate Bracket"
-            )}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </Button>
+      </form>
+    </Modal>
   );
 };
 

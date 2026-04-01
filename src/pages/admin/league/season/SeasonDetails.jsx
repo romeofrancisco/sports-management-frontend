@@ -11,7 +11,7 @@ import BracketView from "./components/BracketView";
 import SeasonActions from "./components/SeasonActions";
 import FullPageLoading from "@/components/common/FullPageLoading";
 import { cn } from "@/lib/utils";
-import { Trophy, Users, BarChart3, Target } from "lucide-react";
+import { Trophy, Users, BarChart3, Target, GitFork } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import { getSeasonYear } from "../utils";
@@ -90,7 +90,7 @@ const SeasonDetails = () => {
       label: "Bracket",
       path: `/leagues/${league}/seasons/${season}/bracket`,
       description: "Tournament bracket",
-      icon: Trophy,
+      icon: GitFork,
     },
   ];
 

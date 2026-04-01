@@ -7,7 +7,7 @@ import {
 import FullPageLoading from "@/components/common/FullPageLoading";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Trophy, Users, BarChart3, Target } from "lucide-react";
+import { Trophy, Users, BarChart3, Target, GitFork } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import TournamentOverview from "./components/TournamentOverview";
@@ -123,7 +123,7 @@ const TournamentDetails = () => {
       label: "Bracket",
       path: `/tournaments/${tournamentId}/bracket`,
       description: "Tournament bracket",
-      icon: Trophy,
+      icon: GitFork,
     },
   ];
 

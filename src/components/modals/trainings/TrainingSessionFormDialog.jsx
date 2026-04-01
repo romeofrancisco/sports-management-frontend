@@ -41,6 +41,12 @@ const TrainingSessionFormDialog = ({ open, onOpenChange, sessionId }) => {
       icon={Dumbbell}
       isLoading={isLoading || isLoadingTeams}
       error={error}
+      size="sm"
+      description={
+        sessionId
+          ? "Edit the details of your training session"
+          : "Create a new training session"
+      }
     >
       <TrainingSessionForm
         open={open}

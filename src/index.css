@@ -142,9 +142,8 @@
     @apply bg-background text-foreground;
   }
   .text-gradient {
-    @apply text-primary;
+    @apply text-primary
   }
-
     /* Remove number input arrows */
     input[type='number']::-webkit-outer-spin-button,
     input[type='number']::-webkit-inner-spin-button {

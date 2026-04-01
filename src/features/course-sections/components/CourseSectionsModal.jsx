@@ -141,7 +141,12 @@ const CourseSectionsModal = ({ open, onOpenChange, courseSection }) => {
       onOpenChange={onOpenChange}
       icon={GraduationCap}
       title={isEdit ? "Edit Course & Section" : "Register Course & Section"}
-      contentClassName="sm:max-w-[400px]"
+      size="sm"
+      description={
+        isEdit
+          ? "Update the course and section information for the specified year level."
+          : "Register a new course and section for a specific year level."
+      }
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1">
         <input type="hidden" {...register("year_level")} />

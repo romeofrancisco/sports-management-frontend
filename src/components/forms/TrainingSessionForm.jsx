@@ -163,7 +163,7 @@ const TrainingSessionForm = ({
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Info className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-lg font-semibold text-primary">
             Session Information
           </h3>
         </div>
@@ -187,13 +187,11 @@ const TrainingSessionForm = ({
         />
       </div>
 
-      <Separator className="bg-border/50" />
-
       {/* Schedule Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Clock className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Schedule</h3>
+          <h3 className="text-lg font-semibold text-primary">Schedule</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -262,13 +260,11 @@ const TrainingSessionForm = ({
         />
       </div>
 
-      <Separator className="bg-border/50" />
-
       {/* Team Selection Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Users className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-lg font-semibold text-primary">
             Team Assignment
           </h3>
         </div>
@@ -313,13 +309,11 @@ const TrainingSessionForm = ({
         />
       </div>
 
-      <Separator className="bg-border/50" />
-
       {/* Additional Notes Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <FileText className="h-4 w-4 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-lg font-semibold text-primary">
             Additional Information
           </h3>
         </div>
@@ -335,7 +329,7 @@ const TrainingSessionForm = ({
       </div>
 
       {/* Form Actions */}
-      <DialogFooter className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border/50">
+      <DialogFooter className="flex flex-col sm:flex-row gap-3 border-border/50">
         <Button
           type="button"
           variant="outline"

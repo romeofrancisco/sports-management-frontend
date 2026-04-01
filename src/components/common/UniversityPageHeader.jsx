@@ -37,7 +37,10 @@ const UniversityPageHeader = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-xl p-3 md:p-4 lg:p-6 shadow-lg border-2 border-primary/20 transition-all duration-300 animate-in fade-in-50 duration-500 relative overflow-hidden">
+    <div className="rounded-xl p-3 md:p-4 lg:p-6 shadow-lg border-2 border-primary/20 transition-all duration-300 animate-in fade-in-50 duration-500 relative overflow-hidden">
+      <div
+        className={`absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary/80 opacity-8 group-hover:opacity-12 transition-opacity duration-300`}
+      />
       <div className="relative flex flex-col md:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
           {/* University Logo with enhanced styling */}
@@ -64,8 +67,7 @@ const UniversityPageHeader = ({
             ) : (
               // University logo with original styling
               <div className="hidden md:block">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg blur-sm opacity-60"></div>
-                <div className="relative bg-card p-1.5 sm:p-2 rounded-lg shadow-lg border-2 border-secondary/30">
+                <div className="relative bg-card p-1.5 sm:p-2 rounded-lg shadow-lg border-2 border-primary/30">
                   <img
                     src="/UPHSD-logo.png"
                     alt="University of Perpetual Help System DALTA"

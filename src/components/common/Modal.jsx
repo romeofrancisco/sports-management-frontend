@@ -41,7 +41,7 @@ const Modal = ({
 }) => {
   // Size configurations
   const sizeClasses = {
-    sm: "sm:!max-w-[400px]",
+    sm: "sm:!max-w-[500px]",
     md: "sm:!max-w-[700px]",
     lg: "sm:!max-w-[900px]",
     xl: "sm:!max-w-[1200px]",
@@ -122,7 +122,7 @@ const Modal = ({
           </DialogHeader>
         )}
         {scrollable ? (
-          <ScrollArea className={cn("px-6 pb-6 w-full max-h-[90vh]", bodyClassName)}>
+          <ScrollArea className={cn("px-6 pb-6 w-full max-h-[calc(90vh-96px)]", bodyClassName)}>
             {content()}
           </ScrollArea>
         ) : (

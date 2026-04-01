@@ -38,7 +38,7 @@ const ChartCard = ({
               <IconComponent className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <CardTitle className="text-xl font-bold text-primary">
                 {title}
               </CardTitle>
               {description && (
