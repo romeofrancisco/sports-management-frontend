@@ -76,7 +76,7 @@ const UniversityPageHeader = ({
             )}
           </div>
           <div className="sm:border-l-2 sm:border-primary/40 sm:pl-3 md:pl-4 lg:pl-6">
-            <h1 className="text-lg sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-gradient break-words">
+            <h1 className="text-lg sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-primary break-words">
               {title}
             </h1>
             <p className="text-foreground mt-0.5 sm:mt-1 md:mt-2 text-xs sm:text-sm md:text-base lg:text-lg font-semibold">

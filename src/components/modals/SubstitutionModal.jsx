@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useCurrentGamePlayers, useGamePlayers } from "@/hooks/useGames";
 import SubstitutionForm from "../forms/SubstitutionForm";
 import ContentLoading from "../common/ContentLoading";
-import { ScrollArea } from "../ui/scroll-area";
 import { useParams } from "react-router";
+import Modal from "../common/Modal";
+import { Replace } from "lucide-react";
 
 const SubstitutionModal = ({ isOpen, onClose }) => {
   const { gameId } = useParams();
@@ -18,32 +12,31 @@ const SubstitutionModal = ({ isOpen, onClose }) => {
     useCurrentGamePlayers(gameId, isOpen);
   const { data: gamePlayers, isLoading: isGamePlayersLoading } = useGamePlayers(
     gameId,
-    isOpen
+    isOpen,
   );
 
   const isLoading = isCurrentPlayersLoading || isGamePlayersLoading;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle>Substitution</DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="max-h-[75vh]">
-          {isLoading ? (
-            <ContentLoading />
-          ) : (
-            <SubstitutionForm
-              currentPlayers={currentPlayers}
-              gamePlayers={gamePlayers}
-              onClose={onClose}
-            />
-          )}
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
-  ); 
+    <Modal
+      open={isOpen}
+      onOpenChange={onClose}
+      title="Manage Substitutions"
+      description="Select players to substitute in and out for the current period."
+      size="lg"
+      icon={Replace}
+    >
+      {isLoading ? (
+        <ContentLoading />
+      ) : (
+        <SubstitutionForm
+          currentPlayers={currentPlayers}
+          gamePlayers={gamePlayers}
+          onClose={onClose}
+        />
+      )}
+    </Modal>
+  );
 };
 
 export default SubstitutionModal;
