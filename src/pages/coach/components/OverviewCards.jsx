@@ -16,15 +16,17 @@ const OverviewCards = ({ overview }) => {
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
+      link: "/teams", // Link to teams page
     },
     {
       title: "Total Players",
       value: overview?.team_overview?.total_players || 0,
       description: "Players in your teams",
       icon: User,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
+      link: "/players", // Link to players page
     },
     {
       title: "Upcoming Games",
@@ -34,15 +36,17 @@ const OverviewCards = ({ overview }) => {
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
+      link: "/games", // Link to games page
     },
     {
       title: "Training Sessions",
       value: overview?.team_overview?.recent_training_sessions || 0,
       description: "Recent sessions",
       icon: Clock,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
+      link: "/trainings", // Link to training sessions page
     },
   ];
 

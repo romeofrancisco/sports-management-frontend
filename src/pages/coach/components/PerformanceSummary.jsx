@@ -24,10 +24,10 @@ const PerformanceSummary = ({ playerProgress }) => {
             </div>
             <div>
               <CardTitle className="text-xl font-semibold text-gradient">
-                Team Performance Summary
+                Players Training Improve
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                Quick insights about your team's performance trends
+                
               </CardDescription>
             </div>
           </div>
@@ -63,7 +63,7 @@ const PerformanceSummary = ({ playerProgress }) => {
 
   const performanceMetrics = [
     {
-      label: "Players Improving",
+      label: "Improving",
       value: improvingCount,
       color: "text-secondary",
       bgColor: "bg-secondary/8",
@@ -73,7 +73,7 @@ const PerformanceSummary = ({ playerProgress }) => {
       gradient: "from-secondary via-secondary/90 to-secondary/80",
     },
     {
-      label: "Players Stable",
+      label: "Stable",
       value: stableCount,
       color: "text-muted-foreground",
       bgColor: "bg-muted/20",
@@ -83,7 +83,7 @@ const PerformanceSummary = ({ playerProgress }) => {
       gradient: "from-muted via-muted/80 to-muted/60",
     },
     {
-      label: "Players Declining",
+      label: "Declining",
       value: decliningCount,
       color: "text-primary",
       bgColor: "bg-primary/8",

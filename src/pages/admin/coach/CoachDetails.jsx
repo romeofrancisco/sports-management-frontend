@@ -132,12 +132,6 @@ const CoachDetails = () => {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Left Column - Primary Content */}
               <div className="xl:col-span-2 space-y-6">
-                {/* Performance Summary Section */}
-                {playerProgress && (
-                  <div className="animate-in fade-in-50 duration-500 delay-300">
-                    <PerformanceSummary playerProgress={playerProgress} />
-                  </div>
-                )}
 
                 {/* Charts Section */}
                 <div className="animate-in fade-in-50 duration-500 delay-400">
@@ -146,13 +140,6 @@ const CoachDetails = () => {
                     playerProgress={playerProgress}
                   />
                 </div>
-
-                {/* Player Progress */}
-                {playerProgress && (
-                  <div className="animate-in fade-in-50 duration-500 delay-500">
-                    <PlayerProgressSection playerProgress={playerProgress} />
-                  </div>
-                )}
               </div>
 
               {/* Right Column - Secondary Content */}
@@ -170,16 +157,6 @@ const CoachDetails = () => {
                 {/* Upcoming Training Sessions */}
                 <div className="animate-in fade-in-50 duration-500 delay-400">
                   <UpcomingTrainingSection overview={overview} />
-                </div>
-
-                {/* Recent Training Sessions */}
-                <div className="animate-in fade-in-50 duration-500 delay-450">
-                  <RecentTrainingSection overview={overview} />
-                </div>
-
-                {/* Recent Games */}
-                <div className="animate-in fade-in-50 duration-500 delay-500">
-                  <RecentGamesSection overview={overview} />
                 </div>
 
                 {/* Training Summary */}

@@ -56,6 +56,40 @@ const getImprovementBadgeVariant = (improvementPercentage) => {
  */
 const PlayerProgressSection = ({ playerProgress }) => {
   const navigate = useNavigate();
+  const playerList = playerProgress?.player_progress || [];
+
+  const improvingCount = playerList.filter(
+    (player) => getPerformanceTrend(player) === "improving"
+  ).length;
+
+  const stableCount = playerList.filter(
+    (player) => getPerformanceTrend(player) === "stable"
+  ).length;
+
+  const decliningCount = playerList.filter(
+    (player) => getPerformanceTrend(player) === "declining"
+  ).length;
+
+  const summaryMetrics = [
+    {
+      label: "Improving",
+      value: improvingCount,
+      icon: <TrendingUp className="h-4 w-4 text-secondary" />,
+      tone: "border-secondary/30 bg-secondary/10",
+    },
+    {
+      label: "Stable",
+      value: stableCount,
+      icon: <Minus className="h-4 w-4 text-muted-foreground" />,
+      tone: "border-border bg-muted/30",
+    },
+    {
+      label: "Declining",
+      value: decliningCount,
+      icon: <TrendingDown className="h-4 w-4 text-primary" />,
+      tone: "border-primary/30 bg-primary/10",
+    },
+  ];
 
   const renderTrendIcon = (trend) => {
     switch (trend) {
@@ -99,10 +133,27 @@ const PlayerProgressSection = ({ playerProgress }) => {
         </div>
       </CardHeader>
       <CardContent>
-        {playerProgress?.player_progress?.length > 0 ? (
+        {playerList.length > 0 ? (
           <div className="flex flex-col gap-6">
+            <div className="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {summaryMetrics.map((metric) => (
+                <div
+                  key={metric.label}
+                  className={`rounded-lg border p-4 ${metric.tone}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      {metric.label}
+                    </span>
+                    {metric.icon}
+                  </div>
+                  <p className="text-2xl font-bold mt-2">{metric.value}</p>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {playerProgress.player_progress
+              {playerList
                 .slice(0, 6)
                 .map((player, index) => {
                   const improvementPercentage =
@@ -211,7 +262,7 @@ const PlayerProgressSection = ({ playerProgress }) => {
                   );
                 })}
             </div>
-            {playerProgress.player_progress.length > 6 && (
+            {playerList.length > 6 && (
               <Button
                 onClick={() => navigate("/trainings/progress/individual")}
               >
