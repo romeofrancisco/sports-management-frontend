@@ -247,7 +247,7 @@ const TournamentModal = ({ open, onOpenChange, tournament = null }) => {
           : "Create a new tournament"
       }
       icon={Trophy}
-      size="lg"
+      size="sm"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1">
         {/* Tournament Name */}

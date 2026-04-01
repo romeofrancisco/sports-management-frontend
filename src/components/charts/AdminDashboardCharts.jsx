@@ -421,10 +421,6 @@ export const CoachEffectivenessChart = ({ data }) => {
     },
     plugins: {
       ...commonOptions.plugins,
-      title: {
-        display: true,
-        text: "Coach Effectiveness & Attendance Rates",
-      },
       tooltip: {
         callbacks: {
           afterLabel: function (context) {
@@ -943,14 +939,6 @@ export const SportsDistributionChart = ({ data }) => {
     plugins: {
       legend: {
         position: "bottom",
-      },
-      title: {
-        display: true,
-        text: "Sports Distribution by Gender",
-        font: {
-          size: 16,
-          weight: "bold",
-        },
       },
       tooltip: {
         callbacks: {

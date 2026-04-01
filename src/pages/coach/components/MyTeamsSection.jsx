@@ -8,11 +8,14 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Dumbbell } from "lucide-react";
-
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 /**
  * Enhanced My Teams section component
  */
 const MyTeamsSection = ({ overview }) => {
+  const navigate = useNavigate();
+  console.log("MyTeamsSection overview:", overview); // Debug log for overview data
   return (
     <Card className="bg-card shadow-lg border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader>
@@ -33,10 +36,11 @@ const MyTeamsSection = ({ overview }) => {
       <CardContent>
         {overview?.team_attendance?.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-            {overview.team_attendance.map((team, index) => (
+            {overview.team_attendance.slice(0, 2).map((team, index) => (
               <div
                 key={team.team_id || index}
                 className="relative overflow-hidden border-2 border-primary/20 rounded-xl p-4 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+                onClick={() => navigate(`/teams/${team.team_id}`)}
               >
                 {/* Enhanced background effects */}
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-60"></div>
@@ -51,8 +55,8 @@ const MyTeamsSection = ({ overview }) => {
                       team.attendance_rate >= 80
                         ? "border-primary/40 text-primary bg-primary/15"
                         : team.attendance_rate >= 60
-                        ? "border-yellow-400/40 text-yellow-600 bg-yellow-50"
-                        : "border-primary/40 text-primary bg-primary/15"
+                          ? "border-yellow-400/40 text-yellow-600 bg-yellow-50"
+                          : "border-primary/40 text-primary bg-primary/15"
                     }`}
                   >
                     {team.attendance_rate?.toFixed(1)}% Attendance
@@ -85,6 +89,11 @@ const MyTeamsSection = ({ overview }) => {
                 </div>
               </div>
             ))}
+            {overview.team_attendance.length > 2 && (
+              <Button className="w-full" onClick={() => navigate("/teams")}>
+                View All Teams
+              </Button>
+            )}
           </div>
         ) : (
           <div className="text-center py-12">

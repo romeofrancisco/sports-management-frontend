@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 const Modal = ({
   // Required props
@@ -40,12 +41,14 @@ const Modal = ({
 }) => {
   // Size configurations
   const sizeClasses = {
-    sm: "max-w-[400px]",
-    md: "max-w-[700px]",
-    lg: "max-w-[900px]",
-    xl: "max-w-[1200px]",
-    full: "max-w-[95vw]",
+    sm: "sm:!max-w-[500px]",
+    md: "sm:!max-w-[700px]",
+    lg: "sm:!max-w-[900px]",
+    xl: "sm:!max-w-[1200px]",
+    full: "sm:!max-w-[95vw]",
   };
+
+  const resolvedSizeClass = sizeClasses[size] || sizeClasses.md;
 
   // Default loading component
   const defaultLoadingComponent = (
@@ -84,7 +87,7 @@ const Modal = ({
         // keep outer container clipped (rounded corners) and let inner ScrollArea
         // control scrolling via max-height + overflow-auto so small content keeps
         // a compact modal while large content scrolls.
-        className={`overflow-hidden p-0 ${contentClassName}`}
+        className={cn("w-full overflow-hidden p-0", resolvedSizeClass, contentClassName)}
         style={{ maxHeight }}
         onPointerDownOutside={preventOutsideClose ? (e) => e.preventDefault() : undefined}
         onInteractOutside={preventOutsideClose ? (e) => e.preventDefault() : undefined}
@@ -119,11 +122,11 @@ const Modal = ({
           </DialogHeader>
         )}
         {scrollable ? (
-          <ScrollArea className={`px-6 pb-6 w-full max-h-[calc(90vh-96px)]`}>
+          <ScrollArea className={cn("px-6 pb-6 w-full max-h-[calc(90vh-96px)]", bodyClassName)}>
             {content()}
           </ScrollArea>
         ) : (
-          <div className="px-6 pb-6">{content()}</div>
+          <div className={cn("px-6 pb-6", bodyClassName)}>{content()}</div>
         )}
       </DialogContent>
     </Dialog>

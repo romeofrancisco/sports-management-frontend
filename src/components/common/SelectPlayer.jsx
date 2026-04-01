@@ -64,8 +64,8 @@ const SelectPlayer = ({
                                 {player.last_name[0]}
                               </AvatarFallback>
                             </Avatar>
-                            <div className="text-left flex flex-col">
-                              <span className="text-sm">
+                            <div className="text-left flex flex-col max-w-[200px]">
+                              <span className="text-sm truncate" title={player.full_name}>
                                 {player.full_name}
                               </span>
                               <span className="text-xs text-muted-foreground">

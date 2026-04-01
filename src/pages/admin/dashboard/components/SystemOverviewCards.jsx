@@ -13,16 +13,17 @@ const SystemOverviewCards = ({ overview }) => {
       color: 'from-primary via-primary/90 to-primary/80',
       iconBg: 'bg-primary',
       iconColor: 'text-primary',
+      link: '/teams',
     },
     {
       title: 'Active Players',
       value: overview?.system_overview?.total_players || 0,
       icon: UserCheck,
       description: 'Players with teams',
-
-      color: 'from-secondary via-secondary/90 to-secondary/80',
-      iconBg: 'bg-secondary',
-      iconColor: 'text-secondary',
+      color: 'from-primary via-primary/90 to-primary/80',
+      iconBg: 'bg-primary',
+      iconColor: 'text-primary',
+      link: '/players',
     },
     {
       title: 'Total Coaches',
@@ -32,15 +33,17 @@ const SystemOverviewCards = ({ overview }) => {
       color: 'from-primary/80 via-primary/70 to-primary/60',
       iconBg: 'bg-gradient-to-br from-primary to-primary/80',
       iconColor: 'text-primary',
+      link: '/coaches',
     },
     {
       title: 'Games Played',
       value: overview?.system_overview?.total_games || 0,
       icon: Gamepad2,
       description: 'All-time games',
-      color: 'from-secondary/80 via-secondary/70 to-secondary/60',
-      iconBg: 'bg-gradient-to-br from-secondary to-secondary/80',
-      iconColor: 'text-secondary',
+      color: 'from-primary/80 via-primary/70 to-primary/60',
+      iconBg: 'bg-gradient-to-br from-primary to-primary/80',
+      iconColor: 'text-primary',
+      link: '/games',
     },
   ];
 

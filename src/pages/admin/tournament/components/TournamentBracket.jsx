@@ -10,7 +10,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, Users, BarChart, Plus } from "lucide-react";
+import { Trophy, Users, BarChart, Plus, GitFork } from "lucide-react";
 import OverviewCards from "@/components/common/OverviewCards";
 import { Button } from "@/components/ui/button";
 import BracketDisplay from "@/components/brackets/BracketDisplay";
@@ -30,9 +30,6 @@ const TournamentBracket = ({ tournament }) => {
     return (
       <div className="animate-in fade-in-50 duration-500">
         <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-
           <CardHeader className="relative">
             <div className="flex items-center gap-3">
               <Skeleton className="h-12 w-12 rounded-xl" />
@@ -118,28 +115,25 @@ const TournamentBracket = ({ tournament }) => {
     return (
       <div className="animate-in fade-in-50 duration-500">
         <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-
           <CardHeader className="relative">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <Trophy className="h-5 w-5 text-primary-foreground" />
+                <GitFork className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Tournament Bracket
                 </CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+                <CardDescription>
                   Generate a tournament bracket
-                </p>
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="relative p-6">
             <div className="text-center p-8 border rounded-lg bg-muted/20">
-              <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <GitFork className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">
                 No Tournament Bracket
               </h3>
@@ -171,7 +165,7 @@ const TournamentBracket = ({ tournament }) => {
     return (
       <Card>
         <CardContent className="p-12 text-center">
-          <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <GitFork className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Unable to load bracket data</p>
         </CardContent>
       </Card>
@@ -203,7 +197,7 @@ const TournamentBracket = ({ tournament }) => {
     {
       title: "Tournament Format",
       value: bracketTypeDisplay,
-      icon: Trophy,
+      icon: GitFork,
       description: "Competition type",
       color: "from-primary via-primary/90 to-primary/80",
       iconBg: "bg-primary",
@@ -243,7 +237,7 @@ const TournamentBracket = ({ tournament }) => {
       <CardHeader className="relative">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <Trophy className="h-5 w-5 text-primary-foreground" />
+            <GitFork className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
             <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">

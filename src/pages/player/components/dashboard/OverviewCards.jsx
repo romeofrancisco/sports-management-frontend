@@ -22,9 +22,9 @@ const OverviewCards = ({ overview, personalStats }) => {
       value: personalStats?.total_sessions_last_30_days || 0,
       description: "Sessions attended (last 30 days)",
       icon: Activity,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
     {
       title: "Attendance Rate",
@@ -36,13 +36,13 @@ const OverviewCards = ({ overview, personalStats }) => {
       iconColor: "text-primary",
     },
     {
-      title: "Attended Sessions",
+      title: "Attended Training Sessions",
       value: personalStats?.attended_sessions || 0,
-      description: "Sessions attended overall",
+      description: "Training sessions attended overall",
       icon: Clock,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
   ];
 

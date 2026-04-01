@@ -26,9 +26,9 @@ const QuickStatsCards = ({ stats }) => {
       value: `${win_rate}%`,
       description: "Success rate",
       icon: TrendingUp,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
     {
       title: "Training Sessions",
@@ -44,9 +44,9 @@ const QuickStatsCards = ({ stats }) => {
       value: active_players,
       description: "Team members",
       icon: Users,
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
   ];
 

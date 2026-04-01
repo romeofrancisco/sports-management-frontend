@@ -18,7 +18,6 @@ import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import {
   DashboardSkeleton,
   OverviewCards,
-  PerformanceSummary,
   MyTeamsSection,
   UpcomingGamesSection,
   RecentTrainingSection,
@@ -29,6 +28,8 @@ import {
 } from "./components";
 import { ChartsSection } from "./charts";
 import { useSelector } from "react-redux";
+import { QuickActions } from "@/components/teams";
+import { QuickActionsSection } from "../admin/dashboard/components";
 
 // Register Chart.js components
 ChartJS.register(
@@ -40,7 +41,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   BarElement,
-  Title
+  Title,
 );
 
 const CoachDashboard = () => {
@@ -79,7 +80,7 @@ const CoachDashboard = () => {
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="p-4 md:p-6 space-y-8"> 
+      <div className="p-4 md:p-6 space-y-8">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
           title={`Welcome Coach ${user?.first_name || ""}!`}
@@ -96,10 +97,11 @@ const CoachDashboard = () => {
           {/* Left Column - Primary Content */}
           <div className="xl:col-span-2 space-y-6">
             {/* Performance Summary Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
-              <PerformanceSummary playerProgress={playerProgress} />
-            </div>
+            <div className="grid sm:grid-cols-2 gap-6 animate-in fade-in-50 duration-500 delay-300">
+              <UpcomingGamesSection overview={overview} />
 
+              <UpcomingTrainingSection overview={overview} />
+            </div>
             {/* Charts Section */}
             <div className="animate-in fade-in-50 duration-500 delay-300">
               <ChartsSection
@@ -109,37 +111,33 @@ const CoachDashboard = () => {
             </div>
 
             {/* Player Progress */}
-            <div className="animate-in fade-in-50 duration-500 delay-500">
+            {/* <div className="animate-in fade-in-50 duration-500 delay-500">
               <PlayerProgressSection playerProgress={playerProgress} />
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column - Secondary Content */}
           <div className="xl:col-span-1 space-y-6">
+            <div className="animate-in fade-in-50 duration-500 delay-200">
+              <QuickActionsSection />
+            </div>
+
             {/* My Teams */}
             <div className="animate-in fade-in-50 duration-500 delay-200">
               <MyTeamsSection overview={overview} />
             </div>
 
             {/* Upcoming Games */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
-              <UpcomingGamesSection overview={overview} />
-            </div>
-
-            {/* Upcoming Training Sessions */}
-            <div className="animate-in fade-in-50 duration-500 delay-350">
-              <UpcomingTrainingSection overview={overview} />
-            </div>
 
             {/* Recent Training Sessions */}
-            <div className="animate-in fade-in-50 duration-500 delay-400">
+            {/* <div className="animate-in fade-in-50 duration-500 delay-400">
               <RecentTrainingSection overview={overview} />
-            </div>
+            </div> */}
 
             {/* Recent Games */}
-            <div className="animate-in fade-in-50 duration-500 delay-450">
+            {/* <div className="animate-in fade-in-50 duration-500 delay-450">
               <RecentGamesSection overview={overview} />
-            </div>
+            </div> */}
 
             {/* Training Summary */}
             <div className="animate-in fade-in-50 duration-500 delay-500">

@@ -73,6 +73,7 @@ const RegistrationDetailsModal = ({ open, onOpenChange, registration, onApprove,
           new Date(registration.created_at),
           "PPp"
         )}`}
+        size="sm"
       >
         <div className="space-y-6 mb-6 px-1">
           {/* Header with Avatar and Status */}

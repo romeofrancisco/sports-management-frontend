@@ -17,7 +17,7 @@ const CoachModal = ({ isOpen, onClose, coach }) => {
           : "Fill in the details to register a new coach."
       }
       icon={User}
-      size="md"
+      size="sm"
     >
       <CoachForm onClose={onClose} coach={coach} />
     </Modal>

@@ -1,6 +1,6 @@
-import React from "react";
-import { BarChart3 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   SystemActivityChart,
   UserActivityChart,
@@ -13,6 +13,8 @@ import {
 } from "@/components/charts/AdminDashboardCharts";
 
 const ChartsSection = ({ overview, analytics }) => {
+  const [showAdvancedCharts, setShowAdvancedCharts] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Primary Charts Row - 4 Column Grid */}
@@ -58,6 +60,25 @@ const ChartsSection = ({ overview, analytics }) => {
           }}
         />
       </div>
+
+      <div className="flex items-center justify-center">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => setShowAdvancedCharts((prev) => !prev)}
+          className="gap-2 w-full"
+        >
+          {showAdvancedCharts ? "Hide detailed analytics" : "Show detailed analytics"}
+          {showAdvancedCharts ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
+      </div>
+
+      {!showAdvancedCharts ? (
+        <p className="text-xs text-muted-foreground text-center">
+          Showing essential charts only. Expand detailed analytics to see trends, distribution, and coach performance.
+        </p>
+      ) : (
+        <>
       {/* Additional Charts Row - 2 Column Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Training Trend Chart */}
@@ -87,6 +108,8 @@ const ChartsSection = ({ overview, analytics }) => {
       <SportsDistributionChart data={overview?.distribution_stats} />
 
       <CoachEffectivenessChart data={analytics?.coach_analytics || []} />
+        </>
+      )}
     </div>
   );
 };

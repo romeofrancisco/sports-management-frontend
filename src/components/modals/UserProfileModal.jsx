@@ -43,7 +43,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
         onClose();
         setChangePassword(false);
       }}
-      size="md"
+      size="sm"
     >
       {changePassword ? (
         <PasswordForm mode="change" onClose={() => setChangePassword(false)} />

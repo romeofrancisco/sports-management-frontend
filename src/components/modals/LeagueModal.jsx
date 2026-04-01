@@ -1,33 +1,32 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useSports } from "@/hooks/useSports";
 import LeagueForm from "../forms/LeagueForm";
-import { ScrollArea } from "../ui/scroll-area";
+import Modal from "../common/Modal";
+import { Trophy } from "lucide-react";
 
 const LeagueModal = ({ isOpen, onClose, league = null }) => {
   const isEdit = !!league;
-  const { data: sports, isLoading: isSportsLoading, isError: isSportsError } = useSports(isOpen);
+  const {
+    data: sports,
+    isLoading: isSportsLoading,
+    isError: isSportsError,
+  } = useSports(isOpen);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px]">
-        <DialogHeader>
-          <DialogTitle>{isEdit ? "Update League" : "Create League"}</DialogTitle>
-          <DialogDescription>
-            {isEdit ? "Update league details." : "Create a new league."}
-          </DialogDescription>
-          <ScrollArea className="max-h-[75vh]">
-            <LeagueForm sports={sports} onClose={onClose} league={league} />
-          </ScrollArea>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+    <Modal
+      open={isOpen}
+      onOpenChange={onClose}
+      title={isEdit ? "Update League" : "Create League"}
+      description={
+        isEdit
+          ? "Update league details."
+          : "Create a new league."
+      }
+      size="sm"
+      icon={Trophy}
+    >
+      <LeagueForm sports={sports} onClose={onClose} league={league} />
+    </Modal>
   );
 };
 

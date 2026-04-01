@@ -43,10 +43,13 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   // Filter coaches based on selected sport
   const filteredCoaches = React.useMemo(() => {
     if (!selectedSport || !coaches) return [];
-    
-    return coaches.filter(coach => {
+
+    return coaches.filter((coach) => {
       // Check if coach can coach the selected sport
-      return coach.sports && coach.sports.some(sport => sport.id === parseInt(selectedSport));
+      return (
+        coach.sports &&
+        coach.sports.some((sport) => sport.id === parseInt(selectedSport))
+      );
     });
   }, [coaches, selectedSport]);
 
@@ -92,7 +95,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4 px-1">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 px-1">
       <div
         className="size-[7rem] place-self-center text-center content-center border-2 p-3"
         style={{ backgroundColor: teamColor }}
@@ -124,22 +127,24 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         placeholder="Enter Team Abbreviation"
         errors={errors}
       />
-      {/* Team Logo */}
-      <ControlledInput
-        name="logo"
-        control={control}
-        label="Team Logo"
-        type="file"
-        accept="image/*"
-        errors={errors}
-      />
-      <ControlledInput
-        name="color"
-        control={control}
-        label="Team Color"
-        type="color"
-        errors={errors}
-      />
+      <div className="grid sm:grid-cols-[1fr_10rem] gap-4">
+        {/* Team Logo */}
+        <ControlledInput
+          name="logo"
+          control={control}
+          label="Team Logo"
+          type="file"
+          accept="image/*"
+          errors={errors}
+        />
+        <ControlledInput
+          name="color"
+          control={control}
+          label="Team Color"
+          type="color"
+          errors={errors}
+        />
+      </div>
       {/* Sport */}
       <ControlledSelect
         name="sport"
@@ -175,8 +180,8 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
             !selectedSport
               ? "Please select a sport first to see available coaches"
               : filteredCoaches.length === 0
-              ? "No coaches available for this sport"
-              : "Coach who can manage this sport"
+                ? "No coaches available for this sport"
+                : "Coach who can manage this sport"
           }
         />
       )}
@@ -192,11 +197,7 @@ const TeamForm = ({ coaches, sports, onClose, team = null }) => {
         valueKey="id"
         labelKey="full_name"
       /> */}
-      <Button
-        type="submit"
-        className="mt-4"
-        disabled={isCreating || isUpdating}
-      >
+      <Button type="submit" disabled={isCreating || isUpdating}>
         {isCreating || isUpdating ? (
           <>
             <Loader2 className="animate-spin" />

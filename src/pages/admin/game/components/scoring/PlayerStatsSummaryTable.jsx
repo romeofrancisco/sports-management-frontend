@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import DataTable from "@/components/common/DataTable";
 import { useSelector } from "react-redux";
-import { getPeriodLabel, SCORING_TYPE_VALUES } from "@/constants/sport";
+import { SCORING_TYPE_VALUES } from "@/constants/sport";
 import {
   Tooltip,
   TooltipTrigger,
@@ -10,10 +10,8 @@ import {
 
 const PlayerStatsSummaryTable = ({
   players,
-  has_period = true,
   selectedPeriod = "total",
 }) => {
-  const { current_period } = useSelector((state) => state.game);
   const { scoring_type } = useSelector((state) => state.sport);
 
   // Flatten stats from grouped categories
@@ -29,40 +27,11 @@ const PlayerStatsSummaryTable = ({
     return flattened;
   };
 
-  // Get available periods from the first player's stats
-  const availablePeriods = useMemo(() => {
-    const periods = new Set(["total"]);
+  const mapPlayersToTableData = useMemo(() => {
+    return (playerList) => {
+      if (!playerList || !Array.isArray(playerList)) return [];
 
-    // Safely check if players array exists, has elements, and if stats property is an array with elements
-    if (
-      players &&
-      Array.isArray(players) &&
-      players.length > 0 &&
-      players[0]?.stats &&
-      Array.isArray(players[0].stats) &&
-      players[0].stats.length > 0
-    ) {
-      // Flatten the grouped stats to access period_values
-      const flatStats = flattenStats(players[0].stats);
-      if (flatStats.length > 0) {
-        Object.keys(flatStats[0].period_values || {}).forEach((period) => {
-          periods.add(period);
-        });
-      }
-    }
-
-    return Array.from(periods).sort((a, b) => {
-      if (a === "total") return 1;
-      if (b === "total") return -1;
-      return parseInt(a) - parseInt(b);
-    });
-  }, [players]);
-
-  // Process data for the table based on selected period
-  const tableData = useMemo(() => {
-    if (!players || !Array.isArray(players)) return [];
-
-    return players.map((player) => {
+      return playerList.map((player) => {
       const rowData = {
         id: player.id,
         name: player.name,
@@ -118,108 +87,146 @@ const PlayerStatsSummaryTable = ({
         });
       }
 
-      return rowData;
-    });
+        return rowData;
+      });
+    };
   }, [players, selectedPeriod, scoring_type]);
 
-  // Get all stat display names for columns
-  const allStatDisplayNames = useMemo(() => {
+  const hasPlayingStatus = useMemo(() => {
+    if (!Array.isArray(players)) return false;
+    return players.some((player) =>
+      Object.prototype.hasOwnProperty.call(player, "is_currently_playing")
+    );
+  }, [players]);
+
+  const currentlyPlayingPlayers = useMemo(() => {
     if (
       !players ||
       !Array.isArray(players) ||
-      players.length === 0 ||
-      !players[0]?.stats ||
-      !Array.isArray(players[0].stats) ||
-      players[0].stats.length === 0
+      players.length === 0
     ) {
       return [];
     }
 
-    // Flatten grouped stats to get all display names
-    const flatStats = flattenStats(players[0].stats);
-    return flatStats.map((stat) => stat.display_name);
-  }, [players]);
+    if (!hasPlayingStatus) return players;
 
-  // Generate columns with category grouping
-  const columns = useMemo(() => {
-    const baseColumns = [
-      {
-        accessorKey: "player",
-        header: () => <span className="ps-4">Player</span>,
-        cell: ({ row }) => {
-          const { jersey_number, name } = row.original;
-          return (
-            <div className="grid grid-cols-[1rem_auto] gap-2 ps-1">
-              <span className="text-muted-foreground text-end">
-                {jersey_number}
-              </span>
-              <span>{name}</span>
-            </div>
-          );
-        },
-      },
-    ];
+    return players.filter((player) => Boolean(player.is_currently_playing));
+  }, [players, hasPlayingStatus]);
 
-    // Group stats by category
+  const benchPlayers = useMemo(() => {
     if (
       !players ||
       !Array.isArray(players) ||
       players.length === 0 ||
-      !players[0]?.stats ||
-      !Array.isArray(players[0].stats)
+      !hasPlayingStatus
     ) {
-      return baseColumns;
+      return [];
     }
 
-    const categoryColumns = players[0].stats.map((categoryGroup) => {
-      const subColumns = categoryGroup.stats.map((stat) => ({
-        id: stat.display_name,
-        accessorKey: stat.display_name,
-        header: () => (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="text-center text-xs select-none">
-                {stat.display_name}
+    return players.filter((player) => !Boolean(player.is_currently_playing));
+  }, [players, hasPlayingStatus]);
+
+  const referencePlayer = useMemo(() => {
+    if (!Array.isArray(players)) return null;
+
+    return (
+      players.find(
+        (player) => Array.isArray(player?.stats) && player.stats.length > 0
+      ) || null
+    );
+  }, [players]);
+
+  // Generate columns with category grouping
+  const getColumns = useMemo(() => {
+    return (playerHeaderLabel) => {
+      const baseColumns = [
+        {
+          accessorKey: "player",
+          header: () => <span className="ps-4">{playerHeaderLabel}</span>,
+          cell: ({ row }) => {
+            const { jersey_number, name } = row.original;
+            return (
+              <div className="grid grid-cols-[1rem_auto] gap-2 ps-1">
+                <span className="text-muted-foreground text-end">
+                  {jersey_number}
+                </span>
+                <span className="truncate" title={name}>
+                  {name}
+                </span>
               </div>
-            </TooltipTrigger>
-            <TooltipContent>{stat.name}</TooltipContent>
-          </Tooltip>
-        ),
-        cell: ({ getValue }) => {
-          const value = getValue();
-          return (
-            <div className="text-center text-muted-foreground">
-              {value !== undefined ? value : "-"}
-            </div>
-          );
+            );
+          },
+          size: 150,
         },
-        size: 50,
-      }));
+      ];
 
-      return {
-        id: categoryGroup.category, // Add id for the parent column group
-        header: () => (
-          <div className="text-center font-bold text-xs">
-            {categoryGroup.category === "Other"
-              ? ""
-              : categoryGroup.category.toUpperCase()}
-          </div>
-        ),
-        columns: subColumns,
-      };
-    });
+      // Group stats by category
+      if (
+        !referencePlayer?.stats ||
+        !Array.isArray(referencePlayer.stats)
+      ) {
+        return baseColumns;
+      }
 
-    return [...baseColumns, ...categoryColumns];
-  }, [players, selectedPeriod, scoring_type]);
+      const statColumns = flattenStats(referencePlayer.stats).map((stat) => ({
+          id: stat.display_name,
+          accessorKey: stat.display_name,
+          header: () => (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center text-xs select-none">
+                  {stat.display_name}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{stat.name}</TooltipContent>
+            </Tooltip>
+          ),
+          cell: ({ getValue }) => {
+            const value = getValue();
+            return (
+              <div className="text-center text-muted-foreground">
+                {value !== undefined ? value : "-"}
+              </div>
+            );
+          },
+          size: 50,
+        }));
+
+      return [...baseColumns, ...statColumns];
+    };
+  }, [referencePlayer]);
+
+  const renderSection = (playerHeaderLabel, playerList, emptyMessage) => (
+    <section className="space-y-2">
+      {playerList.length > 0 ? (
+        <DataTable
+          columns={getColumns(playerHeaderLabel)}
+          data={mapPlayersToTableData(playerList)}
+          showPagination={false}
+          className="text-xs"
+        />
+      ) : (
+        <div className="text-xs text-muted-foreground border rounded-md p-3">
+          {emptyMessage}
+        </div>
+      )}
+    </section>
+  );
 
   return (
     <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem]">
-      <DataTable
-        columns={columns}
-        data={tableData}
-        showPagination={false}
-        className="text-xs"
-      />
+      {renderSection(
+        "ON FIELD/COURT",
+        currentlyPlayingPlayers,
+        "No players currently on the field/court."
+      )}
+
+      {hasPlayingStatus &&
+        renderSection(
+          "BENCH",
+          benchPlayers,
+          "No bench players available."
+        )}
     </div>
   );
 };

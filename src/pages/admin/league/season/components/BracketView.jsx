@@ -11,13 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BRACKET_TYPES } from "@/constants/bracket";
 import BracketDisplay from "@/components/brackets/BracketDisplay";
-import { Trophy, Users, BarChart, Plus } from "lucide-react";
+import { Trophy, Users, BarChart, Plus, GitFork } from "lucide-react";
 import OverviewCards from "@/components/common/OverviewCards";
 import { useModal } from "@/hooks/useModal";
 import GenerateBracketModal from "@/components/modals/GenerateBracketModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
-import DoubleElimination from "@/components/brackets/DoubleElimination";
-import SingleElimination from "@/components/brackets/SingleElimination";
 
 const BracketView = ({ season, leagueId }) => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -129,22 +127,22 @@ const BracketView = ({ season, leagueId }) => {
           <CardHeader className="relative">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <Trophy className="h-5 w-5 text-primary-foreground" />
+                <GitFork className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Season Bracket
                 </CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Generate a Season bracket for this season
-                </p>
+                <CardDescription>
+                  Generate a bracket to start the season format and track match progression.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="relative p-6">
             <div className="text-center p-8 border rounded-lg bg-muted/20">
-              <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <GitFork className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No Season Bracket</h3>
               <p className="text-muted-foreground mb-4">
                 This season doesn't have a Season bracket yet. Generate one to
@@ -175,14 +173,10 @@ const BracketView = ({ season, leagueId }) => {
     return (
       <div className="animate-in fade-in-50 duration-500">
         <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          {/* Enhanced background effects */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-
           <CardHeader className="relative">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <Trophy className="h-5 w-5 text-primary-foreground" />
+                <GitFork className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
@@ -272,7 +266,7 @@ const BracketView = ({ season, leagueId }) => {
       <CardHeader className="relative">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <Trophy className="h-5 w-5 text-primary-foreground" />
+            <GitFork className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
             <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">

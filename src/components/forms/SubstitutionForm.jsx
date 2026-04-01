@@ -133,7 +133,7 @@ const SubstitutionForm = ({ currentPlayers, gamePlayers, onClose }) => {
         </div>
       </div>
 
-      <Button type="submit" className="mt-10" disabled={isPending}>
+      <Button type="submit" className="mt-5" disabled={isPending}>
         {isPending ? (
           <>
             <Loader2 className="animate-spin mr-2" />
