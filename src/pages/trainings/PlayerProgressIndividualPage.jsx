@@ -68,7 +68,7 @@ const PlayerProgressIndividualPage = () => {
               value={dateRange}
               onChange={handleDateRangeChange}
               placeholder="Select date range..."
-              className="w-auto min-w-36 justify-center bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg border-primary/20"
+              className="w-auto min-w-36 justify-center bg-primary/10 border-primary/20 text-sm text-primary focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background rounded-md"
             />
           </div>
         </UniversityPageHeader>

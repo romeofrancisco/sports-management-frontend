@@ -36,7 +36,7 @@ export const useCreateReservation = (options = {}) => {
     onError: (err) => {
       if (options.onError) options.onError(err);
     },
-    ...options,
+    ...options
   });
 };
 

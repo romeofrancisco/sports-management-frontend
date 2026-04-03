@@ -123,6 +123,12 @@ export const createTeamOverviewChartOptions = (overview) => ({
     tooltip: {
       ...baseChartOptions.plugins.tooltip,
       callbacks: {
+                label: function(context) {
+          if (context.dataset.label === "Training Attendance Rate") {
+            return context.dataset.label + ': ' + context.parsed.y + '%';
+          }
+          return context.dataset.label + ': ' + context.parsed.y;
+        },
         afterBody: function(tooltipItems) {
           const teamIndex = tooltipItems[0].dataIndex;
           const team = overview?.team_attendance?.[teamIndex];
