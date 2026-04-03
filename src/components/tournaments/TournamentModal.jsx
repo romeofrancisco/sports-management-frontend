@@ -17,8 +17,6 @@ const TournamentModal = ({ open, onOpenChange, tournament = null }) => {
   const { mutate: createTournament, isPending: isCreating } = useCreateTournament();
   const { mutate: updateTournament, isPending: isUpdating } = useUpdateTournament();
 
-  console.log("TournamentModal rendered with tournament:", tournament);
-
   const {
     control,
     handleSubmit,
@@ -46,7 +44,7 @@ const TournamentModal = ({ open, onOpenChange, tournament = null }) => {
 
   // Fetch teams for the selected sport
   const { data: allTeams = [] } = useAllTeams(
-    !!selectedSport,
+    !!selectedSport && open,
     { sport: selectedSport }
   );
 

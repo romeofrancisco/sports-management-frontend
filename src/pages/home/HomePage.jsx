@@ -5,6 +5,7 @@ import {
   StatsSection,
   AboutSection,
   FeaturesSection,
+  FreeViewingSection,
   SportsSection,
   UserRolesSection,
   BenefitsSection,
@@ -39,6 +40,7 @@ const HomePage = () => {
       <HeroSection />
       <AboutSection />
       <FeaturesSection />
+      <FreeViewingSection />
       <SportsSection />
       <UserRolesSection />
       <BenefitsSection />

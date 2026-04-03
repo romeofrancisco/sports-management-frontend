@@ -6,7 +6,7 @@ import TournamentsContainer from "@/components/tournaments/TournamentsContainer"
 import TournamentModal from "@/components/tournaments/TournamentModal";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 
-const TournamentsList = () => {
+const TournamentsList = ({ isPublicView = false }) => {
   const { isOpen, closeModal, openModal } = useModal();
   const { isAdmin } = useRolePermissions();
 
@@ -16,8 +16,11 @@ const TournamentsList = () => {
         {/* Enhanced Header */}
         <div className="animate-in fade-in-50 duration-500">
           <UniversityPageHeader
-            title="Tournament Management"
-            description="Create and manage sports tournaments and competitions"
+            showBackButton={isPublicView}
+            backButtonText="Back to Home"
+            backButtonPath={isPublicView ? "/" : undefined}
+            title={isPublicView ? "Tournaments" : "Tournament Management"}
+            description={isPublicView ? "Public read-only view of tournament competitions" : "Create and manage sports tournaments and competitions"}
           />
         </div>
 

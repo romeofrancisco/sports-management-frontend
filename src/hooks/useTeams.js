@@ -55,11 +55,11 @@ export const useTeamDetails = (team) => {
   });
 };
 
-export const useSportTeams = (sport, division = null) => {
+export const useSportTeams = (sport, division = null, enabled = true) => {
   return useQuery({
     queryKey: [sport, "teams", division],
     queryFn: () => fetchSportTeams(sport, division),
-    enabled: !!sport,
+    enabled: !!sport && enabled,
   });
 };
 

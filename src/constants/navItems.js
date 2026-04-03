@@ -35,6 +35,11 @@ export const publicNavigation = () => {
       icon: PackageOpen,
     },
     {
+      title: "Scoreboard",
+      href: "/#scoreboard",
+      icon: Calendar,
+    },
+    {
       title: "Sports",
       href: "/#sports",
       icon: Volleyball,
