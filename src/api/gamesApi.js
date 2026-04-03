@@ -22,6 +22,15 @@ export const fetchGameDetails = async (id) => {
   }
 };
 
+export const fetchGameReservedFacilities = async (params = {}) => {
+  try {
+    const { data } = await api.get(`/games/reserved-facilities/`, { params });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createGame = async (gameData) => {
   try {
     const { data } = await api.post("/games/", gameData);

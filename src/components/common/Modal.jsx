@@ -28,7 +28,7 @@ const Modal = ({
   size = "md", // sm, md, lg, xl, full
   maxHeight = "90vh",
   showHeader = true,
-  headerGradient = true,
+  headerGradient = false,
   scrollable = true,
 
   // Behavior props
@@ -97,13 +97,13 @@ const Modal = ({
             className={`px-6 pt-6 pb-4 text-start border-b border-border/50 ${
               headerGradient
                 ? "bg-gradient-to-r from-background via-primary/5 to-background"
-                : "bg-background"
+                : "bg-primary/10"
             } ${headerClassName}`}
           >
             <div className="flex items-center gap-3">
               {Icon && (
-                <div className="p-2 rounded-lg bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
-                  <Icon className="h-5 w-5 text-primary" />
+                <div className="p-2.5 rounded-lg bg-primary">
+                  <Icon className="size-6 text-primary-foreground" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
