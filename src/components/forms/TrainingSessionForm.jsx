@@ -342,19 +342,18 @@ const TrainingSessionForm = ({
                     )}
                   </SelectItem>
                 ))}
-                <div className="text-center py-4">
-                  {isLoadingReservedFacilities && (
-                    <p className="text-xs text-muted-foreground">
-                      Loading reserved facilities...
+
+                {isLoadingReservedFacilities && (
+                  <p className="text-center py-4 text-xs text-muted-foreground">
+                    Loading reserved facilities...
+                  </p>
+                )}
+                {!isLoadingReservedFacilities &&
+                  reservedFacilities.length === 0 && (
+                    <p className="text-center py-4 text-xs text-muted-foreground">
+                      No facilities reserved found.
                     </p>
                   )}
-                  {!isLoadingReservedFacilities &&
-                    reservedFacilities.length === 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        No facilities reserved found.
-                      </p>
-                    )}
-                </div>
               </SelectContent>
             </Select>
           </div>
@@ -367,6 +366,7 @@ const TrainingSessionForm = ({
             help_text="Location is auto-filled from the selected reservation"
             rules={{ required: "Location is required" }}
             errors={errors}
+            disabled={true}
           />
         </div>
       ) : (

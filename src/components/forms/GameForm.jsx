@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { convertToFormData } from "@/utils/convertToFormData";
 import useFilteredTeams from "@/hooks/useFilteredTeams";
-import { useCreateGame, useUpdateGame } from "@/hooks/useGames";
+import {
+  useCreateGame,
+  useGameReservedFacilities,
+  useUpdateGame,
+} from "@/hooks/useGames";
 import { GAME_TYPES, GAME_TYPE_VALUES } from "@/constants/game";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
 import ControlledTeamSelect from "../common/ControlledTeamSelect";
 import ControlledDateTimePicker from "../common/ControlledDateTimePickerComponent";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Label } from "../ui/label";
+import { Badge } from "../ui/badge";
 
 const GameForm = ({
   sports,
@@ -21,6 +34,10 @@ const GameForm = ({
   isLeagueGame = false,
 }) => {
   const isEdit = !!game;
+  const [locationMode, setLocationMode] = useState(
+    isEdit && game?.location ? "manual" : "reserved",
+  );
+  const [selectedReservationId, setSelectedReservationId] = useState("");
   const { permissions, isAdmin, isCoach } = useRolePermissions();
   const { mutate: createGame, isPending: isCreating } = useCreateGame();
   const { mutate: updateGame, isPending: isUpdating } = useUpdateGame(game?.id);
@@ -33,6 +50,7 @@ const GameForm = ({
     watch,
     setError,
     clearErrors,
+    setValue,
   } = useForm({
     defaultValues: {
       sport: isEdit ? String(game.sport) : null,
@@ -54,6 +72,11 @@ const GameForm = ({
   const selectedHomeTeam = watch("home_team_id");
   const selectedAwayTeam = watch("away_team_id");
 
+  const {
+    data: reservedFacilities = [],
+    isFetching: isLoadingReservedFacilities,
+  } = useGameReservedFacilities({}, locationMode === "reserved");
+
   const filteredTeams = useFilteredTeams(teams, sports, selectedSport);
 
   // Additional filtering for coaches - they can only create games involving their teams
@@ -68,6 +91,33 @@ const GameForm = ({
   };
 
   const availableTeams = getAvailableTeams();
+
+  const handleReservationSelect = (reservationId) => {
+    setSelectedReservationId(reservationId);
+
+    const reservation = reservedFacilities.find(
+      (item) => item.reservation_id.toString() === reservationId,
+    );
+
+    if (!reservation) {
+      return;
+    }
+
+    const reservationStart = new Date(reservation.start_datetime);
+
+    setValue("location", reservation.location, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+    setValue("date", format(reservationStart, "yyyy-MM-dd"), {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+    setValue("time", format(reservationStart, "HH:mm"), {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
   const onSubmit = (data) => {
     // Clear any existing errors before submission
@@ -128,7 +178,7 @@ const GameForm = ({
     });
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 py-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
       {/* Display general form errors */}
       {errors.root && (
         <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
@@ -171,7 +221,11 @@ const GameForm = ({
         excludeTeamId={selectedAwayTeam}
         rules={{ required: "Home team is required" }}
         errors={errors}
-        disabled={!selectedSport || (isEdit && isLeagueGame) ||  game?.status === "in_progress"}
+        disabled={
+          !selectedSport ||
+          (isEdit && isLeagueGame) ||
+          game?.status === "in_progress"
+        }
         searchPlaceholder="Search home teams..."
       />
 
@@ -193,11 +247,119 @@ const GameForm = ({
           },
         }}
         errors={errors}
-        disabled={!selectedSport || (isEdit && isLeagueGame) ||  game?.status === "in_progress"}
+        disabled={
+          !selectedSport ||
+          (isEdit && isLeagueGame) ||
+          game?.status === "in_progress"
+        }
         searchPlaceholder="Search away teams..."
       />
 
-      {/* Date and Time */}
+      {/* Schedule and Venue */}
+
+      <div className="space-y-1">
+        <Label className="text-sm font-medium text-foreground">
+          Mode of Location Selection
+        </Label>
+        <Select value={locationMode} onValueChange={setLocationMode}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select location source" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="reserved">Reserved facility</SelectItem>
+            <SelectItem value="manual">Manual location entry</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {locationMode === "reserved" ? (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-foreground">
+            Reserved Facilities
+          </Label>
+          <Select
+            value={selectedReservationId}
+            onValueChange={handleReservationSelect}
+          >
+            <SelectTrigger className="w-full" size="lg">
+              <SelectValue placeholder="Select a reserved facility" />
+            </SelectTrigger>
+            <SelectContent>
+              {reservedFacilities.map((reservation) => (
+                <SelectItem
+                  key={reservation.reservation_id}
+                  value={reservation.reservation_id.toString()}
+                >
+                    <div className="grid">
+                      <p className="text-sm text-start">
+                        {reservation.facility_name}
+                      </p>
+                      <p className="text-start text-xs">
+                        {format(
+                          new Date(reservation.start_datetime),
+                          "MMM d, yyyy - hh:mm:a",
+                        )}{" "}
+                        to{" "}
+                        {format(
+                          new Date(reservation.end_datetime),
+                          "hh:mm:a",
+                        )}{" "}
+                      </p>
+                    </div>
+                    {reservation.status === "approved" && (
+                      <Badge className=" bg-green-800 text-[0.6rem]">
+                        Approved
+                      </Badge>
+                    )}
+                    {reservation.status === "pending" && (
+                      <Badge className=" bg-yellow-700 text-[0.6rem]">
+                        Pending
+                      </Badge>
+                    )}
+                </SelectItem>
+              ))}
+
+              {isLoadingReservedFacilities && (
+                <p className="text-center py-4 text-xs text-muted-foreground">
+                  Loading reserved facilities...
+                </p>
+              )}
+              {!isLoadingReservedFacilities &&
+                reservedFacilities.length === 0 && (
+                  <p className="text-center py-4 text-xs text-muted-foreground">
+                    No facilities reserved found.
+                  </p>
+                )}
+            </SelectContent>
+          </Select>
+
+          <ControlledInput
+            name="location"
+            control={control}
+            label="Selected Location"
+            placeholder="Select a reservation to fill location"
+            rules={{ required: "Location is required" }}
+            errors={errors}
+            disabled
+          />
+        </div>
+      ) : (
+        <ControlledInput
+          name="location"
+          control={control}
+          label="Location"
+          placeholder="Enter game location"
+          rules={{
+            required: "Location is required",
+            minLength: {
+              value: 2,
+              message: "Location must be at least 2 characters",
+            },
+          }}
+          errors={errors}
+        />
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ControlledDateTimePicker
           control={control}
@@ -227,22 +389,6 @@ const GameForm = ({
           errors={errors}
         />
       </div>
-
-      {/* Location */}
-      <ControlledInput
-        name="location"
-        control={control}
-        label="Location"
-        placeholder="Enter game location"
-        rules={{
-          required: "Location is required",
-          minLength: {
-            value: 2,
-            message: "Location must be at least 2 characters",
-          },
-        }}
-        errors={errors}
-      />
 
       <Button type="submit" className="mt-4" disabled={isPending}>
         {isPending ? (

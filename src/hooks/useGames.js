@@ -8,6 +8,7 @@ import {
   manageGame,
   fetchGamePlayers,
   fetchCurrentPlayers,
+  fetchGameReservedFacilities,
   assignCoachToGame,
   removeCoachFromGame,
   fetchAvailableCoaches,
@@ -41,6 +42,14 @@ export const useGameDetails = (gameId) => {
     queryKey: ["game", gameId],
     queryFn: () => fetchGameDetails(gameId),
     enabled: !!gameId,
+  });
+};
+
+export const useGameReservedFacilities = (filters = {}, enabled = true) => {
+  return useQuery({
+    queryKey: ["game-reserved-facilities", filters],
+    queryFn: () => fetchGameReservedFacilities(filters),
+    enabled,
   });
 };
 
