@@ -32,6 +32,7 @@ const GameForm = ({
   onClose,
   game = null,
   isLeagueGame = false,
+  isTournament = false,
 }) => {
   const isEdit = !!game;
   const [locationMode, setLocationMode] = useState(
@@ -187,14 +188,21 @@ const GameForm = ({
       )}
 
       {/* League Game Notice */}
-      {isEdit && isLeagueGame && (
+      {isEdit && isLeagueGame ? (
         <div className="bg-primary/20 border border-primary/50 rounded-lg p-3 mb-2">
           <p className="text-sm text-primary">
             <strong>League Game:</strong> Only date and venue can be modified
-            for league games. Teams and sport are fixed by the league schedule.
+            for league games. Teams and sport are fixed by the league bracket.
           </p>
         </div>
-      )}
+      ) : isEdit && isTournament ? (
+        <div className="bg-primary/20 border border-primary/50 rounded-lg p-3 mb-2">
+          <p className="text-sm text-primary">
+            <strong>Tournament Game:</strong> Only date and venue can be
+            modified for tournament games. Teams and sport are determined by the tournament bracket.
+          </p>
+        </div>
+      ) : null}
 
       {/* Sport */}
       <ControlledSelect
@@ -290,32 +298,32 @@ const GameForm = ({
                   key={reservation.reservation_id}
                   value={reservation.reservation_id.toString()}
                 >
-                    <div className="grid">
-                      <p className="text-sm text-start">
-                        {reservation.facility_name}
-                      </p>
-                      <p className="text-start text-xs">
-                        {format(
-                          new Date(reservation.start_datetime),
-                          "MMM d, yyyy - hh:mm:a",
-                        )}{" "}
-                        to{" "}
-                        {format(
-                          new Date(reservation.end_datetime),
-                          "hh:mm:a",
-                        )}{" "}
-                      </p>
-                    </div>
-                    {reservation.status === "approved" && (
-                      <Badge className=" bg-green-800 text-[0.6rem]">
-                        Approved
-                      </Badge>
-                    )}
-                    {reservation.status === "pending" && (
-                      <Badge className=" bg-yellow-700 text-[0.6rem]">
-                        Pending
-                      </Badge>
-                    )}
+                  <div className="grid">
+                    <p className="text-sm text-start">
+                      {reservation.facility_name}
+                    </p>
+                    <p className="text-start text-xs">
+                      {format(
+                        new Date(reservation.start_datetime),
+                        "MMM d, yyyy - hh:mm:a",
+                      )}{" "}
+                      to{" "}
+                      {format(
+                        new Date(reservation.end_datetime),
+                        "hh:mm:a",
+                      )}{" "}
+                    </p>
+                  </div>
+                  {reservation.status === "approved" && (
+                    <Badge className=" bg-green-800 text-[0.6rem]">
+                      Approved
+                    </Badge>
+                  )}
+                  {reservation.status === "pending" && (
+                    <Badge className=" bg-yellow-700 text-[0.6rem]">
+                      Pending
+                    </Badge>
+                  )}
                 </SelectItem>
               ))}
 

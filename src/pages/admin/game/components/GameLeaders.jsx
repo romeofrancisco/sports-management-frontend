@@ -12,7 +12,7 @@ const GameLeaders = ({ game }) => {
   const { data, isLoading } = useGameLeaders(gameId);
 
   if (isLoading) return <Loading />;
-  if (!data) return <div>No game leaders data available</div>;
+  if (!data) return null;
 
   return (
     <Card>

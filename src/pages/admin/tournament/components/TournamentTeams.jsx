@@ -40,7 +40,8 @@ const TournamentTeams = ({ tournament }) => {
   const { data: teamFormData } = useTournamentTeamForm(tournament?.id);
   const { data: allTeams, isLoading: isLoadingAllTeams } = useSportTeams(
     sport,
-    division
+    division,
+    isAddDialogOpen
   );
 
   // Create a map of team form data for easy lookup

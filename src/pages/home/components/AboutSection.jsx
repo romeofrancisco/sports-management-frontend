@@ -33,9 +33,6 @@ const images = [
     src: "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843027/assets/594324622_2099414874132514_2581763891711770559_n_jwpquj.jpg",
   },
   {
-    src: "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843028/assets/591270438_4333363946983482_1095040117327751911_n_kvpn64.jpg",
-  },
-  {
     src: "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843029/assets/591619325_811138368579109_556836416777384057_n_t4aat2.jpg",
   },
   {
@@ -48,11 +45,10 @@ const stackPositions = [
   { x: 0, y: 0, rotate: 0 }, // Front (top of stack)
   { x: 8, y: -8, rotate: 3 }, // Second
   { x: 16, y: -16, rotate: -2 }, // Third
-  { x: 24, y: -24, rotate: 4 }, // Back (bottom of stack)
 ];
 
 const AboutSection = () => {
-  const [imageOrder, setImageOrder] = useState([0, 1, 2, 3]);
+  const [imageOrder, setImageOrder] = useState([0, 1, 2]);
 
   const handleClick = () => {
     // Move front image to back, shift others forward

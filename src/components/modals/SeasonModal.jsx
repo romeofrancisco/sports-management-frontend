@@ -14,6 +14,7 @@ const SeasonModal = ({ isOpen, onClose, sport, season = null }) => {
   const { data: teams, isLoading: isTeamsLoading } = useSportTeams(
     sport?.slug,
     leagueDetails?.division,
+    isOpen
   );
 
   if (isTeamsLoading || isLeagueLoading) return <FullPageLoading />;

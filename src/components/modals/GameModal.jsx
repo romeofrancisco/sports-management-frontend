@@ -6,7 +6,7 @@ import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import Modal from "../common/Modal";
 import { Volleyball } from "lucide-react";
 
-const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false }) => {
+const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false, isTournament = false }) => {
   const isEdit = !!game;
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
   const { checkGamePermission } = useCoachPermissions();
@@ -33,6 +33,7 @@ const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false }) => {
           onClose={onClose}
           game={game}
           isLeagueGame={isLeagueGame}
+          isTournament={isTournament}
         />
       ) : (
         <div className="text-center py-8">

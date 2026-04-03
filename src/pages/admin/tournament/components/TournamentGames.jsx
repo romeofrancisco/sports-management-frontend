@@ -298,7 +298,7 @@ const TournamentGames = ({ tournamentId }) => {
         isOpen={showEditModal}
         onClose={closeEditModal}
         game={editingGame}
-        isTournamentGame={true}
+        isTournament={true}
       />
     </div>
   );

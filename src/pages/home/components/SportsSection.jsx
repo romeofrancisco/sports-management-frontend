@@ -5,7 +5,6 @@ import { useSports } from "@/hooks/useSports";
 const sportsImages = [
   "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843028/assets/591465304_1404743477833891_1926459002178898204_n_v66ddv.jpg",
   "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843028/assets/589789069_1845757402996242_4047753683090640923_n_i1cf76.jpg",
-  "https://res.cloudinary.com/dzebi1atl/image/upload/v1764843028/assets/591239270_810954241933371_571631130098765216_n_nsl1xh.jpg",
 ];
 
 const SportsSection = () => {

@@ -11,6 +11,13 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import PlayerRegistrationPage from "@/pages/auth/PlayerRegistrationPage";
 import HomePage from "@/pages/home/HomePage";
 import Terms from "@/pages/Terms";
+import GameSchedule from "@/pages/admin/game/GameSchedule";
+import GameResult from "@/pages/admin/game/GameResult";
+import LeaguesList from "@/pages/admin/league/LeaguesList";
+import LeagueDetails from "@/pages/admin/league/LeagueDetails";
+import SeasonDetails from "@/pages/admin/league/season/SeasonDetails";
+import TournamentsList from "@/pages/admin/tournament/TournamentsList";
+import TournamentDetails from "@/pages/admin/tournament/TournamentDetails";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +58,90 @@ export const router = createBrowserRouter([
       {
         path: "/terms",
         element: <Terms />,
+      },
+      {
+        path: "/games",
+        element: <GameSchedule isPublicView />,
+      },
+      {
+        path: "/games/:gameId",
+        element: <GameSchedule isPublicView />,
+      },
+      {
+        path: "/games/:gameId/game-result",
+        element: <GameResult />,
+      },
+      {
+        path: "/leagues",
+        element: <LeaguesList isPublicView />,
+      },
+      {
+        path: "/leagues/:league",
+        element: <LeagueDetails />,
+      },
+      {
+        path: "/leagues/:league/leaderboard",
+        element: <LeagueDetails />,
+      },
+      {
+        path: "/leagues/:league/teams",
+        element: <LeagueDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons",
+        element: <LeagueDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season/standings",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season/games",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season/games/:gameId",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season/teams",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/leagues/:league/seasons/:season/bracket",
+        element: <SeasonDetails />,
+      },
+      {
+        path: "/tournaments",
+        element: <TournamentsList isPublicView />,
+      },
+      {
+        path: "/tournaments/:tournamentId",
+        element: <TournamentDetails />,
+      },
+      {
+        path: "/tournaments/:tournamentId/standings",
+        element: <TournamentDetails />,
+      },
+      {
+        path: "/tournaments/:tournamentId/teams",
+        element: <TournamentDetails />,
+      },
+      {
+        path: "/tournaments/:tournamentId/games",
+        element: <TournamentDetails />,
+      },
+      {
+        path: "/tournaments/:tournamentId/games/:gameId",
+        element: <TournamentDetails />,
+      },
+      {
+        path: "/tournaments/:tournamentId/bracket",
+        element: <TournamentDetails />,
       },
       {
         path: "/*",
