@@ -140,6 +140,9 @@ export const fetchTrainingSessionAttendance = async (id) =>
 export const fetchTrainingSessionMetricsConfig = async (id) => 
   handleApiCall(() => api.get(`trainings/sessions/${id}/metrics-config/`));
 
+export const fetchTrainingReservedFacilities = async (params = {}) =>
+  handleApiCall(() => api.get("trainings/sessions/reserved-facilities/", { params }));
+
 export const createTrainingSession = async (sessionData) => 
   handleApiCall(() => api.post("trainings/sessions/", sessionData));
 

@@ -105,7 +105,7 @@ const ControlledTeamSelect = ({
                     <div className="flex items-center gap-2">
                       <TeamLogo team={selectedTeam} size="w-5 h-5" />
                       <div className="flex flex-col items-start">
-                        <span className="text-sm">{selectedTeam.name}</span>
+                        <span className="text-sm truncate max-w-[200px] md:max-w-[300px]">{selectedTeam.name}</span>
                         {selectedTeam.sport && (
                           <span className="text-xs text-muted-foreground">
                             {selectedTeam.sport.name}
@@ -145,7 +145,7 @@ const ControlledTeamSelect = ({
                           <div className="flex items-center gap-2">
                             <TeamLogo team={team} size="w-6 h-6" />
                             <div className="flex flex-col items-start">
-                              <span className="text-sm">{team.name}</span>
+                              <span className="text-sm truncate max-w-[200px]">{team.name}</span>
                               {team.sport && (
                                 <span className="text-xs text-muted-foreground">
                                   {team.sport.name}
