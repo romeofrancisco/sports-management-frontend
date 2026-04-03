@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import InsightsHeader from "./insights/InsightsHeader";
 import AIAnalysisSection from "./insights/AIAnalysisSection";
@@ -9,6 +9,7 @@ import AttendanceTrendsSection from "./insights/AttendanceTrendsSection";
 import NoInsightsState from "./insights/NoInsightsState";
 import LoadingState from "./insights/LoadingState";
 import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 const InsightsSection = ({
   insights,
@@ -17,6 +18,9 @@ const InsightsSection = ({
   aiEnabled,
   onAiToggle,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const CONTENT_MAX_HEIGHT = "max-h-[450px]";
+
   // Check if there's an API error (network, timeout, etc.)
   const hasApiError = !!error;
 
@@ -45,9 +49,7 @@ const InsightsSection = ({
   };
   // Check if AI analysis is using fallback (not a complete failure, just degraded)
   const hasAiFallback =
-    aiEnabled &&
-    insights &&
-    insights?.ai_insights?.fallback_used;
+    aiEnabled && insights && insights?.ai_insights?.fallback_used;
 
   // Check if there's a complete API failure (no data at all)
   if (hasApiError && !insights) {
@@ -81,39 +83,65 @@ const InsightsSection = ({
           <LoadingState />
         ) : (
           <div className="space-y-4">
-            {/* Show warning if AI is using fallback mode */}
-            {hasAiFallback && (
-              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                <p className="text-sm text-amber-700 dark:text-amber-400">
-                  <span className="font-medium">AI Analysis Limited:</span>
-                  {" "}Using fallback analysis due to API quota limits. AI insights will resume automatically when quota resets.
-                </p>
+            <div
+              className={`relative overflow-hidden transition-all duration-300 ${
+                isExpanded ? "max-h-none" : CONTENT_MAX_HEIGHT
+              }`}
+            >
+              <div className="space-y-4">
+                {/* Show warning if AI is using fallback mode */}
+                {hasAiFallback && (
+                  <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      <span className="font-medium">AI Analysis Limited:</span>{" "}
+                      Using fallback analysis due to API quota limits. AI
+                      insights will resume automatically when quota resets.
+                    </p>
+                  </div>
+                )}
+                {/* AI Analysis Section - Show when AI is enabled and analysis is available */}
+                {aiEnabled && insights?.ai_insights?.ai_analysis && (
+                  <AIAnalysisSection insights={insights} />
+                )}
+                {/* System Health Warnings - Show when AI is disabled OR when AI is using fallback */}
+                {(!aiEnabled || hasAiFallback) && (
+                  <SystemWarningsSection
+                    warnings={insights?.system_health_warnings}
+                  />
+                )}
+                {/* Regular Insights Section - Always show when insights are available */}
+                <InsightsListSection insights={insights?.insights} />
+                {/* Recommendations Section - Always show when recommendations are available */}
+                <RecommendationsSection
+                  recommendations={insights?.recommendations}
+                />
+                {/* Attendance Trends - Always show when available */}
+                <AttendanceTrendsSection
+                  attendanceTrends={insights?.attendance_trends}
+                />
+                {/* No Insights State - Show when no relevant content is available */}
+                {shouldShowNoInsights() && (
+                  <NoInsightsState aiEnabled={aiEnabled && !hasAiFallback} />
+                )}
               </div>
-            )}
-            {/* AI Analysis Section - Show when AI is enabled and analysis is available */}
-            {aiEnabled && insights?.ai_insights?.ai_analysis && (
-              <AIAnalysisSection insights={insights} />
-            )}
-            {/* System Health Warnings - Show when AI is disabled OR when AI is using fallback */}
-            {(!aiEnabled || hasAiFallback) && (
-              <SystemWarningsSection
-                warnings={insights?.system_health_warnings}
-              />
-            )}
-            {/* Regular Insights Section - Always show when insights are available */}
-            <InsightsListSection insights={insights?.insights} />
-            {/* Recommendations Section - Always show when recommendations are available */}
-            <RecommendationsSection
-              recommendations={insights?.recommendations}
-            />
-            {/* Attendance Trends - Always show when available */}
-            <AttendanceTrendsSection
-              attendanceTrends={insights?.attendance_trends}
-            />
-            {/* No Insights State - Show when no relevant content is available */}
-            {shouldShowNoInsights() && (
-              <NoInsightsState aiEnabled={aiEnabled && !hasAiFallback} />
-            )}
+
+              {!isExpanded && (
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-card to-transparent" />
+              )}
+            </div>
+
+            <div className="flex justify-center">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={() => setIsExpanded((prev) => !prev)}
+              >
+                {isExpanded ? "Show Less" : "Expand More"}
+                <ChevronDown />
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>

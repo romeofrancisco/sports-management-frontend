@@ -51,22 +51,22 @@ const getInsightIcon = (type) => {
 const getInsightColor = (type) => {
   switch (type) {
     case "warning":
-      return "from-card to-secondary/10 border-secondary/20";
+      return "bg-primary/5 border-primary/30";
     case "success":
-      return "from-card to-primary/10 border-primary/20";
+      return "bg-primary/5 border-primary/30";
     case "trend_up":
-      return "from-card to-primary/10 border-primary/20";
+      return "bg-primary/5 border-primary/30";
     case "trend_down":
       return "from-card to-destructive/10 border-destructive/20";
     default:
-      return "from-card to-secondary/10 border-secondary/20";
+      return "bg-primary/5 border-primary/30";
   }
 };
 
 const getIconColor = (type) => {
   switch (type) {
     case "warning":
-      return "text-secondary";
+      return "text-primary";
     case "success":
       return "text-primary";
     case "trend_up":
@@ -94,7 +94,7 @@ const RecommendationsSection = ({ recommendations }) => {
       <div className="flex items-center gap-2">
         <CheckCircle2 className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold">Recommendations</h3>
-        <Badge variant="secondary" className="text-xs">
+        <Badge variant="primary" className="text-xs">
           {recommendations.length}
         </Badge>
       </div>
@@ -108,7 +108,7 @@ const RecommendationsSection = ({ recommendations }) => {
           return (
             <Card
               key={`recommendation-${index}`}
-              className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500 bg-gradient-to-br ${colorClass}`}
+              className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500 ${colorClass}`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
@@ -185,7 +185,7 @@ const RecommendationsSection = ({ recommendations }) => {
                         recommendation.priority === "high"
                           ? "bg-destructive/10 text-destructive border-destructive/30"
                           : recommendation.priority === "medium"
-                          ? "bg-secondary/10 text-secondary border-secondary/30"
+                          ? "bg-primary/10 text-primary border-primary/30"
                           : "bg-primary/10 text-primary border-primary/30"
                       }`}
                     >

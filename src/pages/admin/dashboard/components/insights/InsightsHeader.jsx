@@ -22,7 +22,7 @@ const InsightsHeader = ({ aiEnabled, onAiToggle }) => {
 
       <div className="flex flex-col sm:flex-row xl:flex-col gap-3">
         {/* AI Toggle Control - Compact for sidebar */}
-        <div className="flex items-center justify-between gap-1 p-2 xl:p-2 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
+        <div className="flex items-center justify-between gap-1 p-2 xl:p-2 rounded-lg bg-primary/5 border border-primary/20">
           <div className="flex items-center gap-2 min-w-0">
             <Brain className="h-4 w-4 xl:h-3 xl:w-3 text-primary flex-shrink-0" />
             <span className="text-sm xl:text-xs font-medium text-primary truncate">
