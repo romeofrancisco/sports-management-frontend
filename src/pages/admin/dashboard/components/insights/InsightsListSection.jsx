@@ -51,22 +51,22 @@ const getInsightIcon = (type) => {
 const getInsightColor = (type) => {
   switch (type) {
     case "warning":
-      return "from-card to-secondary/5 border-secondary/30";
+      return "bg-primary/5 border-primary/30";
     case "success":
-      return "from-card to-primary/5 border-primary/30";
+      return "bg-primary/5 border-primary/30";
     case "trend_up":
-      return "from-card to-primary/5 border-primary/30";
+      return "bg-primary/5 border-primary/30";
     case "trend_down":
       return "from-card to-destructive/5 border-destructive/30";
     default:
-      return "from-card to-secondary/5 border-secondary/30";
+      return "bg-primary/5 border-primary/30";
   }
 };
 
 const getIconColor = (type) => {
   switch (type) {
     case "warning":
-      return "text-secondary";
+      return "text-primary";
     case "success":
       return "text-primary";
     case "trend_up":
@@ -94,7 +94,7 @@ const InsightsListSection = ({ insights }) => {
       <div className="flex items-center gap-2">
         <Lightbulb className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold">System Insights</h3>
-        <Badge variant="secondary" className="text-xs">
+        <Badge className="text-xs">
           {insights.length}
         </Badge>
       </div>
@@ -158,7 +158,7 @@ const InsightsListSection = ({ insights }) => {
                     variant="outline"
                     className={`text-xs ${
                       insight.type === "warning"
-                        ? "bg-secondary/10 text-secondary border-secondary/30"
+                        ? "bg-primary/10 text-primary border-primary/30"
                         : insight.type === "success"
                         ? "bg-primary/10 text-primary border-primary/30"
                         : ""

@@ -42,7 +42,7 @@ const AttendanceTrendsSection = ({ attendanceTrends }) => {
       <CardContent>
         <div className="space-y-4">
           {attendanceTrends.training && (
-            <div className="p-4 rounded-lg bg-secondary/10 border border-secondary/20">
+            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
               <h4 className="font-medium mb-2">Training Attendance</h4>
               <p className="text-sm text-muted-foreground">
                 {safeRender(

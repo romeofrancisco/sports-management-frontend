@@ -35,10 +35,10 @@ const UpcomingTrainingSection = ({ overview }) => {
             {overview.upcoming_training_sessions.slice(0, 2).map((training, index) => (
               <div
                 key={training.id || index}
-                className="relative overflow-hidden border border-amber-600/30 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
+                className="relative overflow-hidden border border-primary/30 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
               >
                 {/* Enhanced priority indicator */}
-                <div className="absolute top-0 right-0 w-2 h-full bg-amber-600"></div>
+                <div className="absolute top-0 right-0 w-2 h-full bg-primary"></div>
 
                 <div className="space-y-2">
                   {/* Header section with title and time */}
@@ -48,7 +48,7 @@ const UpcomingTrainingSection = ({ overview }) => {
                         {training.title}
                       </h4>
                     </div>
-                    <Badge className="bg-amber-600/10 text-amber-600 border-amber-600/20 text-xs">
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                       <Clock className="h-3 w-3 mr-1" />
                       {formatTo12HourTime(training.start_time) || "TBD"}
                     </Badge>
@@ -59,12 +59,12 @@ const UpcomingTrainingSection = ({ overview }) => {
                     {/* Left column */}
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3 w-3 text-amber-600" />
+                        <Calendar className="h-3 w-3 text-primary" />
                         <span>{formatShortDate(training.date)}</span>
                       </div>
                       {training.location && (
                         <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3 w-3 text-amber-600" />
+                          <MapPin className="h-3 w-3 text-primary" />
                           <span>{training.location}</span>
                         </div>
                       )}

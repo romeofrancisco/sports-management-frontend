@@ -50,7 +50,7 @@ const ProgressChartCard = ({
           {/* Metric Badge */}
           {selectedMetricData &&
             (selectedMetricData.metric_id === "overall" ? (
-              <Badge className="order-1">Overall Performance</Badge>
+              <Badge>Higher is Better</Badge>
             ) : (
               <Badge>
                 {selectedMetricData.is_lower_better

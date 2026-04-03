@@ -36,7 +36,7 @@ const MyTeamsSection = ({ overview }) => {
       <CardContent>
         {overview?.team_attendance?.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-            {overview.team_attendance.slice(0, 2).map((team, index) => (
+            {overview.team_attendance.slice(0, 3).map((team, index) => (
               <div
                 key={team.team_id || index}
                 className="relative overflow-hidden border-2 border-primary/20 rounded-xl p-4 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
@@ -89,7 +89,7 @@ const MyTeamsSection = ({ overview }) => {
                 </div>
               </div>
             ))}
-            {overview.team_attendance.length > 2 && (
+            {overview.team_attendance.length > 3 && (
               <Button className="w-full" onClick={() => navigate("/teams")}>
                 View All Teams
               </Button>

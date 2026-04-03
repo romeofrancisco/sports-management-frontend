@@ -19,7 +19,7 @@ const OverviewCards = ({ stats = [] }) => {
           return (
             <Card
               key={stat.title}
-              className={`group gap-0 relative overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br backdrop-blur-sm`}
+              className={`group gap-0 relative overflow-hidden cursor-pointer border-2 border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br backdrop-blur-sm`}
               style={{ animationDelay: `${index * 100}ms` }}
             onClick={() => stat.link && navigate(stat.link)}
             >

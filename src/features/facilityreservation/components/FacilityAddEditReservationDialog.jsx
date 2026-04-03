@@ -55,8 +55,10 @@ export function FacilityAddEditReservationDialog({
     }
   };
   const { addEvent, updateEvent } = useCalendar();
-  const { mutate: createReservationMutation } = useCreateReservation();
-  const { mutate: updateReservationMutation } = useUpdateReservation();
+  const { mutate: createReservationMutation, isPending: isCreatePending } =
+    useCreateReservation();
+  const { mutate: updateReservationMutation, isPending: isUpdatePending } =
+    useUpdateReservation();
   const isEditing = !!event;
   const { isAdmin, isCoach } = useRolePermissions();
   const { data: facilitiesData } = useFacilities({}, { noPagination: true });
@@ -174,8 +176,8 @@ export function FacilityAddEditReservationDialog({
           r.status === "approved"
             ? "green"
             : r.status === "rejected"
-            ? "red"
-            : "orange",
+              ? "red"
+              : "orange",
         meta: {
           status: r.status,
           facility: r.facility,
@@ -254,7 +256,7 @@ export function FacilityAddEditReservationDialog({
                 "Failed to update reservation";
               toast.error(msg);
             },
-          }
+          },
         );
       } else {
         createReservationMutation(payload, {
@@ -282,7 +284,7 @@ export function FacilityAddEditReservationDialog({
     } catch (error) {
       console.error(
         `Error ${isEditing ? "editing" : "adding"} reservation:`,
-        error
+        error,
       );
       toast.error(`Failed to ${isEditing ? "edit" : "add"} reservation`);
     }
@@ -298,7 +300,7 @@ export function FacilityAddEditReservationDialog({
       {children ? <ModalTrigger asChild>{children}</ModalTrigger> : null}
       <ModalContent>
         <ModalHeader>
-          <ModalTitle>
+          <ModalTitle className="mb-0">
             {isEditing ? "Edit Reservation" : "Add New Reservation"}
           </ModalTitle>
           <ModalDescription>
@@ -378,8 +380,18 @@ export function FacilityAddEditReservationDialog({
               Cancel
             </Button>
           </ModalClose>
-          <Button form="reservation-form" type="submit">
-            {isEditing ? "Save Changes" : "Create Reservation"}
+          <Button
+            form="reservation-form"
+            type="submit"
+            disabled={isCreatePending || isUpdatePending}
+          >
+            {isCreatePending
+              ? "Creating Reservation..."
+              : isUpdatePending
+                ? "Updating Reservation..."
+                : isEditing
+                  ? "Update Reservation"
+                  : "Create Reservation "}
           </Button>
         </ModalFooter>
       </ModalContent>

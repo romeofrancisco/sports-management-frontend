@@ -9,7 +9,7 @@ export const generateTeamOverviewData = (overview) => ({
   labels: overview?.team_attendance?.map((team) => team.team_name) || [],
   datasets: [
     {
-      label: "Attendance Rate (%)",
+      label: "Training Attendance Rate",
       data:
         overview?.team_attendance?.map((team) =>
           Math.round(team.attendance_rate || 0)
@@ -20,7 +20,7 @@ export const generateTeamOverviewData = (overview) => ({
       yAxisID: "percentage",
     },
     {
-      label: "Total Sessions",
+      label: "Training Sessions",
       data:
         overview?.team_attendance?.map((team) => team.total_sessions || 0) ||
         [],
@@ -141,7 +141,7 @@ export const generatePlayerDevelopmentData = (playerProgress) => ({
       yAxisID: "count",
     },
     {
-      label: "Number of Metrics",
+      label: "Number of Training Exercises",
       data:
         playerProgress?.player_progress
           ?.slice(0, 10)

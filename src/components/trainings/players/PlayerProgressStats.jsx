@@ -70,32 +70,32 @@ const PlayerProgressStats = ({ playerId }) => {
             {
               title: "Overall Progress",
               icon: (
-                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               ),
-              color: "from-secondary via-secondary/90 to-secondary/80",
-              bgColor: "bg-secondary/8",
-              borderColor: "border-secondary/30",
-              iconBg: "bg-secondary",
+              color: "from-primary via-primary/90 to-primary/80",
+              bgColor: "bg-primary/8",
+              borderColor: "border-primary/30",
+              iconBg: "bg-primary",
             },
             {
               title: "Best Performance",
               icon: (
-                <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               ),
-              color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-              bgColor: "bg-orange-500/8",
-              borderColor: "border-orange-500/30",
-              iconBg: "bg-orange-500",
+              color: "from-primary via-primary/90 to-primary/80",
+              bgColor: "bg-primary/8",
+              borderColor: "border-primary/30",
+              iconBg: "bg-primary",
             },
             {
               title: "Best Category",
               icon: (
-                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               ),
-              color: "from-red-500 via-red-500/90 to-red-500/80",
-              bgColor: "bg-red-500/8",
-              borderColor: "border-red-500/30",
-              iconBg: "bg-red-500",
+              color: "from-primary via-primary/90 to-primary/80",
+              bgColor: "bg-primary/8",
+              borderColor: "border-primary/30",
+              iconBg: "bg-primary",
             },
           ].map((stat, index) => (
             <Card
@@ -191,13 +191,13 @@ const PlayerProgressStats = ({ playerId }) => {
         : "--",
       description: "Total improvement",
       icon: (
-        <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+        <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
       ),
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      bgColor: "bg-secondary/8",
-      borderColor: "border-secondary/30",
-      iconBg: "bg-secondary",
-      textAccent: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+      textAccent: "text-primary",
     },
     {
       title: "Best Performance",
@@ -209,12 +209,12 @@ const PlayerProgressStats = ({ playerId }) => {
         : "--",
       description:
         playerData?.best_performance?.metric_name || "No data recorded",
-      icon: <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-      bgColor: "bg-orange-500/8",
-      borderColor: "border-orange-500/30",
-      iconBg: "bg-orange-500",
-      textAccent: "text-orange-600",
+      icon: <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />,
+      color: "from-primary via-primary/90 to-primary/80",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+      textAccent: "text-primary",
       unit: playerData?.best_performance?.unit,
     },
     {
@@ -224,12 +224,12 @@ const PlayerProgressStats = ({ playerId }) => {
           ? `+${parseFloat(bestCategory.average_improvement).toFixed(1)}%`
           : "--",
       description: bestCategory?.category_name || "No category data",
-      icon: <Star className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-      color: "from-red-500 via-red-500/90 to-red-500/80",
-      bgColor: "bg-red-500/8",
-      borderColor: "border-red-500/30",
-      iconBg: "bg-red-500",
-      textAccent: "text-red-600",
+      icon: <Star className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />,
+      color: "from-primary via-primary/90 to-primary/80",
+      bgColor: "bg-primary/8",
+      borderColor: "border-primary/30",
+      iconBg: "bg-primary",
+      textAccent: "text-primary",
     },
   ];
   return (

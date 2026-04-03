@@ -108,17 +108,6 @@ const UniversityPageHeader = ({
             </Button>
           )}
 
-          {/* Online Status */}
-          {showOnlineStatus && (
-            <div className="hidden xl:flex items-center gap-2 md:gap-3 bg-card/80 backdrop-blur-md rounded-full px-3 md:px-4 py-2 border-2 border-secondary/30 shadow-lg">
-              <div className="h-2.5 w-2.5 md:h-3 md:w-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 animate-pulse shadow-sm"></div>
-              <span className="text-xs md:text-sm font-semibold text-foreground whitespace-nowrap">
-                {user?.role?.includes("Admin")
-                  ? "System Online"
-                  : "Dashboard Active"}
-              </span>
-            </div>
-          )}
 
           {/* Enhanced University Colors Indicator */}
           {showUniversityColors && (
