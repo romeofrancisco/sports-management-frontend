@@ -21,6 +21,7 @@ import {
   fetchTrainingSessionWorkflow,
   fetchTrainingSessionAttendance,
   fetchTrainingSessionMetricsConfig,
+  fetchTrainingReservedFacilities,
   createTrainingSession,
   updateTrainingSession,
   deleteTrainingSession,
@@ -316,6 +317,16 @@ export const useTrainingSessionMetricsConfig = (id, enabled = true) => {
     queryKey: ["training-session-metrics-config", id],
     queryFn: () => fetchTrainingSessionMetricsConfig(id),
     enabled: enabled && !!id,
+  });
+};
+
+export const useTrainingReservedFacilities = (filters = {}, enabled = true) => {
+  const params = useMemo(() => ({ ...filters }), [filters]);
+
+  return useQuery({
+    queryKey: ["training-reserved-facilities", params],
+    queryFn: () => fetchTrainingReservedFacilities(params),
+    enabled,
   });
 };
 

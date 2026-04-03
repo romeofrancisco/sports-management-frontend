@@ -121,7 +121,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
                 {statusInfo.statusText}
               </Badge>
             </div>
-            <CardDescription className="mb-2 line-clamp-2">
+            <CardDescription className="mb-2 line-clamp-1" title={session.description}>
               {session.description || "No description provided"}
             </CardDescription>
             <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-muted-foreground">
@@ -155,7 +155,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
                 <p className="text-xs font-medium text-primary uppercase tracking-wide">
                   Team
                 </p>
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium text-foreground truncate max-w-[200px] md:max-w-[150px]" title={session.team_name}>
                   {session.team_name || "No team specified"}
                 </p>
               </div>
@@ -170,7 +170,7 @@ const TrainingSessionCard = ({ session, onEdit, onDelete, onViewDetails }) => {
                 <p className="text-xs font-medium text-secondary uppercase tracking-wide">
                   Venue
                 </p>
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium text-foreground truncate max-w-[200px] md:max-w-[150px]" title={session.location}>
                   {session.location || "No venue specified"}
                 </p>
               </div>
