@@ -25,12 +25,33 @@ const ChartCard = ({
   icon,
   height = 300,
   emptyMessage = "Chart data will appear here once information is available.",
-  hasData = true
+  hasData = true,
+  onClick
 }) => {
   const IconComponent = icon || BarChart3;
 
+  const handleKeyDown = (event) => {
+    if (!onClick) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <Card className={`border-2 border-primary/20 overflow-hidden ${className}`}>
+    <Card
+      className={`border-2 border-primary/20 overflow-hidden ${
+        onClick
+          ? "cursor-pointer transition-all duration-300 hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/40"
+          : ""
+      } ${className}`}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `Open summary for ${title}` : undefined}
+    >
       <CardHeader className="relative">
         <div className="flex md:flex-row flex-col justify-between space-y-4 lg:space-y-0">
           <div className="flex items-center gap-3">

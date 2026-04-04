@@ -9,12 +9,21 @@ export const dashboardService = {
   getAdminAnalytics: () => api.get('dashboard/admin_analytics/'),
   getAdminInsights: (aiEnabled = true) => api.get(`dashboard/admin_insights/?ai=${aiEnabled}`),
   getAdminReports: (reportType) => api.get(`dashboard/admin_reports/?type=${reportType || 'summary'}`),
+  getAdminChartSummary: (chartType) =>
+    api.get(`dashboard/admin_chart_summary/?chart_type=${chartType}`),
 
   // Coach endpoints
   getCoachOverview: () => api.get('dashboard/coach_overview/'),
   getCoachPlayerProgress: (teamSlug = null) => {
     const params = teamSlug ? `?team_slug=${teamSlug}` : '';
     return api.get(`dashboard/coach_player_progress/${params}`);
+  },
+  getCoachChartSummary: (chartType, teamSlug = null) => {
+    const params = new URLSearchParams({ chart_type: chartType });
+    if (teamSlug) {
+      params.append("team_slug", teamSlug);
+    }
+    return api.get(`dashboard/coach_chart_summary/?${params.toString()}`);
   },
   
   // Admin access to specific coach data (for CoachDetails component)

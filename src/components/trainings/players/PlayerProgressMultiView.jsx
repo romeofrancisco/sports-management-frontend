@@ -22,6 +22,8 @@ import MultiChartHeader from "@/components/charts/PlayerProgressMultiChart/Multi
 import { useMultiPlayerChartData } from "@/hooks/useMultiPlayerChartData";
 import { useTeamOverview } from "@/hooks/useTeamOverview";
 import ChartCard from "@/components/charts/ChartCard";
+import useChartSummaryModal from "@/hooks/useChartSummaryModal";
+import ChartSummaryModal from "@/components/charts/ChartSummaryModal";
 
 const PlayerProgressMultiView = ({
   players = [],
@@ -32,6 +34,39 @@ const PlayerProgressMultiView = ({
   onDateChange,
 }) => {
   const [selectedMetric, setSelectedMetric] = useState("overall");
+  const {
+    isOpen,
+    setIsOpen,
+    title,
+    summaryLines,
+    analysis,
+    error,
+    isLoading: summaryLoading,
+    openSummary,
+  } = useChartSummaryModal({
+    fetchSummary: async (chartType) => ({
+      data: {
+        title:
+          chartType === "comparison"
+            ? "Player Progress Comparison"
+            : "Player Improvements Analysis",
+        analysis: {
+          insights: [
+            "This chart compares progression trends across selected players.",
+            "Use trend spread to identify who needs support and who can be benchmark examples.",
+          ],
+          recommendations: [
+            "Assign targeted development tasks for players lagging behind the group median.",
+            "Review this view after each cycle to track intervention effectiveness.",
+          ],
+          possible_outcomes: [
+            "More balanced improvement across the squad.",
+            "Faster correction of individual performance gaps.",
+          ],
+        },
+      },
+    }),
+  });
 
   // Use our custom hook to get all chart data and related info
   const {
@@ -91,35 +126,35 @@ const PlayerProgressMultiView = ({
           value: "N/A",
           description: "Last 3 months",
           icon: (
-            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
           ),
-          color: "from-secondary via-secondary/90 to-secondary/80",
-          bgColor: "bg-secondary/8",
-          borderColor: "border-secondary/30",
-          iconBg: "bg-secondary",
-          textAccent: "text-secondary",
+          color: "from-primary via-primary/90 to-primary/80",
+          bgColor: "bg-primary/8",
+          borderColor: "border-primary/30",
+          iconBg: "bg-primary",
+          textAccent: "text-primary",
         },
         {
           title: "Overall Progress",
           value: "N/A",
           description: "All time average",
           icon: <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-          color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-          bgColor: "bg-orange-500/8",
-          borderColor: "border-orange-500/30",
-          iconBg: "bg-orange-500",
-          textAccent: "text-orange-600",
+          color: "from-primary via-primary/90 to-primary/80",
+          bgColor: "bg-primary/8",
+          borderColor: "border-primary/30",
+          iconBg: "bg-primary",
+          textAccent: "text-primary",
         },
         {
           title: "Best Player",
           value: "N/A",
           description: "No data",
           icon: <Award className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-          color: "from-red-500 via-red-500/90 to-red-500/80",
-          bgColor: "bg-red-500/8",
-          borderColor: "border-red-500/30",
-          iconBg: "bg-red-500",
-          textAccent: "text-red-600",
+          color: "from-primary via-primary/90 to-primary/80",
+          bgColor: "bg-primary/8",
+          borderColor: "border-primary/30",
+          iconBg: "bg-primary",
+          textAccent: "text-primary",
         },
       ];
 
@@ -190,13 +225,13 @@ const PlayerProgressMultiView = ({
           : "N/A",
         description: "Last 3 months",
         icon: (
-          <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-secondary-foreground" />
+          <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
         ),
-        color: "from-secondary via-secondary/90 to-secondary/80",
-        bgColor: "bg-secondary/8",
-        borderColor: "border-secondary/30",
-        iconBg: "bg-secondary",
-        textAccent: "text-secondary",
+        color: "from-primary via-primary/90 to-primary/80",
+        bgColor: "bg-primary/8",
+        borderColor: "border-primary/30",
+        iconBg: "bg-primary",
+        textAccent: "text-primary",
       },
       {
         title: "Overall Team Progress",
@@ -207,11 +242,11 @@ const PlayerProgressMultiView = ({
           : "N/A",
         description: "All time average",
         icon: <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-        color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-        bgColor: "bg-orange-500/8",
-        borderColor: "border-orange-500/30",
-        iconBg: "bg-orange-500",
-        textAccent: "text-orange-600",
+        color: "from-primary via-primary/90 to-primary/80",
+        bgColor: "bg-primary/8",
+        borderColor: "border-primary/30",
+        iconBg: "bg-primary",
+        textAccent: "text-primary",
       },
       {
         title: "Best Team Player",
@@ -230,11 +265,11 @@ const PlayerProgressMultiView = ({
               )}% in last 3 months`
             : "No data",
         icon: <Award className="h-4 w-4 sm:h-5 sm:w-5 text-white" />,
-        color: "from-red-500 via-red-500/90 to-red-500/80",
-        bgColor: "bg-red-500/8",
-        borderColor: "border-red-500/30",
-        iconBg: "bg-red-500",
-        textAccent: "text-red-600",
+        color: "from-primary via-primary/90 to-primary/80",
+        bgColor: "bg-primary/8",
+        borderColor: "border-primary/30",
+        iconBg: "bg-primary",
+        textAccent: "text-primary",
       },
     ];
 
@@ -301,7 +336,7 @@ const PlayerProgressMultiView = ({
         icon={BarChart3}
         hasData={false}
         emptyMessage="Set up training metrics to start comparing player progress across your team"
-        className="border-primary/20 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5"
+        className="border-primary/20 bg-gradient-to-br from-primary/5 via-primary/3 to-primary/5"
       />
     );
   }
@@ -321,11 +356,11 @@ const PlayerProgressMultiView = ({
         icon={Users}
         hasData={false}
         emptyMessage="Choose 2+ players to begin comparing their performance"
-        className="border-secondary/20 bg-gradient-to-br from-secondary/5 via-secondary/3 to-primary/5"
+        className="border-primary/20 bg-gradient-to-br from-primary/5 via-primary/3 to-primary/5"
         action={
           <Badge
             variant="outline"
-            className="bg-gradient-to-r from-secondary/10 to-primary/10 border-secondary/30 text-secondary px-4 py-2 text-sm font-semibold shadow-sm"
+            className="bg-gradient-to-r from-primary/10 to-primary/10 border-primary/30 text-primary px-4 py-2 text-sm font-semibold shadow-sm"
           >
             <Activity className="h-4 w-4 mr-2" />
             Choose 2+ players to begin
@@ -351,6 +386,12 @@ const PlayerProgressMultiView = ({
         icon={BarChart3}
         className="border-primary/20"
         height={400}
+        onClick={() =>
+          openSummary({
+            chartType: "comparison",
+            fallbackTitle: "Player Progress Comparison",
+          })
+        }
         action={
           <MultiChartHeader
             metrics={metrics}
@@ -393,6 +434,12 @@ const PlayerProgressMultiView = ({
         icon={TrendingUp}
         height={"auto"}
         className="border-primary/20"
+        onClick={() =>
+          openSummary({
+            chartType: "improvements",
+            fallbackTitle: "Player Improvements Analysis",
+          })
+        }
         action={
           isLoading ? (
             <div className="flex items-center gap-2">
@@ -450,6 +497,16 @@ const PlayerProgressMultiView = ({
           />
         )}
       </ChartCard>
+
+      <ChartSummaryModal
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        title={title}
+        isLoading={summaryLoading}
+        error={error}
+        analysis={analysis}
+        summaryLines={summaryLines}
+      />
     </div>
   );
 };

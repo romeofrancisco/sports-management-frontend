@@ -26,12 +26,12 @@ const AssignedTrainingPreview = ({
   const config =
     type === "recent"
       ? {
-          title: "Recent Sessions",
+          title: "Recent Training Sessions",
           icon: <Clock className="size-5 text-primary-foreground" />,
           description: "Your most recent training sessions",
         }
       : {
-          title: "Assigned Training Metrics",
+          title: "Assigned Training Excercises",
           icon: <ClipboardCheck className="size-5 text-primary-foreground" />,
           description: "Trainings assigned by your coach.",
         };
@@ -41,7 +41,7 @@ const AssignedTrainingPreview = ({
   const hasResults = assignedData?.results && assignedData.results.length > 0;
 
   return (
-    <Card className="bg-card shadow-lg border-2 border-primary/10">
+    <Card className="bg-card border-2 border-primary/20 h-full">
       <CardHeader>
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
@@ -85,19 +85,6 @@ const AssignedTrainingPreview = ({
                   </div>
                 );
               })}
-            {/* Always show the button below if not hidden */}
-            {!hideShowAllButton && (
-              <div className="text-center pt-4 mt-4 border-t border-border/50">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/trainings/assigned")}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  View all assigned sessions
-                </Button>
-              </div>
-            )}
           </div>
         ) : (
           <div className="flex flex-col gap-3 min-h-[300px] items-center justify-center py-8 text-muted-foreground">

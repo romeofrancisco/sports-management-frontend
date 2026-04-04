@@ -72,12 +72,12 @@ const SessionCard = ({ sessionGroup }) => {
     } else {
       // Default fallback for any other status (no attendance recorded yet)
       return {
-        gradient: "from-orange-500/5 to-orange-500/10",
-        strip: "bg-orange-500",
-        borderColor: "border-orange-500",
+        gradient: "from-orange-600/5 to-orange-600/10",
+        strip: "bg-orange-600",
+        borderColor: "border-orange-600",
         icon: Clock,
         textColor: "text-orange-600",
-        bgColor: "bg-orange-500/5",
+        bgColor: "bg-orange-600/5",
       };
     }
   };
@@ -86,7 +86,7 @@ const SessionCard = ({ sessionGroup }) => {
   const StatusIcon = statusInfo.icon;
   return (
     <Card
-      className={`relative overflow-hidden bg-gradient-to-br ${statusInfo.gradient} hover:shadow-lg transition-all duration-300 border ${statusInfo.borderColor} shadow-sm h-full flex flex-col`}
+      className={`relative overflow-hidden bg-gradient-to-br gap-0 ${statusInfo.gradient} hover:shadow-lg transition-all duration-300 border ${statusInfo.borderColor} shadow-sm h-full flex flex-col`}
     >
       {/* Status Strip */}
       <div
@@ -158,7 +158,7 @@ const SessionCard = ({ sessionGroup }) => {
           <div className="flex items-center gap-2">
             <Target className="h-4 w-4 text-primary" />
             <span className="font-medium text-[13px] sm:text-sm text-foreground">
-              Metrics ({sessionMetrics.length})
+              Exercises ({sessionMetrics.length})
             </span>
           </div>
           {session.location && (

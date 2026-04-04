@@ -28,9 +28,9 @@ const OverviewStatsCards = ({ trainingStats }) => {
       value: `${trainingStats?.attendance_percentage || 0}%`,
       description: "All time",
       icon: CheckCircle,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Recent Improvement",
@@ -39,20 +39,20 @@ const OverviewStatsCards = ({ trainingStats }) => {
       }%`,
       description: "Last 90 days improvement",
       icon: TrendingUp,
-      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
+      color: "from-primary via-primary/90 to-primary/80",
       iconBg:
-        trainingStats?.recent_improvement >= 0 ? "bg-orange-500" : "bg-red-500",
+        trainingStats?.recent_improvement >= 0 ? "bg-primary" : "bg-destructive",
       iconColor:
-        trainingStats?.recent_improvement >= 0 ? "text-orange-600" : "text-red-600",
+        trainingStats?.recent_improvement >= 0 ? "text-primary" : "text-destructive-foreground",
     },
     {
       title: "Late Arrivals",
       value: trainingStats?.late_count || 0,
       description: "All time",
       icon: Clock,
-      color: "from-red-500 via-red-500/90 to-red-500/80",
-      iconBg: "bg-red-500",
-      iconColor: "text-red-600",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
   ];
 
