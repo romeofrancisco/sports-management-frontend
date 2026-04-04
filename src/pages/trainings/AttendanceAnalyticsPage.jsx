@@ -45,9 +45,45 @@ import {
 } from "@/components/trainings/attendance/components/AttendanceTrackerColumns";
 import ChartCard from "@/components/charts/ChartCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import useChartSummaryModal from "@/hooks/useChartSummaryModal";
+import ChartSummaryModal from "@/components/charts/ChartSummaryModal";
 
 const AttendanceAnalyticsPage = () => {
   const navigate = useNavigate();
+  const {
+    isOpen,
+    setIsOpen,
+    title,
+    summaryLines,
+    analysis,
+    error,
+    isLoading: summaryLoading,
+    openSummary,
+  } = useChartSummaryModal({
+    fetchSummary: async (chartType) => ({
+      data: {
+        title:
+          chartType === "distribution"
+            ? "Attendance Distribution"
+            : "Training Sessions Trend",
+        analysis: {
+          insights: [
+            chartType === "distribution"
+              ? "This chart shows how attendance statuses are distributed across the selected period."
+              : `This chart shows ${selectedPeriod} training session trends for the selected filters.`,
+          ],
+          recommendations: [
+            "Target the weakest attendance group first and coordinate with coaches for follow-up actions.",
+            "Review this chart weekly to validate whether attendance interventions are improving consistency.",
+          ],
+          possible_outcomes: [
+            "Higher attendance reliability across sessions.",
+            "Better planning accuracy for training load and player availability.",
+          ],
+        },
+      },
+    }),
+  });
 
   // Local filter state
   const [selectedTeam, setSelectedTeam] = useState("all");
@@ -299,6 +335,12 @@ const AttendanceAnalyticsPage = () => {
             hasData={attendanceDistribution?.datasets?.[0]?.data?.some(
               (val) => val > 0
             )}
+            onClick={() =>
+              openSummary({
+                chartType: "distribution",
+                fallbackTitle: "Attendance Distribution",
+              })
+            }
           >
             <div className="h-80 flex items-center justify-center">
               <Doughnut
@@ -315,6 +357,12 @@ const AttendanceAnalyticsPage = () => {
             className="lg:col-span-5"
             action={<PeriodToggle />}
             hasData={trendsChartData}
+            onClick={() =>
+              openSummary({
+                chartType: "trend",
+                fallbackTitle: getChartTitle(),
+              })
+            }
           >
             <Bar
               className="h-full w-full"
@@ -401,7 +449,10 @@ const AttendanceAnalyticsPage = () => {
       <Button
         variant={selectedPeriod === "monthly" ? "default" : "ghost"}
         size="sm"
-        onClick={() => setSelectedPeriod("monthly")}
+        onClick={(event) => {
+          event.stopPropagation();
+          setSelectedPeriod("monthly");
+        }}
         className="h-8 px-3 text-xs font-medium"
       >
         Monthly
@@ -409,7 +460,10 @@ const AttendanceAnalyticsPage = () => {
       <Button
         variant={selectedPeriod === "weekly" ? "default" : "ghost"}
         size="sm"
-        onClick={() => setSelectedPeriod("weekly")}
+        onClick={(event) => {
+          event.stopPropagation();
+          setSelectedPeriod("weekly");
+        }}
         className="h-8 px-3 text-xs font-medium"
       >
         Weekly
@@ -446,9 +500,9 @@ const AttendanceAnalyticsPage = () => {
       value: overviewData?.total_players || 0,
       description: "Unique participants",
       icon: Users,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Attendance Rate",
@@ -464,14 +518,14 @@ const AttendanceAnalyticsPage = () => {
       value: (overviewData?.average_attendance_per_session || 0).toFixed(2),
       description: "Players per session",
       icon: TrendingUp,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-primary/2">
       <div className="container mx-auto p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title="Attendance Analytics"
@@ -517,6 +571,16 @@ const AttendanceAnalyticsPage = () => {
 
           {/* Dynamic Content */}
           {renderContent()}
+
+          <ChartSummaryModal
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            title={title}
+            isLoading={summaryLoading}
+            error={error}
+            analysis={analysis}
+            summaryLines={summaryLines}
+          />
         </div>
       </div>
     </div>

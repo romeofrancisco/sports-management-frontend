@@ -28,6 +28,9 @@ import {
   TeamScoringBarChart,
 } from "@/components/charts/TeamAnalyticsCharts";
 import { PlayerProgressSection } from "@/pages/coach/components";
+import useChartSummaryModal from "@/hooks/useChartSummaryModal";
+import ChartSummaryModal from "@/components/charts/ChartSummaryModal";
+import ClickableChartArea from "@/components/charts/ClickableChartArea";
 
 // Utils
 import {
@@ -152,6 +155,41 @@ const TeamAnalyticsSection = ({
   teamGamesForScoring,
 }) => {
   const { hasRole } = useRolePermissions();
+  const {
+    isOpen,
+    setIsOpen,
+    title,
+    summaryLines,
+    analysis,
+    error,
+    isLoading,
+    openSummary,
+  } = useChartSummaryModal({
+    fetchSummary: async (chartType) => ({
+      data: {
+        title:
+          chartType === "scoring"
+            ? "Scoring Performance Analysis"
+            : chartType === "training"
+              ? "Training Session Analysis"
+              : "Win/Loss Distribution",
+        analysis: {
+          insights: [
+            "This chart provides a focused view of team performance trends.",
+            "Comparing this chart with recent match and training context helps isolate root causes for form changes.",
+          ],
+          recommendations: [
+            "Prioritize interventions in the weakest trend shown and review again after one training cycle.",
+            "Use top periods in the chart as tactical templates for upcoming sessions and matches.",
+          ],
+          possible_outcomes: [
+            "More consistent short-term team performance.",
+            "Clearer evidence of what adjustments are producing results.",
+          ],
+        },
+      },
+    }),
+  });
 
   // Get scoring data, with fallback to last games if recent analytics is empty
   const getScoringData = () => {
@@ -169,20 +207,39 @@ const TeamAnalyticsSection = ({
 
   return (
     <div className="space-y-6">
-      <div>
-        <TeamScoringBarChart
-          data={scoringData}
-          title="Scoring Performance Analysis"
-          subtitle={
-            scoringData.length > 0 && scoringAnalytics?.scoring_data
-              ? "Points scored vs conceded by period"
-              : "Points scored vs conceded in recent games"
-          }
-        />
-      </div>
+      <ClickableChartArea
+        onOpen={() =>
+          openSummary({
+            chartType: "scoring",
+            fallbackTitle: "Scoring Performance Analysis",
+          })
+        }
+        enabled={scoringData.length > 0}
+      >
+        <div>
+          <TeamScoringBarChart
+            data={scoringData}
+            title="Scoring Performance Analysis"
+            subtitle={
+              scoringData.length > 0 && scoringAnalytics?.scoring_data
+                ? "Points scored vs conceded by period"
+                : "Points scored vs conceded in recent games"
+            }
+          />
+        </div>
+      </ClickableChartArea>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Player Availability Chart */}
-        <div className="col-span-2">
+        <ClickableChartArea
+          className="col-span-2"
+          onOpen={() =>
+            openSummary({
+              chartType: "training",
+              fallbackTitle: "Training Session Analysis",
+            })
+          }
+          enabled={true}
+        >
           <TrainingAnalyticsChart
             data={processTrainingData(
               trainingEffectiveness,
@@ -192,16 +249,36 @@ const TeamAnalyticsSection = ({
             )}
             title="Training Session Analysis"
           />
-        </div>
-        <TeamStatsBreakdownChart
-          data={processStatsBreakdown(statistics)}
-          title="Win/Loss Distribution"
-        />
+        </ClickableChartArea>
+        <ClickableChartArea
+          onOpen={() =>
+            openSummary({
+              chartType: "win_loss",
+              fallbackTitle: "Win/Loss Distribution",
+            })
+          }
+          enabled={true}
+        >
+          <TeamStatsBreakdownChart
+            data={processStatsBreakdown(statistics)}
+            title="Win/Loss Distribution"
+          />
+        </ClickableChartArea>
       </div>
       {/* Hide PlayerProgressSection if user is player */}
       {!hasRole("Player") && (
         <PlayerProgressSection playerProgress={transformedPlayerProgress} />
       )}
+
+      <ChartSummaryModal
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        title={title}
+        isLoading={isLoading}
+        error={error}
+        analysis={analysis}
+        summaryLines={summaryLines}
+      />
     </div>
   );
 };
