@@ -86,7 +86,7 @@ const ChartsSection = ({ user, overview }) => {
   return (
     <div className="space-y-6">
       {/* Progress and Radar Charts */}
-      <div className="grid gap-6 lg:grid-cols-5">
+      <div className="grid gap-6 sm:grid-cols-5">
         {/* Progress Chart */}
         {user?.id && (
           <ClickableChartArea
@@ -145,7 +145,7 @@ const ChartsSection = ({ user, overview }) => {
         {/* Radar Chart */}
         {user?.id && (
           <ClickableChartArea
-            className="col-span-3 xl:col-span-2"
+            className="sm:col-span-2"
             onOpen={() =>
               openSummary({
                 chartType: "radar",

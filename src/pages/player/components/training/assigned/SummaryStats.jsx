@@ -39,9 +39,9 @@ const SummaryStats = ({
       ),
       description: "Metrics currently being tracked",
       icon: Clock,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Assigned",
@@ -55,9 +55,9 @@ const SummaryStats = ({
       ),
       description: "Metrics awaiting completion",
       icon: CheckCircle,
-      color: "from-orange-500 via-orange-500/90 to-orange-500/80",
-      iconBg: "bg-orange-500",
-      iconColor: "text-orange-600",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Missed",
@@ -71,9 +71,9 @@ const SummaryStats = ({
       ),
       description: "Metrics not completed",
       icon: XCircle,
-      color: "from-red-500 via-red-500/90 to-red-500/80",
-      iconBg: "bg-red-500",
-      iconColor: "text-red-600",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
   ];
 
