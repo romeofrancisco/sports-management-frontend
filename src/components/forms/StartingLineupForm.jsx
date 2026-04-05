@@ -80,7 +80,9 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
               <AvatarImage src={game.home_team.logo} alt={game.home_team.name} />
               <AvatarFallback>{game.home_team.name[0]}</AvatarFallback>
             </Avatar>
-            <h1 className="text-3xl font-semibold">{game.home_team.name}</h1>
+            <h1 className="text-3xl font-semibold line-clamp-1" title={game.home_team.name}>
+              {game.home_team.name}
+            </h1>
           </div>
           {Array.from({ length: max }).map(
             (_, idx) => (
@@ -113,7 +115,9 @@ const StartingLineupForm = ({ teams, game, lineup, onClose, sport }) => {
               <AvatarImage src={game.away_team.logo} alt={game.away_team.name} />
               <AvatarFallback>{game.away_team.name[0]}</AvatarFallback>
             </Avatar>
-            <h1 className="text-3xl font-semibold">{game.away_team.name}</h1>
+            <h1 className="text-3xl font-semibold line-clamp-1" title={game.away_team.name}>
+              {game.away_team.name}
+            </h1>
           </div>
           {Array.from({ length: max }).map(
             (_, idx) => (
