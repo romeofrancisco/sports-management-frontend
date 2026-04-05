@@ -17,7 +17,7 @@ const TeamSide = ({ players }) => {
   };
 
   return (
-    <div className="grid border-2 border-primary/20 p-2 gap-3 select-none">
+    <div className= "grid border-2 border-primary/20 p-2 gap-3 select-none">
       {players.map((player) => (
         <button
           onClick={() => handlePlayerClick(player)}
@@ -33,7 +33,7 @@ const TeamSide = ({ players }) => {
             className={`size-10 text-xs lg:size-16`}
             selected={playerId === player.id}
           />
-          <p className="flex gap-2 text-xs lg:text-lg">{player.short_name}</p>
+          <p className= "flex gap-2 text-xs lg:text-lg">{player.short_name}</p>
         </button>
       ))}
     </div>

@@ -88,7 +88,7 @@ const Sport = () => {
     }
   };
   return (
-    <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title={sportDetails?.name || sport}
         subtitle="Sport Management"
@@ -100,9 +100,9 @@ const Sport = () => {
       />
 
       {/* Navigation Links */}
-      <div className="mb-4 sm:mb-6">
-        <nav className="border-b border-border">
-          <div className="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-hide">
+      <div className= "mb-4 sm:mb-6">
+        <nav className= "border-b border-border">
+          <div className= "flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-hide">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               return (

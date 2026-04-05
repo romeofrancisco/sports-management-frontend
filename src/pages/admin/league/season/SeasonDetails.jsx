@@ -131,11 +131,11 @@ const SeasonDetails = () => {
   };
 
   const titleWithBadge = (
-    <div className="flex items-center gap-3">
+    <div className= "flex items-center gap-3">
       <span>
         {seasonDetails?.name || "Season"}
         {seasonDetails?.start_date && (
-          <span className="ml-2 text-lg md:text-xl lg:text-2xl text-muted-foreground font-normal">
+          <span className= "ml-2 text-lg md:text-xl lg:text-2xl text-muted-foreground font-normal">
             ({getSeasonYear(seasonDetails.start_date, seasonDetails.end_date)})
           </span>
         )}
@@ -152,7 +152,7 @@ const SeasonDetails = () => {
   );
 
   return (
-    <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title={titleWithBadge}
         subtitle={`${sport?.name} League`}
@@ -167,9 +167,9 @@ const SeasonDetails = () => {
       </UniversityPageHeader>
 
       {/* Navigation Links */}
-      <div className="my-4">
-        <nav className="border-b border-border">
-          <div className="flex space-x-3 overflow-x-auto">
+      <div className= "my-4">
+        <nav className= "border-b border-border">
+          <div className= "flex space-x-3 overflow-x-auto">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               return (

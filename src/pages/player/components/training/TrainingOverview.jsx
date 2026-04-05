@@ -12,34 +12,34 @@ import { ChartsSection } from "../../charts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const TrainingOverviewSkeleton = () => (
-  <div className="space-y-6">
+  <div className= "space-y-6">
     {/* Overview Header Skeleton */}
     <div>
-      <Skeleton className="h-8 w-48 mb-2" />
-      <Skeleton className="h-5 w-72" />
+      <Skeleton className= "h-8 w-48 mb-2" />
+      <Skeleton className= "h-5 w-72" />
     </div>
     {/* Stats Cards Skeleton */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className= "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {[...Array(4)].map((_, i) => (
-        <Skeleton key={i} className="h-24 w-full" />
+        <Skeleton key={i} className= "h-24 w-full" />
       ))}
     </div>
     {/* Main Content Grid Skeleton */}
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      <div className="xl:col-span-2 space-y-6">
-        <Skeleton className="h-64 w-full" /> {/* Chart section */}
-        <div className="space-y-2">
-          <Skeleton className="h-6 w-40 mb-2" />
+    <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className= "xl:col-span-2 space-y-6">
+        <Skeleton className= "h-64 w-full" /> {/* Chart section */}
+        <div className= "space-y-2">
+          <Skeleton className= "h-6 w-40 mb-2" />
           {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full" />
+            <Skeleton key={i} className= "h-16 w-full" />
           ))}
         </div>
       </div>
-      <div className="xl:col-span-1 space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-6 w-40 mb-2" />
+      <div className= "xl:col-span-1 space-y-6">
+        <div className= "space-y-2">
+          <Skeleton className= "h-6 w-40 mb-2" />
           {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full" />
+            <Skeleton key={i} className= "h-16 w-full" />
           ))}
         </div>
       </div>
@@ -82,12 +82,12 @@ const TrainingOverview = () => {
   if (isLoading) return <TrainingOverviewSkeleton />;
   if (isError) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-foreground mb-2">
+      <div className= "flex items-center justify-center py-12">
+        <div className= "text-center">
+          <h3 className= "text-lg font-semibold text-foreground mb-2">
             Unable to Load Training Overview
           </h3>
-          <p className="text-muted-foreground">
+          <p className= "text-muted-foreground">
             Could not retrieve your training information. Please try again
             later.
           </p>
@@ -97,13 +97,13 @@ const TrainingOverview = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Overview Header */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className= "text-2xl font-bold text-foreground">
           Training Overview
         </h2>
-        <p className="text-muted-foreground">
+        <p className= "text-muted-foreground">
           Your training summary and performance metrics
         </p>
       </div>
@@ -112,8 +112,8 @@ const TrainingOverview = () => {
       <OverviewStatsCards trainingStats={trainingStats} />
 
       {/* Main Content Grid */}
-      <div className="grid sm:grid-cols-3 gap-6 ">
-        <div className="sm:col-span-2">
+      <div className= "grid sm:grid-cols-3 gap-6">
+        <div className= "sm:col-span-2">
           <ChartsSection user={user} overview={overview} />
         </div>
         <div class>
@@ -125,7 +125,7 @@ const TrainingOverview = () => {
             type="assigned"
           />
         </div>
-        <div className="sm:col-span-3">
+        <div className= "sm:col-span-3">
           <AssignedTrainingPreview
             assignedData={completedData}
             isAssignedLoading={isCompletedLoading}

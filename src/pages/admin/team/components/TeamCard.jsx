@@ -24,22 +24,22 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
     >
       {/* Enhanced team color indicator */}
       <div
-        className="absolute top-0 right-0 w-3 h-full opacity-80"
+        className= "absolute top-0 right-0 w-3 h-full opacity-80"
         style={{ backgroundColor: teamColor }}
       ></div>
 
       {/* Hover effects */}
-      <div className="absolute top-2 right-5 w-6 h-6 bg-secondary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+      <div className= "absolute top-2 right-5 w-6 h-6 bg-secondary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
 
-      <CardHeader className="relative p-5 space-y-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3 flex-1">
+      <CardHeader className= "relative p-5 space-y-4">
+        <div className= "flex items-start justify-between">
+          <div className= "flex items-center gap-3 flex-1">
             {" "}
             {/* Avatar with system colors */}
-            <div className="relative">
-              <Avatar className="h-12 w-12 ring-2 ring-primary/30 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/50">
+            <div className= "relative">
+              <Avatar className= "h-12 w-12 ring-2 ring-primary/30 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/50">
                 <AvatarImage src={team.logo} alt={team.name} />
-                <AvatarFallback className="font-bold text-white bg-primary">
+                <AvatarFallback className= "font-bold text-white bg-primary">
                   {team.name[0]}
                 </AvatarFallback>{" "}
               </Avatar>{" "}
@@ -54,14 +54,14 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
                 }`}
               ></div>
             </div>
-            <div className="flex-1 min-w-0 max-w-[50%]">
-              <CardTitle className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300" title={team.name}>
+            <div className= "flex-1 min-w-0 max-w-[50%]">
+              <CardTitle className= "text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300" title={team.name}>
                 {team.name}
               </CardTitle>
-              <div className="flex items-center gap-2 mt-1">
+              <div className= "flex items-center gap-2 mt-1">
                 <Badge
                   variant="secondary"
-                  className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
+                  className= "text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary border-primary/40"
                 >
                   {getDivisionLabel(team.division)}
                 </Badge>
@@ -78,35 +78,35 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
                 </Badge>
               </div>
               {/* Additional team info */}
-              <div className="flex flex-col mt-2 gap-1 text-xs text-muted-foreground">
+              <div className= "flex flex-col mt-2 gap-1 text-xs text-muted-foreground">
                 {team.sport_name && (
-                  <div className="flex items-center gap-1">
-                    <Trophy className="h-3 w-3" />
-                    <span className="font-medium">{team.sport_name}</span>
+                  <div className= "flex items-center gap-1">
+                    <Trophy className= "h-3 w-3" />
+                    <span className= "font-medium">{team.sport_name}</span>
                   </div>
                 )}
                 {team.player_count !== undefined && (
-                  <div className="flex items-center gap-1">
-                    <Users className="h-3 w-3" />
+                  <div className= "flex items-center gap-1">
+                    <Users className= "h-3 w-3" />
                     <span>{team.player_count || 0} players</span>
                   </div>
                 )}
               </div>{" "}
               {/* Coach information - improved layout */}
-              <div className="flex flex-col gap-1 mt-1 text-xs">
+              <div className= "flex flex-col gap-1 mt-1 text-xs">
                 {hasHeadCoach && (
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <User className="h-3 w-3 flex-shrink-0" />
-                    <span className="font-medium truncate">
+                  <div className= "flex items-center gap-1 text-muted-foreground">
+                    <User className= "h-3 w-3 flex-shrink-0" />
+                    <span className= "font-medium truncate">
                       Head Coach:{" "}
                       {team.head_coach_name || team.head_coach?.full_name}
                     </span>
                   </div>
                 )}
                 {hasAssistantCoach && (
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <User className="h-3 w-3 flex-shrink-0" />
-                    <span className="font-medium truncate">
+                  <div className= "flex items-center gap-1 text-muted-foreground">
+                    <User className= "h-3 w-3 flex-shrink-0" />
+                    <span className= "font-medium truncate">
                       Assistant Coach:{" "}
                       {team.assistant_coach_name ||
                         team.assistant_coach?.full_name}
@@ -114,10 +114,10 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
                   </div>
                 )}
                 {!hasAnyCoach && team.is_active && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-                      <User className="h-3 w-3 flex-shrink-0" />
-                      <span className="font-medium">No coaches assigned</span>
+                  <div className= "flex items-center justify-between">
+                    <div className= "flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                      <User className= "h-3 w-3 flex-shrink-0" />
+                      <span className= "font-medium">No coaches assigned</span>
                     </div>
                   </div>
                 )}
@@ -125,7 +125,7 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
             </div>
           </div>
 
-          <div className="absolute top-0 right-5">
+          <div className= "absolute top-0 right-5">
             <TeamActions
               team={team}
               onView={onView}
@@ -137,12 +137,12 @@ const TeamCard = ({ team, onView, onEdit, onDelete, onReactivate }) => {
         </div>
         {/* Team abbreviation with system colors */}
         {team.abbreviation && (
-          <div className="pt-2 border-t border-border/50">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground font-medium">
+          <div className= "pt-2 border-t border-border/50">
+            <div className= "flex items-center justify-between">
+              <span className= "text-xs text-muted-foreground font-medium">
                 Team Code
               </span>
-              <span className="text-xs font-bold px-2 py-1 rounded-md bg-secondary/20 text-secondary">
+              <span className= "text-xs font-bold px-2 py-1 rounded-md bg-secondary/20 text-secondary">
                 {team.abbreviation}
               </span>
             </div>

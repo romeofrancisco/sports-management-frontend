@@ -78,7 +78,7 @@ const PerformanceDifferentialChart = ({ data, isSetsScoring }) => {
       title={title}
       hasData={hasData}
       emptyMessage={emptyMessage}
-      className="lg:col-span-3"
+      className= "lg:col-span-3"
     >
       <Bar data={data} options={horizontalBarOptions} />
     </ChartCard>

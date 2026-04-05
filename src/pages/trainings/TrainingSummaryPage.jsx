@@ -58,8 +58,8 @@ const TrainingSummaryPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-        <div className="container mx-auto p-1 md:p-6 space-y-6">
+      <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className= "p-1 md:p-6 space-y-6">
           <UniversityPageHeader
             title="Training Summary"
             subtitle="Training Management"
@@ -69,7 +69,7 @@ const TrainingSummaryPage = () => {
             backButtonPath="/trainings/sessions"
             showUniversityColors={true}
           />
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className= "flex items-center justify-center min-h-[400px]">
             <ContentLoading />
           </div>
         </div>
@@ -85,8 +85,8 @@ const TrainingSummaryPage = () => {
       "The training summary could not be loaded. Please try again.";
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-        <div className="p-4 md:p-6 space-y-8">
+      <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className= "p-4 md:p-6 space-y-8">
           <UniversityPageHeader
             title="Training Summary"
             subtitle="Training Management"
@@ -96,17 +96,17 @@ const TrainingSummaryPage = () => {
             backButtonPath="/trainings/sessions"
             showUniversityColors={true}
           />
-          <div className="flex items-center justify-center min-h-[400px]">
-            <Card className="p-8 text-center">
-              <div className="text-red-500 mb-4">
-                <Trophy className="h-12 w-12 mx-auto" />
+          <div className= "flex items-center justify-center min-h-[400px]">
+            <Card className= "p-8 text-center">
+              <div className= "text-red-500 mb-4">
+                <Trophy className= "h-12 w-12" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">
+              <h3 className= "text-lg font-semibold mb-2">
                 Unable to Load Training Summary
               </h3>
-              <p className="text-muted-foreground mb-4">{errorMessage}</p>
+              <p className= "text-muted-foreground mb-4">{errorMessage}</p>
               <Button onClick={() => navigate("/trainings/sessions")}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className= "h-4 w-4 mr-2" />
                 Back to Sessions
               </Button>
             </Card>
@@ -162,8 +162,8 @@ const TrainingSummaryPage = () => {
     date: new Date().toISOString(),
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title="Training Session Summary"
           subtitle={safeSessionInfo?.title || "Training Analysis"}
@@ -192,9 +192,9 @@ const TrainingSummaryPage = () => {
         />
 
         {/* Main Content Grid - 3 Column Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className= "xl:col-span-2 space-y-6">
             {/* Metrics Section */}
             <MetricsSummarySection metricsSummary={safeMetricsSummary} />
 
@@ -208,7 +208,7 @@ const TrainingSummaryPage = () => {
           </div>
 
           {/* Right Sidebar - Session Info & Recommendations */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className= "xl:col-span-1 space-y-6">
             {/* Session Details */}
             <SessionInfoCard sessionInfo={safeSessionInfo} />
             {/* Attendance Summary */}

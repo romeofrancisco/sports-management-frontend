@@ -63,10 +63,10 @@ const PlayerDetails = () => {
   // Handle invalid player ID
   if (isNaN(userId) || userId <= 0) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">Invalid Player ID</h3>
-          <p className="text-sm text-muted-foreground mt-1">
+      <div className= "p-6">
+        <div className= "bg-destructive/15 border border-destructive/50 rounded-lg p-4">
+          <h3 className= "text-destructive font-semibold">Invalid Player ID</h3>
+          <p className= "text-sm text-muted-foreground mt-1">
             The player ID provided in the URL is not valid.
           </p>
         </div>
@@ -77,12 +77,12 @@ const PlayerDetails = () => {
   // Handle error states
   if (playerDetailsError || overviewError || progressError) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">
+      <div className= "p-6">
+        <div className= "bg-destructive/15 border border-destructive/50 rounded-lg p-4">
+          <h3 className= "text-destructive font-semibold">
             Error Loading Player Details
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className= "text-sm text-muted-foreground mt-1">
             {playerDetailsError?.message ||
               overviewError?.message ||
               progressError?.message ||
@@ -143,8 +143,8 @@ const PlayerDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         {/* Enhanced Header */}
         <UniversityPageHeader
           title={user?.full_name || "Player"}
@@ -158,22 +158,22 @@ const PlayerDetails = () => {
         />
 
         {/* Overview Cards */}
-        <div className="animate-in fade-in-50 duration-500 delay-150">
+        <div className= "animate-in fade-in-50 duration-500 delay-150">
           <OverviewCards overview={overview} personalStats={personalStats} />
         </div>
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className= "xl:col-span-2 space-y-6">
             {/* Player Profile Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-200 grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+            <div className= "animate-in fade-in-50 duration-500 delay-200 grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
               <PlayerProfileSection
                 user={user}
                 personalStats={personalStats}
                 teamInfo={teamInfo}
               />
               {/* Progress Summary */}
-              <div className="animate-in fade-in-50 duration-500 delay-400">
+              <div className= "animate-in fade-in-50 duration-500 delay-400">
                 <ProgressSummarySection
                   progress={progressData}
                   playerId={player}
@@ -182,25 +182,25 @@ const PlayerDetails = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-500">
+            <div className= "animate-in fade-in-50 duration-500 delay-500">
               <ChartsSection user={user} overview={overview} />
             </div>
 
             {/* Personal Progress Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
+            <div className= "animate-in fade-in-50 duration-500 delay-300">
               <PersonalProgressSection progress={progressData} />
             </div>
           </div>
 
           {/* Right Column - Secondary Content */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className= "xl:col-span-1 space-y-6">
             {/* Upcoming Activities */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+            <div className= "animate-in fade-in-50 duration-500 delay-200">
               <UpcomingActivitiesSection overview={overview} />
             </div>
 
             {/* Recent Metrics */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
+            <div className= "animate-in fade-in-50 duration-500 delay-300">
               <RecentMetricsSection overview={overview} />
             </div>
 

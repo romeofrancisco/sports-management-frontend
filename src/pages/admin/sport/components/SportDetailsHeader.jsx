@@ -35,16 +35,16 @@ const SportDetailsHeader = () => {
   const actionComponent = (
     <Button 
       variant="outline" 
-      className="gap-1.5 w-full sm:w-auto"
+      className= "gap-1.5 w-full sm:w-auto"
       onClick={handleOpenSettings}
     >
-      <Settings className="h-4 w-4" />
-      <span className="hidden sm:block">Sport Settings</span>
+      <Settings className= "h-4 w-4" />
+      <span className= "hidden sm:block">Sport Settings</span>
     </Button>
   );
   return (
-    <div className="bg-background border-b">
-      <div className="container mx-auto px-4 py-6">
+    <div className= "bg-background border-b">
+      <div className= "px-4 py-6">
         <PageHeader 
           title={getSportName()}
           description="Configure sport settings, statistics, and management options"

@@ -11,7 +11,7 @@ const ScoreboardLayout = ({
   isUpdatingScore 
 }) => {
   return (
-    <Card className="h-[calc(100vh-4rem)] sm:h-[calc(100vh-6rem)] mx-2 sm:mx-4 p-0 grid grid-cols-2 gap-0 relative overflow-hidden">
+    <Card className= "h-[calc(100vh-4rem)] sm:h-[calc(100vh-6rem)] mx-2 sm:mx-4 p-0 grid grid-cols-2 gap-0 relative overflow-hidden">
       {/* Home Team Side */}
       <ScoreboardTeamSide
         team={home_team}
@@ -31,7 +31,7 @@ const ScoreboardLayout = ({
       />
 
       {/* Center Divider */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-white/20 transform -translate-x-1/2 z-10"></div>
+      <div className= "absolute left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-white/20 transform -translate-x-1/2 z-10"></div>
     </Card>
   );
 };

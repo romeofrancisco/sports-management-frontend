@@ -91,7 +91,7 @@ const PasswordForm = ({ mode = "set", onClose }) => {
   };
 
   return (
-    <form className="space-y-4 px-1" onSubmit={handleSubmit(onSubmit)}>
+    <form className= "space-y-4 px-1" onSubmit={handleSubmit(onSubmit)}>
       {mode === "change" && (
         <ControlledInput
           control={control}
@@ -117,7 +117,7 @@ const PasswordForm = ({ mode = "set", onClose }) => {
         rules={{ required: true }}
       />
 
-      <Button className="w-full mt-4" type="submit" disabled={isProcessing}>
+      <Button className= "w-full mt-4" type="submit" disabled={isProcessing}>
         {getButtonLabel()}
       </Button>
     </form>

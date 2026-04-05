@@ -22,23 +22,23 @@ const LeaderCategoriesTable = ({
   };
 
   const LeaderActions = ({ leader }) => (
-    <div className="flex items-center justify-end space-x-2">
+    <div className= "flex items-center justify-end space-x-2">
       <Button 
         variant="outline" 
         size="sm"
         onClick={() => onEdit(leader)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Edit className="h-3 w-3 mr-1" />
+        <Edit className= "h-3 w-3 mr-1" />
         Edit
       </Button>
       <Button 
         variant="destructive" 
         size="sm" 
         onClick={() => onDelete(leader)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Trash2 className="h-3 w-3 mr-1" />
+        <Trash2 className= "h-3 w-3 mr-1" />
         Delete
       </Button>
     </div>
@@ -49,7 +49,7 @@ const LeaderCategoriesTable = ({
       accessorKey: "name",
       header: "Category Name",
       cell: ({ getValue }) => (
-        <div className="font-medium">{getValue()}</div>
+        <div className= "font-medium">{getValue()}</div>
       ),
     },
     {
@@ -60,7 +60,7 @@ const LeaderCategoriesTable = ({
         const primaryStatId = row.original.primary_stat_id;
         
         return (
-          <div className="flex flex-wrap gap-1">
+          <div className= "flex flex-wrap gap-1">
             {stats.length > 0 ? (
               stats.map((stat) => (
                 <Badge 
@@ -72,7 +72,7 @@ const LeaderCategoriesTable = ({
                 </Badge>
               ))
             ) : (
-              <span className="text-muted-foreground text-xs">No stats assigned</span>
+              <span className= "text-muted-foreground text-xs">No stats assigned</span>
             )}
           </div>
         );
@@ -92,19 +92,19 @@ const LeaderCategoriesTable = ({
   }
 
   return (
-    <div className="border rounded-md overflow-hidden shadow-sm">
+    <div className= "border rounded-md overflow-hidden shadow-sm">
       <DataTable
         columns={columns}
         data={leaderCategories || []}
         loading={isLoading}
-        className="text-sm"
+        className= "text-sm"
         pagination={false}
         unlimited={true}
         emptyMessage={
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <Trophy className="h-8 w-8 text-muted-foreground mb-2" />
-            <h3 className="text-lg font-medium mb-1">No leader categories found</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+          <div className= "flex flex-col items-center justify-center p-8 text-center">
+            <Trophy className= "h-8 w-8 text-muted-foreground mb-2" />
+            <h3 className= "text-lg font-medium mb-1">No leader categories found</h3>
+            <p className= "text-sm text-muted-foreground mb-4">
               {filter.search
                 ? "Try adjusting your search to find categories"
                 : "Create your first leader category to track top performers"}
@@ -112,9 +112,9 @@ const LeaderCategoriesTable = ({
             <Button
               onClick={handleCreateLeader}
               size="sm"
-              className="bg-primary"
+              className= "bg-primary"
             >
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className= "mr-1.5 h-3.5 w-3.5" />
               New Category
             </Button>
           </div>

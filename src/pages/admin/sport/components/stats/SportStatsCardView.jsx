@@ -73,18 +73,18 @@ const SportStatsCardView = ({ stats, filter }) => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
+      <div className= "flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
         <Button
           onClick={handleCreateStat}
           size="sm"
-          className="bg-primary hover:bg-primary/90 text-white shadow-sm"
+          className= "bg-primary hover:bg-primary/90 text-white shadow-sm"
         >
           <Plus />
           Create New Stat
         </Button>
       </div>
 
-      <div className="space-y-8">
+      <div className= "space-y-8">
         {/* Regular Categories */}
         {console.log(categories)}
         {categories

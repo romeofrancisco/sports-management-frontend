@@ -68,18 +68,18 @@ const SystemHealthSection = ({ overview }) => {
   const totalIssues = healthIssues.reduce((sum, issue) => sum + issue.count, 0);
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      <CardHeader className="relative">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-              <Shield className="h-5 w-5 text-primary-foreground" />
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      <CardHeader className= "relative">
+        <div className= "flex items-center justify-between">
+          <div className= "flex items-center gap-3">
+            <div className= "p-3 rounded-xl bg-primary shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+              <Shield className= "h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+              <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                 System Health
               </CardTitle>
-              <CardDescription className="line-clamp-2">
+              <CardDescription className= "line-clamp-2">
                 Monitor the health of your system and address issues affecting
                 teams and players.
               </CardDescription>
@@ -100,8 +100,8 @@ const SystemHealthSection = ({ overview }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="relative">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <CardContent className= "relative">
+        <div className= "grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {healthIssues.map((issue, index) => {
             const IconComponent = issue.icon;
             const StatusIcon = getSeverityIcon(issue.severity, issue.count);
@@ -119,8 +119,8 @@ const SystemHealthSection = ({ overview }) => {
                 }`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 relative">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardHeader className= "flex flex-row items-center justify-between space-y-0 relative">
+                  <CardTitle className= "text-sm font-medium text-muted-foreground">
                     {issue.title}
                   </CardTitle>
                   <div
@@ -134,13 +134,13 @@ const SystemHealthSection = ({ overview }) => {
                     />
                   </div>
                 </CardHeader>
-                <CardContent className="relative">
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                <CardContent className= "relative">
+                  <div className= "flex items-center justify-between">
+                    <div className= "text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                       {issue.count}
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className= "text-xs text-muted-foreground mt-1">
                     {issue.description}
                   </p>
                 </CardContent>

@@ -26,12 +26,12 @@ const TournamentStatistics = ({ tournamentId }) => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className= "space-y-6">
         <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
+          <CardContent className= "p-6">
+            <div className= "space-y-4">
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-20 w-full" />
+                <Skeleton key={i} className= "h-20 w-full" />
               ))}
             </div>
           </CardContent>
@@ -41,54 +41,54 @@ const TournamentStatistics = ({ tournamentId }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Tournament Statistics Overview */}
       {statistics && (
-        <Card className="border-2 border-primary/20">
-          <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5">
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
+        <Card className= "border-2 border-primary/20">
+          <CardHeader className= "bg-gradient-to-r from-primary/10 to-primary/5">
+            <CardTitle className= "flex items-center gap-2">
+              <BarChart3 className= "h-5 w-5 text-primary" />
               Tournament Statistics
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-muted-foreground">Total Games</p>
-                  <Target className="h-4 w-4 text-primary" />
+          <CardContent className= "pt-6">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className= "p-4 rounded-lg bg-muted/50">
+                <div className= "flex items-center justify-between mb-2">
+                  <p className= "text-sm text-muted-foreground">Total Games</p>
+                  <Target className= "h-4 w-4 text-primary" />
                 </div>
-                <p className="text-2xl font-bold text-primary">
+                <p className= "text-2xl font-bold text-primary">
                   {statistics.total_games || 0}
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-muted-foreground">Total Points</p>
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+              <div className= "p-4 rounded-lg bg-muted/50">
+                <div className= "flex items-center justify-between mb-2">
+                  <p className= "text-sm text-muted-foreground">Total Points</p>
+                  <TrendingUp className= "h-4 w-4 text-green-600" />
                 </div>
-                <p className="text-2xl font-bold text-green-600">
+                <p className= "text-2xl font-bold text-green-600">
                   {statistics.total_points || 0}
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-muted-foreground">Avg Points</p>
-                  <BarChart3 className="h-4 w-4 text-blue-600" />
+              <div className= "p-4 rounded-lg bg-muted/50">
+                <div className= "flex items-center justify-between mb-2">
+                  <p className= "text-sm text-muted-foreground">Avg Points</p>
+                  <BarChart3 className= "h-4 w-4 text-blue-600" />
                 </div>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className= "text-2xl font-bold text-blue-600">
                   {statistics.average_points?.toFixed(1) || "0.0"}
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-muted-foreground">Highest Score</p>
-                  <Trophy className="h-4 w-4 text-purple-600" />
+              <div className= "p-4 rounded-lg bg-muted/50">
+                <div className= "flex items-center justify-between mb-2">
+                  <p className= "text-sm text-muted-foreground">Highest Score</p>
+                  <Trophy className= "h-4 w-4 text-purple-600" />
                 </div>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className= "text-2xl font-bold text-purple-600">
                   {statistics.highest_score || 0}
                 </p>
               </div>
@@ -99,24 +99,24 @@ const TournamentStatistics = ({ tournamentId }) => {
 
       {/* Tournament Leaders */}
       {leaders && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className= "grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Scorers */}
           {leaders.top_scorers && leaders.top_scorers.length > 0 && (
-            <Card className="border-2 border-primary/20">
-              <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5">
-                <CardTitle className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-primary" />
+            <Card className= "border-2 border-primary/20">
+              <CardHeader className= "bg-gradient-to-r from-primary/10 to-primary/5">
+                <CardTitle className= "flex items-center gap-2">
+                  <Trophy className= "h-5 w-5 text-primary" />
                   Top Scorers
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-3">
+              <CardContent className= "pt-6">
+                <div className= "space-y-3">
                   {leaders.top_scorers.slice(0, 5).map((player, index) => (
                     <div
                       key={player.player_id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                      className= "flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className= "flex items-center gap-3">
                         <div
                           className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
                             index === 0
@@ -130,7 +130,7 @@ const TournamentStatistics = ({ tournamentId }) => {
                         >
                           {index + 1}
                         </div>
-                        <Avatar className="h-10 w-10">
+                        <Avatar className= "h-10 w-10">
                           <AvatarImage
                             src={player.player_image}
                             alt={player.player_name}
@@ -140,13 +140,13 @@ const TournamentStatistics = ({ tournamentId }) => {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold">{player.player_name}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className= "font-semibold">{player.player_name}</p>
+                          <p className= "text-xs text-muted-foreground">
                             {player.team_name}
                           </p>
                         </div>
                       </div>
-                      <Badge className="bg-primary/20 text-primary border-primary/40">
+                      <Badge className= "bg-primary/20 text-primary border-primary/40">
                         {player.total_points} pts
                       </Badge>
                     </div>
@@ -158,21 +158,21 @@ const TournamentStatistics = ({ tournamentId }) => {
 
           {/* Top Assisters */}
           {leaders.top_assisters && leaders.top_assisters.length > 0 && (
-            <Card className="border-2 border-primary/20">
-              <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5">
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
+            <Card className= "border-2 border-primary/20">
+              <CardHeader className= "bg-gradient-to-r from-primary/10 to-primary/5">
+                <CardTitle className= "flex items-center gap-2">
+                  <Award className= "h-5 w-5 text-primary" />
                   Top Assisters
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-3">
+              <CardContent className= "pt-6">
+                <div className= "space-y-3">
                   {leaders.top_assisters.slice(0, 5).map((player, index) => (
                     <div
                       key={player.player_id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                      className= "flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className= "flex items-center gap-3">
                         <div
                           className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
                             index === 0
@@ -186,7 +186,7 @@ const TournamentStatistics = ({ tournamentId }) => {
                         >
                           {index + 1}
                         </div>
-                        <Avatar className="h-10 w-10">
+                        <Avatar className= "h-10 w-10">
                           <AvatarImage
                             src={player.player_image}
                             alt={player.player_name}
@@ -196,13 +196,13 @@ const TournamentStatistics = ({ tournamentId }) => {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold">{player.player_name}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className= "font-semibold">{player.player_name}</p>
+                          <p className= "text-xs text-muted-foreground">
                             {player.team_name}
                           </p>
                         </div>
                       </div>
-                      <Badge className="bg-green-500/20 text-green-700 border-green-500/40">
+                      <Badge className= "bg-green-500/20 text-green-700 border-green-500/40">
                         {player.total_assists} ast
                       </Badge>
                     </div>

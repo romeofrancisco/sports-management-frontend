@@ -13,17 +13,17 @@ import { formatTo12HourTime } from "@/utils/formatTime";
 
 const UpcomingGamesSection = ({ overview }) => {
   return (
-    <Card className="border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
+    <Card className= "border-2 border-primary/20 hover:shadow-xl transition-all duration-300">
       <CardHeader>
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-primary shadow-lg">
-            <Calendar className="h-5 w-5 text-primary-foreground" />
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-primary shadow-lg">
+            <Calendar className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-lg font-semibold text-gradient">
+            <CardTitle className= "text-lg font-semibold text-gradient">
               Upcoming Games
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
+            <CardDescription className= "text-muted-foreground">
               Your teams' scheduled matches
             </CardDescription>
           </div>
@@ -31,42 +31,42 @@ const UpcomingGamesSection = ({ overview }) => {
       </CardHeader>
       <CardContent>
         {overview?.upcoming_games?.length > 0 ? (
-          <div className="space-y-4">
+          <div className= "space-y-4">
             {overview.upcoming_games.slice(0, 2).map((game, index) => (
               <div
                 key={game.id || index}
-                className="relative overflow-hidden border border-primary/20 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
+                className= "relative overflow-hidden border border-primary/20 rounded-lg p-3 bg-gradient-to-r from-primary/5 to-primary/5 transition-all duration-300 hover:shadow-md hover:scale-[1.01] group"
               >
                 {/* Primary indicator */}
-                <div className="absolute top-0 right-0 w-2 h-full bg-primary"></div>
+                <div className= "absolute top-0 right-0 w-2 h-full bg-primary"></div>
 
-                <div className="space-y-2">
+                <div className= "space-y-2">
                   {/* Header section with teams and time */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">
+                  <div className= "flex items-start justify-between gap-3">
+                    <div className= "flex-1">
+                      <div className= "flex items-center gap-2">
+                        <p className= "font-medium">
                           {game.home_team} vs {game.away_team}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                      <Clock className="h-3 w-3" />
+                    <Badge className= "bg-primary/10 text-primary border-primary/20 text-xs">
+                      <Clock className= "h-3 w-3" />
                       {formatTo12HourTime(game.time) || "TBA"}
                     </Badge>
                   </div>
 
                   {/* Content section */}
-                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                  <div className= "grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                     {/* Left column */}
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3 w-3 text-primary" />
+                    <div className= "space-y-1">
+                      <div className= "flex items-center gap-1.5">
+                        <Calendar className= "h-3 w-3 text-primary" />
                         <span>{formatShortDate(game.date)}</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="h-3 w-3 text-primary" />
+                      <div className= "flex items-center gap-1.5">
+                        <MapPin className= "h-3 w-3 text-primary" />
                         <span>{game.location || "TBA"}</span>
                       </div>
                     </div>
@@ -77,7 +77,7 @@ const UpcomingGamesSection = ({ overview }) => {
                   {/* Team abbreviations - full width */}
                   {game.home_team_abbreviation &&
                     game.away_team_abbreviation && (
-                      <p className="text-xs text-muted-foreground pt-1">
+                      <p className= "text-xs text-muted-foreground pt-1">
                         {game.home_team_abbreviation} vs{" "}
                         {game.away_team_abbreviation}
                       </p>
@@ -87,14 +87,14 @@ const UpcomingGamesSection = ({ overview }) => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-              <Calendar className="h-8 w-8 text-muted-foreground" />
+          <div className= "text-center py-12">
+            <div className= "w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <Calendar className= "h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground font-medium">
+            <p className= "text-muted-foreground font-medium">
               No upcoming games scheduled
             </p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
+            <p className= "text-sm text-muted-foreground/70 mt-1">
               Game schedules will appear here when available
             </p>
           </div>

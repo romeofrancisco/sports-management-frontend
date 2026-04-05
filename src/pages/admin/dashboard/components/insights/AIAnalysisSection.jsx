@@ -175,14 +175,14 @@ const AIAnalysisSection = ({ insights }) => {
   }
 
   return (
-    <Card className="border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
+    <Card className= "border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5 text-primary" />
+        <CardTitle className= "flex items-center gap-2">
+          <Brain className= "h-5 w-5 text-primary" />
           Detailed AI Analysis
           <Badge
             variant="outline"
-            className="bg-primary/10 text-primary border-primary/30"
+            className= "bg-primary/10 text-primary border-primary/30"
           >
             Powered by Gemini AI
           </Badge>
@@ -193,7 +193,7 @@ const AIAnalysisSection = ({ insights }) => {
       </CardHeader>
       <CardContent>
         <ScrollArea>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1 max-h-96 px-2">
+        <div className= "grid gap-4 md:grid-cols-2 xl:grid-cols-1 max-h-96 px-2">
           {Object.entries(insights.ai_insights.ai_analysis).map(
             ([key, value], index) => {
               const isExpanded = expandedCards.has(key);
@@ -204,12 +204,12 @@ const AIAnalysisSection = ({ insights }) => {
               return (
                 <div
                   key={key}
-                  className="p-3 xl:p-4 rounded-lg bg-card border border-primary/20 animate-in fade-in-50 duration-500 hover:border-primary/30 transition-all"
+                  className= "p-3 xl:p-4 rounded-lg bg-card border border-primary/20 animate-in fade-in-50 duration-500 hover:border-primary/30 transition-all"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-primary flex items-center gap-2 text-sm xl:text-base">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <div className= "flex items-center justify-between mb-2">
+                    <h4 className= "font-semibold text-primary flex items-center gap-2 text-sm xl:text-base">
+                      <div className= "w-2 h-2 bg-primary rounded-full"></div>
                       {key.replace(/_/g, " ")}
                     </h4>
                     {isVeryLong && (
@@ -218,26 +218,26 @@ const AIAnalysisSection = ({ insights }) => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1 h-auto text-primary hover:text-primary/80 hover:bg-primary/10"
+                            className= "p-1 h-auto text-primary hover:text-primary/80 hover:bg-primary/10"
                           >
-                            <Maximize2 className="h-3 w-3" />
+                            <Maximize2 className= "h-3 w-3" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                        <DialogContent className= "max-w-4xl max-h-[80vh] overflow-y-auto">
                           <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2">
-                              <Brain className="h-5 w-5 text-primary" />
+                            <DialogTitle className= "flex items-center gap-2">
+                              <Brain className= "h-5 w-5 text-primary" />
                               {key.replace(/_/g, " ")}
                             </DialogTitle>
                             <DialogDescription>
                               Detailed AI analysis and insights
                             </DialogDescription>
                           </DialogHeader>
-                          <div className="mt-4">
-                            <div className="flex justify-between items-center mb-4">
+                          <div className= "mt-4">
+                            <div className= "flex justify-between items-center mb-4">
                               <Badge
                                 variant="outline"
-                                className="bg-primary/10 text-primary border-primary/30"
+                                className= "bg-primary/10 text-primary border-primary/30"
                               >
                                 Full Analysis View
                               </Badge>
@@ -247,24 +247,24 @@ const AIAnalysisSection = ({ insights }) => {
                                 onClick={() =>
                                   copyToClipboard(content, `${key}-modal`)
                                 }
-                                className="flex items-center gap-2"
+                                className= "flex items-center gap-2"
                               >
                                 {copiedStates.has(`${key}-modal`) ? (
                                   <>
-                                    <Check className="h-3 w-3" />
+                                    <Check className= "h-3 w-3" />
                                     Copied!
                                   </>
                                 ) : (
                                   <>
-                                    <Copy className="h-3 w-3" />
+                                    <Copy className= "h-3 w-3" />
                                     Copy Text
                                   </>
                                 )}
                               </Button>
                             </div>
-                            <div className="prose prose-sm max-w-none">
+                            <div className= "prose prose-sm max-w-none">
                               <div
-                                className="leading-relaxed"
+                                className= "leading-relaxed"
                                 style={{ color: "hsl(var(--foreground))" }}
                                 dangerouslySetInnerHTML={{
                                   __html: formatContent(content, true),
@@ -290,27 +290,27 @@ const AIAnalysisSection = ({ insights }) => {
                     />
                   </div>
                   {(isTruncated || isExpanded) && (
-                    <div className="flex items-center justify-between mt-2">
+                    <div className= "flex items-center justify-between mt-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleExpanded(key)}
-                        className="p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-medium"
+                        className= "p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-medium"
                       >
                         {isExpanded ? (
                           <>
-                            Show Less <ChevronUp className="h-3 w-3 ml-1" />
+                            Show Less <ChevronUp className= "h-3 w-3 ml-1" />
                           </>
                         ) : (
                           <>
-                            Read More <ChevronDown className="h-3 w-3 ml-1" />
+                            Read More <ChevronDown className= "h-3 w-3 ml-1" />
                           </>
                         )}
                       </Button>
-                      <div className="flex items-center gap-2">
+                      <div className= "flex items-center gap-2">
                         {isVeryLong && (
-                          <span className="text-xs text-muted-foreground">
-                            <Maximize2 className="h-3 w-3 inline mr-1" />
+                          <span className= "text-xs text-muted-foreground">
+                            <Maximize2 className= "h-3 w-3 inline mr-1" />
                             for full view
                           </span>
                         )}
@@ -318,13 +318,13 @@ const AIAnalysisSection = ({ insights }) => {
                           variant="ghost"
                           size="sm"
                           onClick={() => copyToClipboard(content, key)}
-                          className="p-1 h-auto text-muted-foreground hover:text-primary hover:bg-primary/10"
+                          className= "p-1 h-auto text-muted-foreground hover:text-primary hover:bg-primary/10"
                           title="Copy to clipboard"
                         >
                           {copiedStates.has(key) ? (
-                            <Check className="h-3 w-3" />
+                            <Check className= "h-3 w-3" />
                           ) : (
-                            <Copy className="h-3 w-3" />
+                            <Copy className= "h-3 w-3" />
                           )}
                         </Button>
                       </div>
@@ -337,9 +337,9 @@ const AIAnalysisSection = ({ insights }) => {
         </div>
         </ScrollArea>
         {insights.ai_insights.fallback_used && (
-          <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
-            <p className="text-sm text-primary">
-              <span className="font-medium">Note:</span> AI analysis is
+          <div className= "mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
+            <p className= "text-sm text-primary">
+              <span className= "font-medium">Note:</span> AI analysis is
               temporarily using fallback mode. Full AI insights will resume
               automatically.
             </p>

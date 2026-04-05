@@ -168,7 +168,7 @@ const CreateFolderDialog = ({
       size="md"
       scrollable={false}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
+      <form onSubmit={handleSubmit(onSubmit)} className= "space-y-4 pt-4">
         {/* Folder Type Select (only shown at root for admin/coach) */}
         {showFolderTypeSelect && (
           <ControlledSelect
@@ -216,7 +216,7 @@ const CreateFolderDialog = ({
         />
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-2 pt-4">
+        <div className= "flex justify-end gap-2 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -228,7 +228,7 @@ const CreateFolderDialog = ({
           <Button type="submit" disabled={isCreating}>
             {isCreating ? (
               <>
-                <FolderPlus className="animate-pulse" />
+                <FolderPlus className= "animate-pulse" />
                 Creating...
               </>
             ) : (

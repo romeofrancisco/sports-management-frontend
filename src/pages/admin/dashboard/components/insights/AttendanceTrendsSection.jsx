@@ -29,10 +29,10 @@ const AttendanceTrendsSection = ({ attendanceTrends }) => {
   }
 
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
+    <Card className= "border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
+        <CardTitle className= "flex items-center gap-2">
+          <TrendingUp className= "h-5 w-5 text-primary" />
           Attendance Trends
         </CardTitle>
         <CardDescription>
@@ -40,11 +40,11 @@ const AttendanceTrendsSection = ({ attendanceTrends }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className= "space-y-4">
           {attendanceTrends.training && (
-            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-              <h4 className="font-medium mb-2">Training Attendance</h4>
-              <p className="text-sm text-muted-foreground">
+            <div className= "p-4 rounded-lg bg-primary/10 border border-primary/20">
+              <h4 className= "font-medium mb-2">Training Attendance</h4>
+              <p className= "text-sm text-muted-foreground">
                 {safeRender(
                   attendanceTrends.training,
                   "Training attendance data available"
@@ -53,9 +53,9 @@ const AttendanceTrendsSection = ({ attendanceTrends }) => {
             </div>
           )}
           {attendanceTrends.games && (
-            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-              <h4 className="font-medium mb-2">Game Attendance</h4>
-              <p className="text-sm text-muted-foreground">
+            <div className= "p-4 rounded-lg bg-primary/10 border border-primary/20">
+              <h4 className= "font-medium mb-2">Game Attendance</h4>
+              <p className= "text-sm text-muted-foreground">
                 {safeRender(
                   attendanceTrends.games,
                   "Game attendance data available"

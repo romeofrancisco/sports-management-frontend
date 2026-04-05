@@ -51,37 +51,37 @@ const SportsSection = () => {
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-muted/30" id="sports">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
+    <section className= "py-16 lg:py-24 bg-muted/30" id="sports">
+      <div className= "px-4">
+        <div className= "grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
           <div>
-            <span className="text-secondary font-semibold text-sm uppercase tracking-wider">
+            <span className= "text-secondary font-semibold text-sm uppercase tracking-wider">
               Our Sports
             </span>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-6">
-              <span className="text-primary">Varsity</span> Sports Programs
+            <h2 className= "text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-6">
+              <span className= "text-primary">Varsity</span> Sports Programs
             </h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
+            <p className= "text-muted-foreground mb-6 leading-relaxed">
               UPHSD Molino Campus athletes represent the university in various
               intercollegiate competitions, showcasing excellence in sports
               while upholding the values of discipline, teamwork, and
               sportsmanship.
             </p>
-            <p className="text-muted-foreground mb-8 leading-relaxed">
+            <p className= "text-muted-foreground mb-8 leading-relaxed">
               Our sports management system supports all varsity programs,
               providing tools for coaches and athletes to track progress, manage
               schedules, and achieve peak performance.
             </p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className= "flex flex-wrap gap-3">
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
-                    <span className="px-10 py-3 animate-pulse bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default" />
+                    <span className= "px-10 py-3 animate-pulse bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default" />
                   ))
                 : sports?.map((sport, index) => (
                     <span
                       key={index}
-                      className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default"
+                      className= "px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors cursor-default"
                     >
                       {sport.name}
                     </span>
@@ -90,10 +90,10 @@ const SportsSection = () => {
           </div>
 
           {/* Carousel with stacked cards effect */}
-          <div className="relative h-[350px] lg:h-[400px] dark:brightness-60">
+          <div className= "relative h-[350px] lg:h-[400px] dark:brightness-60">
             {/* Main carousel */}
             <div
-              className="relative h-full rounded-2xl overflow-hidden"
+              className= "relative h-full rounded-2xl overflow-hidden"
               style={{
                 backgroundImage: `url(${sportsImages[0]})`,
                 backgroundSize: "cover",
@@ -101,7 +101,7 @@ const SportsSection = () => {
               }}
             >
               {/* Images */}
-              <div className="relative h-full w-full">
+              <div className= "relative h-full w-full">
                 {sportsImages.map((src, index) => (
                   <img
                     key={index}
@@ -113,25 +113,25 @@ const SportsSection = () => {
                   />
                 ))}
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div className= "absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               </div>
 
               {/* Navigation arrows */}
               <button
                 onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors backdrop-blur-sm"
+                className= "absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors backdrop-blur-sm"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className= "w-5 h-5" />
               </button>
               <button
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors backdrop-blur-sm"
+                className= "absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors backdrop-blur-sm"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className= "w-5 h-5" />
               </button>
 
               {/* Dots indicator */}
-              <div className="absolute bottom-4 right-4 flex gap-2">
+              <div className= "absolute bottom-4 right-4 flex gap-2">
                 {sportsImages.map((_, index) => (
                   <button
                     key={index}

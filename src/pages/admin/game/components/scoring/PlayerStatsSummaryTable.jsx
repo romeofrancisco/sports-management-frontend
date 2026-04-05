@@ -142,15 +142,15 @@ const PlayerStatsSummaryTable = ({
       const baseColumns = [
         {
           accessorKey: "player",
-          header: () => <span className="ps-4">{playerHeaderLabel}</span>,
+          header: () => <span className= "ps-4">{playerHeaderLabel}</span>,
           cell: ({ row }) => {
             const { jersey_number, name } = row.original;
             return (
-              <div className="grid grid-cols-[1rem_auto] gap-2 ps-1">
-                <span className="text-muted-foreground text-end">
+              <div className= "grid grid-cols-[1rem_auto] gap-2 ps-1">
+                <span className= "text-muted-foreground text-end">
                   {jersey_number}
                 </span>
-                <span className="truncate" title={name}>
+                <span className= "truncate" title={name}>
                   {name}
                 </span>
               </div>
@@ -174,7 +174,7 @@ const PlayerStatsSummaryTable = ({
           header: () => (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="text-center text-xs select-none">
+                <div className= "text-center text-xs select-none">
                   {stat.display_name}
                 </div>
               </TooltipTrigger>
@@ -184,7 +184,7 @@ const PlayerStatsSummaryTable = ({
           cell: ({ getValue }) => {
             const value = getValue();
             return (
-              <div className="text-center text-muted-foreground">
+              <div className= "text-center text-muted-foreground">
                 {value !== undefined ? value : "-"}
               </div>
             );
@@ -197,16 +197,16 @@ const PlayerStatsSummaryTable = ({
   }, [referencePlayer]);
 
   const renderSection = (playerHeaderLabel, playerList, emptyMessage) => (
-    <section className="space-y-2">
+    <section className= "space-y-2">
       {playerList.length > 0 ? (
         <DataTable
           columns={getColumns(playerHeaderLabel)}
           data={mapPlayersToTableData(playerList)}
           showPagination={false}
-          className="text-xs"
+          className= "text-xs"
         />
       ) : (
-        <div className="text-xs text-muted-foreground border rounded-md p-3">
+        <div className= "text-xs text-muted-foreground border rounded-md p-3">
           {emptyMessage}
         </div>
       )}
@@ -214,7 +214,7 @@ const PlayerStatsSummaryTable = ({
   );
 
   return (
-    <div className="max-w-[calc(100vw-3rem)] lg:max-w-[77rem]">
+    <div className= "max-w-[calc(100vw-3rem)] lg:max-w-[77rem]">
       {renderSection(
         "ON FIELD/COURT",
         currentlyPlayingPlayers,

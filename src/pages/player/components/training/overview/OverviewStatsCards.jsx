@@ -9,10 +9,10 @@ const OverviewStatsCards = ({ trainingStats }) => {
       title: "Total Training Sessions",
       value: (
         <>
-          <span className="text-primary font-bold">
+          <span className= "text-primary font-bold">
             {trainingStats?.attended_count || 0}
           </span>
-          <span className="">
+          <span className= "">
             /{trainingStats?.total_sessions || 0}
           </span>
         </>

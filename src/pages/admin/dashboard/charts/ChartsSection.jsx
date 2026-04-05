@@ -70,9 +70,9 @@ const ChartsSection = ({ overview, analytics }) => {
   const hasSystemActivity = !!overview?.recent_activity;
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Primary Charts Row - 4 Column Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className= "grid gap-6 lg:grid-cols-3">
         {/* System Health Chart - 1 column */}
         <SummaryChartWrapper
           onOpen={() =>
@@ -82,7 +82,7 @@ const ChartsSection = ({ overview, analytics }) => {
             })
           }
           enabled={true}
-          className="lg:col-span-1"
+          className= "lg:col-span-1"
         >
           <SystemHealthChart
             score={overview?.insights?.system_health_score || 50}
@@ -97,7 +97,7 @@ const ChartsSection = ({ overview, analytics }) => {
             })
           }
           enabled={hasSystemActivity}
-          className="lg:col-span-2"
+          className= "lg:col-span-2"
         >
           <SystemActivityChart
             data={{
@@ -115,7 +115,7 @@ const ChartsSection = ({ overview, analytics }) => {
         </SummaryChartWrapper>
       </div>
       {/* Secondary Charts Row - 2 Column Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className= "grid gap-6 lg:grid-cols-2">
         {/* Top Teams Chart - swapped to first position */}
         <SummaryChartWrapper
           onOpen={() =>
@@ -153,26 +153,26 @@ const ChartsSection = ({ overview, analytics }) => {
         </SummaryChartWrapper>
       </div>
 
-      <div className="flex items-center justify-center">
+      <div className= "flex items-center justify-center">
         <Button
           variant="outline"
           size="lg"
           onClick={() => setShowAdvancedCharts((prev) => !prev)}
-          className="gap-2 w-full"
+          className= "gap-2 w-full"
         >
           {showAdvancedCharts ? "Hide detailed analytics" : "Show detailed analytics"}
-          {showAdvancedCharts ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          {showAdvancedCharts ? <ChevronUp className= "h-4 w-4" /> : <ChevronDown className= "h-4 w-4" />}
         </Button>
       </div>
 
       {!showAdvancedCharts ? (
-        <p className="text-xs text-muted-foreground text-center">
+        <p className= "text-xs text-muted-foreground text-center">
           Showing essential charts only. Expand detailed analytics to see trends, distribution, and coach performance.
         </p>
       ) : (
         <>
       {/* Additional Charts Row - 2 Column Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className= "grid gap-6 lg:grid-cols-3">
         {/* Training Trend Chart */}
         <SummaryChartWrapper
           onOpen={() =>
@@ -182,7 +182,7 @@ const ChartsSection = ({ overview, analytics }) => {
             })
           }
           enabled={hasTrainingTrend}
-          className="lg:col-span-2"
+          className= "lg:col-span-2"
         >
           <TrainingTrendChart
             data={{

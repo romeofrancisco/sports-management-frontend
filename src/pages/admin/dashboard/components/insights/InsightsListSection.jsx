@@ -90,16 +90,16 @@ const InsightsListSection = ({ insights }) => {
   const shouldShowMoreButton = insights.length > INITIAL_DISPLAY_LIMIT;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Lightbulb className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">System Insights</h3>
-        <Badge className="text-xs">
+    <div className= "space-y-4">
+      <div className= "flex items-center gap-2">
+        <Lightbulb className= "h-5 w-5 text-primary" />
+        <h3 className= "text-lg font-semibold">System Insights</h3>
+        <Badge className= "text-xs">
           {insights.length}
         </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
+      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
         {displayInsights.map((insight, index) => {
           const IconComponent = getInsightIcon(insight.type || "info");
           const colorClass = getInsightColor(insight.type || "info");
@@ -112,14 +112,14 @@ const InsightsListSection = ({ insights }) => {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                <div className= "flex items-start justify-between">
+                  <div className= "flex items-center gap-2">
+                    <CardTitle className= "text-sm font-medium text-muted-foreground">
                       System Insight
                     </CardTitle>
                     {insight.source === "ai" && (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
-                        <Brain className="size-3" />
+                      <div className= "flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
+                        <Brain className= "size-3" />
                         AI
                       </div>
                     )}
@@ -127,33 +127,33 @@ const InsightsListSection = ({ insights }) => {
                   <div
                     className={`p-2 rounded-lg bg-card/50 backdrop-blur-sm border border-white/20 ${iconColor}`}
                   >
-                    <IconComponent className="h-4 w-4" />
+                    <IconComponent className= "h-4 w-4" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative">
-                <div className="space-y-2">
+              <CardContent className= "relative">
+                <div className= "space-y-2">
                   {insight.title && (
-                    <h4 className="font-medium text-sm">
+                    <h4 className= "font-medium text-sm">
                       {insight.title}
                     </h4>
                   )}
-                  <p className="text-sm leading-relaxed">
+                  <p className= "text-sm leading-relaxed">
                     {safeRender(
                       insight.message || insight.description,
                       "No message available"
                     )}
                   </p>
                   {insight.action && (
-                    <div className="text-xs text-muted-foreground">
-                      <span className="font-medium">
+                    <div className= "text-xs text-muted-foreground">
+                      <span className= "font-medium">
                         Recommended Action: {" "}
                       </span>
                       {insight.action}
                     </div>
                   )}
                 </div>
-                <div className="mt-3">
+                <div className= "mt-3">
                   <Badge
                     variant="outline"
                     className={`text-xs ${
@@ -179,21 +179,21 @@ const InsightsListSection = ({ insights }) => {
 
       {/* Show More Button */}
       {shouldShowMoreButton && (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 text-sm"
+            className= "flex items-center gap-2 text-sm"
           >
             {isExpanded ? (
               <>
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className= "h-4 w-4" />
                 Show Less
               </>
             ) : (
               <>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className= "h-4 w-4" />
                 Show {insights.length - INITIAL_DISPLAY_LIMIT} More
               </>
             )}

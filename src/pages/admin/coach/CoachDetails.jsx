@@ -77,12 +77,12 @@ const CoachDetails = () => {
 
   if (coachError || overviewError || progressError) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">
+      <div className= "p-6">
+        <div className= "bg-destructive/15 border border-destructive/50 rounded-lg p-4">
+          <h3 className= "text-destructive font-semibold">
             Error Loading Coach Details
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className= "text-sm text-muted-foreground mt-1">
             {coachError?.message ||
               overviewError?.message ||
               progressError?.message ||
@@ -95,12 +95,12 @@ const CoachDetails = () => {
 
   if (!coach) {
     return (
-      <div className="p-6">
-        <div className="bg-muted/50 border border-border rounded-lg p-8 text-center">
-          <h3 className="text-lg font-semibold text-muted-foreground">
+      <div className= "p-6">
+        <div className= "bg-muted/50 border border-border rounded-lg p-8 text-center">
+          <h3 className= "text-lg font-semibold text-muted-foreground">
             Coach Not Found
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className= "text-sm text-muted-foreground mt-1">
             The requested coach could not be found.
           </p>
         </div>
@@ -109,8 +109,8 @@ const CoachDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         {/* Enhanced Header */}
         <UniversityPageHeader
           showBackButton={true}
@@ -124,17 +124,17 @@ const CoachDetails = () => {
         {overview && (
           <>
             {/* Overview Cards */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+            <div className= "animate-in fade-in-50 duration-500 delay-200">
               <OverviewCards overview={overview} />
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Left Column - Primary Content */}
-              <div className="xl:col-span-2 space-y-6">
+              <div className= "xl:col-span-2 space-y-6">
 
                 {/* Charts Section */}
-                <div className="animate-in fade-in-50 duration-500 delay-400">
+                <div className= "animate-in fade-in-50 duration-500 delay-400">
                   <ChartsSection
                     overview={overview}
                     playerProgress={playerProgress}
@@ -143,24 +143,24 @@ const CoachDetails = () => {
               </div>
 
               {/* Right Column - Secondary Content */}
-              <div className="xl:col-span-1 space-y-6">
+              <div className= "xl:col-span-1 space-y-6">
                 {/* My Teams */}
-                <div className="animate-in fade-in-50 duration-500 delay-300">
+                <div className= "animate-in fade-in-50 duration-500 delay-300">
                   <MyTeamsSection overview={overview} />
                 </div>
 
                 {/* Upcoming Games */}
-                <div className="animate-in fade-in-50 duration-500 delay-350">
+                <div className= "animate-in fade-in-50 duration-500 delay-350">
                   <UpcomingGamesSection overview={overview} />
                 </div>
 
                 {/* Upcoming Training Sessions */}
-                <div className="animate-in fade-in-50 duration-500 delay-400">
+                <div className= "animate-in fade-in-50 duration-500 delay-400">
                   <UpcomingTrainingSection overview={overview} />
                 </div>
 
                 {/* Training Summary */}
-                <div className="animate-in fade-in-50 duration-500 delay-550">
+                <div className= "animate-in fade-in-50 duration-500 delay-550">
                   <TrainingSummarySection overview={overview} />
                 </div>
               </div>
@@ -170,15 +170,15 @@ const CoachDetails = () => {
 
         {/* If no dashboard data, show basic info message */}
         {!overview && !overviewLoading && (
-          <Card className="bg-muted/20 border-dashed">
-            <CardContent className="p-8 text-center">
-              <div className="p-4 bg-primary/10 rounded-full mb-4 mx-auto w-fit">
-                <Users className="h-8 w-8 text-primary/70" />
+          <Card className= "bg-muted/20 border-dashed">
+            <CardContent className= "p-8 text-center">
+              <div className= "p-4 bg-primary/10 rounded-full mb-4 w-fit">
+                <Users className= "h-8 w-8 text-primary/70" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
+              <h3 className= "text-lg font-semibold text-foreground mb-2">
                 Coach Profile View
               </h3>
-              <p className="text-muted-foreground">
+              <p className= "text-muted-foreground">
                 This is a view-only profile for {coach?.full_name}. Dashboard metrics and detailed analytics are only available when coaches view their own profile.
               </p>
             </CardContent>

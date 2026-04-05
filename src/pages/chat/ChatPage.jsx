@@ -24,9 +24,9 @@ const ChatPage = () => {
   // For players, show simplified single chat view
   if (isPlayer()) {
     return (
-      <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
+      <div className= "bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
         {/* Chat Window */}
-        <div className="flex-1">
+        <div className= "flex-1">
           <PlayerChatWindow selectedChat={selectedChat} currentUser={user} />
         </div>
       </div>
@@ -42,13 +42,13 @@ const ChatPage = () => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
-        <div className="grid grid-cols-[auto_1fr] lg:grid-cols-4">
+      <div className= "flex-1 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5">
+        <div className= "grid grid-cols-[auto_1fr] lg:grid-cols-4">
           {/* Team List */}
-          <div className="lg:col-span-1">
-            <div className="h-[calc(100vh-4rem)] border-r-2 border-primary/20">
+          <div className= "lg:col-span-1">
+            <div className= "h-[calc(100vh-4rem)] border-r-2 border-primary/20">
               {/* Broadcast Button */}
-              <div className="h-[calc(100%-4rem)]">
+              <div className= "h-[calc(100%-4rem)]">
                 <TeamChatList
                   teamChats={teamChats}
                   selectedChat={selectedChat}
@@ -60,8 +60,8 @@ const ChatPage = () => {
           </div>
 
           {/* Chat Window */}
-          <div className="lg:col-span-3">
-            <div className="h-[calc(100vh-4rem)] overflow-hidden">
+          <div className= "lg:col-span-3">
+            <div className= "h-[calc(100vh-4rem)] overflow-hidden">
               <ChatWindow selectedChat={selectedChat} currentUser={user} />
             </div>
           </div>

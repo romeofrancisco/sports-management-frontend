@@ -43,7 +43,7 @@ const PaginationInfo = ({ currentPage, pageSize, totalItems }) => {
   const end = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <div className="text-sm text-muted-foreground">
+    <div className= "text-sm text-muted-foreground">
       Showing {start} to {end} of {totalItems} players
     </div>
   );
@@ -52,14 +52,14 @@ const PaginationInfo = ({ currentPage, pageSize, totalItems }) => {
 const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
   {
     id: "name",
-    header: () => <h1 className="ps-3">Name</h1>,
+    header: () => <h1 className= "ps-3">Name</h1>,
     cell: ({ row }) => {
       const { profile, first_name, last_name } = row.original;
       return (
-        <div className="flex gap-2 items-center ps-3">
+        <div className= "flex gap-2 items-center ps-3">
           <Avatar>
             <AvatarImage src={profile} alt={first_name} />
-            <AvatarFallback className="rounded-lg bg-accent">
+            <AvatarFallback className= "rounded-lg bg-accent">
               {first_name[0]}
               {last_name[0]}
             </AvatarFallback>
@@ -116,9 +116,9 @@ const getColumns = (navigate, handleUpdatePlayer, handleDeletePlayer) => [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+            <Button variant="ghost" className= "h-8 w-8 p-0">
+              <span className= "sr-only">Open menu</span>
+              <MoreHorizontal className= "h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -199,7 +199,7 @@ export const PlayersTable = () => {
   const columns = getColumns(navigate, handleUpdatePlayer, handleDeletePlayer);
 
   return (
-    <Card className="border gap-0 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
+    <Card className= "border gap-0 pt-5 md:p-5 lg:p-8 my-5 rounded-lg">
       <PlayersFilterBar
         filter={filter}
         setFilter={(newFilter) => {
@@ -211,20 +211,20 @@ export const PlayersTable = () => {
         columns={columns}
         data={players}
         loading={isLoading}
-        className="text-xs md:text-sm"
+        className= "text-xs md:text-sm"
         showPagination={false} // Disable built-in pagination
         pageSize={pageSize} // Still pass pageSize for row rendering
       />
 
       {totalPlayers > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+        <div className= "flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <PaginationInfo
             currentPage={currentPage}
             pageSize={pageSize}
             totalItems={totalPlayers}
           />
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className= "flex flex-col sm:flex-row items-center gap-4">
             <Select
               value={String(pageSize)}
               onValueChange={(value) => {
@@ -233,7 +233,7 @@ export const PlayersTable = () => {
                 setCurrentPage(1); // Reset to first page when changing page size
               }}
             >
-              <SelectTrigger className="w-[120px] h-8">
+              <SelectTrigger className= "w-[120px] h-8">
                 <SelectValue placeholder="Rows per page" />
               </SelectTrigger>
               <SelectContent>
@@ -245,27 +245,27 @@ export const PlayersTable = () => {
               </SelectContent>
             </Select>
 
-            <div className="flex gap-1">
+            <div className= "flex gap-1">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1 || isLoading}
-                className="h-8 w-8"
+                className= "h-8 w-8"
               >
-                <ChevronsLeft className="h-4 w-4" />
+                <ChevronsLeft className= "h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1 || isLoading}
-                className="h-8 w-8"
+                className= "h-8 w-8"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className= "h-4 w-4" />
               </Button>
 
-              <div className="flex items-center gap-1 px-1">
+              <div className= "flex items-center gap-1 px-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   // Show range of pages centered around current page
                   let pageNum;
@@ -286,7 +286,7 @@ export const PlayersTable = () => {
                       size="sm"
                       onClick={() => handlePageChange(pageNum)}
                       disabled={isLoading}
-                      className="h-8 w-8 p-0"
+                      className= "h-8 w-8 p-0"
                     >
                       {pageNum}
                     </Button>
@@ -299,18 +299,18 @@ export const PlayersTable = () => {
                 size="icon"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage >= totalPages || isLoading}
-                className="h-8 w-8"
+                className= "h-8 w-8"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className= "h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage >= totalPages || isLoading}
-                className="h-8 w-8"
+                className= "h-8 w-8"
               >
-                <ChevronsRight className="h-4 w-4" />
+                <ChevronsRight className= "h-4 w-4" />
               </Button>
             </div>
           </div>

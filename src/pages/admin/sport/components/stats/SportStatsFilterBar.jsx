@@ -50,19 +50,19 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className= "space-y-4">
       {/* Collapsible Header */}
       <div 
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        className= "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
         onClick={toggleExpanded}
       >
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-            <Sliders className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+        <div className= "flex items-center gap-3">
+          <div className= "p-2 bg-primary/10 rounded-lg shrink-0">
+            <Sliders className= "h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-base sm:text-lg">Filter Stats</h3>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+          <div className= "flex-1">
+            <h3 className= "font-semibold text-base sm:text-lg">Filter Stats</h3>
+            <p className= "text-xs sm:text-sm text-muted-foreground">
               {isExpanded 
                 ? "Click to collapse filter options" 
                 : "Click to expand filter options"
@@ -71,24 +71,24 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className= "flex items-center gap-2">
           {/* Active Filters Badge */}
           {getActiveFiltersCount() > 0 && (
             <Badge
               variant="secondary"
-              className="bg-primary/10 text-primary"
+              className= "bg-primary/10 text-primary"
             >
-              <Filter className="h-3 w-3 mr-1" />
+              <Filter className= "h-3 w-3 mr-1" />
               {getActiveFiltersCount()} active
             </Badge>
           )}
           
           {/* Toggle Icon */}
-          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+          <Button variant="ghost" size="icon" className= "h-8 w-8 shrink-0">
             {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUp className= "h-4 w-4" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className= "h-4 w-4" />
             )}
           </Button>
         </div>
@@ -97,17 +97,17 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
       {/* Expandable Filter Controls */}
       {isExpanded && (
         <div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className= "grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Search Input */}
-        <div className="lg:col-span-1">
-          <label className="block text-sm font-medium text-foreground mb-2">
+        <div className= "lg:col-span-1">
+          <label className= "block text-sm font-medium text-foreground mb-2">
             Search
           </label>
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <div className= "relative">
+            <Search className= "absolute left-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               placeholder="Search by name or code..."
-              className="pl-10 bg-background border-2 focus:border-primary/50 transition-colors"
+              className= "pl-10 bg-background border-2 focus:border-primary/50 transition-colors"
               value={filter.search}
               onChange={(e) =>
                 setFilter((prev) => ({
@@ -119,19 +119,19 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
             {filter.search && (
               <button
                 onClick={() => setFilter((prev) => ({ ...prev, search: "" }))}
-                className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                className= "absolute right-3 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <X className="h-4 w-4" />
+                <X className= "h-4 w-4" />
               </button>
             )}
           </div>
         </div>
 
         {/* Category and Type Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           {/* Category Filter */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className= "block text-sm font-medium text-foreground mb-2">
               Category
             </label>
             <Select
@@ -143,7 +143,7 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
                 }))
               }
             >
-              <SelectTrigger className="w-full bg-background border-2 focus:border-primary/50 transition-colors">
+              <SelectTrigger className= "w-full bg-background border-2 focus:border-primary/50 transition-colors">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
@@ -160,7 +160,7 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
 
           {/* Type Filter */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className= "block text-sm font-medium text-foreground mb-2">
               Type
             </label>
             <Select
@@ -169,7 +169,7 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
                 setFilter((prev) => ({ ...prev, type: value }))
               }
             >
-              <SelectTrigger className="w-full bg-background border-2 focus:border-primary/50 transition-colors">
+              <SelectTrigger className= "w-full bg-background border-2 focus:border-primary/50 transition-colors">
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
@@ -184,15 +184,15 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
 
       {/* Active Filters Summary & Reset */}
       {getActiveFiltersCount() > 0 && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t bg-muted/20 -mx-3 sm:-mx-4 lg:-mx-6 px-3 sm:px-4 lg:px-6 rounded-b-lg">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-foreground">
+        <div className= "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t bg-muted/20 -mx-3 sm:-mx-4 lg:-mx-6 px-3 sm:px-4 lg:px-6 rounded-b-lg">
+          <div className= "flex flex-wrap items-center gap-2">
+            <span className= "text-sm font-medium text-foreground">
               Active filters:
             </span>
             {filter.search && (
               <Badge
                 variant="outline"
-                className="bg-background px-2 py-1 text-xs sm:text-xs"
+                className= "bg-background px-2 py-1 text-xs sm:text-xs"
               >
                 Search: "
                 {filter.search.length > 15
@@ -204,7 +204,7 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
             {filter.category !== "all" && (
               <Badge
                 variant="outline"
-                className="bg-background px-2 py-1 text-xs sm:text-xs"
+                className= "bg-background px-2 py-1 text-xs sm:text-xs"
               >
                 Category:{" "}
                 {categories.find((cat) => cat.id === filter.category)?.name}
@@ -213,7 +213,7 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
             {filter.type !== "all" && (
               <Badge
                 variant="outline"
-                className="bg-background px-2 py-1 text-xs sm:text-xs"
+                className= "bg-background px-2 py-1 text-xs sm:text-xs"
               >
                 Type: {filter.type[0].toUpperCase() + filter.type.slice(1)}
               </Badge>
@@ -223,9 +223,9 @@ const SportStatsFilterBar = ({ filter, setFilter, categories }) => {
             variant="outline"
             size="sm"
             onClick={resetFilters}
-            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-xs sm:text-sm shrink-0"
+            className= "text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-xs sm:text-sm shrink-0"
           >
-            <X className="h-3 w-3 mr-1" />
+            <X className= "h-3 w-3 mr-1" />
             Clear All
           </Button>
         </div>

@@ -60,10 +60,10 @@ const TournamentCharts = ({
   });
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+    <div className= "space-y-4">
+      <div className= "grid grid-cols-1 lg:grid-cols-5 gap-4">
         <ClickableChartArea
-          className="lg:col-span-3"
+          className= "lg:col-span-3"
           onOpen={() =>
             openSummary({
               chartType: "differential",
@@ -74,11 +74,11 @@ const TournamentCharts = ({
           <DifferentialChart
             data={differentialData}
             isSetsScoring={isSetsScoring}
-            className="lg:col-span-3"
+            className= "lg:col-span-3"
           />
         </ClickableChartArea>
         <ClickableChartArea
-          className="lg:col-span-2"
+          className= "lg:col-span-2"
           onOpen={() =>
             openSummary({
               chartType: "streak",
@@ -89,12 +89,12 @@ const TournamentCharts = ({
           <StreakChart
             data={streakData}
             isSetsScoring={isSetsScoring}
-            className="lg:col-span-2"
+            className= "lg:col-span-2"
           />
         </ClickableChartArea>
       </div>
 
-      <div className="grid grid-cols-1">
+      <div className= "grid grid-cols-1">
         <ClickableChartArea
           onOpen={() =>
             openSummary({

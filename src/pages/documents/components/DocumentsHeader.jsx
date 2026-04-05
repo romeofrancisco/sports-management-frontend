@@ -51,14 +51,14 @@ const DocumentsHeader = ({
 
   return (
     <>
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary p-3 rounded-xl">
-            <FolderClosed className="size-5 md:size-7 text-primary-foreground" />
+      <div className= "flex items-center justify-between gap-2">
+        <div className= "flex items-center gap-2">
+          <div className= "bg-primary p-3 rounded-xl">
+            <FolderClosed className= "size-5 md:size-7 text-primary-foreground" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+            <div className= "flex items-center gap-2">
+              <h2 className= "text-xl md:text-2xl font-bold text-foreground">
                 Documents
               </h2>
             </div>
@@ -72,26 +72,26 @@ const DocumentsHeader = ({
 
         {/* View buttons - Desktop only */}
         {!isMobile && (
-          <div className="flex items-center gap-2">
+          <div className= "flex items-center gap-2">
             <Button
               variant={viewMode === "list" ? "default" : "outline"}
               size="icon"
               onClick={() => onViewModeChange("list")}
             >
-              <Table2 className="h-4 w-4" />
+              <Table2 className= "h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === "grid" ? "default" : "outline"}
               size="icon"
               onClick={() => onViewModeChange("grid")}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className= "h-4 w-4" />
             </Button>
           </div>
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className= "flex gap-2">
         <Button
           variant="ghost"
           size="icon"
@@ -100,10 +100,10 @@ const DocumentsHeader = ({
         >
           <RotateCw className={isFetching ? "animate-spin" : ""} />
         </Button>
-        <div className="relative w-full">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className= "relative w-full">
+          <Search className= "absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            className="pl-7"
+            className= "pl-7"
             placeholder="Search documents..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -119,7 +119,7 @@ const DocumentsHeader = ({
               onClick={onCreateFolder}
             >
               <FolderPlus />
-              <span className="hidden md:block">New Folder</span>
+              <span className= "hidden md:block">New Folder</span>
             </Button>
 
             <Button
@@ -127,7 +127,7 @@ const DocumentsHeader = ({
               disabled={!permissions.documents.canUpload(currentFolder)}
             >
               <Upload />
-              <span className="hidden md:block">Upload File</span>
+              <span className= "hidden md:block">Upload File</span>
             </Button>
           </>
         )}
@@ -137,7 +137,7 @@ const DocumentsHeader = ({
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className= "h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

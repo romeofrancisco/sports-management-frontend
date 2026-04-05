@@ -194,17 +194,17 @@ export default function GoogleCallback() {
   }, [searchParams, navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className= "flex flex-col items-center justify-center min-h-screen bg-background">
       {error ? (
-        <div className="text-center">
-          <p className="text-destructive text-lg mb-2">{error}</p>
-          <p className="text-muted-foreground">Redirecting to documents...</p>
+        <div className= "text-center">
+          <p className= "text-destructive text-lg mb-2">{error}</p>
+          <p className= "text-muted-foreground">Redirecting to documents...</p>
         </div>
       ) : (
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-lg font-medium">Connecting to Google Drive...</p>
-          <p className="text-muted-foreground">Please wait, opening document...</p>
+        <div className= "text-center">
+          <Loader2 className= "h-8 w-8 animate-spin mb-4 text-primary" />
+          <p className= "text-lg font-medium">Connecting to Google Drive...</p>
+          <p className= "text-muted-foreground">Please wait, opening document...</p>
         </div>
       )}
     </div>

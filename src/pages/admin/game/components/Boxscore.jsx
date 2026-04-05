@@ -166,7 +166,7 @@ const Boxscore = ({ game }) => {
     const baseColumns = [
       {
         accessorKey: "player",
-        header: () => <span className="ps-4">Player</span>,
+        header: () => <span className= "ps-4">Player</span>,
         cell: ({ row }) => {
           const { jersey_number, name, id } = row.original;
           const isTeamTotal =
@@ -179,7 +179,7 @@ const Boxscore = ({ game }) => {
               } gap-2 ps-1`}
             >
               {!isTeamTotal && (
-                <span className="text-muted-foreground text-end">
+                <span className= "text-muted-foreground text-end">
                   {jersey_number}
                 </span>
               )}
@@ -194,7 +194,7 @@ const Boxscore = ({ game }) => {
     const statColumns = allStatNames.map((statName) => ({
       id: statName,
       accessorKey: statName,
-      header: () => <div className="text-center text-xs">{statName}</div>,
+      header: () => <div className= "text-center text-xs">{statName}</div>,
       cell: ({ getValue, row }) => {
         const value = getValue();
         const isTeamTotal =
@@ -220,23 +220,23 @@ const Boxscore = ({ game }) => {
   if (!boxscoreData) return <div>No boxscore data available</div>;
 
   return (
-    <Card className="max-w-screen lg:max-w-[calc(100vw-24rem)]">
-      <CardContent className="p-0 md:px-6">
-        <CardHeader className="p-0">
-          <CardTitle className="text-lg font-semibold flex justify-between items-center gap-2 border-b border-dashed pb-2">
+    <Card className= "max-w-screen lg:max-w-[calc(100vw-24rem)]">
+      <CardContent className= "p-0 md:px-6">
+        <CardHeader className= "p-0">
+          <CardTitle className= "text-lg font-semibold flex justify-between items-center gap-2 border-b border-dashed pb-2">
             Boxscore
-            <div className="flex justify-between items-center">
+            <div className= "flex justify-between items-center">
               {scoring_type === SCORING_TYPE_VALUES.SETS &&
                 availablePeriods.length > 1 && (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-muted-foreground uppercase">
+                  <div className= "flex items-center space-x-2">
+                    <span className= "text-sm text-muted-foreground uppercase">
                       {getPeriodLabel(scoring_type)}:
                     </span>
                     <Select
                       value={selectedPeriod}
                       onValueChange={setSelectedPeriod}
                     >
-                      <SelectTrigger className="w-[100px] text-sm font-normal">
+                      <SelectTrigger className= "w-[100px] text-sm font-normal">
                         <SelectValue placeholder="Period" />
                       </SelectTrigger>
                       <SelectContent>
@@ -254,20 +254,20 @@ const Boxscore = ({ game }) => {
             </div>
           </CardTitle>
         </CardHeader>
-        <div className="flex flex-col">
+        <div className= "flex flex-col">
           {/* Home Team Table */}
           <div>
-            <div className="flex items-center gap-2 px-2">
-              <Avatar className="w-7 h-7 border-2 border-primary/20 my-2">
+            <div className= "flex items-center gap-2 px-2">
+              <Avatar className= "w-7 h-7 border-2 border-primary/20 my-2">
                 <AvatarImage
                   src={game.home_team.logo}
                   alt={game.home_team.name}
                 />
-                <AvatarFallback className="bg-muted/50 text-muted-foreground">
+                <AvatarFallback className= "bg-muted/50 text-muted-foreground">
                   {game.home_team.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="font-semibold text-base">
+              <span className= "font-semibold text-base">
                 {game.home_team.name}
               </span>
             </div>
@@ -276,24 +276,24 @@ const Boxscore = ({ game }) => {
               data={homeTeamData}
               showPagination={false}
               unlimited={true}
-              className="text-xs"
+              className= "text-xs"
               alternateRowColors={true}
             />
           </div>
 
           {/* Away Team Table */}
           <div>
-            <div className="flex items-center gap-2 px-2">
-              <Avatar className="w-7 h-7 border-2 border-primary/20 my-2">
+            <div className= "flex items-center gap-2 px-2">
+              <Avatar className= "w-7 h-7 border-2 border-primary/20 my-2">
                 <AvatarImage
                   src={game.away_team.logo}
                   alt={game.away_team.name}
                 />
-                <AvatarFallback className="bg-muted/50 text-muted-foreground">
+                <AvatarFallback className= "bg-muted/50 text-muted-foreground">
                   {game.away_team.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="font-semibold text-base">
+              <span className= "font-semibold text-base">
                 {game.away_team.name}
               </span>
             </div>
@@ -302,7 +302,7 @@ const Boxscore = ({ game }) => {
               data={awayTeamData}
               showPagination={false}
               unlimited={true}
-              className="text-xs"
+              className= "text-xs"
               alternateRowColors={true}
             />
           </div>

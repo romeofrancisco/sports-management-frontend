@@ -42,8 +42,8 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
           title={`Welcome Administrator ${user?.first_name || ""}!`}
@@ -56,16 +56,16 @@ const AdminDashboard = () => {
         <SystemOverviewCards overview={overview} />
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className= "xl:col-span-2 space-y-6">
             {/* System Health Section */}
             <SystemHealthSection overview={overview} />
             {/* Analytics Charts */}
             <ChartsSection overview={overview} analytics={analytics} />
           </div>
           {/* Right Column - Secondary Content */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className= "xl:col-span-1 space-y-6">
             {/* Quick Actions */}
             <QuickActionsSection overview={overview} />
             {/* Insights Section Card now handled inside InsightsSection */}

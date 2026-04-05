@@ -21,23 +21,23 @@ const SportPositionsTable = ({
   };
 
   const PositionActions = ({ position }) => (
-    <div className="flex items-center justify-end space-x-2">
+    <div className= "flex items-center justify-end space-x-2">
       <Button 
         variant="outline" 
         size="sm"
         onClick={() => onEdit(position)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Edit className="h-3 w-3 mr-1" />
+        <Edit className= "h-3 w-3 mr-1" />
         Edit
       </Button>
       <Button 
         variant="destructive" 
         size="sm" 
         onClick={() => onDelete(position)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Trash2 className="h-3 w-3 mr-1" />
+        <Trash2 className= "h-3 w-3 mr-1" />
         Delete
       </Button>
     </div>
@@ -48,14 +48,14 @@ const SportPositionsTable = ({
       accessorKey: "name",
       header: "Position Name",
       cell: ({ getValue }) => (
-        <div className="font-medium">{getValue()}</div>
+        <div className= "font-medium">{getValue()}</div>
       ),
     },
     {
       accessorKey: "abbreviation",
       header: "Abbreviation",
       cell: ({ getValue }) => (
-        <Badge variant="outline" className="font-mono">
+        <Badge variant="outline" className= "font-mono">
           {getValue() || "N/A"}
         </Badge>
       ),
@@ -65,7 +65,7 @@ const SportPositionsTable = ({
       accessorKey: "description",
       header: "Description",
       cell: ({ getValue }) => (
-        <div className="text-sm text-muted-foreground">
+        <div className= "text-sm text-muted-foreground">
           {getValue() || "No description"}
         </div>
       ),
@@ -84,19 +84,19 @@ const SportPositionsTable = ({
   }
 
   return (
-    <div className="border rounded-md overflow-hidden shadow-sm">
+    <div className= "border rounded-md overflow-hidden shadow-sm">
       <DataTable
         columns={columns}
         data={positions || []}
         loading={isLoading}
-        className="text-sm"
+        className= "text-sm"
         pagination={false}
         unlimited={true}
         emptyMessage={
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <Users className="h-8 w-8 text-muted-foreground mb-2" />
-            <h3 className="text-lg font-medium mb-1">No positions found</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+          <div className= "flex flex-col items-center justify-center p-8 text-center">
+            <Users className= "h-8 w-8 text-muted-foreground mb-2" />
+            <h3 className= "text-lg font-medium mb-1">No positions found</h3>
+            <p className= "text-sm text-muted-foreground mb-4">
               {filter.search
                 ? "Try adjusting your search to find positions"
                 : "Create your first position to define player roles"}
@@ -104,9 +104,9 @@ const SportPositionsTable = ({
             <Button
               onClick={handleCreatePosition}
               size="sm"
-              className="bg-primary"
+              className= "bg-primary"
             >
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className= "mr-1.5 h-3.5 w-3.5" />
               New Position
             </Button>
           </div>

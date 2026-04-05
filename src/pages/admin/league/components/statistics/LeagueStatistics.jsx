@@ -73,7 +73,7 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList className="mb-4">
+      <TabsList className= "mb-4">
         <TabsTrigger value="league">League Statistics</TabsTrigger>
         <TabsTrigger value="season">Season Statistics</TabsTrigger>
       </TabsList>
@@ -83,15 +83,15 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
       </TabsContent>
 
       <TabsContent value="season">
-        <Card className="p-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold">Season Statistics</h2>
+        <Card className= "p-4">
+          <div className= "mb-4 flex items-center justify-between">
+            <h2 className= "text-xl font-bold">Season Statistics</h2>
             
             <Select 
               value={selectedSeasonId} 
               onValueChange={setSelectedSeasonId}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className= "w-[200px]">
                 <SelectValue placeholder="Select Season" />
               </SelectTrigger>
               <SelectContent>
@@ -105,19 +105,19 @@ const LeagueStatistics = ({ leagueId, latestSeasonId, sport }) => {
           </div>
           
           {/* Stat Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
             <LeagueStatCards 
               statsSummary={statsSummary} 
               isSetsScoring={isSetsScoring} 
             />
           </div>          {/* Charts - updated layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          <div className= "grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             <PointsChart data={pointsData} isSetsScoring={isSetsScoring} />
             <StreakChart data={streakData} isSetsScoring={isSetsScoring} />
           </div>
 
           {/* Charts - second row */}
-          <div className="grid grid-cols-1 gap-4">
+          <div className= "grid grid-cols-1 gap-4">
             <DifferentialChart data={differentialData} isSetsScoring={isSetsScoring} />
           </div>
         </Card>

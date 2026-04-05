@@ -63,7 +63,7 @@ const LeagueStandings = ({ rankings }) => {
     <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="cursor-help">{label}</span>
+          <span className= "cursor-help">{label}</span>
         </TooltipTrigger>
         <TooltipContent>
           <p>{tooltipText}</p>
@@ -83,17 +83,17 @@ const LeagueStandings = ({ rankings }) => {
         const getRankStyle = (rank) => {
           if (rank === 1)
             return {
-              icon: <TrophyIcon className="text-amber-500" size={16} />,
+              icon: <TrophyIcon className= "text-amber-500" size={16} />,
               textColor: "text-amber-500",
             };
           if (rank === 2)
             return {
-              icon: <Medal className="text-gray-400" size={16} />,
+              icon: <Medal className= "text-gray-400" size={16} />,
               textColor: "text-gray-400",
             };
           if (rank === 3)
             return {
-              icon: <Medal className="text-amber-700" size={16} />,
+              icon: <Medal className= "text-amber-700" size={16} />,
               textColor: "text-amber-700",
             };
           return { icon: null, textColor: "text-muted-foreground" };
@@ -102,20 +102,20 @@ const LeagueStandings = ({ rankings }) => {
         const rankStyle = getRankStyle(rank);
 
         return (
-          <div className="flex items-center gap-3">
+          <div className= "flex items-center gap-3">
             <div
               className={`w-5 text-end  flex items-center justify-end ${rankStyle.textColor}`}
             >
               {rankStyle.icon || rank}
             </div>
-            <div className="flex items-center gap-2">
-              <Avatar className="border size-8">
+            <div className= "flex items-center gap-2">
+              <Avatar className= "border size-8">
                 <AvatarImage src={team_logo} alt={team_name} />
-                <AvatarFallback className="text-xs bg-muted">
+                <AvatarFallback className= "text-xs bg-muted">
                   {team_name.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="">{team_name}</span>
+              <span className= "">{team_name}</span>
             </div>
           </div>
         );
@@ -125,7 +125,7 @@ const LeagueStandings = ({ rankings }) => {
     {
       id: "form",
       header: () => (
-        <div className="text-center">
+        <div className= "text-center">
           {headerWithTooltip("STRK", "Recent performance in last 5 games")}
         </div>
       ),
@@ -145,7 +145,7 @@ const LeagueStandings = ({ rankings }) => {
         }
 
         return (
-          <div className="flex justify-center">
+          <div className= "flex justify-center">
             <TeamStreakIndicator results={formData} />
           </div>
         );
@@ -155,40 +155,40 @@ const LeagueStandings = ({ rankings }) => {
     {
       accessorKey: "matches_played",
       header: () => (
-        <div className="text-center">
+        <div className= "text-center">
           {headerWithTooltip("MP", "Matches Played")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
+      cell: ({ getValue }) => <div className= "text-center">{getValue()}</div>,
       size: 40,
     },
     {
       accessorKey: "wins",
       header: () => (
-        <div className="text-center">{headerWithTooltip("W", "Wins")}</div>
+        <div className= "text-center">{headerWithTooltip("W", "Wins")}</div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
+      cell: ({ getValue }) => <div className= "text-center">{getValue()}</div>,
       size: 40,
     },
     {
       accessorKey: "losses",
       header: () => (
-        <div className="text-center">{headerWithTooltip("L", "Losses")}</div>
+        <div className= "text-center">{headerWithTooltip("L", "Losses")}</div>
       ),
-      cell: ({ getValue }) => <div className="text-center">{getValue()}</div>,
+      cell: ({ getValue }) => <div className= "text-center">{getValue()}</div>,
       size: 40,
     },
     {
       accessorKey: "win_ratio",
       header: () => (
-        <div className="text-center">
+        <div className= "text-center">
           {headerWithTooltip("PCT", "Winning Percentage")}
         </div>
       ),
       cell: ({ getValue }) => {
         const value = getValue() || 0;
         return (
-          <div className="text-center ">
+          <div className= "text-center">
             {value.toFixed(3).toString().replace(/^0\./, ".")}
           </div>
         );
@@ -202,10 +202,10 @@ const LeagueStandings = ({ rankings }) => {
     baseColumns.push({
       accessorKey: "ties",
       header: () => (
-        <div className="text-center">{headerWithTooltip("T", "Ties")}</div>
+        <div className= "text-center">{headerWithTooltip("T", "Ties")}</div>
       ),
       cell: ({ getValue }) => (
-        <div className="text-center ">{getValue() || 0}</div>
+        <div className= "text-center">{getValue() || 0}</div>
       ),
       size: 40,
     });
@@ -218,7 +218,7 @@ const LeagueStandings = ({ rankings }) => {
       {
         id: "sets_w_l",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("SETS W-L", "Sets Won and Lost")}
           </div>
         ),
@@ -226,7 +226,7 @@ const LeagueStandings = ({ rankings }) => {
           const setsWon = row.original.sets_won || 0;
           const setsLost = row.original.sets_lost || 0;
           return (
-            <div className="text-center ">
+            <div className= "text-center">
               {setsWon} - {setsLost}
             </div>
           );
@@ -236,14 +236,14 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "set_ratio",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("SET RATIO", "Ratio of sets won to sets lost")}
           </div>
         ),
         cell: ({ getValue }) => {
           const value = getValue() || 0;
           return (
-            <div className="text-center ">
+            <div className= "text-center">
               {typeof value === "number" ? value.toFixed(3) : "0.000"}
             </div>
           );
@@ -253,7 +253,7 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "sets_win_percentage",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("SETS WIN %", "Sets Win Percentage")}
           </div>
         ),
@@ -264,14 +264,14 @@ const LeagueStandings = ({ rankings }) => {
             (row.original.sets_won || 0) + (row.original.sets_lost || 0);
           const percentage = setsPlayed > 0 ? (setsWon / setsPlayed) * 100 : 0;
 
-          return <div className="text-center ">{percentage.toFixed(1)}%</div>;
+          return <div className= "text-center">{percentage.toFixed(1)}%</div>;
         },
         size: 60,
       },
       {
         accessorKey: "points_per_set",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("PTS/SET", "Average Points per Set")}
           </div>
         ),
@@ -279,7 +279,7 @@ const LeagueStandings = ({ rankings }) => {
           // Use the value if available or calculate if needed
           const value = getValue() || row.original.points_per_set || 0;
           return (
-            <div className="text-center ">
+            <div className= "text-center">
               {typeof value === "number" ? value.toFixed(1) : value}
             </div>
           );
@@ -289,14 +289,14 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "points_conceded_per_set",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("OPP/SET", "Opponent Points Per Set")}
           </div>
         ),
         cell: ({ getValue }) => {
           const value = getValue() || 0;
           return (
-            <div className="text-center font-medium">{value.toFixed(1)}</div>
+            <div className= "text-center font-medium">{value.toFixed(1)}</div>
           );
         },
         size: 60,
@@ -304,7 +304,7 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "point_differential_per_set",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("DIFF/SET", "Point Differential Per Set")}
           </div>
         ),
@@ -334,14 +334,14 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "points_per_game",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("PPG", "Points Per Game")}
           </div>
         ),
         cell: ({ getValue, row }) => {
           const value = getValue() || row.original.points_per_game || 0;
           return (
-            <div className="text-center ">
+            <div className= "text-center">
               {typeof value === "number" ? value.toFixed(1) : value}
             </div>
           );
@@ -351,20 +351,20 @@ const LeagueStandings = ({ rankings }) => {
       {
         accessorKey: "points_conceded_per_game",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("OPPG", "Opponent Points Per Game")}
           </div>
         ),
         cell: ({ getValue }) => {
           const value = getValue() || 0;
-          return <div className="text-center ">{value.toFixed(1)}</div>;
+          return <div className= "text-center">{value.toFixed(1)}</div>;
         },
         size: 50,
       },
       {
         accessorKey: "point_differential_avg",
         header: () => (
-          <div className="text-center">
+          <div className= "text-center">
             {headerWithTooltip("DIFF", "Average Point Differential Per Game")}
           </div>
         ),
@@ -395,34 +395,34 @@ const LeagueStandings = ({ rankings }) => {
     {
       accessorKey: "seasons_participated",
       header: () => (
-        <div className="text-center">
+        <div className= "text-center">
           {headerWithTooltip("SP", "Seasons Participated")}
         </div>
       ),
-      cell: ({ getValue }) => <div className="text-center ">{getValue()}</div>,
+      cell: ({ getValue }) => <div className= "text-center">{getValue()}</div>,
       size: 40,
     },
     {
       accessorKey: "championships",
       header: () => (
-        <div className="text-center">
+        <div className= "text-center">
           {headerWithTooltip("CH", "Championships Won")}
         </div>
       ),
       cell: ({ getValue }) => {
         const championships = getValue();
         return (
-          <div className="flex justify-center items-center">
+          <div className= "flex justify-center items-center">
             {championships > 0 ? (
               <Badge
                 variant="outline"
-                className="bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-700 dark:text-amber-300 flex gap-1 items-center"
+                className= "bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-700 dark:text-amber-300 flex gap-1 items-center"
               >
-                <TrophyIcon size={12} className="text-amber-500" />
+                <TrophyIcon size={12} className= "text-amber-500" />
                 <span>{championships}</span>
               </Badge>
             ) : (
-              <span className="text-muted-foreground">0</span>
+              <span className= "text-muted-foreground">0</span>
             )}
           </div>
         );
@@ -431,37 +431,37 @@ const LeagueStandings = ({ rankings }) => {
     }
   );
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
       {/* Enhanced background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+      <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+      <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
       
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <TrendingUp className="h-5 w-5 text-primary-foreground" />
+      <CardHeader className= "relative">
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+            <TrendingUp className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+            <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
               League Leaderboard
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className= "text-sm text-muted-foreground mt-1">
               Complete team standings and performance metrics
             </p>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="relative px-6">
+      <CardContent className= "relative px-6">
         <DataTable
           columns={baseColumns}
           data={sortedRankings || []}
           showPagination={false}
-          className="text-sm"
+          className= "text-sm"
           alternateRowColors={true}
         />
 
-        <div className="mt-4 text-xs text-muted-foreground">
+        <div className= "mt-4 text-xs text-muted-foreground">
           {sortByPerformance ? (
             isSetBased ? (
               <span>

@@ -32,32 +32,32 @@ const LeagueTeamsList = ({
         {[...Array(skeletonCount)].map((_, i) => (
           <Card
             key={i}
-            className="overflow-hidden border-2 border-border/40 bg-gradient-to-r from-card via-muted/10 to-card shadow-sm animate-pulse"
+            className= "overflow-hidden border-2 border-border/40 bg-gradient-to-r from-card via-muted/10 to-card shadow-sm animate-pulse"
           >
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full" />
+            <CardContent className= "p-4">
+              <div className= "flex items-center gap-3">
+                <div className= "relative">
+                  <Skeleton className= "w-8 h-8 rounded-full" />
+                  <Skeleton className= "absolute -bottom-1 -right-1 w-5 h-5 rounded-full" />
                 </div>
-                <div className="relative">
-                  <Skeleton className="w-12 h-12 rounded-full" />
-                  <Skeleton className="absolute -top-1 -right-1 w-5 h-5 rounded-full" />
+                <div className= "relative">
+                  <Skeleton className= "w-12 h-12 rounded-full" />
+                  <Skeleton className= "absolute -top-1 -right-1 w-5 h-5 rounded-full" />
                 </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-3 w-10 rounded-full" />
+                <div className= "flex-1 space-y-2">
+                  <div className= "flex items-center justify-between">
+                    <Skeleton className= "h-4 w-24" />
+                    <Skeleton className= "h-3 w-10 rounded-full" />
                   </div>
-                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className= "h-3 w-20" />
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-border/40">
-                <div className="flex items-center justify-between">
-                  <Skeleton className="h-3 w-16" />
-                  <div className="flex gap-1">
+              <div className= "mt-3 pt-3 border-t border-border/40">
+                <div className= "flex items-center justify-between">
+                  <Skeleton className= "h-3 w-16" />
+                  <div className= "flex gap-1">
                     {[1, 2, 3, 4, 5].map((j) => (
-                      <Skeleton key={j} className="w-2 h-2 rounded-full" />
+                      <Skeleton key={j} className= "w-2 h-2 rounded-full" />
                     ))}
                   </div>
                 </div>
@@ -74,13 +74,13 @@ const LeagueTeamsList = ({
       <div
         className={`text-center p-8 ${className}`}
       >
-        <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-muted">
-          <Users className="h-8 w-8 text-muted-foreground" />
+        <div className= "w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-muted">
+          <Users className= "h-8 w-8 text-muted-foreground" />
         </div>
-        <p className="text-muted-foreground font-medium text-lg">
+        <p className= "text-muted-foreground font-medium text-lg">
           No teams in this league
         </p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className= "text-sm text-muted-foreground mt-1">
           Teams will appear here once they join the league
         </p>
       </div>
@@ -147,9 +147,9 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
     >
       <CardContent>
         {/* Main Team Info */}
-        <div className="flex items-center gap-3 mb-3">
+        <div className= "flex items-center gap-3 mb-3">
           {/* Position Badge */}
-          <div className="relative">
+          <div className= "relative">
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm`}
             >
@@ -163,30 +163,30 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
           </div>
 
           {/* Team Logo */}
-          <div className="relative">
-            <Avatar className="w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
+          <div className= "relative">
+            <Avatar className= "w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
               <AvatarImage 
                 src={team_logo} 
                 alt={team_name}
-                className="object-contain"
+                className= "object-contain"
               />
-              <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+              <AvatarFallback className= "bg-primary/10 text-primary font-bold text-sm">
                 {team_name?.charAt(0) || "T"}
               </AvatarFallback>
             </Avatar>
 
             {/* Championship indicator */}
             {championships > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 border-2 border-background shadow-md flex items-center justify-center">
-                <Trophy className="h-2.5 w-2.5 text-white" />
+              <div className= "absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 border-2 border-background shadow-md flex items-center justify-center">
+                <Trophy className= "h-2.5 w-2.5 text-white" />
               </div>
             )}
           </div>
 
           {/* Team Name and Record */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-foreground truncate">
+          <div className= "flex-1 min-w-0">
+            <div className= "flex items-center justify-between">
+              <h3 className= "font-semibold text-sm text-foreground truncate">
                 {team_name}
               </h3>
               <div
@@ -195,26 +195,26 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
                 {win_ratio ? Math.round(win_ratio * 100) : 0}%
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-              <span className="flex items-center gap-1">
-                <Shield className="h-3 w-3" />
+            <div className= "flex items-center gap-2 text-xs text-muted-foreground mt-1">
+              <span className= "flex items-center gap-1">
+                <Shield className= "h-3 w-3" />
                 {wins}W-{losses}L
               </span>
               {points > 0 && (
-                <span className="text-primary font-medium">{points} pts</span>
+                <span className= "text-primary font-medium">{points} pts</span>
               )}
             </div>
           </div>
         </div>
 
         {/* Performance Indicators */}
-        <div className="border-t border-border/40 pt-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground font-medium">
+        <div className= "border-t border-border/40 pt-3">
+          <div className= "flex items-center justify-between">
+            <div className= "flex items-center gap-2">
+              <span className= "text-xs text-muted-foreground font-medium">
                 STRK:
               </span>
-              <div className="flex items-center gap-1">
+              <div className= "flex items-center gap-1">
                 {formData.slice(0, 5).map((gameResult, idx) => {
                   // Handle both string format ('W', 'L', 'D') and object format ({result: 'W', ...})
                   const result =
@@ -259,14 +259,14 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
                   );
                 })}
                 {formData.length === 0 && (
-                  <span className="text-xs text-muted-foreground/70 italic">
+                  <span className= "text-xs text-muted-foreground/70 italic">
                     No recent games
                   </span>
                 )}
               </div>
             </div>
             {/* Additional Stats */}
-            <div className="flex items-center gap-2 text-xs">
+            <div className= "flex items-center gap-2 text-xs">
               {goal_difference !== undefined && goal_difference !== 0 && (
                 <span
                   className={`font-medium px-1.5 py-0.5 rounded text-xs ${
@@ -279,7 +279,7 @@ const TeamListItem = ({ team, formData = [], position, onClick }) => {
                   {goal_difference}
                 </span>
               )}
-              <TrendingUp className="h-3 w-3 text-muted-foreground" />
+              <TrendingUp className= "h-3 w-3 text-muted-foreground" />
             </div>
           </div>
         </div>

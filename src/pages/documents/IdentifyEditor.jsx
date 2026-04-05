@@ -58,16 +58,16 @@ const IdentifyEditor = () => {
 
   // Fallback for unsupported file types
   return (
-    <div className="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-md text-center place-items-center">
-        <FileX className="size-20" />
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+    <div className= "flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+      <div className= "max-w-md text-center place-items-center">
+        <FileX className= "size-20" />
+        <h1 className= "mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           Unsupported File Type
         </h1>
-        <p className="mt-2">
+        <p className= "mt-2">
           {fileExtension?.toUpperCase()} files cannot be edited in this viewer.
         </p>
-        <p className="mt-4 text-muted-foreground">
+        <p className= "mt-4 text-muted-foreground">
           Supported formats: DOCX, DOC, XLSX, XLS
         </p>
       </div>

@@ -33,8 +33,8 @@ const PlayerAttendanceDetailPage = () => {
 
   if (playerDetailLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-        <div className="container mx-auto p-1 md:p-6 space-y-6">
+      <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className= "p-1 md:p-6 space-y-6">
           <UniversityPageHeader
             title="Player Attendance Details"
             subtitle="Training Management"
@@ -44,13 +44,13 @@ const PlayerAttendanceDetailPage = () => {
             backButtonText="Back to Attendance"
             backButtonPath="/trainings/attendance"
           />
-          <div className="flex flex-col items-center justify-center py-16 space-y-6">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <div className="text-center space-y-2">
-              <p className="text-slate-600 dark:text-slate-400 font-medium">
+          <div className= "flex flex-col items-center justify-center py-16 space-y-6">
+            <div className= "w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className= "text-center space-y-2">
+              <p className= "text-slate-600 dark:text-slate-400 font-medium">
                 Loading player attendance details...
               </p>
-              <p className="text-slate-500 dark:text-slate-500 text-sm">
+              <p className= "text-slate-500 dark:text-slate-500 text-sm">
                 Analyzing attendance patterns
               </p>
             </div>
@@ -62,8 +62,8 @@ const PlayerAttendanceDetailPage = () => {
 
   if (playerDetailError || !playerDetailData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-        <div className="p-4 md:p-6 space-y-8">
+      <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+        <div className= "p-4 md:p-6 space-y-8">
           <UniversityPageHeader
             title="Player Attendance Details"
             subtitle="Training Management"
@@ -73,9 +73,9 @@ const PlayerAttendanceDetailPage = () => {
             backButtonText="Back to Attendance"
             backButtonPath="/trainings/attendance"
           />
-          <Alert className="border-red-200 bg-red-50/80 dark:bg-red-950/50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800 dark:text-red-200">
+          <Alert className= "border-red-200 bg-red-50/80 dark:bg-red-950/50">
+            <AlertCircle className= "h-4 w-4 text-red-600" />
+            <AlertDescription className= "text-red-800 dark:text-red-200">
               Failed to load player attendance details. Please try refreshing
               the page.
             </AlertDescription>
@@ -86,8 +86,8 @@ const PlayerAttendanceDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="p-4 md:p-6 space-y-8">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-4 md:p-6 space-y-8">
         <UniversityPageHeader
           title="Player Attendance Details"
           subtitle="Training Management"

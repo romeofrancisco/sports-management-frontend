@@ -96,8 +96,8 @@ function useWindowSize() {
 const SingleElimination = ({ bracket }) => {
   const navigate = useNavigate();
   const [width, height] = useWindowSize();
-  const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
-  const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
+  const widthOffset = width < 768 ? 12 : width > 1024 ? 67 : 53;
+  const finalWidth = Math.max(width - widthOffset, 349); // Ensure a minimum width of 400px
   const finalHeight = Math.max(height - 150, 400);
 
   // Use matches from bracket prop, or empty array if not available
@@ -113,7 +113,7 @@ const SingleElimination = ({ bracket }) => {
       bracket.navigationContext.tournamentId
     ) {
       navigate(
-        `/tournaments/${bracket.navigationContext.tournamentId}/games?gameId=${gameId}`
+        `/tournaments/${bracket.navigationContext.tournamentId}/games?gameId=${gameId}`,
       );
       return;
     }
@@ -124,7 +124,7 @@ const SingleElimination = ({ bracket }) => {
       bracket.navigationContext.seasonId
     ) {
       navigate(
-        `/leagues/${bracket.navigationContext.leagueId}/seasons/${bracket.navigationContext.seasonId}/games?gameId=${gameId}`
+        `/leagues/${bracket.navigationContext.leagueId}/seasons/${bracket.navigationContext.seasonId}/games?gameId=${gameId}`,
       );
     }
   };

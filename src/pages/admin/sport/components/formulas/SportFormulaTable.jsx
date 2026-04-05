@@ -25,14 +25,14 @@ const SportFormulaTable = ({
       accessorKey: "name",
       header: "Formula Name",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
+        <div className= "flex items-center gap-2">
           <div className={`font-medium ${!row.original.is_active ? 'text-muted-foreground' : ''}`}>
             {row.original.name}
           </div>
           {!row.original.is_active && (
             <Badge
               variant="outline"
-              className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 text-xs"
+              className= "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 text-xs"
             >
               Inactive
             </Badge>
@@ -44,7 +44,7 @@ const SportFormulaTable = ({
       accessorKey: "expression",
       header: "Expression",
       cell: ({ getValue }) => (
-        <div className="max-w-[400px] break-words font-mono text-xs bg-muted/30 p-1.5 rounded">
+        <div className= "max-w-[400px] break-words font-mono text-xs bg-muted/30 p-1.5 rounded">
           {getValue() ? getValue() : "N/A"}
         </div>
       ),
@@ -56,7 +56,7 @@ const SportFormulaTable = ({
         <div>
           <Badge
             variant={row.original.is_ratio ? "outline" : "secondary"}
-            className="font-normal"
+            className= "font-normal"
           >
             {row.original.is_ratio ? "Made/Attempted" : "Standard"}
           </Badge>
@@ -68,7 +68,7 @@ const SportFormulaTable = ({
       accessorKey: "category_name",
       header: "Category",
       cell: ({ row }) => (
-        <Badge className="font-normal" variant="outline">
+        <Badge className= "font-normal" variant="outline">
           {row.original.category_name || "Other"}
         </Badge>
       ),
@@ -82,12 +82,12 @@ const SportFormulaTable = ({
           {row.original.uses_point_value ? (
             <Badge
               variant="default"
-              className="bg-primary/20 text-primary border-primary/30"
+              className= "bg-primary/20 text-primary border-primary/30"
             >
               Yes
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-muted-foreground">
+            <Badge variant="outline" className= "text-muted-foreground">
               No
             </Badge>
           )}
@@ -109,19 +109,19 @@ const SportFormulaTable = ({
   ];
 
   return (
-    <div className="border rounded-md overflow-hidden shadow-sm">
+    <div className= "border rounded-md overflow-hidden shadow-sm">
       <DataTable
         columns={columns}
         data={formulas || []}
         loading={isLoading}
-        className="text-sm"
+        className= "text-sm"
         pagination={false}
         unlimited={true}
         emptyMessage={
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <Calculator className="h-8 w-8 text-muted-foreground mb-2" />
-            <h3 className="text-lg font-medium mb-1">No formulas found</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+          <div className= "flex flex-col items-center justify-center p-8 text-center">
+            <Calculator className= "h-8 w-8 text-muted-foreground mb-2" />
+            <h3 className= "text-lg font-medium mb-1">No formulas found</h3>
+            <p className= "text-sm text-muted-foreground mb-4">
               {filter.search
                 ? "Try adjusting your search to find formulas"
                 : "Create your first formula to use in calculated stats"}
@@ -129,9 +129,9 @@ const SportFormulaTable = ({
             <Button
               onClick={handleCreateFormula}
               size="sm"
-              className="bg-primary"
+              className= "bg-primary"
             >
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className= "mr-1.5 h-3.5 w-3.5" />
               New Formula
             </Button>
           </div>

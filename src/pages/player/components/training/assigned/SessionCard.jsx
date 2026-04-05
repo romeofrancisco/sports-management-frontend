@@ -92,18 +92,18 @@ const SessionCard = ({ sessionGroup }) => {
       <div
         className={`absolute top-0 left-0 right-0 h-1 ${statusInfo.strip}`}
       />
-      <CardHeader className="pb-2 pt-3">
-        <div className="flex gap-3 flex-row sm:items-center sm:justify-between">
+      <CardHeader className= "pb-2 pt-3">
+        <div className= "flex gap-3 flex-row sm:items-center sm:justify-between">
           {/* Left side - Session info */}
-          <div className="flex flex-1 items-center gap-3 min-w-0">
+          <div className= "flex flex-1 items-center gap-3 min-w-0">
             <div className={`p-1.5 rounded-full ${statusInfo.bgColor}`}>
               <StatusIcon className={`h-4 w-4 sm:h-4 sm:w-4 text-xs sm:text-base ${statusInfo.textColor}`} />
             </div>
-            <div className="min-w-0">
-              <CardTitle className="text-sm sm:text-lg font-semibold text-foreground leading-tight truncate">
+            <div className= "min-w-0">
+              <CardTitle className= "text-sm sm:text-lg font-semibold text-foreground leading-tight truncate">
                 {session.title}
               </CardTitle>{" "}
-              <div className="flex flex-wrap items-center gap-2 mt-1">
+              <div className= "flex flex-wrap items-center gap-2 mt-1">
                 <Badge
                   variant={
                     attendance_status?.toLowerCase() === "absent" ||
@@ -125,14 +125,14 @@ const SessionCard = ({ sessionGroup }) => {
                   }`}
                 >
                   {attendance_status?.toLowerCase() === "late" && (
-                    <ClockIcon className="w-3 h-3 mr-1" />
+                    <ClockIcon className= "w-3 h-3 mr-1" />
                   )}
                   {attendance_status?.toUpperCase() || "PENDING"}
                   {attendance_status?.toLowerCase() === "late" && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+                    <span className= "absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                   )}
                 </Badge>
-                <span className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                <span className= "text-[10px] sm:text-xs text-muted-foreground truncate">
                   {format(new Date(session.date), "MMM dd, yyyy")} • {session.start_time}
                 </span>
               </div>
@@ -140,36 +140,36 @@ const SessionCard = ({ sessionGroup }) => {
           </div>
 
           {/* Right side - Completion stats */}
-          <div className="text-right flex-shrink-0 mt-2 sm:mt-0">
-            <div className="text-base sm:text-xl font-bold text-foreground leading-tight">
+          <div className= "text-right flex-shrink-0 mt-2 sm:mt-0">
+            <div className= "text-base sm:text-xl font-bold text-foreground leading-tight">
               {completedCount}
-              <span className="text-xs sm:text-sm text-muted-foreground">/{totalCount}</span>
+              <span className= "text-xs sm:text-sm text-muted-foreground">/{totalCount}</span>
             </div>
-            <div className="text-[10px] sm:text-xs text-muted-foreground">completed</div>
-            <div className="w-16 mt-1 mx-auto sm:mx-0">
-              <Progress value={completionPercentage} className="h-1.5" />
+            <div className= "text-[10px] sm:text-xs text-muted-foreground">completed</div>
+            <div className= "w-16 mt-1 sm:mx-0">
+              <Progress value={completionPercentage} className= "h-1.5" />
             </div>
           </div>
         </div>
       </CardHeader>{" "}
-      <CardContent className="space-y-3 pt-0">
+      <CardContent className= "space-y-3 pt-0">
         {/* Metrics Section Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 border-b border-border gap-2">
-          <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-primary" />
-            <span className="font-medium text-[13px] sm:text-sm text-foreground">
+        <div className= "flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 border-b border-border gap-2">
+          <div className= "flex items-center gap-2">
+            <Target className= "h-4 w-4 text-primary" />
+            <span className= "font-medium text-[13px] sm:text-sm text-foreground">
               Exercises ({sessionMetrics.length})
             </span>
           </div>
           {session.location && (
-            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground min-w-0">
-              <MapPin className="h-3 w-3 flex-shrink-0" />
-              <span className="truncate">{session.location}</span>
+            <div className= "flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground min-w-0">
+              <MapPin className= "h-3 w-3 flex-shrink-0" />
+              <span className= "truncate">{session.location}</span>
             </div>
           )}
         </div>{" "}
         {/* Compact Metrics Grid */}
-        <div className="space-y-2">
+        <div className= "space-y-2">
           {sessionMetrics.map((metric) => {
             const getMetricStatusInfo = () => {
               const status = metric.status?.toLowerCase();
@@ -232,34 +232,34 @@ const SessionCard = ({ sessionGroup }) => {
                 className={`flex p-2 rounded border items-start min-h-[60px] ${metricStatusInfo.bgClass}`}
               >
                 {/* Metric Info - Fixed minimum width */}
-                <div className="w-32 md:w-40 flex-shrink-0 pr-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Target className="h-3 w-3 text-primary flex-shrink-0" />
-                    <span className="font-medium text-[13px] sm:text-sm line-clamp-1">
+                <div className= "w-32 md:w-40 flex-shrink-0 pr-3">
+                  <div className= "flex items-center gap-2 mb-1">
+                    <Target className= "h-3 w-3 text-primary flex-shrink-0" />
+                    <span className= "font-medium text-[13px] sm:text-sm line-clamp-1">
                       {metric.metric_name}
                     </span>
                   </div>{" "}
-                  <div className="text-[10px] sm:text-xs text-muted-foreground ml-5 line-clamp-1">
+                  <div className= "text-[10px] sm:text-xs text-muted-foreground ml-5 line-clamp-1">
                     {metric.metric_category} • {metric.metric_unit?.name}
                   </div>
                 </div>
 
                 {/* Metric Data - Flexible width */}
-                <div className="flex-1 px-3">
+                <div className= "flex-1 px-3">
                   {metric.is_recorded && (
-                    <div className="hidden sm:block  space-y-1">
-                      <div className="flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
+                    <div className= "hidden sm:block space-y-1">
+                      <div className= "flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
                         <span
                           className={`text-[11px] sm:text-xs font-medium whitespace-nowrap ${metricStatusInfo.valueClass}`}
                         >
                           {metric.recorded_value} {metric.metric_unit?.code}
                         </span>
                         {metric.improvement_percentage !== null && (
-                          <div className="flex items-center gap-1 whitespace-nowrap">
+                          <div className= "flex items-center gap-1 whitespace-nowrap">
                             {metric.improvement_percentage >= 0 ? (
-                              <TrendingUp className="h-3 w-3 text-green-600" />
+                              <TrendingUp className= "h-3 w-3 text-green-600" />
                             ) : (
-                              <TrendingDown className="h-3 w-3 text-red-600" />
+                              <TrendingDown className= "h-3 w-3 text-red-600" />
                             )}
                             <span
                               className={
@@ -273,7 +273,7 @@ const SessionCard = ({ sessionGroup }) => {
                             </span>
 
                             {metric.is_lower_better && (
-                              <span className="text-[10px] sm:text-xs text-muted-foreground">
+                              <span className= "text-[10px] sm:text-xs text-muted-foreground">
                                 Lower is better
                               </span>
                             )}
@@ -281,10 +281,10 @@ const SessionCard = ({ sessionGroup }) => {
                         )}
                       </div>
                       {metric.improvement_from_last !== null && (
-                        <div className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">
-                          <span className="font-medium">Change: </span>
+                        <div className= "text-[10px] sm:text-xs text-muted-foreground line-clamp-2">
+                          <span className= "font-medium">Change: </span>
                           {metric.improvement_percentage >= 0 ? (
-                            <span className="text-green-600">
+                            <span className= "text-green-600">
                               Improved by{" "}
                               {Math.abs(metric.improvement_from_last).toFixed(
                                 2
@@ -295,7 +295,7 @@ const SessionCard = ({ sessionGroup }) => {
                                 : " (higher)"}
                             </span>
                           ) : (
-                            <span className="text-red-600">
+                            <span className= "text-red-600">
                               Declined by{" "}
                               {Math.abs(metric.improvement_from_last).toFixed(
                                 2
@@ -313,7 +313,7 @@ const SessionCard = ({ sessionGroup }) => {
                 </div>
 
                 {/* Status Badge - Fixed width */}
-                <div className="w-24 flex-shrink-0 flex justify-end">
+                <div className= "w-24 flex-shrink-0 flex justify-end">
                   <Badge
                     variant={metricStatusInfo.badgeVariant}
                     className={`text-[10px] sm:text-xs font-medium border ${metricStatusInfo.badgeClass}`}

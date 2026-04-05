@@ -28,85 +28,85 @@ const BracketView = ({ season, leagueId }) => {
 
   if (isLoading) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
           {/* Enhanced background effects */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+          <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+          <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 rounded-xl" />
-              <div className="space-y-2">
-                <Skeleton className="h-6 w-48" />
-                <Skeleton className="h-4 w-64" />
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <Skeleton className= "h-12 w-12 rounded-xl" />
+              <div className= "space-y-2">
+                <Skeleton className= "h-6 w-48" />
+                <Skeleton className= "h-4 w-64" />
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="relative px-6">
+          <CardContent className= "relative px-6">
             {/* Season Overview Cards Skeleton */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+            <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="border-2 border-primary/20">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-10 w-10 rounded-xl" />
+                <Card key={i} className= "border-2 border-primary/20">
+                  <CardHeader className= "flex flex-row items-center justify-between space-y-0 pb-3">
+                    <Skeleton className= "h-4 w-24" />
+                    <Skeleton className= "h-10 w-10 rounded-xl" />
                   </CardHeader>
                   <CardContent>
-                    <Skeleton className="h-8 w-16 mb-3" />
-                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className= "h-8 w-16 mb-3" />
+                    <Skeleton className= "h-3 w-20" />
                   </CardContent>
                 </Card>
               ))}
             </div>
 
             {/* Bracket Display Skeleton */}
-            <Card className="border shadow-sm overflow-hidden">
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  <div className="flex justify-center">
-                    <Skeleton className="h-6 w-32" />
+            <Card className= "border shadow-sm overflow-hidden">
+              <CardContent className= "p-6">
+                <div className= "space-y-6">
+                  <div className= "flex justify-center">
+                    <Skeleton className= "h-6 w-32" />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className= "grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Round 1 */}
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-16 mx-auto" />
-                      <div className="space-y-3">
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-16" />
+                      <div className= "space-y-3">
                         {[1, 2, 3, 4].map((i) => (
                           <div
                             key={i}
-                            className="border rounded-lg p-3 space-y-2"
+                            className= "border rounded-lg p-3 space-y-2"
                           >
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Round 2 */}
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-20 mx-auto" />
-                      <div className="space-y-6">
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-20" />
+                      <div className= "space-y-6">
                         {[1, 2].map((i) => (
                           <div
                             key={i}
-                            className="border rounded-lg p-3 space-y-2"
+                            className= "border rounded-lg p-3 space-y-2"
                           >
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Final */}
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-12 mx-auto" />
-                      <div className="border rounded-lg p-3 space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-12" />
+                      <div className= "border rounded-lg p-3 space-y-2">
+                        <Skeleton className= "h-4 w-full" />
+                        <Skeleton className= "h-4 w-full" />
                       </div>
                     </div>
                   </div>
@@ -122,15 +122,15 @@ const BracketView = ({ season, leagueId }) => {
   // Show "No bracket" card if season doesn't have a bracket
   if (!season.has_bracket) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <GitFork className="h-5 w-5 text-primary-foreground" />
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                <GitFork className= "h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Season Bracket
                 </CardTitle>
                 <CardDescription>
@@ -140,17 +140,17 @@ const BracketView = ({ season, leagueId }) => {
             </div>
           </CardHeader>
 
-          <CardContent className="relative p-6">
-            <div className="text-center p-8 border rounded-lg bg-muted/20">
-              <GitFork className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Season Bracket</h3>
-              <p className="text-muted-foreground mb-4">
+          <CardContent className= "relative p-6">
+            <div className= "text-center flex flex-col items-center p-8 border rounded-lg bg-muted/20">
+              <GitFork className= "h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className= "text-lg font-semibold mb-2">No Season Bracket</h3>
+              <p className= "text-muted-foreground mb-4">
                 This season doesn't have a Season bracket yet. Generate one to
                 start the Season format.
               </p>
               {isAdmin() && (
-                <Button onClick={openModal} className="gap-2">
-                  <Plus className="h-4 w-4" />
+                <Button onClick={openModal} className= "gap-2">
+                  <Plus className= "h-4 w-4" />
                   Generate Bracket
                 </Button>
               )}
@@ -171,27 +171,27 @@ const BracketView = ({ season, leagueId }) => {
 
   if (!bracket) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <GitFork className="h-5 w-5 text-primary-foreground" />
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                <GitFork className= "h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Season Bracket
                 </CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className= "text-sm text-muted-foreground mt-1">
                   Season bracket and match progression
                 </p>
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="relative p-6">
-            <div className="text-center p-8 border rounded-lg bg-muted/20">
-              <p className="text-muted-foreground">
+          <CardContent className= "relative p-6">
+            <div className= "text-center p-8 border rounded-lg bg-muted/20">
+              <p className= "text-muted-foreground">
                 No bracket data available for this season.
               </p>
             </div>
@@ -238,9 +238,9 @@ const BracketView = ({ season, leagueId }) => {
       value: totalTeams,
       icon: Users,
       description: "Teams competing",
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
     {
       title: "Match Progress",
@@ -256,20 +256,20 @@ const BracketView = ({ season, leagueId }) => {
       value: bracket.winner_name || "TBD",
       description: "Winning team",
       icon: Trophy,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
   ];
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <GitFork className="h-5 w-5 text-primary-foreground" />
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
+      <CardHeader className= "relative">
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+            <GitFork className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+            <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
               Season Bracket
             </CardTitle>
             <CardDescription>
@@ -278,9 +278,9 @@ const BracketView = ({ season, leagueId }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative p-0">
+      <CardContent className= "relative p-0">
         {/* Season Overview Cards */}
-        <div className="px-3 md:px-6 mb-6">
+        <div className= "px-3 md:px-6 mb-6">
           <OverviewCards stats={statsData} />
         </div>
 

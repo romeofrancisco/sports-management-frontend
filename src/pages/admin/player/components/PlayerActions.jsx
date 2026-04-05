@@ -24,28 +24,28 @@ const PlayerActions = ({ player, onView, onEdit, onDelete, onReactivate }) => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="h-8 w-8 p-0 hover:bg-primary/10 transition-all duration-300 hover:scale-110"
+          className= "h-8 w-8 p-0 hover:bg-primary/10 transition-all duration-300 hover:scale-110"
         >
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <span className= "sr-only">Open menu</span>
+          <MoreHorizontal className= "h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="w-48 bg-card/95 backdrop-blur-sm border border-primary/20 shadow-xl"
+        className= "w-48 bg-card/95 backdrop-blur-sm border border-primary/20 shadow-xl"
       >
-        <DropdownMenuLabel className="text-foreground font-semibold">
+        <DropdownMenuLabel className= "text-foreground font-semibold">
           Player Actions
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-primary/20" />
+        <DropdownMenuSeparator className= "bg-primary/20" />
         
         <DropdownMenuItem onClick={() => handleAction(() => onView && onView(player))}>
-          <Eye className="mr-2 h-4 w-4" />
+          <Eye className= "mr-2 h-4 w-4" />
           View Player
         </DropdownMenuItem>
         {player?.is_active && (
           <DropdownMenuItem onClick={() => handleAction(() => onEdit && onEdit(player))}>
-            <Edit className="mr-2 h-4 w-4" />
+            <Edit className= "mr-2 h-4 w-4" />
             Update Player
           </DropdownMenuItem>
         )}
@@ -53,17 +53,17 @@ const PlayerActions = ({ player, onView, onEdit, onDelete, onReactivate }) => {
         {player?.is_active ? (
           <DropdownMenuItem 
             onClick={() => handleAction(() => onDelete && onDelete(player))} 
-            className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
+            className= "text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
           >
-            <Trash className="mr-2 h-4 w-4" />
+            <Trash className= "mr-2 h-4 w-4" />
             Delete Player
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem 
             onClick={() => handleAction(() => onReactivate && onReactivate(player))} 
-            className="text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
+            className= "text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
+            <RotateCcw className= "mr-2 h-4 w-4" />
             Reactivate Player
           </DropdownMenuItem>
         )}

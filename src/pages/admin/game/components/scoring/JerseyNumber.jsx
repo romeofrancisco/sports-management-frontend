@@ -29,7 +29,7 @@ const JerseyNumber = ({ number, selected, ...props }) => (
       dominantBaseline="middle"
       fontWeight="bold"
       fill={selected ? "gold" : "grey"}
-      className="text-[9rem] font-bold"
+      className= "text-[9rem] font-bold"
     >
       {number}
     </text>

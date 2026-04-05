@@ -28,28 +28,28 @@ const QuickActionsSection = ({ overview }) => {
     {
       title: "Add New Team",
       description: "Create a new team",
-      icon: <Plus className="h-4 w-4" />,
+      icon: <Plus className= "h-4 w-4" />,
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "teams/create",
     },
     {
       title: "Register Player",
       description: "Add new player",
-      icon: <UserPlus className="h-4 w-4" />,
+      icon: <UserPlus className= "h-4 w-4" />,
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "players/create",
     },
     {
       title: "Schedule Game",
       description: "Create new game",
-      icon: <Calendar className="h-4 w-4" />,
+      icon: <Calendar className= "h-4 w-4" />,
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "games/create",
     },
     {
       title: "Schedule Training",
       description: "Create new training session",
-      icon: <Calendar className="h-4 w-4" />,
+      icon: <Calendar className= "h-4 w-4" />,
       color: "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
       action: "trainings/create",
     },
@@ -76,18 +76,18 @@ const QuickActionsSection = ({ overview }) => {
   };
 
   return (
-    <Card className="overflow-hidden border-2 border-primary/20">
-      <CardHeader className="relative">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-              <Settings className="h-5 w-5 text-primary-foreground" />
+    <Card className= "overflow-hidden border-2 border-primary/20">
+      <CardHeader className= "relative">
+        <div className= "flex items-center justify-between">
+          <div className= "flex items-center gap-3">
+            <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <Settings className= "h-5 w-5 text-primary-foreground" />
             </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <div className= "flex-1 min-w-0">
+              <CardTitle className= "text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Quick Actions
               </CardTitle>
-              <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
+              <CardDescription className= "text-muted-foreground line-clamp-1 text-sm">
                 Common administrative actions for quick access
               </CardDescription>
             </div>
@@ -95,26 +95,26 @@ const QuickActionsSection = ({ overview }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
+        <div className= "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
           {quickActions.map((action, index) => (
             <Button
               key={action.title}
               variant="outline"
               onClick={() => handleQuickAction(action.action)}
-              className="group relative h-auto p-0 overflow-hidden rounded-xl border-2 border-primary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br from-background to-primary/5 hover:from-primary/5 hover:to-primary/10"
+              className= "group relative h-auto p-0 overflow-hidden rounded-xl border-2 border-primary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] animate-in fade-in-50 duration-500 bg-gradient-to-br from-background to-primary/5 hover:from-primary/5 hover:to-primary/10"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="flex items-center w-full p-4 gap-4">
+              <div className= "flex items-center w-full p-4 gap-4">
                 <div
                   className={`p-3 rounded-lg ${action.color} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg flex-shrink-0`}
                 >
                   {action.icon}
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <p className="font-semibold text-sm group-hover:text-primary transition-colors duration-300">
+                <div className= "flex-1 text-left min-w-0">
+                  <p className= "font-semibold text-sm group-hover:text-primary transition-colors duration-300">
                     {action.title}
                   </p>
-                  <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
+                  <p className= "text-xs text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
                     {action.description}
                   </p>
                 </div>

@@ -32,59 +32,59 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
   };
 
   return (
-    <div className="animate-in fade-in-50 duration-500">
-      <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <div className= "animate-in fade-in-50 duration-500">
+      <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
         {/* Enhanced background effects */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+        <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+        <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-        <CardHeader className="relative">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-              <Users className="h-5 w-5 text-primary-foreground" />
+        <CardHeader className= "relative">
+          <div className= "flex items-center gap-3">
+            <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+              <Users className= "h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+              <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                 Season Teams
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className= "text-sm text-muted-foreground mt-1">
                 Teams participating in this season
               </p>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="relative">
+        <CardContent className= "relative">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(6)].map((_, i) => (
                 <Card
                   key={i}
-                  className="overflow-hidden border-2 border-border/40 bg-gradient-to-r from-card via-muted/10 to-card shadow-sm animate-pulse"
+                  className= "overflow-hidden border-2 border-border/40 bg-gradient-to-r from-card via-muted/10 to-card shadow-sm animate-pulse"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <Skeleton className="w-8 h-8 rounded-full" />
-                        <Skeleton className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full" />
+                  <CardContent className= "p-4">
+                    <div className= "flex items-center gap-3">
+                      <div className= "relative">
+                        <Skeleton className= "w-8 h-8 rounded-full" />
+                        <Skeleton className= "absolute -bottom-1 -right-1 w-5 h-5 rounded-full" />
                       </div>
-                      <div className="relative">
-                        <Skeleton className="w-12 h-12 rounded-full" />
+                      <div className= "relative">
+                        <Skeleton className= "w-12 h-12 rounded-full" />
                       </div>
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Skeleton className="h-4 w-24" />
-                          <Skeleton className="h-3 w-10 rounded-full" />
+                      <div className= "flex-1 space-y-2">
+                        <div className= "flex items-center justify-between">
+                          <Skeleton className= "h-4 w-24" />
+                          <Skeleton className= "h-3 w-10 rounded-full" />
                         </div>
-                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className= "h-3 w-20" />
                       </div>
                     </div>
-                    <div className="mt-3 pt-3 border-t border-border/40">
-                      <div className="flex items-center justify-between">
-                        <Skeleton className="h-3 w-16" />
-                        <div className="flex gap-1">
+                    <div className= "mt-3 pt-3 border-t border-border/40">
+                      <div className= "flex items-center justify-between">
+                        <Skeleton className= "h-3 w-16" />
+                        <div className= "flex gap-1">
                           {[1, 2, 3, 4, 5].map((j) => (
-                            <Skeleton key={j} className="w-2 h-2 rounded-full" />
+                            <Skeleton key={j} className= "w-2 h-2 rounded-full" />
                           ))}
                         </div>
                       </div>
@@ -94,7 +94,7 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
               ))}
             </div>
           ) : teams && teams.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {teams.map((team, index) => {
                 const position = index + 1;
                 const PositionIcon = getPositionIcon(position);
@@ -103,72 +103,72 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                 return (
                   <Card
                     key={team.id}
-                    className="overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20"
+                    className= "overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20"
                   >
-                    <CardContent className="p-4">
+                    <CardContent className= "p-4">
                       {/* Main Team Info */}
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className= "flex items-center gap-3 mb-3">
                         {/* Position Badge */}
-                        <div className="relative">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm">
+                        <div className= "relative">
+                          <div className= "w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm">
                             #{position}
                           </div>
-                          <div className="absolute -bottom-1 -right-2 w-5 h-5 rounded-full bg-background border-2 border-background flex items-center justify-center">
-                            <PositionIcon className="h-3 w-3 text-primary" />
+                          <div className= "absolute -bottom-1 -right-2 w-5 h-5 rounded-full bg-background border-2 border-background flex items-center justify-center">
+                            <PositionIcon className= "h-3 w-3 text-primary" />
                           </div>
                         </div>
 
                         {/* Team Logo */}
-                        <div className="relative">
-                          <Avatar className="w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
+                        <div className= "relative">
+                          <Avatar className= "w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
                             <AvatarImage 
                               src={team.logo} 
                               alt={team.name}
-                              className="object-contain"
+                              className= "object-contain"
                             />
-                            <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                            <AvatarFallback className= "bg-primary/10 text-primary font-bold text-sm">
                               {team.name?.charAt(0) || "T"}
                             </AvatarFallback>
                           </Avatar>
 
                           {/* Championship indicator */}
                           {team.championships > 0 && (
-                            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 border-2 border-background shadow-md flex items-center justify-center">
-                              <Trophy className="h-2.5 w-2.5 text-white" />
+                            <div className= "absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 border-2 border-background shadow-md flex items-center justify-center">
+                              <Trophy className= "h-2.5 w-2.5 text-white" />
                             </div>
                           )}
                         </div>
 
                         {/* Team Name and Record */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-sm text-foreground truncate">
+                        <div className= "flex-1 min-w-0">
+                          <div className= "flex items-center justify-between">
+                            <h3 className= "font-semibold text-sm text-foreground truncate">
                               {team.name}
                             </h3>
                             <div className={`text-xs font-bold ${getWinRatioColor(winRatio)}`}>
                               {Math.round(winRatio * 100)}%
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                            <span className="flex items-center gap-1">
-                              <Shield className="h-3 w-3" />
+                          <div className= "flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                            <span className= "flex items-center gap-1">
+                              <Shield className= "h-3 w-3" />
                               {team.wins || 0}W-{team.losses || 0}L
                             </span>
                             {team.points > 0 && (
-                              <span className="text-primary font-medium">{team.points} pts</span>
+                              <span className= "text-primary font-medium">{team.points} pts</span>
                             )}
                           </div>
                         </div>
                       </div>
 
                       {/* Performance Indicators */}
-                      <div className="border-t border-border/40 pt-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground font-medium">
+                      <div className= "border-t border-border/40 pt-3">
+                        <div className= "flex items-center justify-between">
+                          <div className= "flex items-center gap-2">
+                            <span className= "text-xs text-muted-foreground font-medium">
                               STRK:
                             </span>
-                            <div className="flex items-center gap-1">
+                            <div className= "flex items-center gap-1">
                               {(team.form || "")
                                 .split("")
                                 .slice(0, 5)
@@ -196,14 +196,14 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                                   />
                                 ))}
                               {(!team.form || team.form.length === 0) && (
-                                <span className="text-xs text-muted-foreground/70 italic">
+                                <span className= "text-xs text-muted-foreground/70 italic">
                                   No recent games
                                 </span>
                               )}
                             </div>
                           </div>
                           {/* Additional Stats */}
-                          <div className="flex items-center gap-2 text-xs">
+                          <div className= "flex items-center gap-2 text-xs">
                             {team.goal_difference !== undefined && team.goal_difference !== 0 && (
                               <span
                                 className={`font-medium px-1.5 py-0.5 rounded text-xs ${
@@ -216,7 +216,7 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
                                 {team.goal_difference}
                               </span>
                             )}
-                            <TrendingUp className="h-3 w-3 text-muted-foreground" />
+                            <TrendingUp className= "h-3 w-3 text-muted-foreground" />
                           </div>
                         </div>
                       </div>
@@ -226,14 +226,14 @@ export const SeasonTeams = ({ seasonId, leagueId }) => {
               })}
             </div>
           ) : (
-            <div className="text-center p-8 border-2 border-dashed border-border/50 rounded-xl bg-gradient-to-br from-muted/20 via-background to-muted/10">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                <Users className="h-8 w-8 text-muted-foreground" />
+            <div className= "text-center p-8 border-2 border-dashed border-border/50 rounded-xl bg-gradient-to-br from-muted/20 via-background to-muted/10">
+              <div className= "w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                <Users className= "h-8 w-8 text-muted-foreground" />
               </div>
-              <p className="text-muted-foreground font-medium">
+              <p className= "text-muted-foreground font-medium">
                 No teams in this season
               </p>
-              <p className="text-xs text-muted-foreground/80 mt-1">
+              <p className= "text-xs text-muted-foreground/80 mt-1">
                 Teams will appear here once they join the season
               </p>
             </div>

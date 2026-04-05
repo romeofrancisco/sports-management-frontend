@@ -41,17 +41,17 @@ const FilterControls = ({
   return (
     <>
       {/* Single line layout for medium+ screens, stacked for small screens */}
-      <div className="flex items-center gap-2">
+      <div className= "flex items-center gap-2">
         {/* Filters inside a dropdown to reduce clutter (matches PlayersFiltersBar) */}
-        <div className="relative w-full">
+        <div className= "relative w-full">
           <Input
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search session title..."
-            className="pl-9 h-9"
+            className= "pl-9 h-9"
           />
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <SearchIcon className= "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
         <FilterDropdown
           title="Filters"
@@ -62,32 +62,32 @@ const FilterControls = ({
             if (onSearchChange) onSearchChange("");
           }}
           headerRight={
-            <div className="flex md:hidden gap-1 self-center ml-auto">
+            <div className= "flex md:hidden gap-1 self-center ml-auto">
               <Button
                 variant={viewMode === "table" ? "default" : "outline"}
                 size="sm"
                 onClick={() => onViewModeChange("table")}
-                className="h-9 px-3"
+                className= "h-9 px-3"
               >
-                <Table2 className="h-4 w-4" />
+                <Table2 className= "h-4 w-4" />
               </Button>
               <Button
                 variant={viewMode === "cards" ? "default" : "outline"}
                 size="sm"
                 onClick={() => onViewModeChange("cards")}
-                className="h-9 px-3"
+                className= "h-9 px-3"
               >
-                <LayoutGrid className="h-4 w-4" />
+                <LayoutGrid className= "h-4 w-4" />
               </Button>
             </div>
           }
         >
-          <DropdownMenuGroup className="px-1 mb-3">
-            <div className="flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className= "px-1 mb-3">
+            <div className= "flex justify-between px-1 text-sm my-2">
               <span>Status</span>
               <button
                 onClick={() => onStatusFilterChange("all")}
-                className="text-primary cursor-pointer"
+                className= "text-primary cursor-pointer"
               >
                 Reset
               </button>
@@ -98,7 +98,7 @@ const FilterControls = ({
                 onStatusFilterChange(val === "all" ? "all" : val)
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className= "w-full">
                 <SelectValue placeholder="Filter by status..." />
               </SelectTrigger>
               <SelectContent>
@@ -113,17 +113,17 @@ const FilterControls = ({
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuGroup className="px-1 mb-3">
-            <div className="flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className= "px-1 mb-3">
+            <div className= "flex justify-between px-1 text-sm my-2">
               <span>Date Range</span>
               <button
                 onClick={() => onDateRangeChange && onDateRangeChange(null)}
-                className="text-primary cursor-pointer"
+                className= "text-primary cursor-pointer"
               >
                 Reset
               </button>
             </div>
-            <div className="w-full">
+            <div className= "w-full">
               <DateRangePicker value={dateRange} onChange={onDateRangeChange} />
             </div>
           </DropdownMenuGroup>
@@ -132,22 +132,22 @@ const FilterControls = ({
         </FilterDropdown>
 
         {/* View Mode Toggle - visible on all breakpoints for convenience */}
-        <div className="hidden md:flex gap-1 self-center ml-auto">
+        <div className= "hidden md:flex gap-1 self-center ml-auto">
           <Button
             variant={viewMode === "table" ? "default" : "outline"}
             size="sm"
             onClick={() => onViewModeChange("table")}
-            className="h-9 px-3"
+            className= "h-9 px-3"
           >
-            <Table2 className="h-4 w-4" />
+            <Table2 className= "h-4 w-4" />
           </Button>
           <Button
             variant={viewMode === "cards" ? "default" : "outline"}
             size="sm"
             onClick={() => onViewModeChange("cards")}
-            className="h-9 px-3"
+            className= "h-9 px-3"
           >
-            <LayoutGrid className="h-4 w-4" />
+            <LayoutGrid className= "h-4 w-4" />
           </Button>
         </div>
       </div>

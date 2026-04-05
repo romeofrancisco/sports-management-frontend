@@ -15,7 +15,7 @@ const NoStatsRequiredGame = ({ sport, game }) => {
 
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className= "h-screen overflow-hidden">
       <ScoreboardHeader sport={sport} />
       <ScoreboardLayout
         home_team={home_team}

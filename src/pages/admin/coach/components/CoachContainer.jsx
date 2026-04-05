@@ -72,27 +72,27 @@ const CoachContainer = () => {
   };
 
   return (
-    <Card className="gap-0 bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-3 rounded-xl">
-              <ClipboardList className="size-7 text-primary-foreground" />
+    <Card className= "gap-0 bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      <CardHeader className= "flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className= "flex items-center justify-between gap-2">
+          <div className= "flex items-center gap-2">
+            <div className= "bg-primary p-3 rounded-xl">
+              <ClipboardList className= "size-7 text-primary-foreground" />
             </div>
             <div>
-              <div className="flex gap-2">
-                <h2 className="text-2xl font-bold text-foreground">Coaches</h2>
-                <Badge className="h-6 text-[11px]">
+              <div className= "flex gap-2">
+                <h2 className= "text-2xl font-bold text-foreground">Coaches</h2>
+                <Badge className= "h-6 text-[11px]">
                   {totalCoaches} coaches
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className= "text-sm text-muted-foreground line-clamp-2">
                 Register, manage, and track coach profiles and assignments for
                 your sports organization.
               </p>
             </div>
           </div>
-          <div className="items-center gap-2 hidden md:flex">
+          <div className= "items-center gap-2 hidden md:flex">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
               size="icon"
@@ -105,7 +105,7 @@ const CoachContainer = () => {
               size="icon"
               onClick={() => setViewMode("cards")}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className= "h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -117,9 +117,9 @@ const CoachContainer = () => {
           createCoach={handleCreateCoach}
         />
       </CardHeader>
-      <CardContent className="px-0">
+      <CardContent className= "px-0">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12">
+          <div className= "flex flex-col items-center justify-center py-12">
             <ContentLoading />
           </div>
         ) : coaches && coaches.length > 0 ? (
@@ -127,7 +127,7 @@ const CoachContainer = () => {
             {/* Coaches Content - Cards or Table */}
             {viewMode === "cards" ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+                <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
                   {coaches.map((coach) => (
                     <CoachCard
                       key={coach.id}
@@ -140,7 +140,7 @@ const CoachContainer = () => {
                 </div>
 
                 {/* Pagination for cards view */}
-                <div className="px-6">
+                <div className= "px-6">
                   <TablePagination
                     currentPage={currentPage}
                     pageSize={pageSize}
@@ -174,14 +174,14 @@ const CoachContainer = () => {
           </>
         ) : (
           // Empty State
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="p-4 bg-primary/10 rounded-full mb-4">
-              <ClipboardList className="h-12 w-12 text-primary/70" />
+          <div className= "flex flex-col items-center justify-center py-16 text-center">
+            <div className= "p-4 bg-primary/10 rounded-full mb-4">
+              <ClipboardList className= "h-12 w-12 text-primary/70" />
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className= "text-xl font-semibold text-foreground mb-2">
               No Coaches Found
             </h3>
-            <p className="text-muted-foreground max-w-md">
+            <p className= "text-muted-foreground max-w-md">
               {filter.search || filter.sex || filter.sport
                 ? "No coaches match your current filter criteria. Try adjusting your search or filters."
                 : "Get started by registering your first coach. They can then be assigned to manage teams and players."}

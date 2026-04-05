@@ -15,13 +15,13 @@ const baseColumns = [
     size: 100,
   },  {
     accessorKey: "is_player_stat",
-    header: () => <div className="text-center">Player Stat</div>,
+    header: () => <div className= "text-center">Player Stat</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -29,13 +29,13 @@ const baseColumns = [
   },
   {
     accessorKey: "is_team_stat",
-    header: () => <div className="text-center">Team Stat</div>,
+    header: () => <div className= "text-center">Team Stat</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -43,13 +43,13 @@ const baseColumns = [
   },
   {
     accessorKey: "is_team_comparison",
-    header: () => <div className="text-center">Team Comparison</div>,
+    header: () => <div className= "text-center">Team Comparison</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -57,13 +57,13 @@ const baseColumns = [
   },
   {
     accessorKey: "is_player_summary",
-    header: () => <div className="text-center">Player Summary</div>,
+    header: () => <div className= "text-center">Player Summary</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -71,13 +71,13 @@ const baseColumns = [
   },
   {
     accessorKey: "is_team_summary",
-    header: () => <div className="text-center">Team Summary</div>,
+    header: () => <div className= "text-center">Team Summary</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -85,26 +85,26 @@ const baseColumns = [
   },
   {
     accessorKey: "is_boxscore",
-    header: () => <div className="text-center">Boxscore</div>,
+    header: () => <div className= "text-center">Boxscore</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600" />
+          <CircleCheck size={20} className= "text-green-600" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
     size: 80,
   },  {
     accessorKey: "is_record",
-    header: () => <div className="text-center">Recording</div>,
+    header: () => <div className= "text-center">Recording</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600 self-center" />
+          <CircleCheck size={20} className= "text-green-600 self-center" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -112,13 +112,13 @@ const baseColumns = [
   },
   {
     accessorKey: "is_negative",
-    header: () => <div className="text-center">Negative</div>,
+    header: () => <div className= "text-center">Negative</div>,
     cell: ({ getValue }) => (
-      <div className="flex justify-center">
+      <div className= "flex justify-center">
         {getValue() ? (
-          <CircleCheck size={20} className="text-green-600 self-center" />
+          <CircleCheck size={20} className= "text-green-600 self-center" />
         ) : (
-          <CircleX size={20} className="text-red-700" />
+          <CircleX size={20} className= "text-red-700" />
         )}
       </div>
     ),
@@ -158,13 +158,13 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         size: 50,
       },        {
         accessorKey: "uses_point_value",
-        header: () => <div className="text-center">Uses Point Value</div>,
+        header: () => <div className= "text-center">Uses Point Value</div>,
         cell: ({ getValue }) => (
-          <div className="flex justify-center">
+          <div className= "flex justify-center">
             {getValue() ? (
-              <CircleCheck size={20} className="text-green-600 self-center" />
+              <CircleCheck size={20} className= "text-green-600 self-center" />
             ) : (
-              <CircleX size={20} className="text-red-700" />
+              <CircleX size={20} className= "text-red-700" />
             )}
           </div>
         ),
@@ -177,7 +177,7 @@ const getSportStatsColumn = ({ setSelectedStat, modals, filter }) => {
         accessorKey: "expression",
         header: "Formula",
         cell: ({ getValue }) => (
-          <div className="whitespace-normal break-words text-xs text-muted-foreground">
+          <div className= "whitespace-normal break-words text-xs text-muted-foreground">
             {getValue() ? getValue() : "N/A"} 
           </div>
         ),

@@ -9,8 +9,8 @@ const SportsList = () => {
   const { isOpen, closeModal, openModal } = useModal();
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
           title="Sports Management"
@@ -21,7 +21,7 @@ const SportsList = () => {
         />
         
         {/* Sports Container */}
-        <div className="animate-in fade-in-50 duration-500 delay-100">
+        <div className= "animate-in fade-in-50 duration-500 delay-100">
           <SportsContainer />
         </div>
       </div>

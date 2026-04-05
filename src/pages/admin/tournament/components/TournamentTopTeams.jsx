@@ -12,18 +12,18 @@ const TournamentTopTeams = ({ standings }) => {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
       {/* Enhanced background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+      <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+      <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
       
-      <CardHeader className="relative pb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <TrophyIcon className="h-5 w-5 text-secondary-foreground" />
+      <CardHeader className= "relative pb-4">
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+            <TrophyIcon className= "h-5 w-5 text-secondary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+            <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
               Top Teams
             </CardTitle>
             <CardDescription>
@@ -33,8 +33,8 @@ const TournamentTopTeams = ({ standings }) => {
         </div>
       </CardHeader>
       
-      <CardContent className="relative p-6 pt-0">
-        <div className="space-y-3">
+      <CardContent className= "relative p-6 pt-0">
+        <div className= "space-y-3">
           {topTeams.map((team, index) => (
             <TeamItem key={team.team_id} team={team} rank={index + 1} />
           ))}
@@ -46,18 +46,18 @@ const TournamentTopTeams = ({ standings }) => {
 
 // Empty state component
 const EmptyState = () => (
-  <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+  <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
     {/* Enhanced background effects */}
-    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-    <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+    <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+    <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
     
-    <CardHeader className="relative pb-4">
-      <div className="flex items-center gap-3">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-          <TrophyIcon className="h-5 w-5 text-secondary-foreground" />
+    <CardHeader className= "relative pb-4">
+      <div className= "flex items-center gap-3">
+        <div className= "p-3 rounded-xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+          <TrophyIcon className= "h-5 w-5 text-secondary-foreground" />
         </div>
         <div>
-          <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+          <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
             Top Teams
           </CardTitle>
           <CardDescription>
@@ -66,8 +66,8 @@ const EmptyState = () => (
         </div>
       </div>
     </CardHeader>
-    <CardContent className="relative p-6 flex items-center justify-center h-48">
-      <div className="text-center text-muted-foreground">
+    <CardContent className= "relative p-6 flex items-center justify-center h-48">
+      <div className= "text-center text-muted-foreground">
         No standings data available
       </div>
     </CardContent>
@@ -101,9 +101,9 @@ const TeamItem = ({ team, rank }) => {
 
   const getRankIcon = (rank) => {
     if (rank <= 3) {
-      return <Medal className="h-4 w-4" />;
+      return <Medal className= "h-4 w-4" />;
     }
-    return <span className="text-sm font-bold">{rank}</span>;
+    return <span className= "text-sm font-bold">{rank}</span>;
   };
 
   return (
@@ -128,25 +128,25 @@ const TeamItem = ({ team, rank }) => {
       </div>
 
       {/* Team Logo/Avatar */}
-      <Avatar className="h-10 w-10 border-2 border-primary/20">
+      <Avatar className= "h-10 w-10 border-2 border-primary/20">
         <AvatarImage src={team.team_logo} alt={team.team_name} />
-        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20 text-sm font-semibold">
+        <AvatarFallback className= "bg-gradient-to-br from-primary/20 to-secondary/20 text-sm font-semibold">
           {getTeamInitials(team.team_name)}
         </AvatarFallback>
       </Avatar>
 
       {/* Team Info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm truncate">{team.team_name}</div>
-        <div className="text-xs text-muted-foreground">
+      <div className= "flex-1 min-w-0">
+        <div className= "font-semibold text-sm truncate">{team.team_name}</div>
+        <div className= "text-xs text-muted-foreground">
           {team.wins || 0}W - {team.losses || 0}L
         </div>
       </div>
 
       {/* Points */}
-      <div className="flex-shrink-0 text-right">
-        <div className="font-bold text-lg">{team.points || 0}</div>
-        <div className="text-xs text-muted-foreground">pts</div>
+      <div className= "flex-shrink-0 text-right">
+        <div className= "font-bold text-lg">{team.points || 0}</div>
+        <div className= "text-xs text-muted-foreground">pts</div>
       </div>
     </div>
   );

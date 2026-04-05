@@ -136,7 +136,7 @@ const FileCard = ({
           <ContextMenuTrigger asChild>
             <div
               ref={contextMenuTriggerRef}
-              className="relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
+              className= "relative flex items-center gap-4 p-3 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors border border-border"
               draggable={canEdit}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
@@ -150,28 +150,28 @@ const FileCard = ({
               )}
 
               {/* Icon */}
-              <div className="flex-shrink-0">
+              <div className= "flex-shrink-0">
                 {fileIcon.type === "image" ? (
                   <img
                     src={fileIcon.src}
                     alt={displayName}
-                    className="h-10 w-10 dark:brightness-75 object-cover rounded"
+                    className= "h-10 w-10 dark:brightness-75 object-cover rounded"
                     draggable={false}
                   />
                 ) : (
                   <img
                     src={fileIcon.src}
                     alt={getFileExtension()}
-                    className="h-10 w-10 object-contain dark:brightness-75"
+                    className= "h-10 w-10 object-contain dark:brightness-75"
                     draggable={false}
                   />
                 )}
               </div>
 
               {/* Name and details */}
-              <div className="flex-1 min-w-0">
+              <div className= "flex-1 min-w-0">
                 {isRenaming ? (
-                  <div className="flex items-center gap-2">
+                  <div className= "flex items-center gap-2">
                     <Input
                       ref={inputRef}
                       value={newFileName}
@@ -183,42 +183,42 @@ const FileCard = ({
                           handleRenameCancel();
                         }
                       }}
-                      className="h-8 text-sm max-w-xs"
+                      className= "h-8 text-sm max-w-xs"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className= "h-7 w-7"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRenameConfirm();
                       }}
                     >
-                      <Check className="h-4 w-4 text-green-500" />
+                      <Check className= "h-4 w-4 text-green-500" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className= "h-7 w-7"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRenameCancel();
                       }}
                     >
-                      <X className="h-4 w-4 text-destructive" />
+                      <X className= "h-4 w-4 text-destructive" />
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-foreground truncate">
+                    <p className= "text-sm font-medium text-foreground truncate">
                       {displayName}
                     </p>
-                    <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
+                    <div className= "flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
                       <span>{formatFileSize(file.file_size)}</span>
                       <span>{formatDate(file.uploaded_at)}</span>
                       {showLocation && file.location && (
-                        <span className="truncate">Path: {file.location}</span>
+                        <span className= "truncate">Path: {file.location}</span>
                       )}
                     </div>
                   </>
@@ -226,32 +226,32 @@ const FileCard = ({
               </div>
 
               {/* Action buttons */}
-              <div className="flex-shrink-0 flex items-center gap-1">
+              <div className= "flex-shrink-0 flex items-center gap-1">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8"
+                  className= "h-8 w-8"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDownload();
                   }}
                 >
-                  <DownloadIcon className="h-4 w-4" />
+                  <DownloadIcon className= "h-4 w-4" />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8"
+                  className= "h-8 w-8"
                   onClick={handleMenuButtonClick}
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className= "h-4 w-4" />
                 </Button>
               </div>
             </div>
           </ContextMenuTrigger>
 
           {/* Right-Click Context Menu */}
-          <ContextMenuContent className="w-48">
+          <ContextMenuContent className= "w-48">
             {/* View/Download Actions */}
             <ContextMenuItem
               onSelect={(e) => {
@@ -259,7 +259,7 @@ const FileCard = ({
                 setTimeout(() => handleDownload(), 0);
               }}
             >
-              <DownloadIcon className="mr-2 h-4 w-4" />
+              <DownloadIcon className= "mr-2 h-4 w-4" />
               Download
             </ContextMenuItem>
             {(isEditable() || isViewable()) && (
@@ -271,9 +271,9 @@ const FileCard = ({
                 }}
               >
                 {isEditable() ? (
-                  <FileEdit className="mr-2 h-4 w-4" />
+                  <FileEdit className= "mr-2 h-4 w-4" />
                 ) : (
-                  <Eye className="mr-2 h-4 w-4" />
+                  <Eye className= "mr-2 h-4 w-4" />
                 )}
                 {getOpenActionLabel()}
               </ContextMenuItem>
@@ -290,7 +290,7 @@ const FileCard = ({
                       setTimeout(() => handleCopy(), 0);
                     }}
                   >
-                    <CopyIcon className="mr-2 h-4 w-4" />
+                    <CopyIcon className= "mr-2 h-4 w-4" />
                     Copy
                   </ContextMenuItem>
                 )}
@@ -301,7 +301,7 @@ const FileCard = ({
                       setTimeout(() => handleCut(), 0);
                     }}
                   >
-                    <Scissors className="mr-2 h-4 w-4" />
+                    <Scissors className= "mr-2 h-4 w-4" />
                     Cut
                   </ContextMenuItem>
                 )}
@@ -318,7 +318,7 @@ const FileCard = ({
                     setTimeout(() => handleRenameStart(), 0);
                   }}
                 >
-                  <Edit2 className="mr-2 h-4 w-4" />
+                  <Edit2 className= "mr-2 h-4 w-4" />
                   Rename
                 </ContextMenuItem>
               </>
@@ -333,9 +333,9 @@ const FileCard = ({
                     setContextMenuOpen(false);
                     setTimeout(() => handleDeleteClick(), 0);
                   }}
-                  className="text-destructive focus:text-destructive"
+                  className= "text-destructive focus:text-destructive"
                 >
-                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  <Trash2Icon className= "mr-2 h-4 w-4" />
                   Delete
                 </ContextMenuItem>
               </>
@@ -367,7 +367,7 @@ const FileCard = ({
         onOpenChange={setContextMenuOpen}
       >
         <ContextMenuTrigger asChild>
-          <div className="relative group">
+          <div className= "relative group">
             {/* Loading overlay when opening */}
             {isOpening && <FullPageLoading />}
 
@@ -375,17 +375,17 @@ const FileCard = ({
             <Button
               size="icon"
               variant="ghost"
-              className="absolute top-2 right-2 z-10"
+              className= "absolute top-2 right-2 z-10"
               onClick={handleMenuButtonClick}
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className= "h-4 w-4" />
             </Button>
 
             <Tooltip delayDuration={300}>
               <TooltipTrigger asChild>
                 <div
                   ref={contextMenuTriggerRef}
-                  className="flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
+                  className= "flex flex-col items-center p-4 cursor-pointer hover:bg-accent/50 rounded-lg transition-colors min-h-[140px]"
                   draggable={canEdit}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
@@ -394,28 +394,28 @@ const FileCard = ({
                   onTouchMove={handleTouchMove}
                 >
                   {/* Icon with extension badge */}
-                  <div className="flex items-center justify-center mb-3 relative">
+                  <div className= "flex items-center justify-center mb-3 relative">
                     {fileIcon.type === "image" ? (
                       <img
                         src={fileIcon.src}
                         alt={displayName}
-                        className="h-16 w-16 dark:brightness-75 object-cover rounded group-hover:scale-110 transition-transform"
+                        className= "h-16 w-16 dark:brightness-75 object-cover rounded group-hover:scale-110 transition-transform"
                         draggable={false}
                       />
                     ) : (
                       <img
                         src={fileIcon.src}
                         alt={getFileExtension()}
-                        className="h-16 w-16 object-contain dark:brightness-75 group-hover:scale-110 transition-transform"
+                        className= "h-16 w-16 object-contain dark:brightness-75 group-hover:scale-110 transition-transform"
                         draggable={false}
                       />
                     )}
                   </div>
 
                   {/* Name with line clamp or input for renaming */}
-                  <div className="flex flex-col items-center w-full gap-1">
+                  <div className= "flex flex-col items-center w-full gap-1">
                     {isRenaming ? (
-                      <div className="w-full max-w-[140px] space-y-1">
+                      <div className= "w-full max-w-[140px] space-y-1">
                         <Input
                           ref={inputRef}
                           value={newFileName}
@@ -427,43 +427,43 @@ const FileCard = ({
                               handleRenameCancel();
                             }
                           }}
-                          className="h-7 text-xs text-center px-2"
+                          className= "h-7 text-xs text-center px-2"
                           onClick={(e) => e.stopPropagation()}
                         />
-                        <div className="flex justify-center gap-1">
+                        <div className= "flex justify-center gap-1">
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6"
+                            className= "h-6 w-6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRenameConfirm();
                             }}
                           >
-                            <Check className="h-3 w-3 text-green-500" />
+                            <Check className= "h-3 w-3 text-green-500" />
                           </Button>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6"
+                            className= "h-6 w-6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRenameCancel();
                             }}
                           >
-                            <X className="h-3 w-3 text-destructive" />
+                            <X className= "h-3 w-3 text-destructive" />
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <>
-                        <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
+                        <p className= "text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
                           {displayName}
                         </p>
                         {showLocation && file.location && (
-                          <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground w-full px-1 mt-1">
-                            <MapPin className="size-3 flex-shrink-0" />
-                            <span className="truncate">{file.location}</span>
+                          <div className= "flex items-center justify-center gap-1 text-[10px] text-muted-foreground w-full px-1 mt-1">
+                            <MapPin className= "size-3 flex-shrink-0" />
+                            <span className= "truncate">{file.location}</span>
                           </div>
                         )}
                       </>
@@ -472,13 +472,13 @@ const FileCard = ({
                 </div>
               </TooltipTrigger>
 
-              <TooltipContent side="bottom" className="max-w-xs">
-                <div className="space-y-1">
-                  <p className="font-semibold">{displayName}</p>
+              <TooltipContent side="bottom" className= "max-w-xs">
+                <div className= "space-y-1">
+                  <p className= "font-semibold">{displayName}</p>
                   {file.description && (
-                    <p className="text-xs text-gray-300">{file.description}</p>
+                    <p className= "text-xs text-gray-300">{file.description}</p>
                   )}
-                  <div className="text-xs text-gray-300 space-y-0.5 pt-1 border-t">
+                  <div className= "text-xs text-gray-300 space-y-0.5 pt-1 border-t">
                     <p>Size: {formatFileSize(file.file_size)}</p>
                     <p>Modified: {formatDate(file.uploaded_at)}</p>
                     {showLocation && file.location && (
@@ -498,7 +498,7 @@ const FileCard = ({
         </ContextMenuTrigger>
 
         {/* Right-Click Context Menu */}
-        <ContextMenuContent className="w-48">
+        <ContextMenuContent className= "w-48">
           {/* View/Download Actions */}
           <ContextMenuItem
             onSelect={(e) => {
@@ -507,7 +507,7 @@ const FileCard = ({
               setTimeout(() => handleDownload(), 0);
             }}
           >
-            <DownloadIcon className="mr-2 h-4 w-4" />
+            <DownloadIcon className= "mr-2 h-4 w-4" />
             Download
           </ContextMenuItem>
           {(isEditable() || isViewable()) && (
@@ -519,9 +519,9 @@ const FileCard = ({
               }}
             >
               {isEditable() ? (
-                <FileEdit className="mr-2 h-4 w-4" />
+                <FileEdit className= "mr-2 h-4 w-4" />
               ) : (
-                <Eye className="mr-2 h-4 w-4" />
+                <Eye className= "mr-2 h-4 w-4" />
               )}
               {getOpenActionLabel()}
             </ContextMenuItem>
@@ -539,7 +539,7 @@ const FileCard = ({
                     setTimeout(() => handleCopy(), 0);
                   }}
                 >
-                  <CopyIcon className="mr-2 h-4 w-4" />
+                  <CopyIcon className= "mr-2 h-4 w-4" />
                   Copy
                 </ContextMenuItem>
               )}
@@ -551,7 +551,7 @@ const FileCard = ({
                     setTimeout(() => handleCut(), 0);
                   }}
                 >
-                  <Scissors className="mr-2 h-4 w-4" />
+                  <Scissors className= "mr-2 h-4 w-4" />
                   Cut
                 </ContextMenuItem>
               )}
@@ -569,7 +569,7 @@ const FileCard = ({
                   setTimeout(() => handleRenameStart(), 0);
                 }}
               >
-                <Edit2 className="mr-2 h-4 w-4" />
+                <Edit2 className= "mr-2 h-4 w-4" />
                 Rename
               </ContextMenuItem>
             </>
@@ -585,9 +585,9 @@ const FileCard = ({
                   setContextMenuOpen(false);
                   setTimeout(() => handleDeleteClick(), 0);
                 }}
-                className="text-destructive focus:text-destructive"
+                className= "text-destructive focus:text-destructive"
               >
-                <Trash2Icon className="mr-2 h-4 w-4" />
+                <Trash2Icon className= "mr-2 h-4 w-4" />
                 Delete
               </ContextMenuItem>
             </>

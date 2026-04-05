@@ -74,10 +74,10 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9"
+            className= "h-9 w-9"
             title="Game Settings"
           >
-            <Settings className="h-5 w-5" />
+            <Settings className= "h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -86,18 +86,18 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
           {requires_stats && (
             <>
               <DropdownMenuItem onClick={handleToggleLayoutMode}>
-                <Layout className="mr-2 h-4 w-4" />
+                <Layout className= "mr-2 h-4 w-4" />
                 <span>
                   {isLayoutMode ? "Exit Layout Mode" : "Modify Layout"}
                 </span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleStatAction("stats")}>
-                <ChartColumn className="mr-2 h-4 w-4" />
+                <ChartColumn className= "mr-2 h-4 w-4" />
                 <span>Summary Stats</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleStatAction("substitute")}>
-                <Replace className="mr-2 h-4 w-4" />
+                <Replace className= "mr-2 h-4 w-4" />
                 <span>Substitution</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -105,7 +105,7 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
                 onClick={handleUndoLastStat}
                 disabled={undoLastStatMutation.isPending}
               >
-                <Undo2 className="mr-2 h-4 w-4" />
+                <Undo2 className= "mr-2 h-4 w-4" />
                 <span>
                   {undoLastStatMutation.isPending
                     ? "Undoing..."
@@ -116,19 +116,19 @@ const GameSettings = ({ isLayoutMode = false, onToggleLayoutMode }) => {
             </>
           )}
           <DropdownMenuItem onClick={() => handleStatAction("nextPeriod")}>
-            <Clock className="mr-2 h-4 w-4" />
+            <Clock className= "mr-2 h-4 w-4" />
             <span>Next {period}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleStatAction("completeGame")}>
-            <Flag className="mr-2 h-4 w-4" />
+            <Flag className= "mr-2 h-4 w-4" />
             <span>Complete Game</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             onClick={() => handleStatAction("forfeit")}
-            className="text-red-600 focus:text-red-600"
+            className= "text-red-600 focus:text-red-600"
           >
-            <AlertTriangle className="mr-2 h-4 w-4" />
+            <AlertTriangle className= "mr-2 h-4 w-4" />
             <span>Forfeit Game</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
