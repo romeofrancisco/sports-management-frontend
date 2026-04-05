@@ -69,9 +69,9 @@ const LeagueCharts = ({ leagueId, sport, className = "" }) => {
   if (!stats) return <div>No statistics available</div>;
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className= "grid grid-cols-1 lg:grid-cols-3 gap-6">
         <ClickableChartArea
-          className="lg:col-span-2"
+          className= "lg:col-span-2"
           onOpen={() =>
             openSummary({
               chartType: "performance_comparison",
@@ -80,7 +80,7 @@ const LeagueCharts = ({ leagueId, sport, className = "" }) => {
           }
         >
           <PerformanceComparisonChart
-            className="lg:col-span-2"
+            className= "lg:col-span-2"
             teams={stats.teams}
             isSetBased={isSetBased}
           />
@@ -98,7 +98,7 @@ const LeagueCharts = ({ leagueId, sport, className = "" }) => {
       </div>
 
       {/* Scoring Analysis Chart Row */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className= "grid grid-cols-1 gap-6">
         <ClickableChartArea
           onOpen={() =>
             openSummary({

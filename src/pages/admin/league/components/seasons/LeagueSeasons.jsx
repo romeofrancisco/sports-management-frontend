@@ -43,8 +43,8 @@ const LeagueSeasons = ({ seasons: passedSeasons, sport, compact = false }) => {
   );
 
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="relative">
+    <Card className= "border-2 border-primary/20">
+      <CardHeader className= "relative">
         <SeasonsHeader
           viewMode={viewMode}
           setViewMode={setViewMode}
@@ -54,7 +54,7 @@ const LeagueSeasons = ({ seasons: passedSeasons, sport, compact = false }) => {
         />
       </CardHeader>
 
-      <CardContent className="relative">
+      <CardContent className= "relative">
         <SeasonsContent
           viewMode={viewMode}
           seasons={seasons}

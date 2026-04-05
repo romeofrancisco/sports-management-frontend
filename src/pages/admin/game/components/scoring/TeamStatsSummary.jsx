@@ -74,8 +74,8 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
   return (
     <div>
       {/* Teams Header */}
-      <div className="grid grid-cols-3 gap-4 text-center text-sm font-medium mb-4">
-        <div className="flex items-center gap-2 justify-start">
+      <div className= "grid grid-cols-3 gap-4 text-center text-sm font-medium mb-4">
+        <div className= "flex items-center gap-2 justify-start">
           <Avatar>
             <AvatarImage src={home_team.logo} alt={home_team.name} />
             <AvatarFallback>{home_team.name.charAt(0)}</AvatarFallback>
@@ -83,7 +83,7 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
           <span>{home_team.abbreviation}</span>
         </div>
         <span></span>
-        <div className="flex items-center gap-2 justify-start">
+        <div className= "flex items-center gap-2 justify-start">
           <span>{away_team.abbreviation}</span>
           <Avatar>
             <AvatarImage src={away_team.logo} alt={away_team.name} />
@@ -95,14 +95,14 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
       {/* Stats - Show total stats when no period is selected or "total" is selected */}
       {(!selectedPeriod || selectedPeriod === "total") && (
         <div>
-          <div className="grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed">
-            <div className="text-start border-r border-dashed py-2 pe-2">
-              <div className="font-bold">
+          <div className= "grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed">
+            <div className= "text-start border-r border-dashed py-2 pe-2">
+              <div className= "font-bold">
                 {teamStats.home_team.total_points || 0}
               </div>
-              <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+              <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                 <div
-                  className="h-3 rounded-xl"
+                  className= "h-3 rounded-xl"
                   style={{
                     width: `${
                       ((teamStats.home_team.total_points || 0) /
@@ -118,15 +118,15 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
               </div>
             </div>
 
-            <div className="text-xs text-center whitespace-normal">Points</div>
+            <div className= "text-xs text-center whitespace-normal">Points</div>
 
-            <div className="text-left border-l border-dashed py-2 ps-2">
-              <div className="font-bold">
+            <div className= "text-left border-l border-dashed py-2 ps-2">
+              <div className= "font-bold">
                 {teamStats.away_team.total_points || 0}
               </div>
-              <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+              <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                 <div
-                  className="h-3 rounded-xl"
+                  className= "h-3 rounded-xl"
                   style={{
                     width: `${
                       ((teamStats.away_team.total_points || 0) /
@@ -162,13 +162,13 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
             return (
               <div
                 key={statName}
-                className="grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed"
+                className= "grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed"
               >
-                <div className="text-start border-r border-dashed py-2 pe-2">
-                  <div className="font-bold">{formatStat(homeValue)}</div>
-                  <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                <div className= "text-start border-r border-dashed py-2 pe-2">
+                  <div className= "font-bold">{formatStat(homeValue)}</div>
+                  <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                     <div
-                      className="h-3 rounded-xl"
+                      className= "h-3 rounded-xl"
                       style={{
                         width: `${homePercent}%`,
                         backgroundColor: home_team.color || "#3b82f6",
@@ -177,15 +177,15 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
                   </div>
                 </div>
 
-                <div className="text-xs text-center whitespace-normal">
+                <div className= "text-xs text-center whitespace-normal">
                   {statName}
                 </div>
 
-                <div className="text-left border-l border-dashed py-2 ps-2">
-                  <div className="font-bold">{formatStat(awayValue)}</div>
-                  <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                <div className= "text-left border-l border-dashed py-2 ps-2">
+                  <div className= "font-bold">{formatStat(awayValue)}</div>
+                  <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                     <div
-                      className="h-3 rounded-xl"
+                      className= "h-3 rounded-xl"
                       style={{
                         width: `${awayPercent}%`,
                         backgroundColor: away_team.color || "#ef4444",
@@ -205,14 +205,14 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
         selectedPeriod !== "total" &&
         periodData && (
           <div>
-            <div className="grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed">
-              <div className="text-start border-r border-dashed py-2 pe-2">
-                <div className="font-bold">
+            <div className= "grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed">
+              <div className= "text-start border-r border-dashed py-2 pe-2">
+                <div className= "font-bold">
                   {periodData.homePeriod?.points || 0}
                 </div>
-                <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                   <div
-                    className="h-3 rounded-xl"
+                    className= "h-3 rounded-xl"
                     style={{
                       width: `${
                         ((periodData.homePeriod?.points || 0) /
@@ -229,17 +229,17 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
                 </div>
               </div>
 
-              <div className="text-xs text-center whitespace-normal">
+              <div className= "text-xs text-center whitespace-normal">
                 Points
               </div>
 
-              <div className="text-left border-l border-dashed py-2 ps-2">
-                <div className="font-bold">
+              <div className= "text-left border-l border-dashed py-2 ps-2">
+                <div className= "font-bold">
                   {periodData.awayPeriod?.points || 0}
                 </div>
-                <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                   <div
-                    className="h-3 rounded-xl"
+                    className= "h-3 rounded-xl"
                     style={{
                       width: `${
                         ((periodData.awayPeriod?.points || 0) /
@@ -277,13 +277,13 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
                   return (
                     <div
                       key={statName}
-                      className="grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed"
+                      className= "grid grid-cols-[1fr_5rem_1fr] items-center gap-4 border-t border-dashed"
                     >
-                      <div className="text-start border-r border-dashed py-2 pe-2">
-                        <div className="font-bold">{formatStat(homeValue)}</div>
-                        <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                      <div className= "text-start border-r border-dashed py-2 pe-2">
+                        <div className= "font-bold">{formatStat(homeValue)}</div>
+                        <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                           <div
-                            className="h-3 rounded-xl"
+                            className= "h-3 rounded-xl"
                             style={{
                               width: `${homePercent}%`,
                               backgroundColor: home_team.color || "#3b82f6",
@@ -292,15 +292,15 @@ const TeamStatsSummary = ({ teamStats, selectedPeriod = "total" }) => {
                         </div>
                       </div>
 
-                      <div className="text-xs text-center whitespace-normal">
+                      <div className= "text-xs text-center whitespace-normal">
                         {statName}
                       </div>
 
-                      <div className="text-left border-l border-dashed py-2 ps-2">
-                        <div className="font-bold">{formatStat(awayValue)}</div>
-                        <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
+                      <div className= "text-left border-l border-dashed py-2 ps-2">
+                        <div className= "font-bold">{formatStat(awayValue)}</div>
+                        <div className= "w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-xl">
                           <div
-                            className="h-3 rounded-xl"
+                            className= "h-3 rounded-xl"
                             style={{
                               width: `${awayPercent}%`,
                               backgroundColor: away_team.color || "#ef4444",

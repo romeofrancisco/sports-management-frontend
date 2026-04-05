@@ -64,12 +64,12 @@ const CoachDashboard = () => {
 
   if (overviewError || progressError) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/15 border border-destructive/50 rounded-lg p-4">
-          <h3 className="text-destructive font-semibold">
+      <div className= "p-6">
+        <div className= "bg-destructive/15 border border-destructive/50 rounded-lg p-4">
+          <h3 className= "text-destructive font-semibold">
             Error Loading Dashboard
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className= "text-sm text-muted-foreground mt-1">
             {overviewError?.message ||
               progressError?.message ||
               "Failed to load dashboard data"}
@@ -79,8 +79,8 @@ const CoachDashboard = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="p-4 md:p-6 space-y-8">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-4 md:p-6 space-y-8">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
           title={`Welcome Coach ${user?.first_name || ""}!`}
@@ -89,21 +89,21 @@ const CoachDashboard = () => {
           showUniversityColors={true}
         />
         {/* Overview Cards */}
-        <div className="animate-in fade-in-50 duration-500 delay-100">
+        <div className= "animate-in fade-in-50 duration-500 delay-100">
           <OverviewCards overview={overview} />
         </div>
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Primary Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className= "xl:col-span-2 space-y-6">
             {/* Performance Summary Section */}
-            <div className="grid sm:grid-cols-2 gap-6 animate-in fade-in-50 duration-500 delay-300">
+            <div className= "grid sm:grid-cols-2 gap-6 animate-in fade-in-50 duration-500 delay-300">
               <UpcomingGamesSection overview={overview} />
 
               <UpcomingTrainingSection overview={overview} />
             </div>
             {/* Charts Section */}
-            <div className="animate-in fade-in-50 duration-500 delay-300">
+            <div className= "animate-in fade-in-50 duration-500 delay-300">
               <ChartsSection
                 overview={overview}
                 playerProgress={playerProgress}
@@ -111,36 +111,36 @@ const CoachDashboard = () => {
             </div>
 
             {/* Player Progress */}
-            {/* <div className="animate-in fade-in-50 duration-500 delay-500">
+            {/* <div className= "animate-in fade-in-50 duration-500 delay-500">
               <PlayerProgressSection playerProgress={playerProgress} />
             </div> */}
           </div>
 
           {/* Right Column - Secondary Content */}
-          <div className="xl:col-span-1 space-y-6">
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+          <div className= "xl:col-span-1 space-y-6">
+            <div className= "animate-in fade-in-50 duration-500 delay-200">
               <QuickActionsSection />
             </div>
 
             {/* My Teams */}
-            <div className="animate-in fade-in-50 duration-500 delay-200">
+            <div className= "animate-in fade-in-50 duration-500 delay-200">
               <MyTeamsSection overview={overview} />
             </div>
 
             {/* Upcoming Games */}
 
             {/* Recent Training Sessions */}
-            {/* <div className="animate-in fade-in-50 duration-500 delay-400">
+            {/* <div className= "animate-in fade-in-50 duration-500 delay-400">
               <RecentTrainingSection overview={overview} />
             </div> */}
 
             {/* Recent Games */}
-            {/* <div className="animate-in fade-in-50 duration-500 delay-450">
+            {/* <div className= "animate-in fade-in-50 duration-500 delay-450">
               <RecentGamesSection overview={overview} />
             </div> */}
 
             {/* Training Summary */}
-            <div className="animate-in fade-in-50 duration-500 delay-500">
+            <div className= "animate-in fade-in-50 duration-500 delay-500">
               <TrainingSummarySection overview={overview} />
             </div>
           </div>

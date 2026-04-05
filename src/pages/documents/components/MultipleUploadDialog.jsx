@@ -233,27 +233,27 @@ const MultipleUploadDialog = ({
         currentFolder ? currentFolder.name : "root folder"
       }`}
     >
-      <div className="space-y-4">
+      <div className= "space-y-4">
         {/* File Input */}
         {files.length === 0 && (
-          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+          <div className= "border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
             <input
               type="file"
               multiple
               onChange={handleFileInput}
-              className="hidden"
+              className= "hidden"
               id="multiple-file-input"
               accept={allowedExtensions.map((ext) => `.${ext}`).join(",")}
             />
             <label
               htmlFor="multiple-file-input"
-              className="cursor-pointer flex flex-col items-center gap-2"
+              className= "cursor-pointer flex flex-col items-center gap-2"
             >
-              <Upload className="w-12 h-12 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
+              <Upload className= "w-12 h-12 text-muted-foreground" />
+              <p className= "text-sm text-muted-foreground">
                 Click to browse or drop files here
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className= "text-xs text-muted-foreground">
                 Supports: {allowedExtensions.join(", ")}
               </p>
             </label>
@@ -263,21 +263,21 @@ const MultipleUploadDialog = ({
         {/* Files List */}
         {files.length > 0 && (
           <>
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
+            <div className= "flex items-center justify-between">
+              <p className= "text-sm text-muted-foreground">
                 {files.length} file(s) selected
               </p>
               {uploadingIndex !== null && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                <div className= "flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className= "w-4 h-4 animate-spin" />
                   Uploading {uploadingIndex + 1} of {files.length}
                 </div>
               )}
             </div>
 
-            {uploadedCount > 0 && <Progress value={progress} className="h-2" />}
+            {uploadedCount > 0 && <Progress value={progress} className= "h-2" />}
 
-            <div className="max-h-[400px] overflow-y-auto space-y-2">
+            <div className= "max-h-[400px] overflow-y-auto space-y-2">
               {files.map((fileData, index) => (
                 <div
                   key={index}
@@ -291,34 +291,34 @@ const MultipleUploadDialog = ({
                       : "border-border"
                   }`}
                 >
-                  <div className="flex-shrink-0 mt-1">
+                  <div className= "flex-shrink-0 mt-1">
                     {fileData.status === "success" ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <CheckCircle className= "w-5 h-5 text-green-500" />
                     ) : fileData.status === "error" ? (
-                      <AlertCircle className="w-5 h-5 text-red-500" />
+                      <AlertCircle className= "w-5 h-5 text-red-500" />
                     ) : fileData.status === "uploading" ? (
-                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                      <Loader2 className= "w-5 h-5 text-primary animate-spin" />
                     ) : (
-                      <FileIcon className="w-5 h-5 text-muted-foreground" />
+                      <FileIcon className= "w-5 h-5 text-muted-foreground" />
                     )}
                   </div>
 
-                  <div className="flex-1 overflow-hidden max-w-[220px]  md:max-w-[380px]">
+                  <div className= "flex-1 overflow-hidden max-w-[220px] md:max-w-[380px]">
                     <Input
                       value={fileData.title}
                       onChange={(e) => updateFileTitle(index, e.target.value)}
                       disabled={fileData.status !== "pending"}
-                      className="mb-1 w-full"
+                      className= "mb-1 w-full"
                       placeholder="File title"
                     />
-                    <p className="text-xs text-muted-foreground truncate">
-                      {(fileData.file.size / 1024).toFixed(1)} KB - <span className="font-medium">{fileData.file.name}</span>
+                    <p className= "text-xs text-muted-foreground truncate">
+                      {(fileData.file.size / 1024).toFixed(1)} KB - <span className= "font-medium">{fileData.file.name}</span>
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className= "text-xs text-muted-foreground">
                       
                     </p>
                     {fileData.error && (
-                      <p className="text-xs text-destructive mt-1 break-words">
+                      <p className= "text-xs text-destructive mt-1 break-words">
                         {fileData.error}
                       </p>
                     )}
@@ -329,7 +329,7 @@ const MultipleUploadDialog = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => removeFile(index)}
-                      className="flex-shrink-0 p-0 has-[>svg]:px-1"
+                      className= "flex-shrink-0 p-0 has-[>svg]:px-1"
                     >
                       <X />
                     </Button>
@@ -341,7 +341,7 @@ const MultipleUploadDialog = ({
         )}
 
         {/* Actions */}
-        <div className="flex gap-2 justify-end pt-4 border-t">
+        <div className= "flex gap-2 justify-end pt-4 border-t">
           <Button
             type="button"
             variant="outline"
@@ -357,12 +357,12 @@ const MultipleUploadDialog = ({
             >
               {uploadingIndex !== null ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className= "w-4 h-4 mr-2 animate-spin" />
                   Uploading...
                 </>
               ) : (
                 <>
-                  <Upload className="w-4 h-4 mr-2" />
+                  <Upload className= "w-4 h-4 mr-2" />
                   Upload All
                 </>
               )}

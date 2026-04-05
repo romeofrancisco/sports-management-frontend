@@ -130,23 +130,23 @@ const RequireStatsGame = ({ game, isConnected }) => {
   const latestStatText = formatLatestStatText(latestStatRecord);
 
   return (
-    <div className="relative h-full content-center">
+    <div className= "relative h-full content-center">
       {/* Dark overlay when in layout mode */}
-      {isLayoutMode && <div className="fixed inset-0 bg-black/60 z-30" />}
+      {isLayoutMode && <div className= "fixed inset-0 bg-black/60 z-30" />}
 
       <div
         className={`flex justify-between items-center px-2 bg-background/80 backdrop-blur-sm w-full ${
           isLayoutMode ? "z-40 relative" : "z-20"
         }`}
       >
-        <div className="flex gap-2">
+        <div className= "flex gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
             title="Go Back"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className= "h-5 w-5" />
           </Button>
           <Button
             variant="ghost"
@@ -154,24 +154,24 @@ const RequireStatsGame = ({ game, isConnected }) => {
             onClick={() => navigate("/")}
             title="Home"
           >
-            <Home className="h-5 w-5" />
+            <Home className= "h-5 w-5" />
           </Button>
         </div>
-        <div className="bg-muted py-1 px-4 rounded-md">
-          <p className="text-xs sm:text-sm text-muted-foreground">
+        <div className= "bg-muted py-1 px-4 rounded-md">
+          <p className= "text-xs sm:text-sm text-muted-foreground">
             {latestStatText}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className= "flex items-center gap-2">
           {/* WebSocket connection status */}
           {game?.status === GAME_STATUS_VALUES.IN_PROGRESS && (
-            <div className="flex items-center gap-1 text-xs">
+            <div className= "flex items-center gap-1 text-xs">
               <div
                 className={`w-2 h-2 rounded-full ${
                   isConnected ? "bg-green-500 animate-pulse" : "bg-red-500"
                 }`}
               ></div>
-              <span className="text-muted-foreground">
+              <span className= "text-muted-foreground">
                 {isConnected ? "LIVE" : "OFFLINE"}
               </span>
             </div>
@@ -184,9 +184,9 @@ const RequireStatsGame = ({ game, isConnected }) => {
       </div>
       <div>
         {/* Removed pt-12 since header is no longer absolute */}
-        <div className="grid grid-cols-[1fr_auto_1fr]">
+        <div className= "grid grid-cols-[1fr_auto_1fr]">
           <TeamSide players={home_players} />
-          <div className="flex flex-col items-center">
+          <div className= "flex flex-col items-center">
             <ScoreBoard />
             <StatButtons
               statTypes={statTypes}
@@ -204,31 +204,31 @@ const RequireStatsGame = ({ game, isConnected }) => {
       {isLayoutMode && (
         <>
           {/* Layout Mode Indicator */}
-          <div className="fixed top-12 left-5 z-50">
-            <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-xs font-medium">
+          <div className= "fixed top-12 left-5 z-50">
+            <div className= "bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-xs font-medium">
               Layout Mode
             </div>
           </div>
 
           {/* Floating Save Button */}
-          <div className="fixed bottom-6 right-6 z-50">
-            <div className="bg-background border rounded-lg shadow-lg p-3 min-w-[250px] animate-in slide-in-from-right-5 fade-in duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-foreground">
+          <div className= "fixed bottom-6 right-6 z-50">
+            <div className= "bg-background border rounded-lg shadow-lg p-3 min-w-[250px] animate-in slide-in-from-right-5 fade-in duration-300">
+              <div className= "flex items-center justify-between mb-3">
+                <span className= "text-sm font-medium text-foreground">
                   Save layout changes?
                 </span>
               </div>
-              <div className="flex gap-2">
+              <div className= "flex gap-2">
                 <Button
                   onClick={handleToggleLayoutMode}
                   variant="outline"
-                  className="flex-1"
+                  className= "flex-1"
                   size="sm"
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleLayoutSave} className="flex-1" size="sm">
-                  <Save className="h-4 w-4 mr-2" />
+                <Button onClick={handleLayoutSave} className= "flex-1" size="sm">
+                  <Save className= "h-4 w-4 mr-2" />
                   Save
                 </Button>
               </div>

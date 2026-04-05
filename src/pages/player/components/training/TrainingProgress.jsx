@@ -42,19 +42,19 @@ const TrainingProgress = () => {
   }, [dateRange]);
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Date Controls */}
-      <div className="flex items-center justify-between">
+      <div className= "flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">My Progress</h2>
-          <p className="text-muted-foreground">Track your individual performance and training progress</p>
+          <h2 className= "text-2xl font-bold text-foreground">My Progress</h2>
+          <p className= "text-muted-foreground">Track your individual performance and training progress</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className= "flex items-center gap-3">
           <DateRangePickerWithPresets
             value={dateRange}
             onChange={handleDateRangeChange}
             placeholder="Select date range..."
-            className="w-auto"
+            className= "w-auto"
           />
         </div>
       </div>
@@ -68,12 +68,12 @@ const TrainingProgress = () => {
           dateRange={dateRange}
         />
       ) : (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-foreground mb-2">
+        <div className= "flex items-center justify-center py-12">
+          <div className= "text-center">
+            <h3 className= "text-lg font-semibold text-foreground mb-2">
               Unable to Load Progress
             </h3>
-            <p className="text-muted-foreground">
+            <p className= "text-muted-foreground">
               Could not retrieve your player information. Please contact support if this issue persists.
             </p>
           </div>

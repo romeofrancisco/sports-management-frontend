@@ -66,28 +66,28 @@ const SeasonActions = ({ season }) => {
         title: "Start Season",
         description:
           "This will mark the season as ongoing. Games can now be scheduled and played.",
-        icon: <Play className="h-6 w-6 text-red-600" />,
+        icon: <Play className= "h-6 w-6 text-red-600" />,
         confirmLabel: "Start Season",
       },
       pause: {
         title: "Pause Season",
         description:
           "This will temporarily pause the season. No new games can be played until it's resumed.",
-        icon: <Pause className="h-6 w-6 text-amber-600" />,
+        icon: <Pause className= "h-6 w-6 text-amber-600" />,
         confirmLabel: "Pause Season",
       },
       complete: {
         title: "Complete Season",
         description:
           "This will mark the season as completed. The final standings will be calculated and no more games can be added.",
-        icon: <CheckSquare className="h-6 w-6 text-amber-600" />,
+        icon: <CheckSquare className= "h-6 w-6 text-amber-600" />,
         confirmLabel: "Complete Season",
       },
       cancel: {
         title: "Cancel Season",
         description:
           "This will cancel the season. All planned games will be marked as canceled and the season cannot be restarted.",
-        icon: <XSquare className="h-6 w-6 text-red-600" />,
+        icon: <XSquare className= "h-6 w-6 text-red-600" />,
         confirmLabel: "Cancel Season",
       },
     };
@@ -138,14 +138,14 @@ const SeasonActions = ({ season }) => {
 
   return (
     <>
-      <div className="flex items-center gap-3">
+      <div className= "flex items-center gap-3">
         {/* Season actions based on status */}
         {isUpcoming && canStart && (
           <Button
             variant="default"
             size="sm"
             onClick={() => handleManageAction("start")}
-            className="gap-2"
+            className= "gap-2"
           >
             <Play size={15} />
             Start Season
@@ -157,7 +157,7 @@ const SeasonActions = ({ season }) => {
             variant="outline"
             size="sm"
             onClick={() => handleManageAction("pause")}
-            className="gap-2 border-amber-300 text-amber-700 hover:bg-amber-50"
+            className= "gap-2 border-amber-300 text-amber-700 hover:bg-amber-50"
           >
             <Pause size={15} />
             Pause Season
@@ -169,7 +169,7 @@ const SeasonActions = ({ season }) => {
             variant="default"
             size="sm"
             onClick={() => handleManageAction("start")}
-            className="gap-2 bg-red-800 hover:bg-red-900"
+            className= "gap-2 bg-red-800 hover:bg-red-900"
           >
             <Play size={15} />
             Resume Season
@@ -179,7 +179,7 @@ const SeasonActions = ({ season }) => {
         {/* Settings Dropdown */}
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
+            <Button variant="ghost" size="sm" className= "h-9 w-9 p-0">
               <Settings size={16} />
             </Button>
           </DropdownMenuTrigger>
@@ -188,7 +188,7 @@ const SeasonActions = ({ season }) => {
             <DropdownMenuSeparator />{" "}
             {/* Modify season actions - Edit, Export */}
             <DropdownMenuItem
-              className="flex items-center gap-2"
+              className= "flex items-center gap-2"
               onClick={() => {
                 setDropdownOpen(false);
                 editModal.openModal();
@@ -200,7 +200,7 @@ const SeasonActions = ({ season }) => {
             {/* Generate Bracket moved to settings dropdown */}
             {!season.has_bracket && (
               <DropdownMenuItem
-                className="flex items-center gap-2"
+                className= "flex items-center gap-2"
                 onClick={() => {
                   setDropdownOpen(false);
                   openModal();
@@ -215,7 +215,7 @@ const SeasonActions = ({ season }) => {
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="flex items-center gap-2 text-amber-600"
+                  className= "flex items-center gap-2 text-amber-600"
                   onClick={() => {
                     setDropdownOpen(false);
                     handleManageAction("complete");
@@ -231,7 +231,7 @@ const SeasonActions = ({ season }) => {
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="flex items-center gap-2 text-red-600"
+                  className= "flex items-center gap-2 text-red-600"
                   onClick={() => {
                     setDropdownOpen(false);
                     setShowDeleteBracketConfirm(true);
@@ -247,7 +247,7 @@ const SeasonActions = ({ season }) => {
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="flex items-center gap-2 text-red-600"
+                  className= "flex items-center gap-2 text-red-600"
                   onClick={() => {
                     setDropdownOpen(false);
                     handleManageAction("cancel");
@@ -283,7 +283,7 @@ const SeasonActions = ({ season }) => {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className= "flex items-center gap-2">
               {confirmAction?.icon}
               {confirmAction?.title}
             </AlertDialogTitle>
@@ -305,7 +305,7 @@ const SeasonActions = ({ season }) => {
             >
               {isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className= "mr-2 h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (

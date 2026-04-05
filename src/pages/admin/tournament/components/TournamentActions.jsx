@@ -56,18 +56,18 @@ const TournamentActions = ({ tournament }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="gap-2"
+            className= "gap-2"
             disabled={isPending || isDeletingBracket}
           >
             <Settings />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuContent align="end" className= "w-48">
           {canStart && (
             <DropdownMenuItem
               onClick={() => handleAction("start")}
               disabled={isPending}
-              className="cursor-pointer"
+              className= "cursor-pointer"
             >
               <Play />
               Start Tournament
@@ -79,7 +79,7 @@ const TournamentActions = ({ tournament }) => {
               <DropdownMenuItem
                 onClick={() => handleAction("complete")}
                 disabled={isPending}
-                className="cursor-pointer text-green-600 focus:text-green-600"
+                className= "cursor-pointer text-green-600 focus:text-green-600"
               >
                 <CheckCircle />
                 Complete Tournament
@@ -93,7 +93,7 @@ const TournamentActions = ({ tournament }) => {
               <DropdownMenuItem
                 onClick={() => handleAction("pause")}
                 disabled={isPending}
-                className="cursor-pointer"
+                className= "cursor-pointer"
               >
                 <Pause />
                 Pause Tournament
@@ -107,7 +107,7 @@ const TournamentActions = ({ tournament }) => {
               <DropdownMenuItem
                 onClick={() => setShowDeleteBracketConfirm(true)}
                 disabled={isDeletingBracket}
-                className="cursor-pointer text-red-600 focus:text-red-600"
+                className= "cursor-pointer text-red-600 focus:text-red-600"
               >
                 <Trash2 />
                 Delete Bracket
@@ -121,7 +121,7 @@ const TournamentActions = ({ tournament }) => {
               <DropdownMenuItem
                 onClick={() => handleAction("cancel")}
                 disabled={isPending}
-                className="cursor-pointer text-destructive focus:text-destructive"
+                className= "cursor-pointer text-destructive focus:text-destructive"
               >
                 <XCircle />
                 Cancel Tournament

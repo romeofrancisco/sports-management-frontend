@@ -97,83 +97,83 @@ const SportStatsTable = ({ filter }) => {
   };
 
   return (
-    <div className="w-full space-y-4">
-      <div className="flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
+    <div className= "w-full space-y-4">
+      <div className= "flex flex-col md:flex-row items-start justify-end md:items-center mb-4 gap-3">
         <Button
           onClick={handleCreateStat}
           size="sm"
-          className="bg-primary hover:bg-primary/90 text-white shadow-sm"
+          className= "bg-primary hover:bg-primary/90 text-white shadow-sm"
         >
           <Plus/>
           Create New Stat
         </Button>
       </div>
 
-      <div className="border rounded-md overflow-hidden shadow-sm">
+      <div className= "border rounded-md overflow-hidden shadow-sm">
         <Tabs
           defaultValue="essential"
           value={activeTab}
           onValueChange={setActiveTab}
-          className="w-full"
+          className= "w-full"
         >
-          <div className="bg-muted/30 border-b">
-            <TabsList className="p-1 bg-transparent justify-start h-12">
+          <div className= "bg-muted/30 border-b">
+            <TabsList className= "p-1 bg-transparent justify-start h-12">
               <TabsTrigger
                 value="essential"
-                className="text-xs md:text-sm flex items-center gap-1.5"
+                className= "text-xs md:text-sm flex items-center gap-1.5"
               >
-                <CheckCircle className="h-3.5 w-3.5" />
+                <CheckCircle className= "h-3.5 w-3.5" />
                 Essential Info
               </TabsTrigger>
               <TabsTrigger
                 value="display"
-                className="text-xs md:text-sm flex items-center gap-1.5"
+                className= "text-xs md:text-sm flex items-center gap-1.5"
               >
-                <Sparkles className="h-3.5 w-3.5" />
+                <Sparkles className= "h-3.5 w-3.5" />
                 Display Settings
               </TabsTrigger>
               <TabsTrigger
                 value="recording"
-                className="text-xs md:text-sm flex items-center gap-1.5"
+                className= "text-xs md:text-sm flex items-center gap-1.5"
               >
-                <CheckCircle className="h-3.5 w-3.5" />
+                <CheckCircle className= "h-3.5 w-3.5" />
                 Recording Settings
               </TabsTrigger>
             </TabsList>
           </div>{" "}
-          <TabsContent value="essential" className="space-y-0">
-            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+          <TabsContent value="essential" className= "space-y-0">
+            <div className= "rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable
                 columns={essentialColumns}
                 data={filteredStats || []}
                 loading={isStatsLoading}
-                className="text-sm"
+                className= "text-sm"
                 pagination={false}
                 unlimited={true}
                 alternateRowColors={true}
               />
             </div>
           </TabsContent>
-          <TabsContent value="display" className="space-y-0">
-            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+          <TabsContent value="display" className= "space-y-0">
+            <div className= "rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable
                 columns={displayColumns}
                 data={filteredStats || []}
                 loading={isStatsLoading}
-                className="text-sm"
+                className= "text-sm"
                 pagination={false}
                 unlimited={true}
                 alternateRowColors={true}
               />
             </div>
           </TabsContent>
-          <TabsContent value="recording" className="space-y-0">
-            <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+          <TabsContent value="recording" className= "space-y-0">
+            <div className= "rounded-lg border bg-card shadow-sm overflow-hidden">
               <DataTable
                 columns={recordingColumns}
                 data={filteredStats || []}
                 loading={isStatsLoading}
-                className="text-sm"
+                className= "text-sm"
                 pagination={false}
                 unlimited={true}
                 alternateRowColors={true}

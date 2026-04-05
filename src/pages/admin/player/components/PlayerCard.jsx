@@ -26,16 +26,16 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
       }`}
     >
       {/* University color indicator  */}
-      <div className="absolute bg-primary top-0 right-0 w-3 h-full" />
+      <div className= "absolute bg-primary top-0 right-0 w-3 h-full" />
 
       {/* Hover effects with primary color */}
-      <div className="absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+      <div className= "absolute top-2 right-5 w-6 h-6 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
 
-      <CardHeader className="relative p-5 space-y-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3 flex-1">
+      <CardHeader className= "relative p-5 space-y-4">
+        <div className= "flex items-start justify-between">
+          <div className= "flex items-center gap-3 flex-1">
             {/* Avatar with university colors */}
-            <div className="relative">
+            <div className= "relative">
               <Avatar
                 className={`h-12 w-12 ring-2 ring-offset-2 ring-offset-card transition-all duration-300 group-hover:ring-primary/30 ${
                   player.sex === "female"
@@ -67,32 +67,32 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
                 }`}
               ></div>
             </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm flex items-center font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0 max-w-[80%]">
+            <div className= "flex-1 min-w-0">
+              <CardTitle className= "text-sm flex items-center font-bold text-foreground group-hover:text-primary transition-colors duration-300 min-w-0 max-w-[80%]">
                 {player.sex === "male" && (
-                  <Mars className="inline-block size-3 mr-1 flex-shrink-0 text-blue-500" />
+                  <Mars className= "inline-block size-3 mr-1 flex-shrink-0 text-blue-500" />
                 )}
                 {player.sex === "female" && (
-                  <Venus className="inline-block size-3 mr-1 flex-shrink-0 text-pink-500" />
+                  <Venus className= "inline-block size-3 mr-1 flex-shrink-0 text-pink-500" />
                 )}
-                <span className="truncate">{player.first_name} {player.last_name}</span>
+                <span className= "truncate">{player.first_name} {player.last_name}</span>
               </CardTitle>
-              <div className="text-xs text-muted-foreground flex items-center min-w-0 max-w-[80%]">
-                <Mail className="inline-block size-3 mr-1 flex-shrink-0" />
-                <span className="truncate">{player.email}</span>
+              <div className= "text-xs text-muted-foreground flex items-center min-w-0 max-w-[80%]">
+                <Mail className= "inline-block size-3 mr-1 flex-shrink-0" />
+                <span className= "truncate">{player.email}</span>
               </div>
               {/* Jersey number and sport badge with university colors */}
-              <div className="flex items-center gap-2 mt-1">
+              <div className= "flex items-center gap-2 mt-1">
                 <Badge
                   variant="secondary"
-                  className="text-xs bg-primary/20 text-primary border-primary/40 px-2 py-0.5"
+                  className= "text-xs bg-primary/20 text-primary border-primary/40 px-2 py-0.5"
                 >
                   #{player.jersey_number}
                 </Badge>
                 {player.sport?.name && (
                   <Badge
                     variant="secondary"
-                    className="text-xs bg-secondary/20 text-secondary border-secondary/40"
+                    className= "text-xs bg-secondary/20 text-secondary border-secondary/40"
                   >
                     {player.sport.name}
                   </Badge>
@@ -111,22 +111,22 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               </div>
 
               {/* Player details */}
-              <div className="flex flex-col gap-2 mt-2">
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className= "flex flex-col gap-2 mt-2">
+                <div className= "flex items-center gap-3 text-xs text-muted-foreground">
                   <div
-                    className="flex items-center gap-1"
+                    className= "flex items-center gap-1"
                     title={`Position: ${allPositions}`}
                   >
-                    <Target className="h-3 w-3" />
-                    <span className="font-medium">{primaryPosition}</span>
+                    <Target className= "h-3 w-3" />
+                    <span className= "font-medium">{primaryPosition}</span>
                   </div>
                   {player.team?.name && (
                     <div
-                      className="flex items-center gap-1 min-w-0"
+                      className= "flex items-center gap-1 min-w-0"
                       title={`Team: ${player.team.name}`}
                     >
-                      <Users className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate max-w-24">
+                      <Users className= "h-3 w-3 flex-shrink-0" />
+                      <span className= "truncate max-w-24">
                         {player.team.name}
                       </span>
                     </div>
@@ -135,7 +135,7 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
               </div>
             </div>
           </div>
-          <div className="absolute top-0 right-5">
+          <div className= "absolute top-0 right-5">
             <PlayerActions
               player={player}
               onView={onView}
@@ -146,26 +146,26 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
           </div>
         </div>
         {/* Academic Information */}
-        <div className="pt-2 border-t border-border/50">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <GraduationCap className="h-3 w-3 text-muted-foreground" />
-              <span className="text-muted-foreground font-medium">
+        <div className= "pt-2 border-t border-border/50">
+          <div className= "flex items-center justify-between text-xs">
+            <div className= "flex items-center gap-1">
+              <GraduationCap className= "h-3 w-3 text-muted-foreground" />
+              <span className= "text-muted-foreground font-medium">
                 Year Level
               </span>
             </div>
-            <span className="text-xs font-medium px-2 py-1 rounded-md text-primary">
+            <span className= "text-xs font-medium px-2 py-1 rounded-md text-primary">
               {player.academic_info?.year_level}
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <BookOpen className="h-3 w-3 text-muted-foreground" />
-              <span className="text-muted-foreground font-medium">Course</span>
+          <div className= "flex items-center justify-between text-xs">
+            <div className= "flex items-center gap-1">
+              <BookOpen className= "h-3 w-3 text-muted-foreground" />
+              <span className= "text-muted-foreground font-medium">Course</span>
             </div>
             <span
-              className="text-xs font-medium px-2 py-1 rounded-md text-primary truncate max-w-[120px]"
+              className= "text-xs font-medium px-2 py-1 rounded-md text-primary truncate max-w-[120px]"
               title={player.academic_info?.course}
             >
               {player.academic_info?.course}
@@ -173,14 +173,14 @@ const PlayerCard = ({ player, onView, onEdit, onDelete, onReactivate }) => {
           </div>
 
           {player.academic_info?.section && (
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1">
-                <ClipboardList className="h-3 w-3 text-muted-foreground" />
-                <span className="text-muted-foreground font-medium">
+            <div className= "flex items-center justify-between text-xs">
+              <div className= "flex items-center gap-1">
+                <ClipboardList className= "h-3 w-3 text-muted-foreground" />
+                <span className= "text-muted-foreground font-medium">
                   Section
                 </span>
               </div>
-              <span className="text-xs font-medium p-1 rounded-md text-primary">
+              <span className= "text-xs font-medium p-1 rounded-md text-primary">
                 {player.academic_info?.section}
               </span>
             </div>

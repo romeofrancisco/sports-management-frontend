@@ -10,8 +10,8 @@ import {
 
 const SetPassword = () => {
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col items-center justify-center bg-background p-6 md:p-10">
-      <Card className="w-[400px] mx-auto">
+    <div className= "h-[calc(100vh-64px)] flex flex-col items-center justify-center bg-background p-6 md:p-10">
+      <Card className= "w-[400px]">
         <CardHeader>
           <CardTitle>Set Your Password</CardTitle>
           <CardDescription>

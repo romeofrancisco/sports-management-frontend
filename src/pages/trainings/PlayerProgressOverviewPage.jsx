@@ -52,7 +52,7 @@ const PlayerProgressOverviewPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+      <div className="p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title="Player Progress"
           subtitle="Training Management"
@@ -63,74 +63,74 @@ const PlayerProgressOverviewPage = () => {
           showBackButton={true}
         />
 
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {progressOptions.map((option) => {
-              const IconComponent = option.icon;
-              return (
-                <Card
-                  key={option.id}
-                  className={`relative overflow-hidden border-primary/20 bg-gradient-to-br ${option.color} backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer group`}
-                  onClick={() => handleOptionSelect(option.path)}
-                >
-                  <CardHeader className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div
-                        className={`p-3 rounded-xl bg-background/50 ${option.iconColor}`}
-                      >
-                        <IconComponent className="h-6 w-6" />
-                      </div>
-                      <TrendingUp className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                        {option.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm text-muted-foreground">
-                        {option.description}
-                      </CardDescription>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="space-y-4">
-                    <ul className="space-y-2">
-                      {option.features.map((feature, index) => (
-                        <li
-                          key={index}
-                          className="flex items-center text-sm text-muted-foreground"
-                        >
-                          <BarChart3 className="h-3 w-3 mr-2 text-primary/60" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button
-                      className="w-full group-hover:shadow-md transition-all"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOptionSelect(option.path);
-                      }}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {progressOptions.map((option) => {
+            const IconComponent = option.icon;
+            return (
+              <Card
+                key={option.id}
+                className={`relative overflow-hidden border-primary/20 bg-gradient-to-br ${option.color} backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer group`}
+                onClick={() => handleOptionSelect(option.path)}
+              >
+                <CardHeader className="space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div
+                      className={`p-3 rounded-xl bg-background/50 ${option.iconColor}`}
                     >
-                      Get Started
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-          {/* Additional information section */}
-          <div className="mt-12 text-center space-y-4">
-            <div className="max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold mb-2">
-                Comprehensive Player Analytics
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Track individual player development with detailed performance metrics and training history. 
-                Compare players within teams to identify top performers, monitor improvement trends, and 
-                make data-driven decisions for player development and team composition strategies.
-              </p>
-            </div>
+                      <IconComponent className="h-6 w-6" />
+                    </div>
+                    <TrendingUp className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                      {option.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">
+                      {option.description}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <ul className="space-y-2">
+                    {option.features.map((feature, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center text-sm text-muted-foreground"
+                      >
+                        <BarChart3 className="h-3 w-3 mr-2 text-primary/60" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    className="w-full group-hover:shadow-md transition-all"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOptionSelect(option.path);
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+        {/* Additional information section */}
+        <div className="mt-10 text-center flex justify-center space-y-4">
+          <div className="max-w-2xl">
+            <h3 className="text-lg font-semibold mb-2">
+              Comprehensive Player Analytics
+            </h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Track individual player development with detailed performance
+              metrics and training history. Compare players within teams to
+              identify top performers, monitor improvement trends, and make
+              data-driven decisions for player development and team composition
+              strategies.
+            </p>
           </div>
         </div>
       </div>

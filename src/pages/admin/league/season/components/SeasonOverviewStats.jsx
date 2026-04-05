@@ -68,8 +68,8 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
   ];
 
   return (
-    <div className="animate-in fade-in-50 duration-500 delay-100">
-      <div className="px-0">
+    <div className= "animate-in fade-in-50 duration-500 delay-100">
+      <div className= "px-0">
         <OverviewCards stats={statsData} />
       </div>
     </div>

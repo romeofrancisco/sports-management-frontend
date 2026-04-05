@@ -21,18 +21,18 @@ export const getAssignedMetricsTableColumns = () => [
     accessorKey: "metric_name",
     header: "Metric",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <div className="flex items-center gap-2">
-          <Target className="h-4 w-4 text-primary" />
-          <span className="font-medium text-foreground">
+      <div className= "flex flex-col">
+        <div className= "flex items-center gap-2">
+          <Target className= "h-4 w-4 text-primary" />
+          <span className= "font-medium text-foreground">
             {row.original.metric_name}
           </span>
         </div>
-        <span className="text-xs text-muted-foreground ml-6">
+        <span className= "text-xs text-muted-foreground ml-6">
           {row.original.metric_category || "General"}
         </span>
         {row.original.metric_description && (
-          <span className="text-xs text-muted-foreground italic ml-6">
+          <span className= "text-xs text-muted-foreground italic ml-6">
             {row.original.metric_description}
           </span>
         )}
@@ -43,21 +43,21 @@ export const getAssignedMetricsTableColumns = () => [
     accessorKey: "session_info",
     header: "Training Session",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <span className="font-medium text-foreground">
+      <div className= "flex flex-col">
+        <span className= "font-medium text-foreground">
           {row.original.session_title}
         </span>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Calendar className="h-3 w-3" />
+        <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+          <Calendar className= "h-3 w-3" />
           {format(new Date(row.original.session_date), "MMM dd, yyyy")}
         </div>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3" />
+        <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+          <Clock className= "h-3 w-3" />
           {row.original.session_start_time} - {row.original.session_end_time}
         </div>
         {row.original.session_location && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="h-3 w-3" />
+          <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className= "h-3 w-3" />
             {row.original.session_location}
           </div>
         )}
@@ -68,15 +68,15 @@ export const getAssignedMetricsTableColumns = () => [
     accessorKey: "metric_target",
     header: "Target/Unit",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <span className="font-medium text-foreground">
+      <div className= "flex flex-col">
+        <span className= "font-medium text-foreground">
           {row.original.metric_unit?.name || "No unit"}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className= "text-xs text-muted-foreground">
           ({row.original.metric_unit?.code || "N/A"})
         </span>
         {row.original.is_lower_better && (
-          <Badge variant="outline" className="text-xs mt-1 w-fit">
+          <Badge variant="outline" className= "text-xs mt-1 w-fit">
             Lower is better
           </Badge>
         )}
@@ -87,27 +87,27 @@ export const getAssignedMetricsTableColumns = () => [
     accessorKey: "recorded_value",
     header: "Recorded Value",
     cell: ({ row }) => (
-      <div className="flex flex-col">
+      <div className= "flex flex-col">
         {row.original.is_recorded ? (
           <>
-            <span className="font-medium text-green-600">
+            <span className= "font-medium text-green-600">
               {row.original.recorded_value}{" "}
               {row.original.metric_unit?.code || ""}
             </span>
             {row.original.recorded_at && (
-              <span className="text-xs text-muted-foreground">
+              <span className= "text-xs text-muted-foreground">
                 {format(new Date(row.original.recorded_at), "MMM dd, HH:mm")}
               </span>
             )}
             {row.original.recorded_by && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <User className="h-3 w-3" />
+              <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+                <User className= "h-3 w-3" />
                 {row.original.recorded_by}
               </div>
             )}
           </>
         ) : (
-          <span className="text-muted-foreground">Not recorded</span>
+          <span className= "text-muted-foreground">Not recorded</span>
         )}
       </div>
     ),
@@ -116,16 +116,16 @@ export const getAssignedMetricsTableColumns = () => [
     accessorKey: "improvement",
     header: "Improvement",
     cell: ({ row }) => (
-      <div className="flex flex-col">
+      <div className= "flex flex-col">
         {row.original.is_recorded &&
         row.original.improvement_percentage !== null ? (
           <>
             {" "}
-            <div className="flex items-center gap-1">
+            <div className= "flex items-center gap-1">
               {row.original.improvement_percentage >= 0 ? (
-                <TrendingUp className="h-3 w-3 text-green-600" />
+                <TrendingUp className= "h-3 w-3 text-green-600" />
               ) : (
-                <TrendingDown className="h-3 w-3 text-red-600" />
+                <TrendingDown className= "h-3 w-3 text-red-600" />
               )}
               <span
                 className={`font-medium text-xs ${
@@ -138,17 +138,17 @@ export const getAssignedMetricsTableColumns = () => [
                 {row.original.improvement_percentage.toFixed(1)}%
               </span>
             </div>{" "}
-            {row.original.improvement_from_last !== null && (              <div className="text-xs text-muted-foreground">
-                <span className="font-medium">Change: </span>
+            {row.original.improvement_from_last !== null && (              <div className= "text-xs text-muted-foreground">
+                <span className= "font-medium">Change: </span>
                 {row.original.improvement_percentage >= 0 ? (
-                  <span className="text-green-600">
+                  <span className= "text-green-600">
                     Improved by{" "}
                     {Math.abs(row.original.improvement_from_last).toFixed(2)}{" "}
                     {row.original.metric_unit?.code || ""}
                     {row.original.is_lower_better ? " (faster)" : " (higher)"}
                   </span>
                 ) : (
-                  <span className="text-red-600">
+                  <span className= "text-red-600">
                     Declined by{" "}
                     {Math.abs(row.original.improvement_from_last).toFixed(2)}{" "}
                     {row.original.metric_unit?.code || ""}
@@ -159,7 +159,7 @@ export const getAssignedMetricsTableColumns = () => [
             )}
           </>
         ) : (
-          <span className="text-xs text-muted-foreground">No comparison</span>
+          <span className= "text-xs text-muted-foreground">No comparison</span>
         )}
       </div>
     ),
@@ -203,22 +203,22 @@ export const getAssignedMetricsTableColumns = () => [
       const getStatusIcon = (status) => {
         switch (status?.toLowerCase()) {
           case "completed":
-            return <CheckCircle className="h-3 w-3" />;
+            return <CheckCircle className= "h-3 w-3" />;
           case "in_progress":
-            return <Clock className="h-3 w-3" />;
+            return <Clock className= "h-3 w-3" />;
           case "assigned":
-            return <Target className="h-3 w-3" />;
+            return <Target className= "h-3 w-3" />;
           case "missed":
-            return <XCircle className="h-3 w-3" />;
+            return <XCircle className= "h-3 w-3" />;
           default:
-            return <AlertCircle className="h-3 w-3" />;
+            return <AlertCircle className= "h-3 w-3" />;
         }
       };
 
       return (
-        <div className="flex items-center gap-2">
+        <div className= "flex items-center gap-2">
           {getStatusIcon(status)}
-          <Badge variant={getStatusVariant(status)} className="text-xs">
+          <Badge variant={getStatusVariant(status)} className= "text-xs">
             {getStatusText(status)}
           </Badge>
         </div>
@@ -235,21 +235,21 @@ export const getSessionTableColumns = () => [
     cell: ({ row }) => {
       const sessionGroup = row.original;
       return (
-        <div className="flex flex-col">
-          <span className="font-medium text-foreground text-base">
+        <div className= "flex flex-col">
+          <span className= "font-medium text-foreground text-base">
             {sessionGroup.session.title}
           </span>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3" />
+          <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+            <Calendar className= "h-3 w-3" />
             {format(new Date(sessionGroup.session.date), "MMM dd, yyyy")}
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />
+          <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+            <Clock className= "h-3 w-3" />
             {sessionGroup.session.start_time} - {sessionGroup.session.end_time}
           </div>
           {sessionGroup.session.location && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3" />
+            <div className= "flex items-center gap-1 text-xs text-muted-foreground">
+              <MapPin className= "h-3 w-3" />
               {sessionGroup.session.location}
             </div>
           )}
@@ -263,39 +263,39 @@ export const getSessionTableColumns = () => [
     cell: ({ row }) => {
       const sessionGroup = row.original;
       return (
-        <div className="space-y-2">
+        <div className= "space-y-2">
           {" "}          {sessionGroup.metrics.map((metric, index) => (
             <div
               key={index}
-              className="flex p-2 bg-muted rounded border items-start min-h-[60px]"
+              className= "flex p-2 bg-muted rounded border items-start min-h-[60px]"
             >
               {/* Metric Info - Fixed minimum width */}
-              <div className="w-48 flex-shrink-0 pr-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Target className="h-3 w-3 text-primary flex-shrink-0" />
-                  <span className="font-medium text-sm line-clamp-1">
+              <div className= "w-48 flex-shrink-0 pr-3">
+                <div className= "flex items-center gap-2 mb-1">
+                  <Target className= "h-3 w-3 text-primary flex-shrink-0" />
+                  <span className= "font-medium text-sm line-clamp-1">
                     {metric.metric_name}
                   </span>
                 </div>
-                <div className="text-xs text-muted-foreground ml-5 line-clamp-1">
+                <div className= "text-xs text-muted-foreground ml-5 line-clamp-1">
                   {metric.metric_category} • {metric.metric_unit?.name}
                 </div>
               </div>
 
               {/* Metric Data - Flexible width */}
-              <div className="flex-1 px-3">
+              <div className= "flex-1 px-3">
                 {metric.is_recorded ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-xs flex-wrap">
-                      <span className="text-xs font-medium text-green-600 whitespace-nowrap">
+                  <div className= "space-y-1">
+                    <div className= "flex items-center gap-2 text-xs flex-wrap">
+                      <span className= "text-xs font-medium text-green-600 whitespace-nowrap">
                         {metric.recorded_value} {metric.metric_unit?.code}
                       </span>
                       {metric.improvement_percentage !== null && (
-                        <div className="flex items-center gap-1 whitespace-nowrap">
+                        <div className= "flex items-center gap-1 whitespace-nowrap">
                           {metric.improvement_percentage >= 0 ? (
-                            <TrendingUp className="h-3 w-3 text-green-600" />
+                            <TrendingUp className= "h-3 w-3 text-green-600" />
                           ) : (
-                            <TrendingDown className="h-3 w-3 text-red-600" />
+                            <TrendingDown className= "h-3 w-3 text-red-600" />
                           )}
                           <span
                             className={
@@ -311,17 +311,17 @@ export const getSessionTableColumns = () => [
                       )}
                     </div>
                     {metric.improvement_from_last !== null && (
-                      <div className="text-xs text-muted-foreground line-clamp-2">
-                        <span className="font-medium">Change: </span>
+                      <div className= "text-xs text-muted-foreground line-clamp-2">
+                        <span className= "font-medium">Change: </span>
                         {metric.improvement_percentage >= 0 ? (
-                          <span className="text-green-600">
+                          <span className= "text-green-600">
                             Improved by{" "}
                             {Math.abs(metric.improvement_from_last).toFixed(2)}{" "}
                             {metric.metric_unit?.code || ""}
                             {metric.is_lower_better ? " (faster)" : " (higher)"}
                           </span>
                         ) : (
-                          <span className="text-red-600">
+                          <span className= "text-red-600">
                             Declined by{" "}
                             {Math.abs(metric.improvement_from_last).toFixed(2)}{" "}
                             {metric.metric_unit?.code || ""}
@@ -332,14 +332,14 @@ export const getSessionTableColumns = () => [
                     )}
                   </div>
                 ) : (
-                  <span className="text-xs text-muted-foreground">
+                  <span className= "text-xs text-muted-foreground">
                     Not recorded
                   </span>
                 )}
               </div>
 
               {/* Status Badge - Fixed width */}
-              <div className="w-24 flex-shrink-0 flex justify-end">
+              <div className= "w-24 flex-shrink-0 flex justify-end">
                 <Badge
                   variant={
                     metric.status === "completed"
@@ -352,7 +352,7 @@ export const getSessionTableColumns = () => [
                       ? "destructive"
                       : "outline"
                   }
-                  className="text-xs"
+                  className= "text-xs"
                 >
                   {metric.status?.replace("_", " ").toUpperCase()}
                 </Badge>
@@ -421,16 +421,16 @@ export const getSessionTableColumns = () => [
       const status = getCombinedStatus();
 
       return (
-        <div className="flex flex-col space-y-2">
-          <Badge variant={status.variant} className="text-xs w-fit">
+        <div className= "flex flex-col space-y-2">
+          <Badge variant={status.variant} className= "text-xs w-fit">
             {status.text}
           </Badge>
           
-          <div className="text-xs text-muted-foreground">
+          <div className= "text-xs text-muted-foreground">
             {completedCount}/{totalCount} metrics completed
           </div>
-          <Progress value={completionPercentage} className="h-1" />
-          <span className="text-xs text-muted-foreground">
+          <Progress value={completionPercentage} className= "h-1" />
+          <span className= "text-xs text-muted-foreground">
             {completionPercentage}%
           </span>
         </div>

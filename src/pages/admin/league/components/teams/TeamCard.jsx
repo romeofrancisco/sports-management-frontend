@@ -49,27 +49,27 @@ const TeamCard = ({ team, stats = {}, formData = [], onClick }) => {
         onClick ? "cursor-pointer" : ""
       }`}      onClick={onClick}
     >
-      <div className="relative">
+      <div className= "relative">
         {/* Championship indicator */}
         {championships > 0 && (
-          <div className="absolute top-0 right-0 bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground px-3 py-1 text-xs font-medium flex items-center gap-1 rounded-bl-lg shadow-sm border-b border-l border-secondary/30">
+          <div className= "absolute top-0 right-0 bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground px-3 py-1 text-xs font-medium flex items-center gap-1 rounded-bl-lg shadow-sm border-b border-l border-secondary/30">
             <Trophy size={12} />
             <span>{championships > 1 ? `${championships}x ` : ""}Champion</span>
           </div>
         )}
 
         {/* Team header */}
-        <div className="p-4 flex items-center gap-3">
-          <div className="relative">
-            <div className="size-16 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-primary/20 shadow-sm">
+        <div className= "p-4 flex items-center gap-3">
+          <div className= "relative">
+            <div className= "size-16 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-primary/20 shadow-sm">
               {team_logo ? (
                 <img
                   src={team_logo}
                   alt={team_name}
-                  className="size-14 object-contain"
+                  className= "size-14 object-contain"
                 />
               ) : (
-                <div className="size-full flex items-center justify-center bg-primary/10 text-primary font-bold text-lg">
+                <div className= "size-full flex items-center justify-center bg-primary/10 text-primary font-bold text-lg">
                   {team_name?.charAt(0) || "T"}
                 </div>
               )}
@@ -90,27 +90,27 @@ const TeamCard = ({ team, stats = {}, formData = [], onClick }) => {
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="top">
-                  <div className="text-xs">
+                  <div className= "text-xs">
                     Win rate: {win_ratio ? (win_ratio * 100).toFixed(1) : 0}%
                   </div>
                 </TooltipContent>              </Tooltip>
             </TooltipProvider>
           </div>
 
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base text-foreground truncate" title={team_name}>
+          <div className= "flex-1 min-w-0">
+            <h3 className= "font-semibold text-base text-foreground truncate" title={team_name}>
               {team_name}
             </h3>
-            <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-              <div className="flex items-center gap-1">
-                <Shield className="size-3.5 text-primary/80" />
+            <div className= "text-xs text-muted-foreground flex items-center gap-2 mt-1">
+              <div className= "flex items-center gap-1">
+                <Shield className= "size-3.5 text-primary/80" />
                 <span>
                   {wins}W-{losses}L
                 </span>
               </div>
 
-              <div className="flex items-center gap-1">
-                <Calendar className="size-3.5 text-secondary/80" />
+              <div className= "flex items-center gap-1">
+                <Calendar className= "size-3.5 text-secondary/80" />
                 <span>{matches_played} Played</span>
               </div>
             </div>
@@ -119,15 +119,15 @@ const TeamCard = ({ team, stats = {}, formData = [], onClick }) => {
 
       <CardContent>
         {/* Team performance section */}
-        <div className="border-t border-border/50 py-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground font-medium">Latest Results:</span>
+        <div className= "border-t border-border/50 py-3">
+          <div className= "flex items-center justify-between text-xs">
+            <span className= "text-muted-foreground font-medium">Latest Results:</span>
             <TeamStreakIndicator results={formData} />
           </div>
 
           {/* Current streak badge */}
           {team.current_streak > 0 && (
-            <div className="mt-2 flex items-center gap-1">
+            <div className= "mt-2 flex items-center gap-1">
               <Badge
                 variant="outline"
                 className={`text-xs py-0 ${

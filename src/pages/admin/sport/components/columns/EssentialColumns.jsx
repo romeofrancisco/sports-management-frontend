@@ -41,7 +41,7 @@ const getEssentialColumns = ({ setSelectedStat, modals, filter }) => {
             accessorKey: "expression",
             header: "Formula",
             cell: ({ getValue }) => (
-              <div className="whitespace-normal break-words text-xs text-muted-foreground">
+              <div className= "whitespace-normal break-words text-xs text-muted-foreground">
                 {getValue() ? getValue() : "N/A"}
               </div>
             ),

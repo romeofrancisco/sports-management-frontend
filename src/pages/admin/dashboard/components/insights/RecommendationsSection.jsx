@@ -90,16 +90,16 @@ const RecommendationsSection = ({ recommendations }) => {
   const shouldShowMoreButton = recommendations.length > INITIAL_DISPLAY_LIMIT;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <CheckCircle2 className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">Recommendations</h3>
-        <Badge variant="primary" className="text-xs">
+    <div className= "space-y-4">
+      <div className= "flex items-center gap-2">
+        <CheckCircle2 className= "h-5 w-5 text-primary" />
+        <h3 className= "text-lg font-semibold">Recommendations</h3>
+        <Badge variant="primary" className= "text-xs">
           {recommendations.length}
         </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
+      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
         {displayRecommendations.map((recommendation, index) => {
           const IconComponent = getInsightIcon(recommendation.type || "info");
           const colorClass = getInsightColor(recommendation.type || "info");
@@ -111,17 +111,17 @@ const RecommendationsSection = ({ recommendations }) => {
               className={`group relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500 ${colorClass}`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              <div className= "absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
 
-              <CardHeader className="pb-3 relative">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardHeader className= "pb-3 relative">
+                <div className= "flex items-start justify-between">
+                  <div className= "flex items-center gap-2">
+                    <CardTitle className= "text-sm font-medium text-muted-foreground">
                       Recommendation
                     </CardTitle>
                     {recommendation.source === "ai" && (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
-                        <Brain className="h-3 w-3" />
+                      <div className= "flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-md text-xs font-medium">
+                        <Brain className= "h-3 w-3" />
                         AI
                       </div>
                     )}
@@ -129,17 +129,17 @@ const RecommendationsSection = ({ recommendations }) => {
                   <div
                     className={`p-2 rounded-lg bg-card/50 backdrop-blur-sm border border-white/20 ${iconColor}`}
                   >
-                    <IconComponent className="h-4 w-4" />
+                    <IconComponent className= "h-4 w-4" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative">
-                <div className="space-y-2">
+              <CardContent className= "relative">
+                <div className= "space-y-2">
                   {recommendation.title && (
-                    <h4 className="font-medium text-sm">
+                    <h4 className= "font-medium text-sm">
                       {recommendation.title}
                     </h4>
-                  )}                  <div className="text-sm leading-relaxed">
+                  )}                  <div className= "text-sm leading-relaxed">
                     {(() => {
                       const content = safeRender(
                         recommendation.description ||
@@ -157,11 +157,11 @@ const RecommendationsSection = ({ recommendations }) => {
                           .map(item => item.trim());
                         
                         return (
-                          <div className="space-y-1">
+                          <div className= "space-y-1">
                             {items.map((item, index) => (
-                              <div key={index} className="flex items-start gap-2">
-                                <span className="text-primary font-bold mt-0.5">•</span>
-                                <span className="flex-1">{item}</span>
+                              <div key={index} className= "flex items-start gap-2">
+                                <span className= "text-primary font-bold mt-0.5">•</span>
+                                <span className= "flex-1">{item}</span>
                               </div>
                             ))}
                           </div>
@@ -172,13 +172,13 @@ const RecommendationsSection = ({ recommendations }) => {
                     })()}
                   </div>
                   {recommendation.category && (
-                    <div className="text-xs text-muted-foreground capitalize">
+                    <div className= "text-xs text-muted-foreground capitalize">
                       Category: {recommendation.category}
                     </div>
                   )}
                 </div>
                 {recommendation.priority && (
-                  <div className="mt-3">
+                  <div className= "mt-3">
                     <Badge
                       variant="outline"
                       className={`text-xs ${
@@ -196,11 +196,11 @@ const RecommendationsSection = ({ recommendations }) => {
                   </div>
                 )}                {recommendation.suggested_actions &&
                   recommendation.suggested_actions.length > 0 && (
-                    <div className="mt-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
+                    <div className= "mt-3">
+                      <div className= "text-xs font-medium text-muted-foreground mb-1">
                         Suggested Actions:
                       </div>
-                      <div className="text-xs text-muted-foreground space-y-1">
+                      <div className= "text-xs text-muted-foreground space-y-1">
                         {recommendation.suggested_actions.map(
                           (action, actionIndex) => {
                             // Parse bullet points from the action string
@@ -223,10 +223,10 @@ const RecommendationsSection = ({ recommendations }) => {
                             return actionItems.map((item, itemIndex) => (
                               <div
                                 key={`${actionIndex}-${itemIndex}`}
-                                className="flex items-start gap-2 mb-1"
+                                className= "flex items-start gap-2 mb-1"
                               >
-                                <span className="text-primary font-bold mt-0.5">•</span>
-                                <span className="flex-1">{item}</span>
+                                <span className= "text-primary font-bold mt-0.5">•</span>
+                                <span className= "flex-1">{item}</span>
                               </div>
                             ));
                           }
@@ -242,21 +242,21 @@ const RecommendationsSection = ({ recommendations }) => {
 
       {/* Show More Button */}
       {shouldShowMoreButton && (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 text-sm"
+            className= "flex items-center gap-2 text-sm"
           >
             {isExpanded ? (
               <>
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className= "h-4 w-4" />
                 Show Less
               </>
             ) : (
               <>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className= "h-4 w-4" />
                 Show {recommendations.length - INITIAL_DISPLAY_LIMIT} More
               </>
             )}

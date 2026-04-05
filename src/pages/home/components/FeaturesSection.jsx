@@ -49,31 +49,31 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="py-16 lg:py-24" id="features">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <span className="text-secondary font-semibold text-sm uppercase tracking-wider">
+    <section className= "py-16 lg:py-24" id="features">
+      <div className= "px-4">
+        <div className= "text-center mb-12">
+          <span className= "text-secondary font-semibold text-sm uppercase tracking-wider">
             Platform Features
           </span>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-4">
+          <h2 className= "text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-4">
             Everything You Need to{" "}
-            <span className="text-primary">Manage Sports</span>
+            <span className= "text-primary">Manage Sports</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className= "text-muted-foreground max-w-2xl">
             A complete sports management solution designed for coaches, players,
             and administrators to streamline operations and enhance athletic
             performance.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-20">
+        <div className= "grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-20">
           {features.map((feature, index) => (
-            <div key={index} className="flex flex-col items-center justify-center text-center">
-              <feature.icon className="size-12 lg:size-16 text-primary mb-4" />
-              <h3 className="text-xl font-bold text-foreground mb-2">
+            <div key={index} className= "flex flex-col items-center justify-center text-center">
+              <feature.icon className= "size-12 lg:size-16 text-primary mb-4" />
+              <h3 className= "text-xl font-bold text-foreground mb-2">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className= "text-muted-foreground text-sm">
                 {feature.description}
               </p>
             </div>

@@ -29,20 +29,20 @@ const LoginForm = () => {
       {/* Google One Tap - shows automatically as overlay */}
       <GoogleOneTap />
 
-      <Card className="overflow-hidden py-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
+      <Card className= "overflow-hidden py-0">
+        <CardContent className= "grid p-0 md:grid-cols-2">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="px-5 py-20 md:px-10 md:py-26 bg-muted/40"
+            className= "px-5 py-20 md:px-10 md:py-26 bg-muted/40"
           >
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-balance text-muted-foreground">
+            <div className= "flex flex-col gap-6">
+              <div className= "flex flex-col items-center text-center">
+                <h1 className= "text-2xl font-bold">Welcome back</h1>
+                <p className= "text-balance text-muted-foreground">
                   Login to your account
                 </p>
               </div>
-              <div className="grid gap-2">
+              <div className= "grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -53,17 +53,17 @@ const LoginForm = () => {
                   required
                 />
                 {errors.email && (
-                  <p className="text-destructive text-xs">
+                  <p className= "text-destructive text-xs">
                     {errors.email.message}
                   </p>
                 )}
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
+              <div className= "grid gap-2">
+                <div className= "flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
                     href="/forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer"
+                    className= "ml-auto text-sm underline-offset-2 hover:underline cursor-pointer"
                   >
                     Forgot your password?
                   </a>
@@ -80,30 +80,30 @@ const LoginForm = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full text-white"
+                className= "w-full text-white"
                 disabled={isPending}
               >
                 {isPending ? (
                   <>
-                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Please
+                    <Loader2 className= "animate-spin mr-2 h-4 w-4" /> Please
                     wait...
                   </>
                 ) : (
                   "Login"
                 )}
               </Button>
-              <p className="text-sm text-muted-foreground px-6 text-center">
+              <p className= "text-sm text-muted-foreground px-6 text-center">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-primary underline-offset-4 hover:underline"
+                  className= "text-primary underline-offset-4 hover:underline"
                 >
                   Sign up
                 </Link>
               </p>
             </div>
           </form>
-          <div className="bg-primary hidden dark:brightness-75 md:block content-center place-items-center">
+          <div className= "bg-primary hidden dark:brightness-75 md:block content-center place-items-center">
             <img src="/perpetual_logo.png" alt="UPHSD LOGO" />
           </div>
         </CardContent>

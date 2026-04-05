@@ -240,51 +240,51 @@ const TournamentTeams = ({ tournament }) => {
   // Early return for undefined tournament
   if (!tournament) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-14 w-14 rounded-xl" />
-              <div className="space-y-2">
-                <Skeleton className="h-6 w-48" />
-                <Skeleton className="h-4 w-64" />
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <Skeleton className= "h-14 w-14 rounded-xl" />
+              <div className= "space-y-2">
+                <Skeleton className= "h-6 w-48" />
+                <Skeleton className= "h-4 w-64" />
               </div>
             </div>
           </CardHeader>
-          <CardContent className="relative px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <CardContent className= "relative px-6">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {[...Array(6)].map((_, i) => (
                 <Card
                   key={i}
-                  className="overflow-hidden border-2 border-border/40 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 animate-pulse"
+                  className= "overflow-hidden border-2 border-border/40 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 animate-pulse"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="relative">
-                        <Skeleton className="w-8 h-8 rounded-full" />
-                        <Skeleton className="absolute -bottom-1 -right-2 w-5 h-5 rounded-full" />
+                  <CardContent className= "p-4">
+                    <div className= "flex items-center gap-3 mb-3">
+                      <div className= "relative">
+                        <Skeleton className= "w-8 h-8 rounded-full" />
+                        <Skeleton className= "absolute -bottom-1 -right-2 w-5 h-5 rounded-full" />
                       </div>
-                      <Skeleton className="w-12 h-12 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-3 w-20" />
+                      <Skeleton className= "w-12 h-12 rounded-full" />
+                      <div className= "flex-1 space-y-2">
+                        <Skeleton className= "h-4 w-24" />
+                        <Skeleton className= "h-3 w-20" />
                       </div>
                     </div>
-                    <div className="border-t border-border/40 pt-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Skeleton className="h-3 w-16" />
-                          <Skeleton className="h-3 w-20" />
+                    <div className= "border-t border-border/40 pt-3 space-y-3">
+                      <div className= "flex items-center justify-between">
+                        <div className= "flex items-center gap-3">
+                          <Skeleton className= "h-3 w-16" />
+                          <Skeleton className= "h-3 w-20" />
                         </div>
-                        <Skeleton className="h-3 w-8" />
+                        <Skeleton className= "h-3 w-8" />
                       </div>
-                      <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-                        <Skeleton className="h-3 w-10" />
-                        <div className="flex items-center gap-1">
+                      <div className= "flex items-center gap-2 pt-2 border-t border-border/40">
+                        <Skeleton className= "h-3 w-10" />
+                        <div className= "flex items-center gap-1">
                           {[...Array(5)].map((_, j) => (
                             <Skeleton
                               key={j}
-                              className="w-2 h-2 rounded-full"
+                              className= "w-2 h-2 rounded-full"
                             />
                           ))}
                         </div>
@@ -302,43 +302,43 @@ const TournamentTeams = ({ tournament }) => {
 
   if (teams?.length === 0 && !isLoading) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
           {/* Enhanced background effects */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+          <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+          <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-          <CardHeader className="relative">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                  <Users className="h-5 w-5 text-primary-foreground" />
+          <CardHeader className= "relative">
+            <div className= "flex items-center justify-between">
+              <div className= "flex items-center gap-3">
+                <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                  <Users className= "h-5 w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                  <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                     Tournament Teams
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className= "text-sm text-muted-foreground mt-1">
                     Teams participating in this tournament
                   </p>
                 </div>
               </div>
               <Button
                 size="sm"
-                className="gap-2"
+                className= "gap-2"
                 onClick={() => setIsAddDialogOpen(true)}
               >
-                <Plus className="h-4 w-4" />
+                <Plus className= "h-4 w-4" />
                 Add Team
               </Button>
             </div>
           </CardHeader>
 
-          <CardContent className="relative px-6">
-            <Card className="border-2 border-dashed border-muted-foreground/25 bg-muted/10">
-              <CardContent className="flex flex-col items-center justify-center py-16 px-4">
-                <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground text-base sm:text-lg font-medium mb-4">
+          <CardContent className= "relative px-6">
+            <Card className= "border-2 border-dashed border-muted-foreground/25 bg-muted/10">
+              <CardContent className= "flex flex-col items-center justify-center py-16 px-4">
+                <Users className= "h-12 w-12 text-muted-foreground mb-4" />
+                <p className= "text-muted-foreground text-base sm:text-lg font-medium mb-4">
                   No teams in this tournament yet
                 </p>
                 <Button onClick={() => setIsAddDialogOpen(true)}>
@@ -354,23 +354,23 @@ const TournamentTeams = ({ tournament }) => {
   }
 
   return (
-    <div className="animate-in fade-in-50 duration-500">
-      <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <div className= "animate-in fade-in-50 duration-500">
+      <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
         {/* Enhanced background effects */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+        <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+        <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-        <CardHeader className="relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <Users className="h-5 w-5 text-primary-foreground" />
+        <CardHeader className= "relative">
+          <div className= "flex items-center justify-between">
+            <div className= "flex items-center gap-3">
+              <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                <Users className= "h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Tournament Teams
                 </CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className= "text-sm text-muted-foreground mt-1">
                   {teams.length} {teams.length === 1 ? "team" : "teams"}{" "}
                   participating in this tournament
                 </p>
@@ -379,57 +379,57 @@ const TournamentTeams = ({ tournament }) => {
             {!has_bracket && (
               <Button
                 size="sm"
-                className="gap-2"
+                className= "gap-2"
                 onClick={() => setIsAddDialogOpen(true)}
               >
-                <Plus className="h-4 w-4" />
+                <Plus className= "h-4 w-4" />
                 Add Team
               </Button>
             )}
           </div>
         </CardHeader>
 
-        <CardContent className="relative px-6">
+        <CardContent className= "relative px-6">
           {isLoading ? (
             // Loading Skeleton
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {[...Array(6)].map((_, i) => (
                 <Card
                   key={i}
-                  className="overflow-hidden border-2 border-border/40 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 animate-pulse"
+                  className= "overflow-hidden border-2 border-border/40 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 animate-pulse"
                 >
-                  <CardContent className="p-4">
+                  <CardContent className= "p-4">
                     {/* Main Team Info Skeleton */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="relative">
-                        <Skeleton className="w-8 h-8 rounded-full" />
-                        <Skeleton className="absolute -bottom-1 -right-2 w-5 h-5 rounded-full" />
+                    <div className= "flex items-center gap-3 mb-3">
+                      <div className= "relative">
+                        <Skeleton className= "w-8 h-8 rounded-full" />
+                        <Skeleton className= "absolute -bottom-1 -right-2 w-5 h-5 rounded-full" />
                       </div>
-                      <Skeleton className="w-12 h-12 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-3 w-20" />
+                      <Skeleton className= "w-12 h-12 rounded-full" />
+                      <div className= "flex-1 space-y-2">
+                        <Skeleton className= "h-4 w-24" />
+                        <Skeleton className= "h-3 w-20" />
                       </div>
                     </div>
 
                     {/* Stats Section Skeleton */}
-                    <div className="border-t border-border/40 pt-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Skeleton className="h-3 w-16" />
-                          <Skeleton className="h-3 w-20" />
+                    <div className= "border-t border-border/40 pt-3 space-y-3">
+                      <div className= "flex items-center justify-between">
+                        <div className= "flex items-center gap-3">
+                          <Skeleton className= "h-3 w-16" />
+                          <Skeleton className= "h-3 w-20" />
                         </div>
-                        <Skeleton className="h-3 w-8" />
+                        <Skeleton className= "h-3 w-8" />
                       </div>
 
                       {/* Form Indicator Skeleton */}
-                      <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-                        <Skeleton className="h-3 w-10" />
-                        <div className="flex items-center gap-1">
+                      <div className= "flex items-center gap-2 pt-2 border-t border-border/40">
+                        <Skeleton className= "h-3 w-10" />
+                        <div className= "flex items-center gap-1">
                           {[...Array(5)].map((_, j) => (
                             <Skeleton
                               key={j}
-                              className="w-2 h-2 rounded-full"
+                              className= "w-2 h-2 rounded-full"
                             />
                           ))}
                         </div>
@@ -441,7 +441,7 @@ const TournamentTeams = ({ tournament }) => {
             </div>
           ) : (
             // Actual Team Cards
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {(teamFormData && teamFormData.length > 0
                 ? teamFormData
                 : teams
@@ -468,50 +468,50 @@ const TournamentTeams = ({ tournament }) => {
                 return (
                   <Card
                     key={team.id}
-                    className="overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20 relative"
+                    className= "overflow-hidden border-2 transition-all duration-300 hover:shadow-lg group bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20 relative"
                   >
                     {!has_bracket && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-2 h-8 w-8 z-10 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        className= "absolute top-2 right-2 h-8 w-8 z-10 text-destructive hover:text-destructive hover:bg-destructive/10"
                         onClick={() => setTeamToRemove(team)}
                       >
-                        <X className="h-4 w-4" />
+                        <X className= "h-4 w-4" />
                       </Button>
                     )}
 
-                    <CardContent className="p-4">
+                    <CardContent className= "p-4">
                       {/* Main Team Info */}
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className= "flex items-center gap-3 mb-3">
                         {/* Position Badge */}
-                        <div className="relative">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm">
+                        <div className= "relative">
+                          <div className= "w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-primary/80 to-primary/90 text-primary-foreground font-bold text-sm shadow-sm">
                             #{index + 1}
                           </div>
-                          <div className="absolute -bottom-1 -right-2 w-5 h-5 rounded-full bg-background border-2 border-background flex items-center justify-center">
-                            <Trophy className="h-3 w-3 text-primary" />
+                          <div className= "absolute -bottom-1 -right-2 w-5 h-5 rounded-full bg-background border-2 border-background flex items-center justify-center">
+                            <Trophy className= "h-3 w-3 text-primary" />
                           </div>
                         </div>
 
                         {/* Team Logo */}
-                        <div className="relative">
-                          <Avatar className="w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
+                        <div className= "relative">
+                          <Avatar className= "w-12 h-12 border-2 border-primary/20 shadow-sm group-hover:border-primary/40 transition-colors">
                             <AvatarImage
                               src={team.logo}
                               alt={team.name}
-                              className="object-contain"
+                              className= "object-contain"
                             />
-                            <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                            <AvatarFallback className= "bg-primary/10 text-primary font-bold text-sm">
                               {team.name?.charAt(0) || "T"}
                             </AvatarFallback>
                           </Avatar>
                         </div>
 
                         {/* Team Name and Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-sm text-foreground truncate">
+                        <div className= "flex-1 min-w-0">
+                          <div className= "flex items-center justify-between">
+                            <h3 className= "font-semibold text-sm text-foreground truncate">
                               {team.name}
                             </h3>
                             <div
@@ -532,10 +532,10 @@ const TournamentTeams = ({ tournament }) => {
                                 : "0%"}
                             </div>
                           </div>
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-3 text-xs">
-                              <span className="flex items-center gap-1 text-muted-foreground">
-                                <Trophy className="h-3 w-3" />
+                          <div className= "flex items-center justify-between mb-2">
+                            <div className= "flex items-center gap-3 text-xs">
+                              <span className= "flex items-center gap-1 text-muted-foreground">
+                                <Trophy className= "h-3 w-3" />
                                 {teamStats.wins !== undefined &&
                                 teamStats.losses !== undefined
                                   ? `${teamStats.wins}W-${teamStats.losses}L`
@@ -547,11 +547,11 @@ const TournamentTeams = ({ tournament }) => {
                       </div>
 
                       {/* Form Indicator - Always Show */}
-                      <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-                        <span className="text-xs text-muted-foreground font-medium">
+                      <div className= "flex items-center gap-2 pt-2 border-t border-border/40">
+                        <span className= "text-xs text-muted-foreground font-medium">
                           Form:
                         </span>
-                        <div className="flex items-center gap-1">
+                        <div className= "flex items-center gap-1">
                           {teamStats.form.length > 0 ? (
                             teamStats.form
                               .slice(0, 5)
@@ -583,11 +583,11 @@ const TournamentTeams = ({ tournament }) => {
                               {[...Array(5)].map((_, idx) => (
                                 <div
                                   key={idx}
-                                  className="w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-700"
+                                  className= "w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-700"
                                   title="No games played"
                                 />
                               ))}
-                              <span className="text-xs text-muted-foreground/70 italic ml-2">
+                              <span className= "text-xs text-muted-foreground/70 italic ml-2">
                                 No games yet
                               </span>
                             </>
@@ -618,18 +618,18 @@ const TournamentTeams = ({ tournament }) => {
         icon={Users}
         size="lg"
       >
-        <div className="space-y-4">
+        <div className= "space-y-4">
           {!allTeams || allTeams.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/20 p-8">
-              <p className="text-center text-muted-foreground">
+            <div className= "rounded-lg border border-dashed border-muted-foreground/30 bg-muted/20 p-8">
+              <p className= "text-center text-muted-foreground">
                 No available teams to add
               </p>
             </div>
           ) : (
             <>
               {/* Team Selection Component */}
-              <div className="rounded-xl bg-card/70 ">
-                <div className="flex items-center gap-2 mb-3 border-b pb-2">
+              <div className= "rounded-xl bg-card/70">
+                <div className= "flex items-center gap-2 mb-3 border-b pb-2">
                   <Checkbox
                     checked={
                       allTeams &&
@@ -638,17 +638,17 @@ const TournamentTeams = ({ tournament }) => {
                     }
                     onCheckedChange={handleToggleAllTeams}
                   />
-                  <Label className="text-sm font-semibold">
+                  <Label className= "text-sm font-semibold">
                     Select All Teams
                   </Label>
                   {selectedTeamsToAdd.length > 0 && (
-                    <Badge variant="secondary" className="ml-auto">
+                    <Badge variant="secondary" className= "ml-auto">
                       {selectedTeamsToAdd.length} selected
                     </Badge>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className= "grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {allTeams?.map((team) => {
                     const isSelected = selectedTeamsToAdd.includes(team.id);
                     return (
@@ -671,14 +671,14 @@ const TournamentTeams = ({ tournament }) => {
                             handleToggleTeam(checked, team.id)
                           }
                         />
-                        <Avatar className="w-10 h-10 border border-primary/20">
+                        <Avatar className= "w-10 h-10 border border-primary/20">
                           <AvatarImage src={team.logo} alt={team.name} />
-                          <AvatarFallback className="bg-muted text-muted-foreground">
+                          <AvatarFallback className= "bg-muted text-muted-foreground">
                             {team.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm font-medium truncate block">
+                        <div className= "flex-1 min-w-0">
+                          <span className= "text-sm font-medium truncate block">
                             {team.name}
                           </span>
                         </div>
@@ -689,7 +689,7 @@ const TournamentTeams = ({ tournament }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-2 pt-2">
+              <div className= "flex justify-end gap-2 pt-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -708,7 +708,7 @@ const TournamentTeams = ({ tournament }) => {
                 >
                   {isAdding ? (
                     <>
-                      <Users className="animate-pulse" />
+                      <Users className= "animate-pulse" />
                       Adding...
                     </>
                   ) : (
@@ -747,7 +747,7 @@ const TournamentTeams = ({ tournament }) => {
             <AlertDialogAction
               onClick={handleRemoveTeam}
               disabled={isRemoving}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className= "bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isRemoving ? "Removing..." : "Remove Team"}
             </AlertDialogAction>

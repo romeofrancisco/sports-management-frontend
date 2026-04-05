@@ -417,20 +417,20 @@ export function SignupForm({ className, ...props }) {
   if (isSuccess) {
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
-        <div className="flex flex-col items-center gap-4 text-center py-8">
-          <div className="rounded-full bg-muted p-5">
-            <CheckCircle2 className="size-10 text-green-600" />
+        <div className= "flex flex-col items-center gap-4 text-center py-8">
+          <div className= "rounded-full bg-muted p-5">
+            <CheckCircle2 className= "size-10 text-green-600" />
           </div>
-          <h1 className="text-2xl font-bold">Registration Submitted!</h1>
-          <p className="text-muted-foreground text-sm max-w-md">
+          <h1 className= "text-2xl font-bold">Registration Submitted!</h1>
+          <p className= "text-muted-foreground text-sm max-w-md">
             Your player registration has been submitted successfully. Please
             check your email for confirmation. A coach or admin will review your
             application and you'll be notified once approved.
           </p>
-          <div className="flex gap-2">
+          <div className= "flex gap-2">
           <Button
             variant="outline"
-            className="flex-1"
+            className= "flex-1"
             onClick={() => {
               setIsSuccess(false);
               setDocuments([]);
@@ -441,7 +441,7 @@ export function SignupForm({ className, ...props }) {
           >
             Submit Another Registration
           </Button>
-          <Button className="flex-1" asChild>
+          <Button className= "flex-1" asChild>
             <Link to="/login">Go to Login</Link>
           </Button>
           </div>
@@ -458,58 +458,58 @@ export function SignupForm({ className, ...props }) {
     >
       <FieldGroup>
         {/* Header */}
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Player Registration</h1>
-          <p className="text-muted-foreground text-sm text-balance">
+        <div className= "flex flex-col items-center gap-1 text-center">
+          <h1 className= "text-2xl font-bold">Player Registration</h1>
+          <p className= "text-muted-foreground text-sm text-balance">
             Fill in the form below to register as a player
           </p>
         </div>
 
         {/* Personal Information */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary">
+        <div className= "space-y-4">
+          <h2 className= "text-lg font-semibold text-primary">
             Personal Information
           </h2>
 
           {/* Profile Image Upload */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="relative">
+          <div className= "flex flex-col items-center gap-3">
+            <div className= "relative">
               {profilePreview ? (
-                <div className="relative">
+                <div className= "relative">
                   <img
                     src={profilePreview}
                     alt="Profile preview"
-                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                    className= "w-24 h-24 rounded-full object-cover border-2 border-primary"
                   />
                   <button
                     type="button"
                     onClick={removeProfileImage}
-                    className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                    className= "absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
                   >
-                    <X className="h-3 w-3" />
+                    <X className= "h-3 w-3" />
                   </button>
                 </div>
               ) : (
-                <label className="cursor-pointer">
+                <label className= "cursor-pointer">
                   <input
                     type="file"
-                    className="hidden"
+                    className= "hidden"
                     accept=".jpg,.jpeg,.png,.webp"
                     onChange={handleProfileUpload}
                   />
-                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center gap-1 hover:border-primary transition-colors">
-                    <User className="h-8 w-8 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">Upload</span>
+                  <div className= "w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center gap-1 hover:border-primary transition-colors">
+                    <User className= "h-8 w-8 text-muted-foreground" />
+                    <span className= "text-xs text-muted-foreground">Upload</span>
                   </div>
                 </label>
               )}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className= "text-xs text-muted-foreground">
               Profile photo (optional, max 5MB)
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className= "grid grid-cols-2 gap-4">
             <ControlledInput
               name="first_name"
               label="First Name"
@@ -546,7 +546,7 @@ export function SignupForm({ className, ...props }) {
             }}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className= "grid grid-cols-2 gap-4">
             <ControlledSelect
               name="sex"
               label="Sex"
@@ -581,8 +581,8 @@ export function SignupForm({ className, ...props }) {
         <FieldSeparator />
 
         {/* Academic Information */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary">
+        <div className= "space-y-4">
+          <h2 className= "text-lg font-semibold text-primary">
             Academic Information
           </h2>
 
@@ -630,8 +630,8 @@ export function SignupForm({ className, ...props }) {
         <FieldSeparator />
 
         {/* Player Information */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary">
+        <div className= "space-y-4">
+          <h2 className= "text-lg font-semibold text-primary">
             Player Information
           </h2>
 
@@ -664,7 +664,7 @@ export function SignupForm({ className, ...props }) {
             optional={true}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className= "grid grid-cols-2 gap-4">
             <ControlledInput
               name="height"
               label="Height (cm)"
@@ -692,17 +692,17 @@ export function SignupForm({ className, ...props }) {
         <FieldSeparator />
 
         {/* Document Upload */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-primary">
+        <div className= "space-y-4">
+          <h2 className= "text-lg font-semibold text-primary">
             Required Documents
           </h2>
-          <p className="text-xs text-muted-foreground !mt-0">
+          <p className= "text-xs text-muted-foreground !mt-0">
             Upload the required documents for your registration. All documents
             must be in PDF, DOC, DOCX, JPG, JPEG, or PNG format (max 10MB each).
             You can upload multiple files for "Other" documents.
           </p>
 
-          <div className="grid gap-4">
+          <div className= "grid gap-4">
             {DOCUMENT_TYPES.map((docType) => {
               const uploadedDocs = documents.filter(
                 (d) => d.type === docType.value
@@ -712,20 +712,20 @@ export function SignupForm({ className, ...props }) {
               return (
                 <div
                   key={docType.value}
-                  className="p-4 border rounded-lg bg-muted/30"
+                  className= "p-4 border rounded-lg bg-muted/30"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-muted-foreground" />
+                  <div className= "flex items-center justify-between">
+                    <div className= "flex items-center gap-3">
+                      <FileText className= "h-5 w-5 text-muted-foreground" />
                       <div>
                         <p
                           title={docType.label}
-                          className="font-medium text-sm line-clamp-1"
+                          className= "font-medium text-sm line-clamp-1"
                         >
                           {docType.label}
                         </p>
                         {uploadedDocs.length === 0 && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className= "text-xs text-muted-foreground">
                             No file uploaded
                           </p>
                         )}
@@ -735,7 +735,7 @@ export function SignupForm({ className, ...props }) {
                     <label>
                       <input
                         type="file"
-                        className="hidden"
+                        className= "hidden"
                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                         multiple={isOtherType}
                         onChange={(e) =>
@@ -748,8 +748,8 @@ export function SignupForm({ className, ...props }) {
                         size="sm"
                         asChild
                       >
-                        <span className="cursor-pointer">
-                          <Upload className="h-4 w-4 mr-1" />
+                        <span className= "cursor-pointer">
+                          <Upload className= "h-4 w-4 mr-1" />
                           {uploadedDocs.length > 0 && !isOtherType ? "Replace" : "Upload"}
                         </span>
                       </Button>
@@ -758,17 +758,17 @@ export function SignupForm({ className, ...props }) {
 
                   {/* Show uploaded files */}
                   {uploadedDocs.length > 0 && (
-                    <div className="mt-3 space-y-2">
+                    <div className= "mt-3 space-y-2">
                       {uploadedDocs.map((doc) => (
                         <div
                           key={doc.id}
-                          className="flex items-center justify-between bg-background/50 rounded px-3 py-2"
+                          className= "flex items-center justify-between bg-background/50 rounded px-3 py-2"
                         >
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <FileText className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          <div className= "flex items-center gap-2 min-w-0 flex-1">
+                            <FileText className= "h-4 w-4 text-green-600 flex-shrink-0" />
                             <span
                               title={doc.title}
-                              className="text-xs max-w-[250px] md:max-w-[400px] text-green-600 truncate"
+                              className= "text-xs max-w-[250px] md:max-w-[400px] text-green-600 truncate"
                             >
                               {doc.title}
                             </span>
@@ -777,10 +777,10 @@ export function SignupForm({ className, ...props }) {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-6 w-6 p-0 flex-shrink-0"
+                            className= "h-6 w-6 p-0 flex-shrink-0"
                             onClick={() => removeDocument(doc.id)}
                           >
-                            <X className="h-3 w-3" />
+                            <X className= "h-3 w-3" />
                           </Button>
                         </div>
                       ))}
@@ -796,10 +796,10 @@ export function SignupForm({ className, ...props }) {
 
         {/* Submit */}
         <div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button type="submit" className= "w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                <Loader2 className= "animate-spin mr-2 h-4 w-4" />
                 Submitting Registration...
               </>
             ) : (
@@ -808,11 +808,11 @@ export function SignupForm({ className, ...props }) {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground px-6 text-center">
+        <p className= "text-sm text-muted-foreground px-6 text-center">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-primary underline-offset-4 hover:underline"
+            className= "text-primary underline-offset-4 hover:underline"
           >
             Sign in
           </Link>

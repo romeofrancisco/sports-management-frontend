@@ -71,7 +71,7 @@ const PointsAnalysisChart = ({ data, isSetsScoring }) => {
       title={title}
       hasData={hasData}
       emptyMessage={emptyMessage}
-      className="lg:col-span-2"
+      className= "lg:col-span-2"
     >
       <Bar data={data} options={barOptions} />
     </ChartCard>

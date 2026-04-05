@@ -11,13 +11,13 @@ const getDisplayColumns = ({ setSelectedStat, modals }) => {
     },
     {
       accessorKey: "is_player_summary",
-      header: () => <div className="text-center">Player Summary</div>,
+      header: () => <div className= "text-center">Player Summary</div>,
       cell: ({ getValue }) => (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-600" />
+            <CircleCheck size={20} className= "text-green-600" />
           ) : (
-            <CircleX size={20} className="text-red-700" />
+            <CircleX size={20} className= "text-red-700" />
           )}
         </div>
       ),
@@ -25,13 +25,13 @@ const getDisplayColumns = ({ setSelectedStat, modals }) => {
     },
     {
       accessorKey: "is_team_summary",
-      header: () => <div className="text-center">Team Summary</div>,
+      header: () => <div className= "text-center">Team Summary</div>,
       cell: ({ getValue }) => (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-600" />
+            <CircleCheck size={20} className= "text-green-600" />
           ) : (
-            <CircleX size={20} className="text-red-700" />
+            <CircleX size={20} className= "text-red-700" />
           )}
         </div>
       ),
@@ -39,13 +39,13 @@ const getDisplayColumns = ({ setSelectedStat, modals }) => {
     },
     {
       accessorKey: "is_team_comparison",
-      header: () => <div className="text-center">Team Comparison</div>,
+      header: () => <div className= "text-center">Team Comparison</div>,
       cell: ({ getValue }) => (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-600" />
+            <CircleCheck size={20} className= "text-green-600" />
           ) : (
-            <CircleX size={20} className="text-red-700" />
+            <CircleX size={20} className= "text-red-700" />
           )}
         </div>
       ),
@@ -53,13 +53,13 @@ const getDisplayColumns = ({ setSelectedStat, modals }) => {
     },
     {
       accessorKey: "is_boxscore",
-      header: () => <div className="text-center">Boxscore</div>,
+      header: () => <div className= "text-center">Boxscore</div>,
       cell: ({ getValue }) => (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           {getValue() ? (
-            <CircleCheck size={20} className="text-green-600" />
+            <CircleCheck size={20} className= "text-green-600" />
           ) : (
-            <CircleX size={20} className="text-red-700" />
+            <CircleX size={20} className= "text-red-700" />
           )}
         </div>
       ),

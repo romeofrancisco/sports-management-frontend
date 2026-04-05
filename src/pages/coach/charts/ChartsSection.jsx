@@ -49,9 +49,9 @@ const ChartsSection = ({ overview, playerProgress }) => {
   const hasPlayerDevelopmentData = playerProgress?.player_progress?.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Charts Section */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className= "grid gap-6 md:grid-cols-3">
         {/* Team Overview Chart */}
         <ChartCard
           title="Team Performance & Activity"
@@ -59,7 +59,7 @@ const ChartsSection = ({ overview, playerProgress }) => {
           hasData={hasTeamPerformanceData}
           emptyMessage="No team data available"
           height={300}
-          className="col-span-3 lg:col-span-2"
+          className= "col-span-3 lg:col-span-2"
           onClick={
             hasTeamPerformanceData
               ? () =>
@@ -78,7 +78,7 @@ const ChartsSection = ({ overview, playerProgress }) => {
           title="Coaching Activity"
           description="Strategic overview of coaching responsibilities and workload distribution"
           hasData={hasCoachingActivityData}
-          className="col-span-3 lg:col-span-1"
+          className= "col-span-3 lg:col-span-1"
           emptyMessage="No coaching activities data available"
           height={300}
           onClick={

@@ -142,18 +142,18 @@ const FolderCard = ({
               onTouchMove={handleTouchMove}
             >
               {/* Icon */}
-              <div className="flex-shrink-0">
+              <div className= "flex-shrink-0">
                 <FolderIcon
-                  className="h-10 w-10 text-primary"
+                  className= "h-10 w-10 text-primary"
                   fill="currentColor"
                   strokeWidth={1}
                 />
               </div>
 
               {/* Name and details */}
-              <div className="flex-1 min-w-0">
+              <div className= "flex-1 min-w-0">
                 {isRenaming ? (
-                  <div className="flex items-center gap-2">
+                  <div className= "flex items-center gap-2">
                     <Input
                       ref={inputRef}
                       value={newFolderName}
@@ -165,38 +165,38 @@ const FolderCard = ({
                           handleRenameCancel();
                         }
                       }}
-                      className="h-8 text-sm max-w-xs"
+                      className= "h-8 text-sm max-w-xs"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className= "h-7 w-7"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRenameConfirm();
                       }}
                     >
-                      <Check className="h-4 w-4 text-green-500" />
+                      <Check className= "h-4 w-4 text-green-500" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className= "h-7 w-7"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRenameCancel();
                       }}
                     >
-                      <X className="h-4 w-4 text-destructive" />
+                      <X className= "h-4 w-4 text-destructive" />
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-foreground truncate">
+                    <p className= "text-sm font-medium text-foreground truncate">
                       {displayName}
                     </p>
-                    <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
+                    <div className= "flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 text-xs text-muted-foreground mt-1">
                       <span>
                         {folder.subfolder_count || 0} folders •{" "}
                         {folder.document_count || 0} files
@@ -205,7 +205,7 @@ const FolderCard = ({
                         Type: {getFolderTypeLabel(folder.folder_type)}
                       </span>
                       {showLocation && folder.location && (
-                        <span className="truncate">
+                        <span className= "truncate">
                           Path: {" "}
                           {folder.location}
                         </span>
@@ -217,21 +217,21 @@ const FolderCard = ({
 
               {/* Owner avatar */}
               {folder.owner && (
-                <div className="flex-shrink-0">
+                <div className= "flex-shrink-0">
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger asChild>
-                      <Avatar className="w-8 h-8 border-2 border-primary bg-muted">
+                      <Avatar className= "w-8 h-8 border-2 border-primary bg-muted">
                         <AvatarImage
                           src={folder.owner?.profile}
                           alt={folder.name}
                         />
                         <AvatarFallback>
-                          <User className="h-4 w-4 text-muted-foreground" />
+                          <User className= "h-4 w-4 text-muted-foreground" />
                         </AvatarFallback>
                       </Avatar>
                     </TooltipTrigger>
                     <TooltipContent side="left">
-                      <p className="text-xs">
+                      <p className= "text-xs">
                         Owner: {folder.owner.first_name}{" "}
                         {folder.owner.last_name}
                       </p>
@@ -241,21 +241,21 @@ const FolderCard = ({
               )}
 
               {/* Three-dot menu button */}
-              <div className="flex-shrink-0">
+              <div className= "flex-shrink-0">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8"
+                  className= "h-8 w-8"
                   onClick={handleMenuButtonClick}
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className= "h-4 w-4" />
                 </Button>
               </div>
             </div>
           </ContextMenuTrigger>
 
           {/* Right-Click Context Menu */}
-          <ContextMenuContent className="w-48">
+          <ContextMenuContent className= "w-48">
             {/* Edit Actions */}
             {canEdit && (
               <ContextMenuItem
@@ -265,7 +265,7 @@ const FolderCard = ({
                   setTimeout(() => handleRenameStart(), 0);
                 }}
               >
-                <Edit2 className="mr-2 h-4 w-4" />
+                <Edit2 className= "mr-2 h-4 w-4" />
                 Rename
               </ContextMenuItem>
             )}
@@ -280,9 +280,9 @@ const FolderCard = ({
                     setContextMenuOpen(false);
                     setTimeout(() => handleDeleteClick(), 0);
                   }}
-                  className="text-destructive focus:text-destructive"
+                  className= "text-destructive focus:text-destructive"
                 >
-                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  <Trash2Icon className= "mr-2 h-4 w-4" />
                   Delete
                 </ContextMenuItem>
               </>
@@ -314,15 +314,15 @@ const FolderCard = ({
         onOpenChange={setContextMenuOpen}
       >
         <ContextMenuTrigger asChild>
-          <div className="relative group">
+          <div className= "relative group">
             {/* Three-dot menu button */}
             <Button
               size="icon"
               variant="ghost"
-              className="absolute top-2 right-2 transition-opacity z-10 hover:bg-accent"
+              className= "absolute top-2 right-2 transition-opacity z-10 hover:bg-accent"
               onClick={handleMenuButtonClick}
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className= "h-4 w-4" />
             </Button>
 
             <Tooltip delayDuration={300}>
@@ -341,29 +341,29 @@ const FolderCard = ({
                   onTouchMove={handleTouchMove}
                 >
                   {/* Icon container with owner avatar */}
-                  <div className="flex items-center justify-center mb-2 relative">
+                  <div className= "flex items-center justify-center mb-2 relative">
                     <FolderIcon
-                      className="h-16 w-16 text-primary group-hover:scale-110 transition-transform"
+                      className= "h-16 w-16 text-primary group-hover:scale-110 transition-transform"
                       fill="currentColor"
                       strokeWidth={1}
                     />
                     {folder.owner && (
-                      <Avatar className="absolute -bottom-0 -right-1 w-6 h-6 border-2 border-primary bg-muted z-10 group-hover:scale-110 transition-transform">
+                      <Avatar className= "absolute -bottom-0 -right-1 w-6 h-6 border-2 border-primary bg-muted z-10 group-hover:scale-110 transition-transform">
                         <AvatarImage
                           src={folder.owner?.profile}
                           alt={folder.name}
                         />
                         <AvatarFallback>
-                          <User className="h-4 w-4 text-muted-foreground" />
+                          <User className= "h-4 w-4 text-muted-foreground" />
                         </AvatarFallback>
                       </Avatar>
                     )}
                   </div>
 
                   {/* Name with line clamp or input for renaming */}
-                  <div className="flex flex-col items-center w-full gap-1">
+                  <div className= "flex flex-col items-center w-full gap-1">
                     {isRenaming ? (
-                      <div className="w-full max-w-[140px] space-y-1">
+                      <div className= "w-full max-w-[140px] space-y-1">
                         <Input
                           ref={inputRef}
                           value={newFolderName}
@@ -375,43 +375,43 @@ const FolderCard = ({
                               handleRenameCancel();
                             }
                           }}
-                          className="h-7 text-xs text-center px-2"
+                          className= "h-7 text-xs text-center px-2"
                           onClick={(e) => e.stopPropagation()}
                         />
-                        <div className="flex justify-center gap-1">
+                        <div className= "flex justify-center gap-1">
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6"
+                            className= "h-6 w-6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRenameConfirm();
                             }}
                           >
-                            <Check className="h-3 w-3 text-green-500" />
+                            <Check className= "h-3 w-3 text-green-500" />
                           </Button>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6"
+                            className= "h-6 w-6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRenameCancel();
                             }}
                           >
-                            <X className="h-3 w-3 text-destructive" />
+                            <X className= "h-3 w-3 text-destructive" />
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <>
-                        <p className="text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
+                        <p className= "text-sm font-medium text-center text-foreground line-clamp-4 max-w-[140px] break-words leading-tight">
                           {displayName}
                         </p>
                         {showLocation && folder.location && (
-                          <div className="flex items-center justify-center text-[10px] text-muted-foreground w-full px-1 mt-1">
-                            <MapPin className="size-3 flex-shrink-0" />
-                            <span className="truncate">{folder.location}</span>
+                          <div className= "flex items-center justify-center text-[10px] text-muted-foreground w-full px-1 mt-1">
+                            <MapPin className= "size-3 flex-shrink-0" />
+                            <span className= "truncate">{folder.location}</span>
                           </div>
                         )}
                       </>
@@ -419,10 +419,10 @@ const FolderCard = ({
                   </div>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-xs">
-                <div className="space-y-1">
-                  <p className="font-semibold">{displayName}</p>
-                  <div className="text-xs text-gray-300 space-y-0.5">
+              <TooltipContent side="bottom" className= "max-w-xs">
+                <div className= "space-y-1">
+                  <p className= "font-semibold">{displayName}</p>
+                  <div className= "text-xs text-gray-300 space-y-0.5">
                     <p>
                       {folder.subfolder_count || 0} folders •{" "}
                       {folder.document_count || 0} files
@@ -451,7 +451,7 @@ const FolderCard = ({
         </ContextMenuTrigger>
 
         {/* Right-Click Context Menu */}
-        <ContextMenuContent className="w-48">
+        <ContextMenuContent className= "w-48">
           {/* Edit Actions */}
           {canEdit && (
             <ContextMenuItem
@@ -461,7 +461,7 @@ const FolderCard = ({
                 setTimeout(() => handleRenameStart(), 0);
               }}
             >
-              <Edit2 className="mr-2 h-4 w-4" />
+              <Edit2 className= "mr-2 h-4 w-4" />
               Rename
             </ContextMenuItem>
           )}
@@ -476,9 +476,9 @@ const FolderCard = ({
                   setContextMenuOpen(false);
                   setTimeout(() => handleDeleteClick(), 0);
                 }}
-                className="text-destructive focus:text-destructive"
+                className= "text-destructive focus:text-destructive"
               >
-                <Trash2Icon className="mr-2 h-4 w-4" />
+                <Trash2Icon className= "mr-2 h-4 w-4" />
                 Delete
               </ContextMenuItem>
             </>

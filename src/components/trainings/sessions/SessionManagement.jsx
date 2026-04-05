@@ -69,7 +69,7 @@ const SessionManagement = () => {
 
   return (
     <SessionErrorBoundary onError={handleError}>
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+      <div className="p-1 md:p-6 space-y-6">
         <SessionHeader
           sessionDetails={sessionDetails}
           sessionStatus={sessionStatus}
@@ -77,22 +77,20 @@ const SessionManagement = () => {
           isEndingTraining={isEndingTraining}
         />
 
-        <div className="container mx-auto">
-          <MemoizedWorkflowStepper
-            steps={memoizedWorkflowData.steps}
-            currentStep={memoizedWorkflowData.currentStep}
-            className="mb-6"
-            onNext={handleStepNavigation}
-            onPrevious={handleStepNavigation}
-          />
+        <MemoizedWorkflowStepper
+          steps={memoizedWorkflowData.steps}
+          currentStep={memoizedWorkflowData.currentStep}
+          className="mb-6"
+          onNext={handleStepNavigation}
+          onPrevious={handleStepNavigation}
+        />
 
-          <MemoizedContentRenderer
-            currentPage={currentPage}
-            sessionDetails={sessionDetails}
-            onAutoAdvance={handleAutoAdvance}
-            workflowData={memoizedWorkflowData}
-          />
-        </div>
+        <MemoizedContentRenderer
+          currentPage={currentPage}
+          sessionDetails={sessionDetails}
+          onAutoAdvance={handleAutoAdvance}
+          workflowData={memoizedWorkflowData}
+        />
       </div>
     </SessionErrorBoundary>
   );

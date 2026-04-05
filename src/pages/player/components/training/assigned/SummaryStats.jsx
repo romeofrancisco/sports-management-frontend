@@ -12,10 +12,10 @@ const SummaryStats = ({
       title: "Completed/Total",
       value: (
         <>
-          <span className="">{summary.completed}</span>
-          <span className="d">/{summary.total_metrics}</span>
+          <span className= "">{summary.completed}</span>
+          <span className= "d">/{summary.total_metrics}</span>
           {isFiltered && filteredSummary && (
-            <div className="text-sm text-muted-foreground mt-1">
+            <div className= "text-sm text-muted-foreground mt-1">
               ({filteredSummary.completed}/{filteredSummary.total_metrics})
             </div>
           )}
@@ -33,7 +33,7 @@ const SummaryStats = ({
         <>
           {summary.in_progress}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.in_progress})</span>
+            <span className= "text-sm text-muted-foreground ml-1">({filteredSummary.in_progress})</span>
           )}
         </>
       ),
@@ -49,7 +49,7 @@ const SummaryStats = ({
         <>
           {summary.assigned}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.assigned})</span>
+            <span className= "text-sm text-muted-foreground ml-1">({filteredSummary.assigned})</span>
           )}
         </>
       ),
@@ -65,7 +65,7 @@ const SummaryStats = ({
         <>
           {summary.missed}
           {isFiltered && filteredSummary && (
-            <span className="text-sm text-muted-foreground ml-1">({filteredSummary.missed})</span>
+            <span className= "text-sm text-muted-foreground ml-1">({filteredSummary.missed})</span>
           )}
         </>
       ),

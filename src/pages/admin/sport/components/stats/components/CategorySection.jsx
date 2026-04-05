@@ -22,13 +22,13 @@ const CategorySection = ({
         className={`flex justify-between items-center p-3 sm:p-4 lg:p-5 border-b-2 cursor-pointer transition-all duration-200 hover:bg-opacity-80 bg-primary/8 border-primary/20 relative z-10`}
         onClick={onToggle}
       >
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className= "flex items-center gap-2 sm:gap-3">
           <div
             className={`p-1.5 sm:p-2 rounded-lg shadow-lg bg-primary transition-transform duration-300 hover:scale-110`}
           >
-            <ChartBarStacked className="h-4 w-4 text-primary-foreground" />
+            <ChartBarStacked className= "h-4 w-4 text-primary-foreground" />
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+          <div className= "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <h3 className={`text-lg sm:text-xl font-bold text-primary`}>
               {category}
             </h3>
@@ -48,16 +48,16 @@ const CategorySection = ({
           className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-white/50 dark:hover:bg-black/30 transition-all duration-200 text-primary`}
         >
           {isExpanded ? (
-            <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronUp className= "h-4 w-4 sm:h-5 sm:w-5" />
           ) : (
-            <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronDown className= "h-4 w-4 sm:h-5 sm:w-5" />
           )}
         </Button>
       </div>
 
       {isExpanded && (
-        <div className="p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-background to-muted/20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div className= "p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-background to-muted/20">
+          <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {categoryStats.map((stat) => (
               <StatCard
                 key={stat.id}

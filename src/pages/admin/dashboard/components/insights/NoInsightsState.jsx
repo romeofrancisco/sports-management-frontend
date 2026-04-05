@@ -33,20 +33,20 @@ const NoInsightsState = ({ aiEnabled, hasError = false }) => {
   const { icon: Icon, title, description } = getContent();
 
   return (
-    <Card className="border-2 border-muted bg-gradient-to-br from-card to-muted/10">
-      <CardContent className="text-center py-12">
-        <Icon className={`h-12 w-12 mx-auto mb-4 ${hasError ? 'text-destructive' : 'text-muted-foreground'}`} />
+    <Card className= "border-2 border-muted bg-gradient-to-br from-card to-muted/10">
+      <CardContent className= "text-center py-12">
+        <Icon className={`h-12 w-12 mb-4 ${hasError ? 'text-destructive' : 'text-muted-foreground'}`} />
         <h3 className={`font-medium mb-2 ${hasError ? 'text-destructive' : 'text-muted-foreground'}`}>
           {title}
         </h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+        <p className= "text-sm text-muted-foreground max-w-md">
           {description}
         </p>
         {aiEnabled && !hasError && (
-          <div className="mt-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-xs text-primary font-medium">Processing...</span>
+          <div className= "mt-4">
+            <div className= "inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full">
+              <div className= "w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <span className= "text-xs text-primary font-medium">Processing...</span>
             </div>
           </div>
         )}

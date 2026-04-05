@@ -61,40 +61,40 @@ const TeamsContainer = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-3 rounded-xl">
-              <Users className="size-7 text-primary-foreground" />
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+      <CardHeader className= "flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className= "flex items-center justify-between gap-2">
+          <div className= "flex items-center gap-2">
+            <div className= "bg-primary p-3 rounded-xl">
+              <Users className= "size-7 text-primary-foreground" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-foreground">Teams</h2>
-                <Badge className="h-6 text-[11px]">{totalTeams} teams</Badge>
+              <div className= "flex items-center gap-2">
+                <h2 className= "text-2xl font-bold text-foreground">Teams</h2>
+                <Badge className= "h-6 text-[11px]">{totalTeams} teams</Badge>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className= "text-sm text-muted-foreground line-clamp-2">
                 Register, manage, and track team profiles and statistics for
                 your sports organization.
               </p>
             </div>
           </div>
-          <div className="hidden md:flex items-center gap-2">
+          <div className= "hidden md:flex items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("table")}
-              className="flex items-center gap-2"
+              className= "flex items-center gap-2"
             >
-              <Table2 className="h-4 w-4" />
+              <Table2 className= "h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("cards")}
-              className="flex items-center gap-2"
+              className= "flex items-center gap-2"
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className= "h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -112,7 +112,7 @@ const TeamsContainer = () => {
         ) : teams && teams.length > 0 ? (
           viewMode === "cards" ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {teams.map((team, index) => (
                   <TeamCard
                     key={team.id || index}
@@ -173,17 +173,17 @@ const TeamsContainer = () => {
             />
           )
         ) : (
-          <div className="text-center py-16 relative">
+          <div className= "text-center py-16 relative">
             {/* Enhanced background effects for empty state */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-lg opacity-50"></div>
-            <div className="relative">
-              <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mb-6 shadow-lg border-2 border-primary/20">
-                <Users className="h-10 w-10 text-primary" />
+            <div className= "absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-lg opacity-50"></div>
+            <div className= "relative">
+              <div className= "w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mb-6 shadow-lg border-2 border-primary/20">
+                <Users className= "h-10 w-10 text-primary" />
               </div>
-              <p className="text-foreground font-bold text-lg mb-2">
+              <p className= "text-foreground font-bold text-lg mb-2">
                 No teams found
               </p>
-              <p className="text-muted-foreground font-medium max-w-sm mx-auto">
+              <p className= "text-muted-foreground font-medium max-w-sm">
                 {filter.search || filter.sport || filter.division
                   ? "Try adjusting your filters to find teams"
                   : "Create your first team to get started with team management"}

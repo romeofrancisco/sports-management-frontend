@@ -84,13 +84,13 @@ const ChartsSection = ({ user, overview }) => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Progress and Radar Charts */}
-      <div className="grid gap-6 sm:grid-cols-5">
+      <div className= "grid gap-6 sm:grid-cols-5">
         {/* Progress Chart */}
         {user?.id && (
           <ClickableChartArea
-            className="col-span-3"
+            className= "col-span-3"
             onOpen={() =>
               openSummary({
                 chartType: "progress",
@@ -99,39 +99,39 @@ const ChartsSection = ({ user, overview }) => {
             }
             enabled={!metricsLoading && !!selectedMetricData}
           >
-            <Card className="relative overflow-hidden border-2 border-primary/20">
-              <CardHeader className="relative z-10">
-                <div className="flex items-center gap-2">
-                  <div className="p-3 rounded-lg bg-primary shadow-lg">
-                    <Activity className="size-5 text-primary-foreground" />
+            <Card className= "relative overflow-hidden border-2 border-primary/20">
+              <CardHeader className= "relative z-10">
+                <div className= "flex items-center gap-2">
+                  <div className= "p-3 rounded-lg bg-primary shadow-lg">
+                    <Activity className= "size-5 text-primary-foreground" />
                   </div>
                   <div>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className= "flex items-center gap-2">
                       Progress Chart
                     </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
+                    <CardDescription className= "text-sm text-muted-foreground">
                       Your performance trends (Last 3 months)
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative z-10">
-                <div className="h-80">
+              <CardContent className= "relative z-10">
+                <div className= "h-80">
                   {metricsLoading ? (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <div className= "flex items-center justify-center h-full">
+                      <div className= "animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
                   ) : selectedMetricData ? (
                     <ProgressChart selectedMetricData={selectedMetricData} />
                   ) : (
-                    <div className="text-center py-8">
-                      <div className="mx-auto size-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                        <Activity className="size-8 text-muted-foreground" />
+                    <div className= "text-center py-8">
+                      <div className= "size-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                        <Activity className= "size-8 text-muted-foreground" />
                       </div>
-                      <p className="text-muted-foreground font-medium">
+                      <p className= "text-muted-foreground font-medium">
                         No progress metrics available
                       </p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">
+                      <p className= "text-sm text-muted-foreground/70 mt-1">
                         Complete training sessions to see your progress
                       </p>
                     </div>
@@ -145,7 +145,7 @@ const ChartsSection = ({ user, overview }) => {
         {/* Radar Chart */}
         {user?.id && (
           <ClickableChartArea
-            className="sm:col-span-2"
+            className= "sm:col-span-2"
             onOpen={() =>
               openSummary({
                 chartType: "radar",
@@ -154,27 +154,27 @@ const ChartsSection = ({ user, overview }) => {
             }
             enabled={!radarLoading && !!radarData}
           >
-            <Card className="relative overflow-hidden border-2 border-primary/20">
-              <CardHeader className="relative z-10">
-                <div className="flex items-center gap-2">
-                  <div className="p-3 rounded-lg bg-primary shadow-lg">
-                    <Radar className="size-5 text-primary-foreground" />
+            <Card className= "relative overflow-hidden border-2 border-primary/20">
+              <CardHeader className= "relative z-10">
+                <div className= "flex items-center gap-2">
+                  <div className= "p-3 rounded-lg bg-primary shadow-lg">
+                    <Radar className= "size-5 text-primary-foreground" />
                   </div>
                   <div>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className= "flex items-center gap-2">
                       Skills Radar
                     </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
+                    <CardDescription className= "text-sm text-muted-foreground">
                       Your performance by metric category (Last 3 months)
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative z-10">
-                <div className="h-80">
+              <CardContent className= "relative z-10">
+                <div className= "h-80">
                   {radarLoading ? (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
+                    <div className= "flex items-center justify-center h-full">
+                      <div className= "animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
                     </div>
                   ) : radarData ? (
                     <PlayerRadarChart
@@ -182,7 +182,7 @@ const ChartsSection = ({ user, overview }) => {
                       showControls={false}
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <div className= "flex items-center justify-center h-full text-muted-foreground">
                       No radar data available
                     </div>
                   )}
@@ -204,12 +204,12 @@ const ChartsSection = ({ user, overview }) => {
           }
           enabled={true}
         >
-          <Card className="relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-accent/3 to-transparent" />
-            <CardHeader className="relative z-10">
-              <CardTitle className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-accent shadow-lg">
-                  <Activity className="h-5 w-5 text-accent-foreground" />
+          <Card className= "relative overflow-hidden">
+            <div className= "absolute inset-0 bg-gradient-to-br from-accent/5 via-accent/3 to-transparent" />
+            <CardHeader className= "relative z-10">
+              <CardTitle className= "flex items-center gap-2">
+                <div className= "p-2 rounded-lg bg-accent shadow-lg">
+                  <Activity className= "h-5 w-5 text-accent-foreground" />
                 </div>
                 Training Analytics
               </CardTitle>
@@ -217,8 +217,8 @@ const ChartsSection = ({ user, overview }) => {
                 Session participation trends (Last 3 months)
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative z-10">
-              <div className="h-80">
+            <CardContent className= "relative z-10">
+              <div className= "h-80">
                 <TrainingAnalyticsChart
                   data={overview.training_analytics}
                   title="Training Progress"

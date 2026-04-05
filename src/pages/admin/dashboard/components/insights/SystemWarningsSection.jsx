@@ -40,46 +40,46 @@ const SystemWarningsSection = ({ warnings }) => {
   const shouldShowMoreButton = warnings.length > INITIAL_DISPLAY_LIMIT;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <AlertTriangle className="h-5 w-5 text-destructive" />
-        <h3 className="text-lg font-semibold text-destructive">
+    <div className= "space-y-4">
+      <div className= "flex items-center gap-2">
+        <AlertTriangle className= "h-5 w-5 text-destructive" />
+        <h3 className= "text-lg font-semibold text-destructive">
           System Warnings
         </h3>
-        <Badge variant="destructive" className="text-xs">
+        <Badge variant="destructive" className= "text-xs">
           {warnings.length}
         </Badge>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
+      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
         {displayWarnings.map((warning, index) => (
           <Card
             key={`warning-${index}`}
-            className="group relative overflow-hidden border-2 border-destructive bg-gradient-to-br from-destructive/5 to-destructive/10 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500"
+            className= "group relative overflow-hidden border-2 border-destructive bg-gradient-to-br from-destructive/5 to-destructive/10 transition-all duration-300 hover:shadow-xl hover:scale-105 animate-in fade-in-50 duration-500"
             style={{ animationDelay: `${index * 100}ms` }}
           >
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
+            <div className= "absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
 
-            <CardHeader className="pb-3 relative">
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardHeader className= "pb-3 relative">
+              <div className= "flex items-start justify-between">
+                <CardTitle className= "text-sm font-medium text-muted-foreground">
                   System Warning
                 </CardTitle>
-                <div className="p-2 rounded-lg bg-destructive/10 backdrop-blur-sm border border-destructive/20">
-                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                <div className= "p-2 rounded-lg bg-destructive/10 backdrop-blur-sm border border-destructive/20">
+                  <AlertTriangle className= "h-4 w-4 text-destructive" />
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="relative">
-              <div className="space-y-2">
-                <p className="text-sm leading-relaxed">
+            <CardContent className= "relative">
+              <div className= "space-y-2">
+                <p className= "text-sm leading-relaxed">
                   {safeRender(warning, "System warning")}
                 </p>
               </div>
-              <div className="mt-3">
+              <div className= "mt-3">
                 <Badge
                   variant="outline"
-                  className="text-xs bg-destructive/10 text-destructive border-destructive/30"
+                  className= "text-xs bg-destructive/10 text-destructive border-destructive/30"
                 >
                   High Priority
                 </Badge>
@@ -91,21 +91,21 @@ const SystemWarningsSection = ({ warnings }) => {
 
       {/* Show More Button */}
       {shouldShowMoreButton && (
-        <div className="flex justify-center">
+        <div className= "flex justify-center">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 text-sm border-destructive/30 text-destructive hover:bg-destructive/10"
+            className= "flex items-center gap-2 text-sm border-destructive/30 text-destructive hover:bg-destructive/10"
           >
             {isExpanded ? (
               <>
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className= "h-4 w-4" />
                 Show Less
               </>
             ) : (
               <>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className= "h-4 w-4" />
                 Show {warnings.length - INITIAL_DISPLAY_LIMIT} More
               </>
             )}

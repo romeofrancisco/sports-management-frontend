@@ -34,10 +34,10 @@ const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 p-0 absolute right-4 -top-2"
+          className= "h-8 w-8 p-0 absolute right-4 -top-2"
         >
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <span className= "sr-only">Open menu</span>
+          <MoreHorizontal className= "h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -49,17 +49,17 @@ const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
               handleAction(() => navigate(`/sports/${sport.slug}`))
             }
           >
-            <ClipboardPenLine className="mr-2 h-4 w-4" />
+            <ClipboardPenLine className= "mr-2 h-4 w-4" />
             Manage Sport
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem disabled>
-            <ClipboardPenLine className="mr-2 h-4 w-4" />
+            <ClipboardPenLine className= "mr-2 h-4 w-4" />
             This sport does not require stats
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={() => handleAction(() => onEdit(sport))}>
-          <SquarePen className="mr-2 h-4 w-4" />
+          <SquarePen className= "mr-2 h-4 w-4" />
           Update Sport
         </DropdownMenuItem>
 
@@ -68,9 +68,9 @@ const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
           // Show reactivate option for inactive sports
           <DropdownMenuItem
             onClick={() => handleAction(() => onReactivate(sport))}
-            className="text-green-600 focus:text-green-600"
+            className= "text-green-600 focus:text-green-600"
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
+            <RotateCcw className= "mr-2 h-4 w-4" />
             Reactivate Sport
           </DropdownMenuItem>
         ) : (
@@ -79,7 +79,7 @@ const SportActions = ({ onEdit, onDelete, onReactivate, sport }) => {
             variant="destructive"
             onClick={() => handleAction(() => onDelete(sport))}
           >
-            <Trash className="mr-2 h-4 w-4" />
+            <Trash className= "mr-2 h-4 w-4" />
             Delete Sport
           </DropdownMenuItem>
         )}

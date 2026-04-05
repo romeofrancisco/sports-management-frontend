@@ -258,7 +258,7 @@ const DocumentsList = () => {
   };
 
   return (
-    <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "p-1 md:p-6 space-y-6">
       {/* Header */}
       <UniversityPageHeader
         title="Documents Management"
@@ -266,8 +266,8 @@ const DocumentsList = () => {
         showUniversityColors={true}
       />
 
-      <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 ">
-        <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+      <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20">
+        <CardHeader className= "flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
           <DocumentsHeader
             navigationStack={navigationStack}
             onBreadcrumbNavigate={onBreadcrumbNavigate}
@@ -296,17 +296,17 @@ const DocumentsList = () => {
               onDragEnter={onDragEnter}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
-              className="relative"
+              className= "relative"
             >
               {/* Drag overlay */}
               {isDraggingOver && (
-                <div className=" absolute inset-0 mx-4 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-xs  rounded-lg pointer-events-none">
-                  <div className="text-center bg-background/90 rounded-lg shadow-lg border-primary/20 border-2 p-4 border-dashed">
-                    <Upload className="w-16 h-16 mx-auto mb-4 text-primary animate-bounce" />
-                    <h3 className="text-xl font-semibold text-primary mb-2">
+                <div className= "absolute inset-0 mx-4 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-xs rounded-lg pointer-events-none">
+                  <div className= "text-center bg-background/90 rounded-lg shadow-lg border-primary/20 border-2 p-4 border-dashed">
+                    <Upload className= "w-16 h-16 mb-4 text-primary animate-bounce" />
+                    <h3 className= "text-xl font-semibold text-primary mb-2">
                       Drop files here
                     </h3>
-                    <p className="text-muted-foreground">
+                    <p className= "text-muted-foreground">
                       Release to upload to{" "}
                       {currentFolder ? currentFolder.name : "root folder"}
                     </p>
@@ -321,12 +321,12 @@ const DocumentsList = () => {
                 <>
                   {/* Folders Grid */}
                   {folders.length > 0 && (
-                    <div className="mb-4">
-                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                        <Folder className="size-4 md:size-6" />
-                        <h2 className="text-lg md:text-xl">Folders</h2>
+                    <div className= "mb-4">
+                      <div className= "flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                        <Folder className= "size-4 md:size-6" />
+                        <h2 className= "text-lg md:text-xl">Folders</h2>
                         {isSearching && (
-                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
+                          <span className= "text-xs md:text-sm text-muted-foreground font-normal">
                             ({folders.length} result
                             {folders.length !== 1 ? "s" : ""})
                           </span>
@@ -362,11 +362,11 @@ const DocumentsList = () => {
                   {/* Files Grid */}
                   {documents.length > 0 && (
                     <div>
-                      <div className="flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
-                        <File className="size-4 md:size-6" />
-                        <h2 className="text-lg md:text-xl">Files</h2>
+                      <div className= "flex items-center gap-1 mb-4 text-xl font-semibold text-primary">
+                        <File className= "size-4 md:size-6" />
+                        <h2 className= "text-lg md:text-xl">Files</h2>
                         {isSearching && (
-                          <span className="text-xs md:text-sm text-muted-foreground font-normal">
+                          <span className= "text-xs md:text-sm text-muted-foreground font-normal">
                             ({documents.length} result
                             {documents.length !== 1 ? "s" : ""})
                           </span>
@@ -436,16 +436,16 @@ const DocumentsList = () => {
           </ContextMenuTrigger>
 
           {/* Right-Click/Long-Press Context Menu for Paste */}
-          <ContextMenuContent className="w-48">
+          <ContextMenuContent className= "w-48">
             <ContextMenuItem onClick={() => setIsCreateFolderOpen(true)}>
-              <span className="flex items-center gap-1">
-                <FolderPlus className="h-4 w-4" />
+              <span className= "flex items-center gap-1">
+                <FolderPlus className= "h-4 w-4" />
                 New Folder
               </span>
             </ContextMenuItem>
             <ContextMenuItem onClick={() => setIsMultipleUploadOpen(true)}>
-              <span className="flex items-center gap-1">
-                <Upload className="h-4 w-4" />
+              <span className= "flex items-center gap-1">
+                <Upload className= "h-4 w-4" />
                 Upload File
               </span>
             </ContextMenuItem>
@@ -458,8 +458,8 @@ const DocumentsList = () => {
               }}
               disabled={!clipboardFile}
             >
-              <span className="flex items-center gap-1">
-                <ClipboardPaste className="h-4 w-4" />
+              <span className= "flex items-center gap-1">
+                <ClipboardPaste className= "h-4 w-4" />
                 Paste{" "}
                 {clipboardFile && clipboardAction === "cut"
                   ? "(Move)"

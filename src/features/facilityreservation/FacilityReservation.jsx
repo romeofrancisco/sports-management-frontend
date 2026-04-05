@@ -60,7 +60,7 @@ const FacilityReservation = () => {
   };
 
   return (
-    <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className="p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title="Facility Reservation"
         subtitle={isAdmin() ? "Facility Management" : "Reserve a Facility"}

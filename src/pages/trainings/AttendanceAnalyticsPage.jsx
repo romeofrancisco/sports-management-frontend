@@ -185,60 +185,60 @@ const AttendanceAnalyticsPage = () => {
 
   // Skeleton component for loading states
   const AttendanceAnalyticsSkeleton = () => (
-    <div className="space-y-6 sm:space-y-8">
+    <div className= "space-y-6 sm:space-y-8">
       {/* Overview Cards Skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[...Array(4)].map((_, index) => (
-          <div key={index} className="p-6 h-40 rounded-xl border bg-card">
-            <div className="flex items-center justify-between mb-8">
-              <Skeleton className="h-8 w-8 rounded-lg" />
-              <Skeleton className="h-6 w-16" />
+          <div key={index} className= "p-6 h-40 rounded-xl border bg-card">
+            <div className= "flex items-center justify-between mb-8">
+              <Skeleton className= "h-8 w-8 rounded-lg" />
+              <Skeleton className= "h-6 w-16" />
             </div>
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-3 w-32" />
+            <div className= "space-y-2">
+              <Skeleton className= "h-4 w-24" />
+              <Skeleton className= "h-3 w-32" />
             </div>
           </div>
         ))}
       </div>
 
       {/* Charts Grid Skeleton */}
-      <div className="grid gap-6 lg:grid-cols-8">
+      <div className= "grid gap-6 lg:grid-cols-8">
         {/* Attendance Distribution Chart Skeleton */}
-        <div className="xl:col-span-2 lg:col-span-3 p-6 rounded-xl border bg-card">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-8 w-8 rounded-lg" />
-              <div className="space-y-1">
-                <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-3 w-48" />
+        <div className= "xl:col-span-2 lg:col-span-3 p-6 rounded-xl border bg-card">
+          <div className= "space-y-4">
+            <div className= "flex items-center gap-3">
+              <Skeleton className= "h-8 w-8 rounded-lg" />
+              <div className= "space-y-1">
+                <Skeleton className= "h-5 w-40" />
+                <Skeleton className= "h-3 w-48" />
               </div>
             </div>
-            <div className="h-80 flex items-center justify-center">
-              <Skeleton className="h-48 w-48 rounded-full" />
+            <div className= "h-80 flex items-center justify-center">
+              <Skeleton className= "h-48 w-48 rounded-full" />
             </div>
           </div>
         </div>
 
         {/* Trends Chart Skeleton */}
-        <div className="xl:col-span-6 lg:col-span-5 p-6 rounded-xl border bg-card">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Skeleton className="h-8 w-8 rounded-lg" />
-                <div className="space-y-1">
-                  <Skeleton className="h-5 w-40" />
-                  <Skeleton className="h-3 w-56" />
+        <div className= "xl:col-span-6 lg:col-span-5 p-6 rounded-xl border bg-card">
+          <div className= "space-y-4">
+            <div className= "flex items-center justify-between">
+              <div className= "flex items-center gap-3">
+                <Skeleton className= "h-8 w-8 rounded-lg" />
+                <div className= "space-y-1">
+                  <Skeleton className= "h-5 w-40" />
+                  <Skeleton className= "h-3 w-56" />
                 </div>
               </div>
-              <Skeleton className="h-8 w-32 rounded-lg" />
+              <Skeleton className= "h-8 w-32 rounded-lg" />
             </div>
-            <div className="h-80">
-              <div className="flex items-end justify-between h-full space-x-2 px-4">
+            <div className= "h-80">
+              <div className= "flex items-end justify-between h-full space-x-2 px-4">
                 {[...Array(8)].map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="w-full rounded-t-sm"
+                    className= "w-full rounded-t-sm"
                     style={{ height: `${Math.random() * 60 + 20}%` }}
                   />
                 ))}
@@ -248,32 +248,32 @@ const AttendanceAnalyticsPage = () => {
         </div>
 
         {/* Attendance Tracker Table Skeleton */}
-        <div className="col-span-8 p-6 rounded-xl border bg-card">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-8 w-8 rounded-lg" />
-              <div className="space-y-1">
-                <Skeleton className="h-5 w-48" />
-                <Skeleton className="h-3 w-64" />
+        <div className= "col-span-8 p-6 rounded-xl border bg-card">
+          <div className= "space-y-4">
+            <div className= "flex items-center gap-3">
+              <Skeleton className= "h-8 w-8 rounded-lg" />
+              <div className= "space-y-1">
+                <Skeleton className= "h-5 w-48" />
+                <Skeleton className= "h-3 w-64" />
               </div>
             </div>
-            <div className="space-y-3">
+            <div className= "space-y-3">
               {/* Table header */}
-              <div className="flex gap-4 pb-2 border-b">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-4 w-20" />
+              <div className= "flex gap-4 pb-2 border-b">
+                <Skeleton className= "h-4 w-32" />
+                <Skeleton className= "h-4 w-24" />
+                <Skeleton className= "h-4 w-20" />
+                <Skeleton className= "h-4 w-20" />
+                <Skeleton className= "h-4 w-20" />
               </div>
               {/* Table rows */}
               {[...Array(5)].map((_, index) => (
-                <div key={index} className="flex gap-4 py-2">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-4 w-20" />
+                <div key={index} className= "flex gap-4 py-2">
+                  <Skeleton className= "h-4 w-32" />
+                  <Skeleton className= "h-4 w-24" />
+                  <Skeleton className= "h-4 w-20" />
+                  <Skeleton className= "h-4 w-20" />
+                  <Skeleton className= "h-4 w-20" />
                 </div>
               ))}
             </div>
@@ -286,9 +286,9 @@ const AttendanceAnalyticsPage = () => {
   const renderContent = () => {
     if (hasError) {
       return (
-        <Alert className="border-red-200 bg-red-50/80 dark:bg-red-950/50">
-          <AlertCircle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800 dark:text-red-200">
+        <Alert className= "border-red-200 bg-red-50/80 dark:bg-red-950/50">
+          <AlertCircle className= "h-4 w-4 text-red-600" />
+          <AlertDescription className= "text-red-800 dark:text-red-200">
             {overviewError?.message ||
               trendsError?.message ||
               "Failed to load attendance analytics data"}
@@ -303,9 +303,9 @@ const AttendanceAnalyticsPage = () => {
 
     if (!overviewData || !overviewData.attendance_distribution) {
       return (
-        <Alert className="border-amber-200 bg-amber-50/80 dark:bg-amber-950/50">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800 dark:text-amber-200">
+        <Alert className= "border-amber-200 bg-amber-50/80 dark:bg-amber-950/50">
+          <AlertCircle className= "h-4 w-4 text-amber-600" />
+          <AlertDescription className= "text-amber-800 dark:text-amber-200">
             No attendance data available for the selected filters.
           </AlertDescription>
         </Alert>
@@ -319,19 +319,19 @@ const AttendanceAnalyticsPage = () => {
     const trendsChartData = createTrendsChart(trendsData);
 
     return (
-      <div className="space-y-6 sm:space-y-8">
+      <div className= "space-y-6 sm:space-y-8">
         {/* Overview Cards */}
-        <div className="px-0">
+        <div className= "px-0">
           <OverviewCards stats={overviewStats} />
         </div>
 
         {/* Charts Grid */}
-        <div className="grid gap-6 grid-cols-1 lg:grid-cols-8">
+        <div className= "grid gap-6 grid-cols-1 lg:grid-cols-8">
           <ChartCard
             title="Attendance Distribution"
             description="Proportion of attendance statuses"
             icon={Users}
-            className="lg:col-span-3"
+            className= "lg:col-span-3"
             hasData={attendanceDistribution?.datasets?.[0]?.data?.some(
               (val) => val > 0
             )}
@@ -342,7 +342,7 @@ const AttendanceAnalyticsPage = () => {
               })
             }
           >
-            <div className="h-80 flex items-center justify-center">
+            <div className= "h-80 flex items-center justify-center">
               <Doughnut
                 data={attendanceDistribution}
                 options={distributionChartOptions}
@@ -354,7 +354,7 @@ const AttendanceAnalyticsPage = () => {
             title={getChartTitle()}
             description={getChartDescription()}
             icon={TrendingUp}
-            className="lg:col-span-5"
+            className= "lg:col-span-5"
             action={<PeriodToggle />}
             hasData={trendsChartData}
             onClick={() =>
@@ -365,7 +365,7 @@ const AttendanceAnalyticsPage = () => {
             }
           >
             <Bar
-              className="h-full w-full"
+              className= "h-full w-full"
               data={trendsChartData}
               options={trendsChartOptions}
             />
@@ -373,19 +373,19 @@ const AttendanceAnalyticsPage = () => {
         </div>
         {/* Attendance Tracker Table - Only show if there's actual attendance data */}
         {shouldShowAttendanceTable && (
-          <Card className="relative overflow-hidden col-span-8 border-2 border-primary/20">
-            <CardHeader className="relative z-10">
-              <div className="flex items-center gap-2">
-                <div className="p-3 rounded-lg bg-primary shadow-lg">
-                  <BarChart3 className="size-5 text-primary-foreground" />
+          <Card className= "relative overflow-hidden col-span-8 border-2 border-primary/20">
+            <CardHeader className= "relative z-10">
+              <div className= "flex items-center gap-2">
+                <div className= "p-3 rounded-lg bg-primary shadow-lg">
+                  <BarChart3 className= "size-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <CardTitle className="flex items-center gap-2 text-gradient text-xl">
+                  <CardTitle className= "flex items-center gap-2 text-gradient text-xl">
                     {isTeamSelected
                       ? "Player Attendance Tracker"
                       : "Team Attendance Tracker"}
                   </CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
+                  <CardDescription className= "text-sm text-muted-foreground">
                     {isTeamSelected
                       ? "Detailed attendance status for each player"
                       : "Overall attendance status for the team"}
@@ -393,33 +393,33 @@ const AttendanceAnalyticsPage = () => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="relative z-10 p-0">
-              <div className="overflow-x-auto w-full">
+            <CardContent className= "relative z-10 p-0">
+              <div className= "overflow-x-auto w-full">
                 {attendanceTrackerLoading ? (
-                  <div className="p-6 space-y-3">
+                  <div className= "p-6 space-y-3">
                     {/* Table header skeleton */}
-                    <div className="flex gap-4 pb-2 border-b">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-20" />
+                    <div className= "flex gap-4 pb-2 border-b">
+                      <Skeleton className= "h-4 w-32" />
+                      <Skeleton className= "h-4 w-24" />
+                      <Skeleton className= "h-4 w-20" />
+                      <Skeleton className= "h-4 w-20" />
+                      <Skeleton className= "h-4 w-20" />
                     </div>
                     {/* Table rows skeleton */}
                     {[...Array(5)].map((_, index) => (
-                      <div key={index} className="flex gap-4 py-2">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-4 w-20" />
+                      <div key={index} className= "flex gap-4 py-2">
+                        <Skeleton className= "h-4 w-32" />
+                        <Skeleton className= "h-4 w-24" />
+                        <Skeleton className= "h-4 w-20" />
+                        <Skeleton className= "h-4 w-20" />
+                        <Skeleton className= "h-4 w-20" />
                       </div>
                     ))}
                   </div>
                 ) : attendanceTrackerError ? (
-                  <div className="flex flex-col items-center justify-center h-40 space-y-2">
-                    <AlertCircle className="h-6 w-6 text-red-600" />
-                    <p className="text-red-800 dark:text-red-200 font-medium">
+                  <div className= "flex flex-col items-center justify-center h-40 space-y-2">
+                    <AlertCircle className= "h-6 w-6 text-red-600" />
+                    <p className= "text-red-800 dark:text-red-200 font-medium">
                       Failed to load attendance tracker data
                     </p>
                   </div>
@@ -445,7 +445,7 @@ const AttendanceAnalyticsPage = () => {
 
   // Period toggle component for the trends chart
   const PeriodToggle = () => (
-    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+    <div className= "flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
       <Button
         variant={selectedPeriod === "monthly" ? "default" : "ghost"}
         size="sm"
@@ -453,7 +453,7 @@ const AttendanceAnalyticsPage = () => {
           event.stopPropagation();
           setSelectedPeriod("monthly");
         }}
-        className="h-8 px-3 text-xs font-medium"
+        className= "h-8 px-3 text-xs font-medium"
       >
         Monthly
       </Button>
@@ -464,7 +464,7 @@ const AttendanceAnalyticsPage = () => {
           event.stopPropagation();
           setSelectedPeriod("weekly");
         }}
-        className="h-8 px-3 text-xs font-medium"
+        className= "h-8 px-3 text-xs font-medium"
       >
         Weekly
       </Button>
@@ -525,8 +525,8 @@ const AttendanceAnalyticsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-primary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-primary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title="Attendance Analytics"
           subtitle="Training Management"
@@ -537,26 +537,26 @@ const AttendanceAnalyticsPage = () => {
           backButtonPath="/trainings"
         />
 
-        <div className="space-y-6 sm:space-y-8">
+        <div className= "space-y-6 sm:space-y-8">
           {/* Header Section - Always visible */}
           <div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="relative">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
-                    <Activity className="h-6 w-6 sm:h-7 sm:w-7 text-primary-foreground" />
+            <div className= "flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl">
+              <div className= "flex items-center gap-4 flex-1">
+                <div className= "relative">
+                  <div className= "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
+                    <Activity className= "h-6 w-6 sm:h-7 sm:w-7 text-primary-foreground" />
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
+                <div className= "flex-1 min-w-0">
+                  <h3 className= "text-lg sm:text-xl lg:text-2xl font-bold truncate">
                     Attendance Overview
                   </h3>
-                  <p className="text-sm text-muted-foreground font-medium line-clamp-1">
+                  <p className= "text-sm text-muted-foreground font-medium line-clamp-1">
                     Analyze training attendance patterns and player stats
                   </p>
                 </div>
               </div>
-              <div className="sm:ml-auto">
+              <div className= "sm:ml-auto">
                 <FiltersSection
                   selectedTeam={selectedTeam}
                   onTeamChange={setSelectedTeam}

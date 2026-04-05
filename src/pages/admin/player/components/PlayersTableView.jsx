@@ -29,9 +29,9 @@ const ActionsCell = ({ player, navigate, handleUpdatePlayer, handleDeletePlayer,
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+        <Button variant="ghost" className= "h-8 w-8 p-0">
+          <span className= "sr-only">Open menu</span>
+          <MoreHorizontal className= "h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -48,7 +48,7 @@ const ActionsCell = ({ player, navigate, handleUpdatePlayer, handleDeletePlayer,
         {player?.is_active ? (
           <DropdownMenuItem
             onClick={() => { handleDeletePlayer && handleDeletePlayer(player); setOpen(false); }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
+            className= "text-destructive focus:text-destructive focus:bg-destructive/10 hover:text-destructive hover:bg-destructive/10"
           >
             <Trash />
             Delete Player
@@ -56,7 +56,7 @@ const ActionsCell = ({ player, navigate, handleUpdatePlayer, handleDeletePlayer,
         ) : (
           <DropdownMenuItem
             onClick={() => { onReactivatePlayer && onReactivatePlayer(player); setOpen(false); }}
-            className="text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
+            className= "text-green-600 focus:text-green-600 focus:bg-green-600/10 hover:text-green-600 hover:bg-green-600/10"
           >
             <RotateCcw />
             Reactivate Player
@@ -75,7 +75,7 @@ const getColumns = (
 ) => [
   {
     id: "player",
-    header: () => <h1 className="ps-3">Player</h1>,
+    header: () => <h1 className= "ps-3">Player</h1>,
     cell: ({ row }) => {
       const {
         profile,
@@ -87,31 +87,31 @@ const getColumns = (
         is_active,
       } = row.original;
       return (
-        <div className="flex gap-3 items-center sm:ps-3 max-w-[180px] sm:max-w-full">
-          <div className="relative hidden sm:block">
-            <Avatar className="size-10 border-primary/20 border-2">
+        <div className= "flex gap-3 items-center sm:ps-3 max-w-[180px] sm:max-w-full">
+          <div className= "relative hidden sm:block">
+            <Avatar className= "size-10 border-primary/20 border-2">
               <AvatarImage src={profile} alt={first_name} />
-              <AvatarFallback className="rounded-lg bg-accent">
+              <AvatarFallback className= "rounded-lg bg-accent">
                 {first_name?.[0]}
                 {last_name?.[0]}
               </AvatarFallback>
             </Avatar>
             {jersey_number && (
-              <span className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full size-6 flex items-center justify-center border-2 border-background">
+              <span className= "absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full size-6 flex items-center justify-center border-2 border-background">
                 #{jersey_number}
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium flex items-center gap-0.5">
-              {sex === "male" && <Mars className="size-4 text-blue-500" />}
-              {sex === "female" && <Venus className="size-4 text-pink-500" />}
+          <div className= "flex flex-col gap-0.5">
+            <span className= "font-medium flex items-center gap-0.5">
+              {sex === "male" && <Mars className= "size-4 text-blue-500" />}
+              {sex === "female" && <Venus className= "size-4 text-pink-500" />}
               {first_name} {last_name}
             </span>
-            <span className="text-muted-foreground text-xs truncate max-w-[120px] sm:max-w-full">
+            <span className= "text-muted-foreground text-xs truncate max-w-[120px] sm:max-w-full">
               {email}
             </span>
-            <div className="flex items-center gap-1.5 mt-0.5">
+            <div className= "flex items-center gap-1.5 mt-0.5">
               <Badge
                 variant={is_active ? "default" : "destructive"}
                 className={`h-4 px-1.5 text-[10px] ${
@@ -135,17 +135,17 @@ const getColumns = (
     cell: ({ row }) => {
       const { academic_info } = row.original;
       if (!academic_info) {
-        return <span className="text-muted-foreground text-sm">—</span>;
+        return <span className= "text-muted-foreground text-sm">—</span>;
       }
       const section = academic_info?.section
         ? ` - ${academic_info.section}`
         : "";
       return (
-        <div className="flex flex-col gap-0.5">
-          <span className="font-medium text-sm">
+        <div className= "flex flex-col gap-0.5">
+          <span className= "font-medium text-sm">
             {academic_info?.year_level}
           </span>
-          <span className="text-muted-foreground text-xs">
+          <span className= "text-muted-foreground text-xs">
             {academic_info?.course}
             {section}
           </span>
@@ -161,10 +161,10 @@ const getColumns = (
       const { sport, positions } = row.original;
       const positionText = positions?.map((pos) => pos.abbreviation).join(", ");
       return (
-        <div className="flex flex-col gap-0.5">
-          <span className="font-medium text-sm">{sport?.name || "—"}</span>
+        <div className= "flex flex-col gap-0.5">
+          <span className= "font-medium text-sm">{sport?.name || "—"}</span>
           {positionText && (
-            <span className="text-muted-foreground text-xs">
+            <span className= "text-muted-foreground text-xs">
               {positionText}
             </span>
           )}
@@ -183,18 +183,18 @@ const getColumns = (
         : "—";
 
       return (
-        <div className="flex flex-col gap-0.5 text-xs">
+        <div className= "flex flex-col gap-0.5 text-xs">
           <span>
-            <span className="text-muted-foreground">Birthdate: </span>
-            <span className="font-medium">{birthdate}</span>
+            <span className= "text-muted-foreground">Birthdate: </span>
+            <span className= "font-medium">{birthdate}</span>
           </span>
           <span>
-            <span className="text-muted-foreground">Height: </span>
-            <span className="font-medium">{height ? `${height} cm` : "—"}</span>
+            <span className= "text-muted-foreground">Height: </span>
+            <span className= "font-medium">{height ? `${height} cm` : "—"}</span>
           </span>
           <span>
-            <span className="text-muted-foreground">Weight: </span>
-            <span className="font-medium">{weight ? `${weight} kg` : "—"}</span>
+            <span className= "text-muted-foreground">Weight: </span>
+            <span className= "font-medium">{weight ? `${weight} kg` : "—"}</span>
           </span>
         </div>
       );
@@ -208,25 +208,25 @@ const getColumns = (
       const { logo, name, head_coach_info } = row.original.team;
       if (!row.original.team) {
         return (
-          <span className="text-muted-foreground text-sm">Unassigned</span>
+          <span className= "text-muted-foreground text-sm">Unassigned</span>
         );
       }
       return (
-        <div className="flex gap-3 items-center ps-3">
-          <div className="relative">
-            <Avatar className="size-10 border-primary/20 border-2">
+        <div className= "flex gap-3 items-center ps-3">
+          <div className= "relative">
+            <Avatar className= "size-10 border-primary/20 border-2">
               <AvatarImage src={logo} alt={name} />
-              <AvatarFallback className="rounded-lg bg-accent">
+              <AvatarFallback className= "rounded-lg bg-accent">
                 {name?.[0]}
               </AvatarFallback>
             </Avatar>
           </div>
-          <div className="flex flex-col">
-            <span className="font-medium">{name}</span>
-            <span className="text-muted-foreground text-xs">
+          <div className= "flex flex-col">
+            <span className= "font-medium">{name}</span>
+            <span className= "text-muted-foreground text-xs">
               {head_coach_info?.full_name}
             </span>
-            <span className="text-muted-foreground/80 text-xs">
+            <span className= "text-muted-foreground/80 text-xs">
               {head_coach_info?.email}
             </span>
           </div>
@@ -290,18 +290,18 @@ const PlayersTableView = ({
   const columns = getColumns(navigate, handleUpdatePlayer, handleDeletePlayer, onReactivatePlayer);
 
   return (
-    <div className="space-y-4">
+    <div className= "space-y-4">
       {" "}
       {/* Data table */}
       <DataTable
         columns={columns}
         data={players}
         isLoading={isLoading}
-        className="border rounded-lg bg-card"
+        className= "border rounded-lg bg-card"
         showPagination={false} // Disable built-in pagination
         pageSize={pageSize} // Still pass pageSize for row rendering
       />
-      <div className="px-6">
+      <div className= "px-6">
         <TablePagination
           currentPage={currentPage}
           pageSize={pageSize}

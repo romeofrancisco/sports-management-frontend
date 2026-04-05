@@ -61,13 +61,13 @@ const AboutSection = () => {
   };
 
   return (
-    <section id="about" className="py-16 lg:py-24">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
+    <section id="about" className= "py-16 lg:py-24">
+      <div className= "px-4">
+        <div className= "grid lg:grid-cols-2 gap-5 lg:gap-12 items-center">
           {/* Stacked Images - Click to cycle */}
-          <div className="relative order-1 lg:order-none h-[350px] lg:h-[400px] flex items-center justify-center">
+          <div className= "relative order-1 lg:order-none h-[350px] lg:h-[400px] flex items-center justify-center">
             <div
-              className="relative w-[280px] h-[280px] md:w-[70%] md:h-[320px] lg:w-[80%] lg:h-[400px] cursor-pointer"
+              className= "relative w-[280px] h-[280px] md:w-[70%] md:h-[320px] lg:w-[80%] lg:h-[400px] cursor-pointer"
               onClick={handleClick}
             >
               {imageOrder.map((imageIndex, stackIndex) => {
@@ -77,17 +77,17 @@ const AboutSection = () => {
                 return (
                   <div
                     key={imageIndex}
-                    className="absolute inset-0 transition-all duration-500 ease-out"
+                    className= "absolute inset-0 transition-all duration-500 ease-out"
                     style={{
                       transform: `translateX(${pos.x}px) translateY(${pos.y}px) rotate(${pos.rotate}deg)`,
                       zIndex: zIndex,
                     }}
                   >
-                    <div className="bg-muted dark:bg-white dark:brightness-75 p-2 pb-4 rounded-lg shadow-xl h-full">
+                    <div className= "bg-muted dark:bg-white dark:brightness-75 p-2 pb-4 rounded-lg shadow-xl h-full">
                       <img
                         src={images[imageIndex].src}
                         alt={`Sports ${imageIndex + 1}`}
-                        className="w-full h-full object-cover rounded"
+                        className= "w-full h-full object-cover rounded"
                         draggable={false}
                       />
                     </div>
@@ -99,16 +99,16 @@ const AboutSection = () => {
 
           {/* Content Side */}
           <div>
-            <span className="text-secondary font-semibold text-sm uppercase tracking-wider">
+            <span className= "text-secondary font-semibold text-sm uppercase tracking-wider">
               About The System
             </span>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-6">
+            <h2 className= "text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-6">
               What is the{" "}
-              <span className="text-primary">Sports Management</span> System?
+              <span className= "text-primary">Sports Management</span> System?
             </h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
+            <p className= "text-muted-foreground mb-6 leading-relaxed">
               A centralized platform built for{" "}
-              <span className="text-primary font-medium">
+              <span className= "text-primary font-medium">
                 UPHSD Molino Campus
               </span>{" "}
               to digitize and streamline all athletic operations. Coaches can
@@ -116,27 +116,27 @@ const AboutSection = () => {
               performance. Athletes can view their schedules, access team
               documents, and monitor their progress.
             </p>
-            <p className="text-muted-foreground mb-8 leading-relaxed">
+            <p className= "text-muted-foreground mb-8 leading-relaxed">
               Administrators have full control over sports programs, player
               registrations, facility reservations, and tournament organization
               — all in one integrated system.
             </p>
 
             {/* System Features */}
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className= "grid sm:grid-cols-2 gap-4">
               {highlights.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  className= "flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                 >
-                  <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                    <item.icon className="w-5 h-5 text-primary" />
+                  <div className= "p-2 bg-primary/10 rounded-lg shrink-0">
+                    <item.icon className= "w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground text-sm">
+                    <h4 className= "font-semibold text-foreground text-sm">
                       {item.title}
                     </h4>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className= "text-xs text-muted-foreground mt-1">
                       {item.description}
                     </p>
                   </div>

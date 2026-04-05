@@ -18,7 +18,7 @@ const   SeasonsContent = ({
       <DataTable
         columns={columns}
         data={seasons}
-        className="text-sm"
+        className= "text-sm"
         alternateRowColors={true}
         loading={isLoading}
         showPagination={false}
@@ -28,11 +28,11 @@ const   SeasonsContent = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className= "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {isLoading ? (
         <SeasonCardSkeleton pageSize={pageSize} />
       ) : seasons.length === 0 ? (
-        <div className="col-span-full text-center py-8 text-muted-foreground">
+        <div className= "col-span-full text-center py-8 text-muted-foreground">
           No seasons found
         </div>
       ) : (

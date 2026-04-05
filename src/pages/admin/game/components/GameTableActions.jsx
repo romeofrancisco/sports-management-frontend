@@ -65,7 +65,7 @@ const GameTableActions = ({ game, modals, setSelectedGame, navigate }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button size="icon" variant="ghost">
-          <MoreHorizontal className="w-4 h-4" />
+          <MoreHorizontal className= "w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>      <DropdownMenuContent align="end">
         {/* Scheduled Game Options */}

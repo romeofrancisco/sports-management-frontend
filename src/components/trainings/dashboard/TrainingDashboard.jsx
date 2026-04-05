@@ -63,7 +63,7 @@ const TrainingDashboard = () => {
   ];
   return (
     <div>
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+      <div className="p-1 md:p-6 space-y-6">
         {/* Header Section */}
         <UniversityPageHeader
           title="Training Management"

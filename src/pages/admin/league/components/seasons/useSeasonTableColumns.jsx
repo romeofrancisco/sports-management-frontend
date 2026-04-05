@@ -26,7 +26,7 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
       id: "name",
       header: "Name",
       cell: ({ row }) => (
-        <div className="font-medium">
+        <div className= "font-medium">
           {row.original.name || `Season ${row.original.year}`}
         </div>
       ),
@@ -54,11 +54,11 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
       cell: ({ row }) => {
         const { start_date, end_date } = row.original;
         return (
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <Calendar size={14} className="text-primary" />
-              <span className="text-sm">{formatShortDate(start_date)}</span> -
-              <span className="text-sm">{formatShortDate(end_date)}</span>
+          <div className= "space-y-1">
+            <div className= "flex items-center gap-1">
+              <Calendar size={14} className= "text-primary" />
+              <span className= "text-sm">{formatShortDate(start_date)}</span> -
+              <span className= "text-sm">{formatShortDate(end_date)}</span>
             </div>
           </div>
         );
@@ -71,20 +71,20 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
       cell: ({ row }) => {
         const { games_count, games_played } = row.original;
         if (games_count === undefined)
-          return <span className="text-muted-foreground">-</span>;
+          return <span className= "text-muted-foreground">-</span>;
 
         const progress = ((games_played || 0) / games_count) * 100;
         return (
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <Trophy size={14} className="text-primary" />
-              <span className="text-sm font-medium">
+          <div className= "space-y-1">
+            <div className= "flex items-center gap-1">
+              <Trophy size={14} className= "text-primary" />
+              <span className= "text-sm font-medium">
                 {games_played || 0}/{games_count}
               </span>
             </div>
-            <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+            <div className= "w-full bg-muted rounded-full h-1.5 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
+                className= "h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -99,31 +99,31 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
       cell: ({ row }) => {
         const { teams_list } = row.original;
         if (!teams_list || teams_list.length === 0) {
-          return <span className="text-muted-foreground">-</span>;
+          return <span className= "text-muted-foreground">-</span>;
         }
 
         return (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <Users size={14} className="text-secondary" />
-              <span className="text-sm font-medium">{teams_list.length}</span>
+          <div className= "flex items-center gap-2">
+            <div className= "flex items-center gap-1">
+              <Users size={14} className= "text-secondary" />
+              <span className= "text-sm font-medium">{teams_list.length}</span>
             </div>
-            <div className="flex -space-x-1">
+            <div className= "flex -space-x-1">
               {teams_list.slice(0, 3).map((team) => (
-                <div key={team.id} className="relative">
+                <div key={team.id} className= "relative">
                   {team.logo ? (
                     <img
                       src={team.logo}
                       alt={team.name}
-                      className="w-6 h-6 rounded-full border-2 border-background object-cover"
+                      className= "w-6 h-6 rounded-full border-2 border-background object-cover"
                       title={team.name}
                     />
                   ) : (
                     <div
-                      className="w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
+                      className= "w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
                       title={team.name}
                     >
-                      <span className="text-xs font-medium text-primary">
+                      <span className= "text-xs font-medium text-primary">
                         {team.name.charAt(0)}
                       </span>
                     </div>
@@ -131,8 +131,8 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
                 </div>
               ))}
               {teams_list.length > 3 && (
-                <div className="w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center">
-                  <span className="text-xs text-muted-foreground">
+                <div className= "w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center">
+                  <span className= "text-xs text-muted-foreground">
                     +{teams_list.length - 3}
                   </span>
                 </div>
@@ -151,26 +151,26 @@ export const useSeasonTableColumns = (onEdit, onDelete, getStatusBadge) => {
         return isAdmin() ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" className= "h-8 w-8 p-0">
+                <span className= "sr-only">Open menu</span>
+                <MoreHorizontal className= "h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align="end" className= "w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() =>
                   navigate(`/leagues/${league}/seasons/${season.id}`)
                 }
-                className="flex items-center gap-2"
+                className= "flex items-center gap-2"
               >
                 <Settings size={14} />
                 Manage Season
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => onEdit(season)}
-                className="flex items-center gap-2"
+                className= "flex items-center gap-2"
               >
                 <SquarePen size={14} />
                 Edit Season

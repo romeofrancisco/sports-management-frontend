@@ -106,32 +106,32 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
   );
 
   return (
-    <div className="animate-in fade-in-50 duration-500">
-      <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <div className= "animate-in fade-in-50 duration-500">
+      <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
         {/* Enhanced background effects */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
+        <div className= "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
+        <div className= "absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
 
-        <CardHeader className="relative">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-              <CalendarIcon className="h-5 w-5 text-primary-foreground" />
+        <CardHeader className= "relative">
+          <div className= "flex items-center gap-3">
+            <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+              <CalendarIcon className= "h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+              <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                 Game Schedule
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className= "text-sm text-muted-foreground mt-1">
                 Season games and matchups
               </p>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="relative px-6">
+        <CardContent className= "relative px-6">
           {/* Date Navigation Bar - enhanced with shadow */}
           {selectedDate && (
-            <div className="bg-card rounded-xl shadow-md p-1 mb-6">
+            <div className= "bg-card rounded-xl shadow-md p-1 mb-6">
               <DateNavigationBar
                 selectedDate={selectedDate}
                 onDateChange={setSelectedDate}
@@ -139,19 +139,19 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                 dateProperty="date"
                 getDataCountForDate={getGamesCountForDate}
                 countLabel="Game"
-                className="overflow-x-auto"
+                className= "overflow-x-auto"
               />
             </div>
           )}
           {/* Games List with Game Skeletons */}
           {isLoading ? (
-            <div className="space-y-6">
+            <div className= "space-y-6">
               <StatusSectionSkeleton title="Live Games" count={2} />
               <StatusSectionSkeleton title="Scheduled Games" count={4} />
               <StatusSectionSkeleton title="Completed Games" count={3} />
             </div>
           ) : filteredGames.length > 0 ? (
-            <div className="space-y-6">
+            <div className= "space-y-6">
               {" "}
               {/* Live Games Section */}
               <StatusSection
@@ -161,7 +161,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                 )}
                 variant="default"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {filteredGames
                     .filter((game) => game.status === GAME_STATUS_VALUES.IN_PROGRESS)
                     .map((game, i) => (
@@ -181,7 +181,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                 )}
                 variant="default"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {filteredGames
                     .filter((game) => game.status === GAME_STATUS_VALUES.SCHEDULED)
                     .map((game, i) => (
@@ -201,14 +201,14 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                 )}
                 variant="default"
               >
-                <div className="space-y-6">
+                <div className= "space-y-6">
                   {/* Regular Completed & Forfeited Games */}
                   {filteredGames.filter(
                     (game) => game.status === GAME_STATUS_VALUES.COMPLETED || game.status === GAME_STATUS_VALUES.FORFEITED
                   ).length > 0 && (
                     <div>
         
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {filteredGames
                           .filter((game) => game.status === GAME_STATUS_VALUES.COMPLETED || game.status === GAME_STATUS_VALUES.FORFEITED)
                           .map((game, i) => (
@@ -229,8 +229,8 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                              game.status === GAME_STATUS_VALUES.DOUBLE_DEFAULT
                   ).length > 0 && (
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-3">Default Games</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      <h3 className= "text-sm font-semibold text-muted-foreground mb-3">Default Games</h3>
+                      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {filteredGames
                           .filter((game) => game.status === GAME_STATUS_VALUES.DEFAULT_HOME_WIN || 
                                            game.status === GAME_STATUS_VALUES.DEFAULT_AWAY_WIN || 
@@ -256,7 +256,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
                   )}
                   variant="default"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filteredGames
                       .filter((game) => game.status === GAME_STATUS_VALUES.POSTPONED)
                       .map((game, i) => (
@@ -272,10 +272,10 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
             </div>
           ) : (
             <div>
-              <Card className="border-2 border-dashed border-muted-foreground/25 bg-muted/10">
-                <CardContent className="flex flex-col items-center justify-center py-16 px-4">
-                  <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground text-base sm:text-lg font-medium">
+              <Card className= "border-2 border-dashed border-muted-foreground/25 bg-muted/10">
+                <CardContent className= "flex flex-col items-center justify-center py-16 px-4">
+                  <CalendarIcon className= "h-12 w-12 text-muted-foreground mb-4" />
+                  <p className= "text-muted-foreground text-base sm:text-lg font-medium">
                     No games scheduled for{" "}
                     {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "selected date"}
                   </p>

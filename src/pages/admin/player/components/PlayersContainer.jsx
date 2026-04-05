@@ -62,32 +62,32 @@ const PlayersContainer = () => {
   };
 
   return (
-    <Card className="border-2 border-primary/20 gap-0">
-      <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-3 rounded-xl">
-              <User className="size-7 text-primary-foreground" />
+    <Card className= "border-2 border-primary/20 gap-0">
+      <CardHeader className= "flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
+        <div className= "flex flex-col md:flex-row items-center justify-between gap-2">
+          <div className= "flex items-center gap-2">
+            <div className= "bg-primary p-3 rounded-xl">
+              <User className= "size-7 text-primary-foreground" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-foreground">Players</h2>
-                <Badge className="h-6 text-[11px]">
+              <div className= "flex items-center gap-2">
+                <h2 className= "text-2xl font-bold text-foreground">Players</h2>
+                <Badge className= "h-6 text-[11px]">
                   {totalPlayers} players
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className= "text-sm text-muted-foreground line-clamp-2">
                 Register, manage, and track student athlete profiles and
                 statistics for your sports team.
               </p>
             </div>
           </div>
-          <div className="hidden md:flex items-center gap-2">
+          <div className= "hidden md:flex items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("table")}
-              className="flex items-center gap-2"
+              className= "flex items-center gap-2"
             >
               <Table2 />
             </Button>
@@ -95,7 +95,7 @@ const PlayersContainer = () => {
               variant={viewMode === "cards" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("cards")}
-              className="flex items-center gap-2"
+              className= "flex items-center gap-2"
             >
               <LayoutGrid />
             </Button>
@@ -110,13 +110,13 @@ const PlayersContainer = () => {
           registerPlayer={handleRegisterPlayer}
         />
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent className= "p-0">
         {isLoading ? (
           <PlayersListSkeleton viewMode={viewMode} itemCount={pageSize} />
         ) : players && players.length > 0 ? (
           viewMode === "cards" ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+              <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
                 {players.map((player, index) => (
                   <PlayerCard
                     key={player.id}
@@ -134,7 +134,7 @@ const PlayersContainer = () => {
                   />
                 ))}
               </div>
-              <div className="px-6">
+              <div className= "px-6">
                 {/* Pagination for cards view */}
                 <TablePagination
                   currentPage={currentPage}
@@ -174,17 +174,17 @@ const PlayersContainer = () => {
             />
           )
         ) : (
-          <div className="text-center py-16 relative">
+          <div className= "text-center py-16 relative">
             {/* Enhanced background effects for empty state */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-lg opacity-50"></div>
-            <div className="relative">
-              <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mb-6 shadow-lg border-2 border-primary/20">
-                <Users className="h-10 w-10 text-primary" />
+            <div className= "absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-lg opacity-50"></div>
+            <div className= "relative">
+              <div className= "w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mb-6 shadow-lg border-2 border-primary/20">
+                <Users className= "h-10 w-10 text-primary" />
               </div>
-              <p className="text-foreground font-bold text-lg mb-2">
+              <p className= "text-foreground font-bold text-lg mb-2">
                 No players found
               </p>
-              <p className="text-muted-foreground font-medium max-w-sm mx-auto">
+              <p className= "text-muted-foreground font-medium max-w-sm">
                 {filter.search ||
                 filter.sport ||
                 filter.year_level ||

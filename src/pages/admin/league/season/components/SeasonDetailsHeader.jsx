@@ -63,28 +63,28 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
         title: "Start Season",
         description:
           "This will mark the season as ongoing. Games can now be scheduled and played.",
-        icon: <Play className="h-6 w-6 text-red-600" />,
+        icon: <Play className= "h-6 w-6 text-red-600" />,
         confirmLabel: "Start Season",
       },
       pause: {
         title: "Pause Season",
         description:
           "This will temporarily pause the season. No new games can be played until it's resumed.",
-        icon: <Pause className="h-6 w-6 text-amber-600" />,
+        icon: <Pause className= "h-6 w-6 text-amber-600" />,
         confirmLabel: "Pause Season",
       },
       complete: {
         title: "Complete Season",
         description:
           "This will mark the season as completed. The final standings will be calculated and no more games can be added.",
-        icon: <CheckSquare className="h-6 w-6 text-amber-600" />,
+        icon: <CheckSquare className= "h-6 w-6 text-amber-600" />,
         confirmLabel: "Complete Season",
       },
       cancel: {
         title: "Cancel Season",
         description:
           "This will cancel the season. All planned games will be marked as canceled and the season cannot be restarted.",
-        icon: <XSquare className="h-6 w-6 text-red-600" />,
+        icon: <XSquare className= "h-6 w-6 text-red-600" />,
         confirmLabel: "Cancel Season",
       },
     };
@@ -124,13 +124,13 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
 
   return (
     <>
-      <div className="bg-muted/50 rounded-lg shadow-sm border">
-        <div className="p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className= "bg-muted/50 rounded-lg shadow-sm border">
+        <div className= "p-6">
+          <div className= "flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center gap-3">
-                  <h1 className="text-2xl font-bold">
+              <div className= "flex flex-col space-y-1">
+                <div className= "flex items-center gap-3">
+                  <h1 className= "text-2xl font-bold">
                     {season.name || "Season"}
                   </h1>
                   <Badge
@@ -141,18 +141,18 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   </Badge>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground text-sm">
-                  <div className="flex items-center gap-1">
+                <div className= "flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground text-sm">
+                  <div className= "flex items-center gap-1">
                     <Calendar size={15} />
                     <span>{season.year || "Year"}</span>
                   </div>
 
                   {season.start_date && (
-                    <div className="flex items-center">
+                    <div className= "flex items-center">
                       <span>{formatDate(season.start_date)}</span>
                       {season.end_date && (
                         <>
-                          <span className="mx-1">—</span>
+                          <span className= "mx-1">—</span>
                           <span>{formatDate(season.end_date)}</span>
                         </>
                       )}
@@ -160,14 +160,14 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   )}
 
                   {season.teams_count > 0 && (
-                    <div className="flex items-center gap-1">
+                    <div className= "flex items-center gap-1">
                       <Users size={15} />
                       <span>{season.teams_count} teams</span>
                     </div>
                   )}
 
                   {season.games_count > 0 && (
-                    <div className="flex items-center gap-1">
+                    <div className= "flex items-center gap-1">
                       <Goal size={15} />
                       <span>
                         {season.games_played || 0}/{season.games_count} games
@@ -178,14 +178,14 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 self-start">
+            <div className= "flex flex-wrap gap-2 self-start">
               {/* Season actions based on status */}
               {isUpcoming && canStart && (
                 <Button
                   variant="default"
                   size="sm"
                   onClick={() => handleManageAction("start")}
-                  className="gap-2"
+                  className= "gap-2"
                 >
                   <Play size={15} />
                   Start Season
@@ -197,7 +197,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   variant="outline"
                   size="sm"
                   onClick={() => handleManageAction("pause")}
-                  className="gap-2 border-amber-300 text-amber-700 hover:bg-amber-50"
+                  className= "gap-2 border-amber-300 text-amber-700 hover:bg-amber-50"
                 >
                   <Pause size={15} />
                   Pause Season
@@ -209,7 +209,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   variant="default"
                   size="sm"
                   onClick={() => handleManageAction("start")}
-                  className="gap-2 bg-red-800 hover:bg-red-900"
+                  className= "gap-2 bg-red-800 hover:bg-red-900"
                 >
                   <Play size={15} />
                   Resume Season
@@ -218,7 +218,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
 
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
+                  <Button variant="ghost" size="sm" className= "h-9 w-9 p-0">
                     <Settings size={16} />
                   </Button>
                 </DropdownMenuTrigger>
@@ -227,7 +227,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   <DropdownMenuSeparator />
 
               
-                  <DropdownMenuItem className="flex items-center gap-2">
+                  <DropdownMenuItem className= "flex items-center gap-2">
                     <Settings size={14} />
                     <span>Edit Season</span>
                   </DropdownMenuItem>
@@ -235,7 +235,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                   {/* Generate Bracket moved to settings dropdown */}
                   {!season.has_bracket && (
                     <DropdownMenuItem
-                      className="flex items-center gap-2"
+                      className= "flex items-center gap-2"
                       onClick={openModal}
                     >
                       <Trophy size={14} />
@@ -248,7 +248,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="flex items-center gap-2 text-amber-600"
+                        className= "flex items-center gap-2 text-amber-600"
                         onClick={() => handleManageAction("complete")}
                       >
                         <CheckSquare size={14} />
@@ -261,7 +261,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="flex items-center gap-2 text-red-600"
+                        className= "flex items-center gap-2 text-red-600"
                         onClick={() => handleManageAction("cancel")}
                       >
                         <XSquare size={14} />
@@ -287,7 +287,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className= "flex items-center gap-2">
               {confirmAction?.icon}
               {confirmAction?.title}
             </AlertDialogTitle>
@@ -309,7 +309,7 @@ const SeasonDetailsHeader = ({ season, setActiveTab }) => {
             >
               {isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className= "mr-2 h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (

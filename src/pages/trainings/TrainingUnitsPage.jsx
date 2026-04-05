@@ -4,8 +4,8 @@ import { MetricUnitsManager } from "@/components/trainings/units/MetricUnitsMana
 
 const TrainingUnitsPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title="Measurement Units"
           subtitle="Training Management"
@@ -16,7 +16,7 @@ const TrainingUnitsPage = () => {
           backButtonText="Back to Training"
           backButtonPath="/trainings"
         />
-        <div className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden rounded-xl">
+        <div className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden rounded-xl">
           <MetricUnitsManager />
         </div>
       </div>

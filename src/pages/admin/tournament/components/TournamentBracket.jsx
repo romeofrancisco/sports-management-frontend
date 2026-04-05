@@ -28,76 +28,76 @@ const TournamentBracket = ({ tournament }) => {
 
   if (isLoading) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 rounded-xl" />
-              <div className="space-y-2">
-                <Skeleton className="h-6 w-48" />
-                <Skeleton className="h-4 w-64" />
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <Skeleton className= "h-12 w-12 rounded-xl" />
+              <div className= "space-y-2">
+                <Skeleton className= "h-6 w-48" />
+                <Skeleton className= "h-4 w-64" />
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="relative px-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+          <CardContent className= "relative px-6">
+            <div className= "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="border-2 border-primary/20">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-10 w-10 rounded-xl" />
+                <Card key={i} className= "border-2 border-primary/20">
+                  <CardHeader className= "flex flex-row items-center justify-between space-y-0 pb-3">
+                    <Skeleton className= "h-4 w-24" />
+                    <Skeleton className= "h-10 w-10 rounded-xl" />
                   </CardHeader>
                   <CardContent>
-                    <Skeleton className="h-8 w-16 mb-3" />
-                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className= "h-8 w-16 mb-3" />
+                    <Skeleton className= "h-3 w-20" />
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <Card className="border shadow-sm overflow-hidden">
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  <div className="flex justify-center">
-                    <Skeleton className="h-6 w-32" />
+            <Card className= "border shadow-sm overflow-hidden">
+              <CardContent className= "p-6">
+                <div className= "space-y-6">
+                  <div className= "flex justify-center">
+                    <Skeleton className= "h-6 w-32" />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-16 mx-auto" />
-                      <div className="space-y-3">
+                  <div className= "grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-16" />
+                      <div className= "space-y-3">
                         {[1, 2, 3, 4].map((i) => (
                           <div
                             key={i}
-                            className="border rounded-lg p-3 space-y-2"
+                            className= "border rounded-lg p-3 space-y-2"
                           >
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-20 mx-auto" />
-                      <div className="space-y-6">
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-20" />
+                      <div className= "space-y-6">
                         {[1, 2].map((i) => (
                           <div
                             key={i}
-                            className="border rounded-lg p-3 space-y-2"
+                            className= "border rounded-lg p-3 space-y-2"
                           >
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
+                            <Skeleton className= "h-4 w-full" />
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-12 mx-auto" />
-                      <div className="border rounded-lg p-3 space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
+                    <div className= "space-y-4">
+                      <Skeleton className= "h-4 w-12" />
+                      <div className= "border rounded-lg p-3 space-y-2">
+                        <Skeleton className= "h-4 w-full" />
+                        <Skeleton className= "h-4 w-full" />
                       </div>
                     </div>
                   </div>
@@ -113,15 +113,15 @@ const TournamentBracket = ({ tournament }) => {
   // Show "No bracket" card if tournament doesn't have a bracket
   if (!tournament.has_bracket) {
     return (
-      <div className="animate-in fade-in-50 duration-500">
-        <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-          <CardHeader className="relative">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-                <GitFork className="h-5 w-5 text-primary-foreground" />
+      <div className= "animate-in fade-in-50 duration-500">
+        <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+          <CardHeader className= "relative">
+            <div className= "flex items-center gap-3">
+              <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+                <GitFork className= "h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+                <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
                   Tournament Bracket
                 </CardTitle>
                 <CardDescription>
@@ -131,19 +131,19 @@ const TournamentBracket = ({ tournament }) => {
             </div>
           </CardHeader>
 
-          <CardContent className="relative p-6">
-            <div className="text-center p-8 border rounded-lg bg-muted/20">
-              <GitFork className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+          <CardContent className= "relative p-6">
+            <div className= "text-center p-8 border rounded-lg bg-muted/20">
+              <GitFork className= "h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className= "text-lg font-semibold mb-2">
                 No Tournament Bracket
               </h3>
-              <p className="text-muted-foreground mb-4">
+              <p className= "text-muted-foreground mb-4">
                 This tournament doesn't have a bracket yet. Generate one to
                 start the tournament format.
               </p>
               {isAdmin() && (
-                <Button onClick={openModal} className="gap-2">
-                  <Plus className="h-4 w-4" />
+                <Button onClick={openModal} className= "gap-2">
+                  <Plus className= "h-4 w-4" />
                   Generate Bracket
                 </Button>
               )}
@@ -164,9 +164,9 @@ const TournamentBracket = ({ tournament }) => {
   if (!bracket) {
     return (
       <Card>
-        <CardContent className="p-12 text-center">
-          <GitFork className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">Unable to load bracket data</p>
+        <CardContent className= "p-12 text-center">
+          <GitFork className= "h-12 w-12 text-muted-foreground mb-4" />
+          <p className= "text-muted-foreground">Unable to load bracket data</p>
         </CardContent>
       </Card>
     );
@@ -233,14 +233,14 @@ const TournamentBracket = ({ tournament }) => {
   ];
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-            <GitFork className="h-5 w-5 text-primary-foreground" />
+    <Card className= "bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30">
+      <CardHeader className= "relative">
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+            <GitFork className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+            <CardTitle className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
               Tournament Bracket
             </CardTitle>
             <CardDescription>
@@ -249,8 +249,8 @@ const TournamentBracket = ({ tournament }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative p-0">
-        <div className="px-3 md:px-6 mb-6">
+      <CardContent className= "relative p-0">
+        <div className= "px-3 md:px-6 mb-6">
           <OverviewCards stats={statsData} />
         </div>
 

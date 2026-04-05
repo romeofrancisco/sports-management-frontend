@@ -42,23 +42,23 @@ const SportCategoriesTable = ({ categories, isLoading, onEdit: onEditFromParent 
   };
 
   const CategoryActions = ({ category }) => (
-    <div className="flex items-center justify-end space-x-2">
+    <div className= "flex items-center justify-end space-x-2">
       <Button
         variant="outline"
         size="sm"
         onClick={() => handleEdit(category)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Edit className="h-3 w-3 mr-1" />
+        <Edit className= "h-3 w-3 mr-1" />
         Edit
       </Button>
       <Button
         variant="destructive"
         size="sm"
         onClick={() => handleDelete(category)}
-        className="h-8 px-3"
+        className= "h-8 px-3"
       >
-        <Trash2 className="h-3 w-3 mr-1" />
+        <Trash2 className= "h-3 w-3 mr-1" />
         Delete
       </Button>
     </div>
@@ -68,19 +68,19 @@ const SportCategoriesTable = ({ categories, isLoading, onEdit: onEditFromParent 
     {
       accessorKey: "name",
       header: "Category Name",
-      cell: ({ getValue }) => <div className="font-medium">{getValue()}</div>,
+      cell: ({ getValue }) => <div className= "font-medium">{getValue()}</div>,
     },
     {
       accessorKey: "description",
       header: "Description",
       cell: ({ getValue }) => (
-        <div className="text-muted-foreground">{getValue() || "No description"}</div>
+        <div className= "text-muted-foreground">{getValue() || "No description"}</div>
       ),
     },
     {
       accessorKey: "stats_count",
       header: "Stat Count",
-      cell: ({ getValue }) => <div className="">{getValue() ?? 0}</div>,
+      cell: ({ getValue }) => <div className= "">{getValue() ?? 0}</div>,
     },
     {
       id: "actions",
@@ -89,25 +89,25 @@ const SportCategoriesTable = ({ categories, isLoading, onEdit: onEditFromParent 
   ];
 
   return (
-    <div className="border rounded-md overflow-hidden shadow-sm">
+    <div className= "border rounded-md overflow-hidden shadow-sm">
       <DataTable
         columns={columns}
         data={categories || []}
         loading={isLoading}
-        className="text-sm"
+        className= "text-sm"
         pagination={false}
         unlimited={true}
         emptyMessage={
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <ChartBarStacked className="h-8 w-8 text-muted-foreground mb-2" />
-            <h3 className="text-lg font-medium mb-1">No categories found</h3>
-            {/* <p className="text-sm text-muted-foreground mb-4">
+          <div className= "flex flex-col items-center justify-center p-8 text-center">
+            <ChartBarStacked className= "h-8 w-8 text-muted-foreground mb-2" />
+            <h3 className= "text-lg font-medium mb-1">No categories found</h3>
+            {/* <p className= "text-sm text-muted-foreground mb-4">
               {filter?.search
                 ? "Try adjusting your search to find categories"
                 : "Create your first category to define player roles"}
             </p> */}
-            <Button size="sm" className="bg-primary" onClick={handleCreateNew}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Button size="sm" className= "bg-primary" onClick={handleCreateNew}>
+              <Plus className= "mr-1.5 h-3.5 w-3.5" />
               New Category
             </Button>
           </div>
@@ -148,16 +148,16 @@ const SportCategoriesTable = ({ categories, isLoading, onEdit: onEditFromParent 
         }`}
       >
         {selectedCategory?.stats_count > 0 && (
-          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-1 bg-amber-100 dark:bg-amber-900/50 rounded-full">
-                <ChartBarStacked className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <div className= "bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <div className= "flex items-start gap-3">
+              <div className= "p-1 bg-amber-100 dark:bg-amber-900/50 rounded-full">
+                <ChartBarStacked className= "h-4 w-4 text-amber-600 dark:text-amber-400" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              <div className= "flex-1 min-w-0">
+                <p className= "text-sm font-medium text-amber-800 dark:text-amber-200">
                   Warning: Category in use
                 </p>
-                <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                <p className= "text-sm text-amber-700 dark:text-amber-300 mt-1">
                   Deleting this category will remove it from {selectedCategory.stats_count} stat{selectedCategory.stats_count !== 1 ? 's' : ''}. 
                   Those stats will become uncategorized.
                 </p>

@@ -50,10 +50,10 @@ export const SeasonStats = ({ seasonId, leagueId, sport }) => {
 
 
   return (
-    <div className="mt-6">
-      <h2 className="text-xl font-bold mb-4">Season Statistics</h2>
+    <div className= "mt-6">
+      <h2 className= "text-xl font-bold mb-4">Season Statistics</h2>
       
-      {/* Stats Cards Section */}      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      {/* Stats Cards Section */}      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {isSetsScoring ? (
           <SetsBasedStatsCards statsSummary={statsSummary} />
         ) : (

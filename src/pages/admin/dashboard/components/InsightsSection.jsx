@@ -57,11 +57,11 @@ const InsightsSection = ({
       <Card>
         <CardContent>
           <InsightsHeader aiEnabled={aiEnabled} onAiToggle={onAiToggle} />
-          <div className="p-6 mt-6 bg-destructive/10 border border-destructive/20 rounded-lg text-center">
-            <h3 className="font-medium text-destructive mb-2">
+          <div className= "p-6 mt-6 bg-destructive/10 border border-destructive/20 rounded-lg text-center">
+            <h3 className= "font-medium text-destructive mb-2">
               Failed to Load Insights
             </h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className= "text-sm text-muted-foreground mb-4">
               {error?.message ||
                 "There was an error loading the insights data. Please try refreshing the page."}
             </p>
@@ -74,7 +74,7 @@ const InsightsSection = ({
     );
   }
   return (
-    <Card className="border-2 border-primary/20">
+    <Card className= "border-2 border-primary/20">
       <CardHeader>
         <InsightsHeader aiEnabled={aiEnabled} onAiToggle={onAiToggle} />
       </CardHeader>
@@ -82,18 +82,18 @@ const InsightsSection = ({
         {isLoading ? (
           <LoadingState />
         ) : (
-          <div className="space-y-4">
+          <div className= "space-y-4">
             <div
               className={`relative overflow-hidden transition-all duration-300 ${
                 isExpanded ? "max-h-none" : CONTENT_MAX_HEIGHT
               }`}
             >
-              <div className="space-y-4">
+              <div className= "space-y-4">
                 {/* Show warning if AI is using fallback mode */}
                 {hasAiFallback && (
-                  <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                    <p className="text-sm text-amber-700 dark:text-amber-400">
-                      <span className="font-medium">AI Analysis Limited:</span>{" "}
+                  <div className= "p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                    <p className= "text-sm text-amber-700 dark:text-amber-400">
+                      <span className= "font-medium">AI Analysis Limited:</span>{" "}
                       Using fallback analysis due to API quota limits. AI
                       insights will resume automatically when quota resets.
                     </p>
@@ -126,16 +126,16 @@ const InsightsSection = ({
               </div>
 
               {!isExpanded && (
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-card to-transparent" />
+                <div className= "pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-card to-transparent" />
               )}
             </div>
 
-            <div className="flex justify-center">
+            <div className= "flex justify-center">
               <Button
                 type="button"
                 variant="outline"
                 size="lg"
-                className="w-full"
+                className= "w-full"
                 onClick={() => setIsExpanded((prev) => !prev)}
               >
                 {isExpanded ? "Show Less" : "Expand More"}

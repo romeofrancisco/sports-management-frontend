@@ -59,7 +59,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="w-screen h-[calc(100vh-64px)] flex justify-center items-center">
+    <div className= "w-screen h-[calc(100vh-64px)] flex justify-center items-center">
       <Card>
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
@@ -68,7 +68,7 @@ const ForgotPassword = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <form onSubmit={handleSubmit(onSubmit)} className= "space-y-3">
             <Input
               type="email"
               placeholder="Email"
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
               {...register("email")}
             />
             <Button 
-              className="w-full" 
+              className= "w-full" 
               type="submit" 
               disabled={isPending || resendTimer > 0}
             >

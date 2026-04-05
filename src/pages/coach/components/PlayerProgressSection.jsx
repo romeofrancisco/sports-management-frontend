@@ -74,19 +74,19 @@ const PlayerProgressSection = ({ playerProgress }) => {
     {
       label: "Improving",
       value: improvingCount,
-      icon: <TrendingUp className="h-4 w-4 text-secondary" />,
+      icon: <TrendingUp className= "h-4 w-4 text-secondary" />,
       tone: "border-secondary/30 bg-secondary/10",
     },
     {
       label: "Stable",
       value: stableCount,
-      icon: <Minus className="h-4 w-4 text-muted-foreground" />,
+      icon: <Minus className= "h-4 w-4 text-muted-foreground" />,
       tone: "border-border bg-muted/30",
     },
     {
       label: "Declining",
       value: decliningCount,
-      icon: <TrendingDown className="h-4 w-4 text-primary" />,
+      icon: <TrendingDown className= "h-4 w-4 text-primary" />,
       tone: "border-primary/30 bg-primary/10",
     },
   ];
@@ -94,38 +94,38 @@ const PlayerProgressSection = ({ playerProgress }) => {
   const renderTrendIcon = (trend) => {
     switch (trend) {
       case "improving":
-        return <TrendingUp className="h-4 w-4 text-secondary" />;
+        return <TrendingUp className= "h-4 w-4 text-secondary" />;
       case "declining":
-        return <TrendingDown className="h-4 w-4 text-primary" />;
+        return <TrendingDown className= "h-4 w-4 text-primary" />;
       default:
-        return <Minus className="h-4 w-4 text-muted-foreground" />;
+        return <Minus className= "h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const renderTrendText = (trend) => {
     switch (trend) {
       case "improving":
-        return <span className="text-secondary font-bold">Improving</span>;
+        return <span className= "text-secondary font-bold">Improving</span>;
       case "declining":
-        return <span className="text-primary font-bold">Declining</span>;
+        return <span className= "text-primary font-bold">Declining</span>;
       default:
         return (
-          <span className="text-muted-foreground font-medium">Stable</span>
+          <span className= "text-muted-foreground font-medium">Stable</span>
         );
     }
   };
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <Target className="h-5 w-5 text-primary-foreground" />
+    <Card className= "border-2 border-primary/20">
+      <CardHeader className= "relative">
+        <div className= "flex items-center gap-3">
+          <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg border border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <Target className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <CardTitle className= "text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Player Progress Overview
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
+            <CardDescription className= "text-muted-foreground">
               Track recent improvements and development insights over the past 3
               months.
             </CardDescription>
@@ -134,25 +134,25 @@ const PlayerProgressSection = ({ playerProgress }) => {
       </CardHeader>
       <CardContent>
         {playerList.length > 0 ? (
-          <div className="flex flex-col gap-6">
-            <div className="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className= "flex flex-col gap-6">
+            <div className= "hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-3">
               {summaryMetrics.map((metric) => (
                 <div
                   key={metric.label}
                   className={`rounded-lg border p-4 ${metric.tone}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  <div className= "flex items-center justify-between">
+                    <span className= "text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                       {metric.label}
                     </span>
                     {metric.icon}
                   </div>
-                  <p className="text-2xl font-bold mt-2">{metric.value}</p>
+                  <p className= "text-2xl font-bold mt-2">{metric.value}</p>
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className= "grid grid-cols-1 md:grid-cols-2 gap-4">
               {playerList
                 .slice(0, 6)
                 .map((player, index) => {
@@ -163,34 +163,34 @@ const PlayerProgressSection = ({ playerProgress }) => {
                   return (
                     <div
                       key={index}
-                      className="relative overflow-hidden border-2 border-primary/20 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] group bg-card shadow-sm"
+                      className= "relative overflow-hidden border-2 border-primary/20 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] group bg-card shadow-sm"
                     >
-                      <div className="absolute top-0 right-0 w-3 h-full bg-primary"></div>
-                      <div className="absolute top-2 right-5 w-6 h-6 bg-secondary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-slate-500" />
-                              <h4 className="font-semibold text-foreground">
+                      <div className= "absolute top-0 right-0 w-3 h-full bg-primary"></div>
+                      <div className= "absolute top-2 right-5 w-6 h-6 bg-secondary/10 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                      <div className= "space-y-3">
+                        <div className= "flex items-start justify-between">
+                          <div className= "space-y-2">
+                            <div className= "flex items-center gap-2">
+                              <User className= "h-4 w-4 text-slate-500" />
+                              <h4 className= "font-semibold text-foreground">
                                 {player.player_name}
                               </h4>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-[auto_auto] gap-2 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
+                            <div className= "grid grid-cols-1 md:grid-cols-[auto_auto] gap-2 text-xs text-muted-foreground">
+                              <div className= "flex items-center gap-1">
+                                <Calendar className= "h-3 w-3" />
                                 <span>{player.total_sessions} sessions</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Target className="h-3 w-3" />
+                              <div className= "flex items-center gap-1">
+                                <Target className= "h-3 w-3" />
                                 <span>
                                   {player.attendance_rate?.toFixed(1) || 0}%
                                   attendance
                                 </span>
                               </div>
                               {player.recent_metrics_count > 0 && (
-                                <div className="flex items-center gap-1 md:col-span-2">
-                                  <TrendingUp className="h-3 w-3" />
+                                <div className= "flex items-center gap-1 md:col-span-2">
+                                  <TrendingUp className= "h-3 w-3" />
                                   <span>
                                     {player.recent_metrics_count} metrics
                                     recorded
@@ -199,13 +199,13 @@ const PlayerProgressSection = ({ playerProgress }) => {
                               )}
                             </div>
                           </div>
-                          <div className="text-right space-y-2">
+                          <div className= "text-right space-y-2">
                             {improvementPercentage !== null ? (
                               <Badge
                                 variant={getImprovementBadgeVariant(
                                   improvementPercentage
                                 )}
-                                className="font-medium"
+                                className= "font-medium"
                               >
                                 {improvementPercentage > 0 ? "+" : ""}
                                 {improvementPercentage.toFixed(1)}%
@@ -213,29 +213,29 @@ const PlayerProgressSection = ({ playerProgress }) => {
                             ) : (
                               <Badge
                                 variant="outline"
-                                className="text-slate-500"
+                                className= "text-slate-500"
                               >
                                 No data
                               </Badge>
                             )}
-                            <div className="flex items-center gap-1 text-xs justify-end">
+                            <div className= "flex items-center gap-1 text-xs justify-end">
                               {renderTrendIcon(trend)}
                               {renderTrendText(trend)}
                             </div>
                           </div>
                         </div>
                         {improvementPercentage !== null && (
-                          <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-muted-foreground font-medium">
+                          <div className= "space-y-2">
+                            <div className= "flex justify-between items-center">
+                              <span className= "text-xs text-muted-foreground font-medium">
                                 Recent Improvement
                               </span>
-                              <span className="text-xs text-foreground font-bold">
+                              <span className= "text-xs text-foreground font-bold">
                                 {improvementPercentage > 0 ? "+" : ""}
                                 {improvementPercentage.toFixed(1)}%
                               </span>
                             </div>
-                            <div className="w-full bg-muted/60 rounded-full h-2.5 shadow-inner border border-border/30">
+                            <div className= "w-full bg-muted/60 rounded-full h-2.5 shadow-inner border border-border/30">
                               <div
                                 className={`h-2.5 rounded-full transition-all duration-700 shadow-sm ${
                                   improvementPercentage >= 0
@@ -252,7 +252,7 @@ const PlayerProgressSection = ({ playerProgress }) => {
                             </div>
                           </div>
                         )}
-                        <div className="text-xs text-muted-foreground/70">
+                        <div className= "text-xs text-muted-foreground/70">
                           Last training:{" "}
                           {formatShortDate(player.last_training_date) ||
                             "No recent training"}
@@ -271,14 +271,14 @@ const PlayerProgressSection = ({ playerProgress }) => {
             )}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-              <Target className="h-8 w-8 text-muted-foreground" />
+          <div className= "text-center py-12">
+            <div className= "w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <Target className= "h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground font-medium">
+            <p className= "text-muted-foreground font-medium">
               No player progress data available
             </p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
+            <p className= "text-sm text-muted-foreground/70 mt-1">
               Player performance data will be displayed here as training
               sessions are completed and metrics are recorded.
             </p>

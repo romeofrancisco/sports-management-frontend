@@ -52,8 +52,8 @@ const PlayerProgressIndividualPage = () => {
   }, [dateRange]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
-      <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+      <div className= "p-1 md:p-6 space-y-6">
         <UniversityPageHeader
           title={`${playerName}'s Progress`}
           subtitle="Training Management"
@@ -63,12 +63,12 @@ const PlayerProgressIndividualPage = () => {
           onBackClick={handleBackClick}
         >
           {/* Date Controls in header with enhanced styling */}
-          <div className="flex items-center gap-3">
+          <div className= "flex items-center gap-3">
             <DateRangePickerWithPresets
               value={dateRange}
               onChange={handleDateRangeChange}
               placeholder="Select date range..."
-              className="w-auto min-w-36 justify-center bg-primary/10 border-primary/20 text-sm text-primary focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background rounded-md"
+              className= "w-auto min-w-36 justify-center bg-primary/10 border-primary/20 text-sm text-primary focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background rounded-md"
             />
           </div>
         </UniversityPageHeader>

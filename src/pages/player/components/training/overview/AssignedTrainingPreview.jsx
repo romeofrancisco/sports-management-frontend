@@ -27,12 +27,12 @@ const AssignedTrainingPreview = ({
     type === "recent"
       ? {
           title: "Recent Training Sessions",
-          icon: <Clock className="size-5 text-primary-foreground" />,
+          icon: <Clock className= "size-5 text-primary-foreground" />,
           description: "Your most recent training sessions",
         }
       : {
           title: "Assigned Training Excercises",
-          icon: <ClipboardCheck className="size-5 text-primary-foreground" />,
+          icon: <ClipboardCheck className= "size-5 text-primary-foreground" />,
           description: "Trainings assigned by your coach.",
         };
 
@@ -41,16 +41,16 @@ const AssignedTrainingPreview = ({
   const hasResults = assignedData?.results && assignedData.results.length > 0;
 
   return (
-    <Card className="bg-card border-2 border-primary/20 h-full">
+    <Card className= "bg-card border-2 border-primary/20 h-full">
       <CardHeader>
-        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
+        <div className= "flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className= "flex items-center gap-2">
             <div className={`p-3 rounded-lg bg-primary shadow-lg`}>
               {config.icon}
             </div>
             <div>
-              <CardTitle className="text-lg">{config.title}</CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
+              <CardTitle className= "text-lg">{config.title}</CardTitle>
+              <CardDescription className= "text-sm text-muted-foreground">
                 {config.description}
               </CardDescription>
             </div>
@@ -60,21 +60,21 @@ const AssignedTrainingPreview = ({
               variant="outline"
               size="sm"
               onClick={() => navigate("/trainings/assigned")}
-              className="flex items-center gap-1 mt-2 sm:mt-0"
+              className= "flex items-center gap-1 mt-2 sm:mt-0"
             >
               View All{assignedData?.count ? ` (${assignedData.count})` : ""}
-              <ChevronRight className="h-3 w-3 transition-transform" />
+              <ChevronRight className= "h-3 w-3 transition-transform" />
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent>
         {isAssignedLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className= "flex items-center justify-center py-8">
+            <div className= "animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           </div>
         ) : hasResults ? (
-          <div className="space-y-4">
+          <div className= "space-y-4">
             {assignedData.results
               .slice(0, showAllAssigned ? 20 : 3)
               .map((sessionData) => {
@@ -87,14 +87,14 @@ const AssignedTrainingPreview = ({
               })}
           </div>
         ) : (
-          <div className="flex flex-col gap-3 min-h-[300px] items-center justify-center py-8 text-muted-foreground">
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
-              <Dumbbell className="w-8 h-8 text-primary" />
+          <div className= "flex flex-col gap-3 min-h-[300px] items-center justify-center py-8 text-muted-foreground">
+            <div className= "flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
+              <Dumbbell className= "w-8 h-8 text-primary" />
             </div>
-            <p className="text-base font-semibold text-center">
+            <p className= "text-base font-semibold text-center">
               {noDataMessage}
             </p>
-            <span className="text-xs text-center text-muted-foreground/80 max-w-xs">
+            <span className= "text-xs text-center text-muted-foreground/80 max-w-xs">
               {type === "recent"
                 ? "You haven't completed any trainings recently. Once you do, your most recent sessions will appear here."
                 : "You currently have no assigned trainings. When a coach assigns you a training, it will show up here."}

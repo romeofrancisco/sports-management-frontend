@@ -192,7 +192,7 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
       size="md"
       scrollable={false}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
+      <form onSubmit={handleSubmit(onSubmit)} className= "space-y-4 pt-4">
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
@@ -200,7 +200,7 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
         )}
 
         {/* File Upload Area */}
-        <div className="space-y-2">
+        <div className= "space-y-2">
           <ControlledInput
             name="file"
             control={control}
@@ -210,46 +210,46 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
             onChange={(e) => handleFileChange(e.target.files)}
             errors={errors}
             rules={{ required: "File is required" }}
-            className="hidden"
+            className= "hidden"
           />
 
-          <div className="flex items-center justify-center w-full">
+          <div className= "flex items-center justify-center w-full">
             <label
               htmlFor="file"
-              className="flex flex-col items-center justify-center w-full h-32 border-2 border-muted border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/70 transition-colors"
+              className= "flex flex-col items-center justify-center w-full h-32 border-2 border-muted border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/70 transition-colors"
             >
               {selectedFile ? (
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <FileIcon className="w-10 h-10 mb-2 text-gray-500" />
-                  <p className="text-sm text-gray-600 font-medium">
+                <div className= "flex flex-col items-center justify-center pt-5 pb-6">
+                  <FileIcon className= "w-10 h-10 mb-2 text-gray-500" />
+                  <p className= "text-sm text-gray-600 font-medium">
                     {selectedFile.name}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className= "text-xs text-gray-400">
                     {(selectedFile.size / 1024).toFixed(2)} KB
                   </p>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="mt-2"
+                    className= "mt-2"
                     onClick={(e) => {
                       e.preventDefault();
                       handleRemoveFile();
                     }}
                     disabled={isUploading}
                   >
-                    <X className="h-4 w-4 mr-1" />
+                    <X className= "h-4 w-4 mr-1" />
                     Remove
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-10 h-10 mb-3 text-gray-400" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Click to upload</span> or
+                <div className= "flex flex-col items-center justify-center pt-5 pb-6">
+                  <Upload className= "w-10 h-10 mb-3 text-gray-400" />
+                  <p className= "mb-2 text-sm text-gray-500">
+                    <span className= "font-semibold">Click to upload</span> or
                     drag and drop
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className= "text-xs text-gray-400">
                     Any file type supported
                   </p>
                 </div>
@@ -257,7 +257,7 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
             </label>
           </div>
           {errors.file && (
-            <p className="text-xs text-left text-destructive">
+            <p className= "text-xs text-left text-destructive">
               {errors.file.message}
             </p>
           )}
@@ -286,7 +286,7 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
         />
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-2 pt-4">
+        <div className= "flex justify-end gap-2 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -298,7 +298,7 @@ const UploadFileDialog = ({ open, onOpenChange, currentFolder, rootData, dragged
           <Button type="submit" disabled={isUploading || !selectedFile}>
             {isUploading ? (
               <>
-                <Upload className="animate-pulse" />
+                <Upload className= "animate-pulse" />
                 Uploading...
               </>
             ) : (

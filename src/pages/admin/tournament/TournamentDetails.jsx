@@ -75,7 +75,7 @@ const TournamentDetails = () => {
   };
 
   const titleWithBadge = (
-    <div className="flex items-center gap-3">
+    <div className= "flex items-center gap-3">
       <span>{tournamentDetails?.name || "Tournament"}</span>
       {tournamentDetails?.status && (
         <Badge
@@ -158,7 +158,7 @@ const TournamentDetails = () => {
   };
 
   return (
-    <div className="container mx-auto p-1 md:p-6 space-y-6">
+    <div className= "p-1 md:p-6 space-y-6">
       <UniversityPageHeader
         title={titleWithBadge}
         subtitle={`${sport?.name} Tournament`}
@@ -173,9 +173,9 @@ const TournamentDetails = () => {
       </UniversityPageHeader>
 
       {/* Navigation Links */}
-      <div className="my-4">
-        <nav className="border-b border-border">
-          <div className="flex space-x-3 overflow-x-auto">
+      <div className= "my-4">
+        <nav className= "border-b border-border">
+          <div className= "flex space-x-3 overflow-x-auto">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               return (

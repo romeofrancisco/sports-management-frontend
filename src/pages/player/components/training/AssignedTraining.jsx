@@ -75,13 +75,13 @@ const AssignedTraining = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className= "space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className= "text-2xl font-bold text-foreground">
           Assigned Training Metrics
         </h2>
-        <p className="text-muted-foreground">
+        <p className= "text-muted-foreground">
           Track your assigned metrics across training sessions
         </p>
       </div>
@@ -103,8 +103,8 @@ const AssignedTraining = () => {
 
       {/* Content */}
       {viewMode === "table" ? (
-        <div className="space-y-4">
-          <div className="overflow-x-auto">
+        <div className= "space-y-4">
+          <div className= "overflow-x-auto">
             {isLoading ? (
               <TableSkeleton rows={pageSize} columns={6} />
             ) : (
@@ -112,7 +112,7 @@ const AssignedTraining = () => {
                 columns={getSessionTableColumns()}
                 data={sessionsWithMetrics}
                 loading={isLoading}
-                className="text-xs sm:text-sm"
+                className= "text-xs sm:text-sm"
                 showPagination={false}
                 pageSize={pageSize}
               />
@@ -120,11 +120,11 @@ const AssignedTraining = () => {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className= "space-y-4">
           {isLoading ? (
-            <div className="columns-1 xl:columns-2 gap-6">
+            <div className= "columns-1 xl:columns-2 gap-6">
               {[...Array(pageSize)].map((_, i) => (
-                <div key={i} className="mb-6 break-inside-avoid">
+                <div key={i} className= "mb-6 break-inside-avoid">
                   <SessionCardSkeleton />
                 </div>
               ))}
@@ -136,11 +136,11 @@ const AssignedTraining = () => {
               description="You have no assigned training metrics at the moment."
             />
           ) : (
-            <div className="columns-1 xl:columns-2 gap-6">
+            <div className= "columns-1 xl:columns-2 gap-6">
               {sessionsWithMetrics.map((sessionGroup, index) => (
                 <div
                   key={`session-${sessionGroup.session.id}`}
-                  className="animate-in fade-in-50 duration-500 mb-6 break-inside-avoid"
+                  className= "animate-in fade-in-50 duration-500 mb-6 break-inside-avoid"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <SessionCard sessionGroup={sessionGroup} />
@@ -153,7 +153,7 @@ const AssignedTraining = () => {
 
       {/* Pagination */}
       {totalSessions > 0 && (
-        <div className="border-t pt-4">
+        <div className= "border-t pt-4">
           <TablePagination
             currentPage={currentPage}
             pageSize={pageSize}

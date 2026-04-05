@@ -11,16 +11,16 @@ const SeasonsHeader = ({
   onCreateSeason,
 }) => {
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex items-center gap-3">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
-          <Calendar className="h-5 w-5 text-primary-foreground" />
+    <div className= "flex justify-between items-center">
+      <div className= "flex items-center gap-3">
+        <div className= "p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
+          <Calendar className= "h-5 w-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="text-xl md:text-2xl font-bold tracking-tight text-gradient">
+          <h1 className= "text-xl md:text-2xl font-bold tracking-tight text-gradient">
             Seasons
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className= "text-sm text-muted-foreground">
             {isAdmin()
               ? "Season history and management"
               : "Season history and information"}
@@ -28,9 +28,9 @@ const SeasonsHeader = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className= "flex items-center gap-2">
         {!compact && (
-          <div className="flex items-center bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 rounded-lg p-1 shadow-sm">
+          <div className= "flex items-center bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 rounded-lg p-1 shadow-sm">
             <Button
               variant={viewMode === "table" ? "default" : "ghost"}
               size="sm"
@@ -61,7 +61,7 @@ const SeasonsHeader = ({
         {isAdmin() && (
           <Button
             onClick={onCreateSeason}
-            className="gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className= "gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             size="sm"
           >
             <Plus size={16} />
