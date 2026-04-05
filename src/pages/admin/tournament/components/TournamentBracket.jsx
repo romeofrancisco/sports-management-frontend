@@ -208,9 +208,9 @@ const TournamentBracket = ({ tournament }) => {
       value: totalTeams,
       icon: Users,
       description: "Total teams in this tournament",
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
     {
       title: "Match Progress",
@@ -226,9 +226,9 @@ const TournamentBracket = ({ tournament }) => {
       value: bracket.winner_name || "TBD",
       description: "Winning team",
       icon: Trophy,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
     },
   ];
 
