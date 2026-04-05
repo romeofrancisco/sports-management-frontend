@@ -11,8 +11,9 @@ const ControlledDateTimePicker = ({
   errors,
   className = "",
   rules,
-  ...rest
+  disabled = false,
 }) => {
+
   return (
     <div className={`grid gap-1 ${className}`}>
       <Controller
@@ -29,7 +30,7 @@ const ControlledDateTimePicker = ({
             value={field.value}
             onChange={field.onChange}
             error={errors?.[name]?.message}
-            {...rest}
+            disabled={disabled}
           />
         )}
       />

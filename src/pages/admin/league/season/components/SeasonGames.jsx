@@ -29,6 +29,14 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
   // Fetch the specific game if gameId param is provided
   const { data: linkedGame } = useGameDetails(gameIdParam);
 
+  // Open the linked game modal when navigated from bracket/game links
+  useEffect(() => {
+    if (gameIdParam && linkedGame) {
+      setEditingGame(linkedGame);
+      openEditModal();
+    }
+  }, [gameIdParam, linkedGame, openEditModal]);
+
   // First, fetch all games to determine the initial date
   const { data: allGames = [], isLoading: isLoadingAllGames } = useSeasonGames(leagueId, seasonId);
 

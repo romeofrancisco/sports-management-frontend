@@ -1,11 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import { formatDate } from "@/utils/formatDate";
-import { Calendar, Trophy } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
-const TeamSeed = ({ seed, breakpoint }) => {
+const TeamSeed = ({ seed, breakpoint, onSeedClick }) => {
   const { home_team, away_team, winner, date } = seed;
+  const isClickable = Boolean(seed?.gameId && onSeedClick);
 
   const getResult = (teamId) => {
     if (!winner || !teamId) return "";
@@ -62,7 +64,12 @@ const TeamSeed = ({ seed, breakpoint }) => {
 
   return (
     <Seed mobileBreakpoint={breakpoint} className="after:hidden before:hidden">
-      <SeedItem className="bg-card overflow-hidden border-0 shadow-sm">
+      <SeedItem
+        className={`bg-card overflow-hidden border-0 shadow-sm ${
+          isClickable ? "cursor-pointer" : "cursor-default"
+        }`}
+        onClick={() => isClickable && onSeedClick(seed)}
+      >
         {renderTeam(home_team)}
         <div className="border-t border-border/50"></div>
         {renderTeam(away_team)}
@@ -76,13 +83,41 @@ const TeamSeed = ({ seed, breakpoint }) => {
 };
 
 const RoundRobin = ({ bracket }) => {
+  const navigate = useNavigate();
   // Set mobile breakpoint value - default from react-brackets is 992
   const mobileBreakpoint = 640; // You can adjust this value based on your needs
+
+  const handleSeedClick = (seed) => {
+    const gameId = seed?.gameId;
+
+    if (!gameId || !bracket?.navigationContext?.type) return;
+
+    if (
+      bracket.navigationContext.type === "tournament" &&
+      bracket.navigationContext.tournamentId
+    ) {
+      navigate(
+        `/tournaments/${bracket.navigationContext.tournamentId}/games?gameId=${gameId}`
+      );
+      return;
+    }
+
+    if (
+      bracket.navigationContext.type === "league" &&
+      bracket.navigationContext.leagueId &&
+      bracket.navigationContext.seasonId
+    ) {
+      navigate(
+        `/leagues/${bracket.navigationContext.leagueId}/seasons/${bracket.navigationContext.seasonId}/games?gameId=${gameId}`
+      );
+    }
+  };
 
   const rounds = bracket.rounds.map((round) => ({
     title: `Round ${round.round_number}`,
     seeds: round.matches.map((match) => ({
       id: match.id,
+      gameId: match.game,
       winner: match.winner,
       date: match.date,
       home_team: match.home_team_details
@@ -108,7 +143,11 @@ const RoundRobin = ({ bracket }) => {
       rounds={rounds}
       mobileBreakpoint={mobileBreakpoint}
       renderSeedComponent={(seedProps) => (
-        <TeamSeed {...seedProps} breakpoint={mobileBreakpoint} />
+        <TeamSeed
+          {...seedProps}
+          breakpoint={mobileBreakpoint}
+          onSeedClick={handleSeedClick}
+        />
       )}
       roundTitleClassName="font-semibold text-xs mb-3 text-center"
       swipeableProps={{

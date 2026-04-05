@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   DoubleEliminationBracket,
-  Match,
   SVGViewer,
 } from "@g-loot/react-tournament-brackets";
 import { formatDate } from "@/utils/formatDate";
@@ -22,6 +22,7 @@ function useWindowSize() {
 }
 
 export const DoubleElimination = ({ bracket }) => {
+  const navigate = useNavigate();
   const [width, height] = useWindowSize();
   const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
   const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
@@ -30,10 +31,38 @@ export const DoubleElimination = ({ bracket }) => {
   // Use matches from bracket prop, or empty structure if not available
   const matches = bracket?.matches || { upper: [], lower: [] };
 
+  const handleMatchClick = (match) => {
+    const gameId = bracket?.gameIdByBracketMatchId?.[match?.id];
+
+    if (!gameId || !bracket?.navigationContext?.type) return;
+
+    if (
+      bracket.navigationContext.type === "tournament" &&
+      bracket.navigationContext.tournamentId
+    ) {
+      navigate(
+        `/tournaments/${bracket.navigationContext.tournamentId}/games?gameId=${gameId}`
+      );
+      return;
+    }
+
+    if (
+      bracket.navigationContext.type === "league" &&
+      bracket.navigationContext.leagueId &&
+      bracket.navigationContext.seasonId
+    ) {
+      navigate(
+        `/leagues/${bracket.navigationContext.leagueId}/seasons/${bracket.navigationContext.seasonId}/games?gameId=${gameId}`
+      );
+    }
+  };
+
   return (
     <DoubleEliminationBracket
       matches={matches}
-      matchComponent={CustomMatch}
+      matchComponent={(props) => (
+        <CustomMatch {...props} onMatchClick={handleMatchClick} />
+      )}
       svgWrapper={({ children, ...props }) => (
         <SVGViewer
           width={finalWidth}
@@ -49,7 +78,7 @@ export const DoubleElimination = ({ bracket }) => {
 }
 
 // Custom match component styled like RoundRobin's TeamSeed
-const CustomMatch = ({ match }) => {
+const CustomMatch = ({ match, onMatchClick }) => {
   const participants = match?.participants || [];
   const home = participants[0] || null;
   const away = participants[1] || null;
@@ -100,8 +129,15 @@ const CustomMatch = ({ match }) => {
     );
   };
 
+  const isClickable = Boolean(onMatchClick);
+
   return (
-    <div className="inline-block w-full mt-3">
+    <div
+      className={`inline-block w-full mt-3 ${
+        isClickable ? "cursor-pointer" : "cursor-default"
+      }`}
+      onClick={() => isClickable && onMatchClick(match)}
+    >
       <div className="bg-gray-900 overflow-hidden border-0 shadow-sm p-2 rounded">
         <div>{renderTeamRow(home)}</div>
         <div className="border-t border-border/50 my-1"></div>

@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   SingleEliminationBracket,
   SVGViewer,
@@ -8,7 +9,7 @@ import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 // Reuse the same visual style as DoubleElimination's CustomMatch
-const CustomMatch = ({ match }) => {
+const CustomMatch = ({ match, onMatchClick }) => {
   const participants = match?.participants || [];
   const home = participants[0] || null;
   const away = participants[1] || null;
@@ -58,8 +59,15 @@ const CustomMatch = ({ match }) => {
     );
   };
 
+  const isClickable = Boolean(onMatchClick);
+
   return (
-    <div className="inline-block w-full mt-3">
+    <div
+      className={`inline-block w-full mt-3 ${
+        isClickable ? "cursor-pointer" : "cursor-default"
+      }`}
+      onClick={() => isClickable && onMatchClick(match)}
+    >
       <div className="bg-gray-900 overflow-hidden border-0 shadow-sm p-2 rounded">
         <div>{renderTeamRow(home)}</div>
         <div className="border-t border-border/50 my-1"></div>
@@ -86,6 +94,7 @@ function useWindowSize() {
 }
 
 const SingleElimination = ({ bracket }) => {
+  const navigate = useNavigate();
   const [width, height] = useWindowSize();
   const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
   const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
@@ -94,12 +103,38 @@ const SingleElimination = ({ bracket }) => {
   // Use matches from bracket prop, or empty array if not available
   const matches = bracket?.matches || [];
 
-  console.log(bracket);
+  const handleMatchClick = (match) => {
+    const gameId = bracket?.gameIdByBracketMatchId?.[match?.id];
+
+    if (!gameId || !bracket?.navigationContext?.type) return;
+
+    if (
+      bracket.navigationContext.type === "tournament" &&
+      bracket.navigationContext.tournamentId
+    ) {
+      navigate(
+        `/tournaments/${bracket.navigationContext.tournamentId}/games?gameId=${gameId}`
+      );
+      return;
+    }
+
+    if (
+      bracket.navigationContext.type === "league" &&
+      bracket.navigationContext.leagueId &&
+      bracket.navigationContext.seasonId
+    ) {
+      navigate(
+        `/leagues/${bracket.navigationContext.leagueId}/seasons/${bracket.navigationContext.seasonId}/games?gameId=${gameId}`
+      );
+    }
+  };
 
   return (
     <SingleEliminationBracket
       matches={matches}
-      matchComponent={CustomMatch}
+      matchComponent={(props) => (
+        <CustomMatch {...props} onMatchClick={handleMatchClick} />
+      )}
       svgWrapper={({ children, ...props }) => (
         <SVGViewer
           width={finalWidth}

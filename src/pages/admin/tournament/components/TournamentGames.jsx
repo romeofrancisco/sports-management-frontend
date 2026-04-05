@@ -32,6 +32,14 @@ const TournamentGames = ({ tournamentId }) => {
   // Fetch the specific game if gameId param is provided
   const { data: linkedGame } = useGameDetails(gameIdParam);
 
+  // Open the linked game modal when navigated from bracket/game links
+  useEffect(() => {
+    if (gameIdParam && linkedGame) {
+      setEditingGame(linkedGame);
+      openEditModal();
+    }
+  }, [gameIdParam, linkedGame, openEditModal]);
+
   // First, fetch all games to determine the initial date
   const { data: allGames = [], isLoading: isLoadingAllGames } =
     useTournamentGames(tournamentId);
@@ -111,10 +119,6 @@ const TournamentGames = ({ tournamentId }) => {
   return (
     <div className="animate-in fade-in-50 duration-500">
       <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-2xl opacity-70"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-xl opacity-60"></div>
-
         <CardHeader className="relative">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110">
@@ -298,7 +302,6 @@ const TournamentGames = ({ tournamentId }) => {
         isOpen={showEditModal}
         onClose={closeEditModal}
         game={editingGame}
-        isTournament={true}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
@@ -10,7 +10,7 @@ import {
   useGameReservedFacilities,
   useUpdateGame,
 } from "@/hooks/useGames";
-import { GAME_TYPES, GAME_TYPE_VALUES } from "@/constants/game";
+import { GAME_STATUS_VALUES } from "@/constants/game";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
 import ControlledSelect from "../common/ControlledSelect";
 import ControlledInput from "../common/ControlledInput";
@@ -25,14 +25,14 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import { Badge } from "../ui/badge";
+import { isGameFinished } from "@/constants/game";
 
 const GameForm = ({
   sports,
   teams,
   onClose,
   game = null,
-  isLeagueGame = false,
-  isTournament = false,
+  isBracketGame = false,
 }) => {
   const isEdit = !!game;
   const [locationMode, setLocationMode] = useState(
@@ -92,6 +92,27 @@ const GameForm = ({
   };
 
   const availableTeams = getAvailableTeams();
+  const availableTeamIds = useMemo(
+    () => new Set(availableTeams.map((team) => String(team.id))),
+    [availableTeams],
+  );
+
+  // Clear stale team selections whenever filtered options change.
+  useEffect(() => {
+    if (selectedHomeTeam && !availableTeamIds.has(String(selectedHomeTeam))) {
+      setValue("home_team_id", null, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+
+    if (selectedAwayTeam && !availableTeamIds.has(String(selectedAwayTeam))) {
+      setValue("away_team_id", null, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [availableTeamIds, selectedHomeTeam, selectedAwayTeam, setValue]);
 
   const handleReservationSelect = (reservationId) => {
     setSelectedReservationId(reservationId);
@@ -151,6 +172,15 @@ const GameForm = ({
             errorMessage = message.message;
           }
 
+          // Backend validation that doesn't map to a specific input
+          if (field === "non_field_errors" || field === "detail") {
+            setError("root", {
+              type: "server",
+              message: errorMessage,
+            });
+            return;
+          }
+
           setError(field, {
             type: "server",
             message: errorMessage,
@@ -178,6 +208,7 @@ const GameForm = ({
       onError: handleError,
     });
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
       {/* Display general form errors */}
@@ -188,18 +219,12 @@ const GameForm = ({
       )}
 
       {/* League Game Notice */}
-      {isEdit && isLeagueGame ? (
+      {isBracketGame ? (
         <div className="bg-primary/20 border border-primary/50 rounded-lg p-3 mb-2">
           <p className="text-sm text-primary">
-            <strong>League Game:</strong> Only date and venue can be modified
-            for league games. Teams and sport are fixed by the league bracket.
-          </p>
-        </div>
-      ) : isEdit && isTournament ? (
-        <div className="bg-primary/20 border border-primary/50 rounded-lg p-3 mb-2">
-          <p className="text-sm text-primary">
-            <strong>Tournament Game:</strong> Only date and venue can be
-            modified for tournament games. Teams and sport are determined by the tournament bracket.
+            <strong>League and Tournament Game:</strong> Only date and venue can
+            be modified for bracket games. Teams and sport are determined by the
+            bracket.
           </p>
         </div>
       ) : null}
@@ -214,7 +239,11 @@ const GameForm = ({
         valueKey="id"
         labelKey="name"
         groupLabel="Sports"
-        disabled={isEdit || (isEdit && isLeagueGame)}
+        disabled={
+          (isEdit && isBracketGame) ||
+          isGameFinished(game?.status) ||
+          game?.status === GAME_STATUS_VALUES.IN_PROGRESS
+        }
         rules={{ required: "Sport is required" }}
         errors={errors}
       />
@@ -227,12 +256,33 @@ const GameForm = ({
         placeholder={selectedSport ? "Select home team" : "Select sport first"}
         teams={availableTeams}
         excludeTeamId={selectedAwayTeam}
-        rules={{ required: "Home team is required" }}
+        rules={{
+          required: "Home team is required",
+          validate: (value) => {
+            if (!selectedSport) {
+              return "Select sport first";
+            }
+
+            if (!value) {
+              return "Home team is required";
+            }
+
+            if (!availableTeamIds.has(String(value))) {
+              return "Select a valid home team for the selected sport";
+            }
+
+            if (value && value === selectedAwayTeam) {
+              return "Home team cannot be the same as away team";
+            }
+            return true;
+          },
+        }}
         errors={errors}
         disabled={
           !selectedSport ||
-          (isEdit && isLeagueGame) ||
-          game?.status === "in_progress"
+          (isEdit && isBracketGame) ||
+          isGameFinished(game?.status) ||
+          game?.status === GAME_STATUS_VALUES.IN_PROGRESS
         }
         searchPlaceholder="Search home teams..."
       />
@@ -248,6 +298,18 @@ const GameForm = ({
         rules={{
           required: "Away team is required",
           validate: (value) => {
+            if (!selectedSport) {
+              return "Select sport first";
+            }
+
+            if (!value) {
+              return "Away team is required";
+            }
+
+            if (!availableTeamIds.has(String(value))) {
+              return "Select a valid away team for the selected sport";
+            }
+
             if (value && value === selectedHomeTeam) {
               return "Away team cannot be the same as home team";
             }
@@ -257,8 +319,9 @@ const GameForm = ({
         errors={errors}
         disabled={
           !selectedSport ||
-          (isEdit && isLeagueGame) ||
-          game?.status === "in_progress"
+          (isEdit && isBracketGame) ||
+          isGameFinished(game?.status) ||
+          game?.status === GAME_STATUS_VALUES.IN_PROGRESS
         }
         searchPlaceholder="Search away teams..."
       />
@@ -270,7 +333,10 @@ const GameForm = ({
           Mode of Location Selection
         </Label>
         <Select value={locationMode} onValueChange={setLocationMode}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger
+            className="w-full"
+            disabled={isGameFinished(game?.status)}
+          >
             <SelectValue placeholder="Select location source" />
           </SelectTrigger>
           <SelectContent>
@@ -289,7 +355,11 @@ const GameForm = ({
             value={selectedReservationId}
             onValueChange={handleReservationSelect}
           >
-            <SelectTrigger className="w-full" size="lg">
+            <SelectTrigger
+              className="w-full"
+              size="lg"
+              disabled={isGameFinished(game?.status)}
+            >
               <SelectValue placeholder="Select a reserved facility" />
             </SelectTrigger>
             <SelectContent>
@@ -348,7 +418,7 @@ const GameForm = ({
             placeholder="Select a reservation to fill location"
             rules={{ required: "Location is required" }}
             errors={errors}
-            disabled
+            disabled={true}
           />
         </div>
       ) : (
@@ -365,6 +435,7 @@ const GameForm = ({
             },
           }}
           errors={errors}
+          disabled={isGameFinished(game?.status)}
         />
       )}
 
@@ -385,6 +456,7 @@ const GameForm = ({
             },
           }}
           errors={errors}
+          disabled={isGameFinished(game?.status)}
         />
 
         <ControlledDateTimePicker
@@ -395,10 +467,15 @@ const GameForm = ({
           placeholder="Select time"
           rules={{ required: "Time is required" }}
           errors={errors}
+          disabled={isGameFinished(game?.status)}
         />
       </div>
 
-      <Button type="submit" className="mt-4" disabled={isPending}>
+      <Button
+        type="submit"
+        className="mt-4"
+        disabled={isPending || isGameFinished(game?.status)}
+      >
         {isPending ? (
           <>
             <Loader2 className="animate-spin mr-2" />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import SingleElimination from "@/components/brackets/SingleElimination";
 import DoubleElimination from "./DoubleElimination";
 import RoundRobin from "@/components/brackets/RoundRobin";
@@ -10,7 +10,20 @@ import { Button } from "../ui/button";
  * Component that displays the appropriate bracket visualization based on elimination type
  * @param {Object} bracket - The bracket data from the API
  */
-const BracketDisplay = ({ bracket }) => {
+const BracketDisplay = ({ bracket, navigationContext }) => {
+  const gameIdByBracketMatchId = useMemo(() => {
+    if (!bracket?.rounds?.length) return {};
+
+    return bracket.rounds.reduce((acc, round) => {
+      (round.matches || []).forEach((match) => {
+        if (match?.id && match?.game) {
+          acc[match.id] = match.game;
+        }
+      });
+      return acc;
+    }, {});
+  }, [bracket]);
+
   if (!bracket) return null;
 
   // Map bracket types to their corresponding display components
@@ -33,6 +46,8 @@ const BracketDisplay = ({ bracket }) => {
       scoring_type: "points",
       has_tie: false,
     },
+    navigationContext,
+    gameIdByBracketMatchId,
   };
 
   return <BracketComponent bracket={bracketWithSport} />;
