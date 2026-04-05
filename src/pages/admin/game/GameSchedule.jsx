@@ -8,20 +8,24 @@ import GameTable from "./components/GameTable";
 import UniversityPageHeader from "@/components/common/UniversityPageHeader";
 import { useSelector } from "react-redux";
 
-const GameSchedule = ({ isPublicView = false }) => {
+const GameSchedule = () => {
   const { openModal, closeModal, isOpen } = useModal();
   const { isPlayer, isAdmin, isCoach } = useRolePermissions();
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const canCreateGame = !isPublicView && isAuthenticated && (isAdmin() || isCoach());
+  const canCreateGame = isAuthenticated && (isAdmin() || isCoach());
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       <div className="container mx-auto p-1 md:p-6 space-y-6">
         {/* Enhanced Header with University Logo */}
         <UniversityPageHeader
-          showBackButton={!isPublicView}
-          title={isPublicView ? "Public Game Schedule" : isPlayer() ? "Game Schedule" : "Game Management"}
-          description={isPublicView ? "Read-only game schedules for all visitors" : "Schedule and manage games for your leagues"}
+          showBackButton={false}
+          title={isPlayer() ? "Game Schedule" : "Game Management"}
+          description={
+            isPlayer()
+              ? "View your upcoming games and match details."
+              : "Manage game schedules, scores, and details."
+          }
           {...(canCreateGame && {
             buttonText: "Create Game",
             buttonIcon: CalendarPlus,
