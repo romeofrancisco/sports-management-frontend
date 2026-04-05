@@ -39,9 +39,10 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
       value: teamsCount,
       icon: Users,
       description: "Total teams in this season",
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
+      link: `teams`,
     },
     {
       title: "Games Progress",
@@ -53,15 +54,16 @@ const SeasonOverviewStats = ({ seasonDetails }) => {
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
+      link: `games`,
     },
     {
       title: "Avg. Points",
       value: seasonDetails.avg_points_per_game?.toFixed(1) || "0.0",
       icon: Activity,
       description: "Per game",
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
   ];
 

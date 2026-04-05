@@ -254,7 +254,13 @@ const TournamentBracket = ({ tournament }) => {
           <OverviewCards stats={statsData} />
         </div>
 
-        <BracketDisplay bracket={bracket} />
+        <BracketDisplay
+          bracket={bracket}
+          navigationContext={{
+            type: "tournament",
+            tournamentId: tournament?.id,
+          }}
+        />
       </CardContent>
     </Card>
   );

@@ -5,11 +5,14 @@ import { useSports } from "@/hooks/useSports";
 import { useCoachPermissions } from "@/hooks/useCoachPermissions";
 import Modal from "../common/Modal";
 import { Volleyball } from "lucide-react";
+import { is } from "date-fns/locale";
 
-const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false, isTournament = false }) => {
+const GameModal = ({ isOpen, onClose, game = null }) => {
   const isEdit = !!game;
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
   const { checkGamePermission } = useCoachPermissions();
+
+  const isBracketGame = game?.tournament !== null || game?.season !== null;
 
   // Fetch all teams for the dropdown selections
   const { data: teams, isLoading: isTeamsLoading } = useAllTeams(isOpen);
@@ -21,7 +24,7 @@ const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false, isTourn
     <Modal
       open={isOpen}
       onOpenChange={onClose}
-      title={isEdit ? "Edit Game" : "Create Game"}
+      title={isEdit ? "Update Game" : "Create Game"}
       icon={Volleyball}
       description="Fill in the details for the game."
       size="sm"
@@ -32,8 +35,7 @@ const GameModal = ({ isOpen, onClose, game = null, isLeagueGame = false, isTourn
           teams={teams}
           onClose={onClose}
           game={game}
-          isLeagueGame={isLeagueGame}
-          isTournament={isTournament}
+          isBracketGame={isBracketGame}
         />
       ) : (
         <div className="text-center py-8">

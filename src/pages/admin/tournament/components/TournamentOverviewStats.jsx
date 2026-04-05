@@ -56,9 +56,10 @@ const TournamentOverviewStats = ({ tournament }) => {
       value: teamsCount,
       icon: Users,
       description: "Total teams in this tournament",
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
+      link: `teams`,
     },
     {
       title: "Games Progress",
@@ -68,15 +69,16 @@ const TournamentOverviewStats = ({ tournament }) => {
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
+      link: `games`,
     },
     {
       title: "Avg. Points",
       value: tournament.avg_points_per_game?.toFixed(1) || "0.0",
       icon: Activity,
       description: "Per game",
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
     },
   ];
 

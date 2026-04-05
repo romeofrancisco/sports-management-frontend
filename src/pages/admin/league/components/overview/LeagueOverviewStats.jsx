@@ -22,15 +22,17 @@ const LeagueOverviewStats = ({ statistics }) => {
       color: "from-primary via-primary/90 to-primary/80",
       iconBg: "bg-primary",
       iconColor: "text-primary",
+      link: `teams`,
     },
     {
       title: "Total Seasons",
       value: seasons_count,
       icon: Flag,
       description: `${active_seasons} active`,
-      color: "from-secondary via-secondary/90 to-secondary/80",
-      iconBg: "bg-secondary",
-      iconColor: "text-secondary",
+      color: "from-primary via-primary/90 to-primary/80",
+      iconBg: "bg-primary",
+      iconColor: "text-primary",
+      link: `seasons`,
     },
     {
       title: "Total Games",
@@ -40,6 +42,7 @@ const LeagueOverviewStats = ({ statistics }) => {
       color: "from-primary/80 via-primary/70 to-primary/60",
       iconBg: "bg-gradient-to-br from-primary to-primary/80",
       iconColor: "text-primary",
+      link: `seasons`,
     },
     {
       title: "Current Season",
@@ -48,9 +51,10 @@ const LeagueOverviewStats = ({ statistics }) => {
         : "None",
       icon: Calendar,
       description: current_season ? current_season.status : "No active season",
-      color: "from-secondary/80 via-secondary/70 to-secondary/60",
-      iconBg: "bg-gradient-to-br from-secondary to-secondary/80",
-      iconColor: "text-secondary",
+      color: "from-primary/80 via-primary/70 to-primary/60",
+      iconBg: "bg-gradient-to-br from-primary to-primary/80",
+      iconColor: "text-primary",
+      link: current_season ? `seasons/${current_season.id}` : `seasons`,
     },
   ];
 

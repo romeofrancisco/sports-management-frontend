@@ -23,9 +23,12 @@ export function DateTimePicker({
   error = "",
   placeholder = "",
   id = "",
-  className = ""
+  className = "",
+  disabled = false,
+
 }) {
   const [open, setOpen] = React.useState(false)
+
   
   const handleDateSelect = (selectedDate) => {
     if (selectedDate) {
@@ -58,6 +61,7 @@ export function DateTimePicker({
           onChange={handleTimeChange}
           className="bg-background mt-1 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
           placeholder={placeholder}
+          disabled={disabled}
         />
         {error && (
           <p className="text-xs text-destructive">
@@ -86,6 +90,7 @@ export function DateTimePicker({
             variant="outline"
             id={id}
             className="w-full justify-between font-normal h-9 mt-1"
+            disabled={disabled}
           >
             {value ? new Date(value).toLocaleDateString() : placeholder || "Select date"}
             <ChevronDownIcon className="h-4 w-4" />

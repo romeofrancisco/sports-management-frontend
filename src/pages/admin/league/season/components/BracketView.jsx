@@ -284,7 +284,14 @@ const BracketView = ({ season, leagueId }) => {
           <OverviewCards stats={statsData} />
         </div>
 
-        <BracketDisplay bracket={bracket} />
+        <BracketDisplay
+          bracket={bracket}
+          navigationContext={{
+            type: "league",
+            leagueId,
+            seasonId: season?.id,
+          }}
+        />
       </CardContent>
     </Card>
   );
