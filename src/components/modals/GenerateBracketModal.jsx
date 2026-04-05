@@ -21,6 +21,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useCreateBracket } from "@/hooks/useBrackets";
 import { GitFork, Loader2 } from "lucide-react";
 import Modal from "../common/Modal";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 const GenerateBracketModal = ({
   isOpen,
@@ -107,34 +108,36 @@ const GenerateBracketModal = ({
         )}
 
         {/* Elimination Type Select */}
-        <Controller
-          name="elimination_type"
-          control={control}
-          rules={{ required: "Elimination type is required." }}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Elimination Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Elimination Types</SelectLabel>
-                  {ELIMINATION_TYPES.map((elim) => (
-                    <SelectItem key={elim.value} value={elim.value}>
-                      {elim.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        <div className="space-y-1">
+          <Label className="text-sm font-medium">Elimination Type</Label>
+          <Controller
+            name="elimination_type"
+            control={control}
+            rules={{ required: "Elimination type is required." }}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Elimination Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Elimination Types</SelectLabel>
+                    {ELIMINATION_TYPES.map((elim) => (
+                      <SelectItem key={elim.value} value={elim.value}>
+                        {elim.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.elimination_type && (
+            <p className="text-destructive text-xs">
+              {errors.elimination_type.message}
+            </p>
           )}
-        />
-        {errors.elimination_type && (
-          <p className="text-destructive text-xs">
-            {errors.elimination_type.message}
-          </p>
-        )}
-
+        </div>
         <Button
           type="submit"
           className="w-full flex items-center justify-center gap-2"

@@ -132,7 +132,7 @@ const TournamentBracket = ({ tournament }) => {
           </CardHeader>
 
           <CardContent className= "relative p-6">
-            <div className= "text-center p-8 border rounded-lg bg-muted/20">
+            <div className= "text-center flex flex-col items-center p-8 border rounded-lg bg-muted/20">
               <GitFork className= "h-16 w-16 text-muted-foreground mb-4" />
               <h3 className= "text-lg font-semibold mb-2">
                 No Tournament Bracket

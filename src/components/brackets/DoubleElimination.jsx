@@ -24,7 +24,7 @@ function useWindowSize() {
 export const DoubleElimination = ({ bracket }) => {
   const navigate = useNavigate();
   const [width, height] = useWindowSize();
-  const widthOffset = width < 768 ? 12 : width < 1300 ? 51 : 70;
+  const widthOffset = width < 768 ? 12 : width > 1024 ? 67 : 53;
   const finalWidth = Math.max(width - widthOffset, 365); // Ensure a minimum width of 400px
   const finalHeight = Math.max(height - 150, 400);
 
