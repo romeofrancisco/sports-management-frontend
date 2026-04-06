@@ -18,6 +18,7 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
   const [selectedDate, setSelectedDate] = useState(null); // Start with null
   const [editingGame, setEditingGame] = useState(null);
   const [initialDateSet, setInitialDateSet] = useState(false);
+  const [handledLinkedGameId, setHandledLinkedGameId] = useState(null);
 
   // Use the useModal hook instead of manual state management
   const {
@@ -29,27 +30,36 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
   // Fetch the specific game if gameId param is provided
   const { data: linkedGame } = useGameDetails(gameIdParam);
 
-  // Open the linked game modal when navigated from bracket/game links
+  // Open linked game only once and consume gameId to avoid reopen loops.
   useEffect(() => {
-    if (gameIdParam && linkedGame) {
-      setEditingGame(linkedGame);
-      openEditModal();
-    }
-  }, [gameIdParam, linkedGame, openEditModal]);
+    if (!gameIdParam || !linkedGame) return;
+    if (String(handledLinkedGameId) === String(gameIdParam)) return;
 
-  // First, fetch all games to determine the initial date
-  const { data: allGames = [], isLoading: isLoadingAllGames } = useSeasonGames(leagueId, seasonId);
-
-  // Set the date based on the linked game from URL param
-  useEffect(() => {
-    if (linkedGame && linkedGame.date && !initialDateSet) {
+    if (linkedGame.date && !initialDateSet) {
       const gameDate = parseISO(linkedGame.date);
       setSelectedDate(gameDate);
       setInitialDateSet(true);
-      // Clear the gameId param from URL after navigating to the date
-      setSearchParams({}, { replace: true });
     }
-  }, [linkedGame, initialDateSet, setSearchParams]);
+
+    setEditingGame(linkedGame);
+    openEditModal();
+    setHandledLinkedGameId(String(gameIdParam));
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("gameId");
+    setSearchParams(nextParams, { replace: true });
+  }, [
+    gameIdParam,
+    linkedGame,
+    handledLinkedGameId,
+    initialDateSet,
+    openEditModal,
+    searchParams,
+    setSearchParams,
+  ]);
+
+  // First, fetch all games to determine the initial date
+  const { data: allGames = [], isLoading: isLoadingAllGames } = useSeasonGames(leagueId, seasonId);
 
   // Initialize date when all games data is available (only if no gameId param)
   useEffect(() => {
@@ -104,6 +114,11 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
     },
     [openEditModal]
   );
+
+  const handleCloseEditModal = useCallback(() => {
+    setEditingGame(null);
+    closeEditModal();
+  }, [closeEditModal]);
 
   return (
     <div className= "animate-in fade-in-50 duration-500">
@@ -289,9 +304,8 @@ export const SeasonGames = ({ seasonId, leagueId }) => {
       {/* Edit Game Modal */}
       <GameModal
         isOpen={showEditModal}
-        onClose={closeEditModal}
+        onClose={handleCloseEditModal}
         game={editingGame}
-        isLeagueGame={true}
       />
     </div>
   );
