@@ -12,8 +12,9 @@ const GameModal = ({ isOpen, onClose, game = null }) => {
   const { data: sports, isLoading: isSportsLoading } = useSports(isOpen);
   const { checkGamePermission } = useCoachPermissions();
 
-  const isBracketGame = game?.tournament !== null || game?.season !== null;
-
+  const isBracketGame =
+    game === null ? false : game?.tournament !== null || game?.season !== null;
+  console.log(isBracketGame);
   // Fetch all teams for the dropdown selections
   const { data: teams, isLoading: isTeamsLoading } = useAllTeams(isOpen);
 
