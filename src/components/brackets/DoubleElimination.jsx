@@ -79,6 +79,14 @@ export const DoubleElimination = ({ bracket }) => {
 
 // Custom match component styled like RoundRobin's TeamSeed
 const CustomMatch = ({ match, onMatchClick }) => {
+  const dragStateRef = React.useRef({
+    isPointerDown: false,
+    startX: 0,
+    startY: 0,
+    hasDragged: false,
+  });
+  const DRAG_THRESHOLD_PX = 8;
+
   const participants = match?.participants || [];
   const home = participants[0] || null;
   const away = participants[1] || null;
@@ -131,12 +139,58 @@ const CustomMatch = ({ match, onMatchClick }) => {
 
   const isClickable = Boolean(onMatchClick);
 
+  const activateMatch = (event) => {
+    if (!isClickable) return;
+
+    const dragState = dragStateRef.current;
+    const wasDrag = dragState.hasDragged;
+    dragState.isPointerDown = false;
+
+    if (wasDrag) return;
+
+    event.stopPropagation();
+    onMatchClick(match);
+  };
+
   return (
     <div
       className={`inline-block w-full mt-3 ${
         isClickable ? "cursor-pointer" : "cursor-default"
       }`}
-      onClick={() => isClickable && onMatchClick(match)}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      style={{ touchAction: "manipulation" }}
+      onPointerDown={(event) => {
+        if (!isClickable) return;
+        dragStateRef.current = {
+          isPointerDown: true,
+          startX: event.clientX,
+          startY: event.clientY,
+          hasDragged: false,
+        };
+      }}
+      onPointerMove={(event) => {
+        if (!isClickable || !dragStateRef.current.isPointerDown) return;
+
+        const deltaX = Math.abs(event.clientX - dragStateRef.current.startX);
+        const deltaY = Math.abs(event.clientY - dragStateRef.current.startY);
+
+        if (deltaX > DRAG_THRESHOLD_PX || deltaY > DRAG_THRESHOLD_PX) {
+          dragStateRef.current.hasDragged = true;
+        }
+      }}
+      onPointerCancel={() => {
+        dragStateRef.current.isPointerDown = false;
+      }}
+      onPointerUp={activateMatch}
+      onKeyDown={(event) => {
+        if (!isClickable) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          onMatchClick(match);
+        }
+      }}
     >
       <div className="bg-gray-900 overflow-hidden border-0 shadow-sm p-2 rounded">
         <div>{renderTeamRow(home)}</div>

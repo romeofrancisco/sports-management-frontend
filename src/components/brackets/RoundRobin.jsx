@@ -6,6 +6,14 @@ import { Calendar } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 const TeamSeed = ({ seed, breakpoint, onSeedClick }) => {
+  const dragStateRef = React.useRef({
+    isPointerDown: false,
+    startX: 0,
+    startY: 0,
+    hasDragged: false,
+  });
+  const DRAG_THRESHOLD_PX = 8;
+
   const { home_team, away_team, winner, date } = seed;
   const isClickable = Boolean(seed?.gameId && onSeedClick);
 
@@ -62,13 +70,59 @@ const TeamSeed = ({ seed, breakpoint, onSeedClick }) => {
     );
   };
 
+  const activateSeed = (event) => {
+    if (!isClickable) return;
+
+    const dragState = dragStateRef.current;
+    const wasDrag = dragState.hasDragged;
+    dragState.isPointerDown = false;
+
+    if (wasDrag) return;
+
+    event.stopPropagation();
+    onSeedClick(seed);
+  };
+
   return (
     <Seed mobileBreakpoint={breakpoint} className="after:hidden before:hidden">
       <SeedItem
         className={`bg-card overflow-hidden border-0 shadow-sm ${
           isClickable ? "cursor-pointer" : "cursor-default"
         }`}
-        onClick={() => isClickable && onSeedClick(seed)}
+        role={isClickable ? "button" : undefined}
+        tabIndex={isClickable ? 0 : undefined}
+        style={{ touchAction: "manipulation" }}
+        onPointerDown={(event) => {
+          if (!isClickable) return;
+          dragStateRef.current = {
+            isPointerDown: true,
+            startX: event.clientX,
+            startY: event.clientY,
+            hasDragged: false,
+          };
+        }}
+        onPointerMove={(event) => {
+          if (!isClickable || !dragStateRef.current.isPointerDown) return;
+
+          const deltaX = Math.abs(event.clientX - dragStateRef.current.startX);
+          const deltaY = Math.abs(event.clientY - dragStateRef.current.startY);
+
+          if (deltaX > DRAG_THRESHOLD_PX || deltaY > DRAG_THRESHOLD_PX) {
+            dragStateRef.current.hasDragged = true;
+          }
+        }}
+        onPointerCancel={() => {
+          dragStateRef.current.isPointerDown = false;
+        }}
+        onPointerUp={activateSeed}
+        onKeyDown={(event) => {
+          if (!isClickable) return;
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            event.stopPropagation();
+            onSeedClick(seed);
+          }
+        }}
       >
         {renderTeam(home_team)}
         <div className="border-t border-border/50"></div>

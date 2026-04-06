@@ -20,6 +20,7 @@ const TournamentGames = ({ tournamentId }) => {
   const gameIdParam = searchParams.get("gameId");
   
   const [selectedDate, setSelectedDate] = useState(null);
+  const [handledLinkedGameId, setHandledLinkedGameId] = useState(null);
   const [editingGame, setEditingGame] = useState(null);
   const [initialDateSet, setInitialDateSet] = useState(false);
 
@@ -32,28 +33,37 @@ const TournamentGames = ({ tournamentId }) => {
   // Fetch the specific game if gameId param is provided
   const { data: linkedGame } = useGameDetails(gameIdParam);
 
-  // Open the linked game modal when navigated from bracket/game links
+  // Open linked game only once and consume gameId to avoid reopen loops.
   useEffect(() => {
-    if (gameIdParam && linkedGame) {
-      setEditingGame(linkedGame);
-      openEditModal();
+    if (!gameIdParam || !linkedGame) return;
+    if (String(handledLinkedGameId) === String(gameIdParam)) return;
+
+    if (linkedGame.date && !initialDateSet) {
+      const gameDate = parseISO(linkedGame.date);
+      setSelectedDate(gameDate);
+      setInitialDateSet(true);
     }
-  }, [gameIdParam, linkedGame, openEditModal]);
+
+    setEditingGame(linkedGame);
+    openEditModal();
+    setHandledLinkedGameId(String(gameIdParam));
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("gameId");
+    setSearchParams(nextParams, { replace: true });
+  }, [
+    gameIdParam,
+    linkedGame,
+    handledLinkedGameId,
+    initialDateSet,
+    openEditModal,
+    searchParams,
+    setSearchParams,
+  ]);
 
   // First, fetch all games to determine the initial date
   const { data: allGames = [], isLoading: isLoadingAllGames } =
     useTournamentGames(tournamentId);
-
-  // Set the date based on the linked game from URL param
-  useEffect(() => {
-    if (linkedGame && linkedGame.date && !initialDateSet) {
-      const gameDate = parseISO(linkedGame.date);
-      setSelectedDate(gameDate);
-      setInitialDateSet(true);
-      // Clear the gameId param from URL after navigating to the date
-      setSearchParams({}, { replace: true });
-    }
-  }, [linkedGame, initialDateSet, setSearchParams]);
 
   // Initialize date when all games data is available (only if no gameId param)
   useEffect(() => {
@@ -115,6 +125,11 @@ const TournamentGames = ({ tournamentId }) => {
     },
     [openEditModal]
   );
+
+  const handleCloseEditModal = useCallback(() => {
+    setEditingGame(null);
+    closeEditModal();
+  }, [closeEditModal]);
 
   return (
     <div className= "animate-in fade-in-50 duration-500">
@@ -300,7 +315,7 @@ const TournamentGames = ({ tournamentId }) => {
       {/* Edit Game Modal */}
       <GameModal
         isOpen={showEditModal}
-        onClose={closeEditModal}
+        onClose={handleCloseEditModal}
         game={editingGame}
       />
     </div>
