@@ -87,7 +87,7 @@ const UpcomingGamesSection = ({ overview }) => {
             ))}
           </div>
         ) : (
-          <div className= "text-center py-12">
+          <div className= "text-center place-items-center py-12">
             <div className= "w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
               <Calendar className= "h-8 w-8 text-muted-foreground" />
             </div>
