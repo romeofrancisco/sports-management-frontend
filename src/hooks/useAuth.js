@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { queryClient } from "@/context/QueryProvider";
 import { useEffect } from "react";
 import { persistor } from "@/store";
+import { clearStoredAuthTokens, setStoredAuthTokens, getStoredRefreshToken } from "@/utils/authTokens";
+import { useSelector } from "react-redux";
 
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -25,9 +27,10 @@ export const useLogin = () => {
     mutationFn: (formData) => loginUser(formData),
     onSuccess: (data) => {
       dispatch(login(data));
+      setStoredAuthTokens(data?.tokens?.access_token, data?.tokens?.refresh_token);
       navigate("/dashboard");
       toast.success("Login Successful", {
-        description: `Welcome back, ${data.first_name}!`,
+        description: `Welcome back, ${data?.user?.first_name || data.first_name}!`,
         richColors: true,
       });
     },
@@ -59,11 +62,12 @@ export const useGoogleLogin = () => {
 
     onSuccess: (data) => {
       // Success handler is identical to the standard login,
-      // as the backend returns the same user data and sets cookies.
+      // as the backend returns the same user data and tokens.
       dispatch(login(data));
+      setStoredAuthTokens(data?.tokens?.access_token, data?.tokens?.refresh_token);
       navigate("/dashboard");
       toast.success("Login Successful", {
-        description: `Welcome back, ${data.first_name}!`,
+        description: `Welcome back, ${data?.user?.first_name || data.first_name}!`,
         richColors: true,
       });
     },
@@ -101,9 +105,10 @@ export const useGoogleLogin = () => {
 export const useLogout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const refreshToken = useSelector((state) => state.auth.refreshToken);
 
   return useMutation({
-    mutationFn: logoutUser,
+    mutationFn: () => logoutUser(refreshToken || getStoredRefreshToken()),
     onSuccess: async () => {
       try {
         // Clear persistence first
@@ -111,6 +116,7 @@ export const useLogout = () => {
 
         // Then clear queries and state
         localStorage.removeItem("google_drive_tokens");
+        clearStoredAuthTokens();
         
         queryClient.clear();
         dispatch(logout());

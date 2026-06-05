@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { chatKeys } from './useChat';
+import { getStoredAccessToken } from '@/utils/authTokens';
 
 export const useGlobalChatWebSocket = () => {
   const websocketRef = useRef(null);
@@ -24,14 +25,7 @@ export const useGlobalChatWebSocket = () => {
     // Use environment variable for WebSocket URL
     const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
     
-    // Get access token from cookies for WebSocket authentication
-    const getCookie = (name) => {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    };
-    
-    const accessToken = getCookie('access_token');
+    const accessToken = getStoredAccessToken();
     let wsUrl = `${wsBaseUrl}/ws/chat/global/`;
     
     // Add token and user ID as query parameters

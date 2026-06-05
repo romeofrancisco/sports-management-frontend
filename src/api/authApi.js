@@ -1,4 +1,5 @@
 import api from ".";
+import { getStoredRefreshToken } from "@/utils/authTokens";
 
 export const createCoach = async (coachData) => {
   try {
@@ -28,9 +29,11 @@ export const googleLoginUser = async (token) => {
   }
 };
 
-export const logoutUser = async () => {
+export const logoutUser = async (refreshToken = null) => {
   try {
-    await api.post("logout/", null);
+    await api.post("logout/", {
+      refresh: refreshToken || getStoredRefreshToken(),
+    });
   } catch (error) {
     console.log(error);
     throw error;
@@ -68,9 +71,11 @@ export const updateUserProfile = async (profileData) => {
   }
 };
 
-export const refreshToken = async () => {
+export const refreshToken = async (refresh = null) => {
   try {
-    const { data } = await api.get("refresh/");
+    const { data } = await api.post("refresh/", {
+      refresh: refresh || getStoredRefreshToken(),
+    });
     return data;
   } catch (error) {
     throw error;

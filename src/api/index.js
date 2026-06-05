@@ -7,16 +7,22 @@ import { queryClient } from "@/context/QueryProvider";
 import { navigateTo } from "@/utils/navigate";
 import { isManualLogout, setManualLogout } from "@/utils/logoutFlag";
 import { triggerGlobalError } from "@/utils/globalErrorHandler";
+import { clearStoredAuthTokens, getStoredAccessToken, getStoredRefreshToken, setStoredAuthTokens } from "@/utils/authTokens";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },
-  withCredentials: true,
+  withCredentials: false,
 });
 
 api.interceptors.request.use((config) => {
+  const accessToken = store.getState()?.auth?.accessToken || getStoredAccessToken();
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
   const isFormData = config.data instanceof FormData;
   let hasFile = false;
 
@@ -104,14 +110,29 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post("refresh/");
+          const refreshToken = auth.refreshToken || getStoredRefreshToken();
+          const refreshResponse = await api.post("refresh/", { refresh: refreshToken });
+          const newAccessToken = refreshResponse.data?.access_token;
+          if (newAccessToken) {
+            store.dispatch({
+              type: "auth/setTokens",
+              payload: {
+                accessToken: newAccessToken,
+                refreshToken,
+              },
+            });
+            setStoredAuthTokens(newAccessToken, refreshToken);
+          }
         return api(originalRequest);
       } catch (refreshError) {
         try {
-          await api.post("logout/", null);
+            await api.post("logout/", {
+              refresh: auth.refreshToken || getStoredRefreshToken(),
+            });
         } catch (logoutError) {}
 
         await persistor.purge();
+          clearStoredAuthTokens();
         queryClient.clear();
         store.dispatch(logout());
 

@@ -10,7 +10,7 @@ import chatReducer from "./slices/chatSlice"
 const persistConfig = {
   key: "auth",
   storage,
-    whitelist: ["user", "isAuthenticated"],
+  whitelist: ["user", "isAuthenticated", "accessToken", "refreshToken"],
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);

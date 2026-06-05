@@ -33,7 +33,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
     // Use environment variable for WebSocket URL
     const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
-    // WebSocket URL - cookies will be sent automatically
+    // WebSocket URL - no auth token is required for score updates
     let wsUrl = `${wsBaseUrl}/ws/games/${gameId}/`;
 
     const ws = new WebSocket(wsUrl);
