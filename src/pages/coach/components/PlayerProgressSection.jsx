@@ -122,7 +122,7 @@ const PlayerProgressSection = ({ playerProgress }) => {
             <Target className= "h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className= "text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <CardTitle className= "text-xl font-bold text-primary">
               Player Progress Overview
             </CardTitle>
             <CardDescription className= "text-muted-foreground">

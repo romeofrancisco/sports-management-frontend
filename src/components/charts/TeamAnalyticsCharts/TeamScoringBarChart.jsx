@@ -172,7 +172,7 @@ export const TeamScoringBarChart = ({
   return (
     <ChartCard
       title={title}
-      subtitle={subtitle}
+      description={subtitle}
       icon={BarChart3}
       hasData={data.length > 0}
     >

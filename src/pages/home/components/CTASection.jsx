@@ -20,9 +20,9 @@ const CTASection = () => {
       id="contact"
     >
       <div className= "px-4 relative z-10">
-        <div className= "max-w-5xl">
+        <div>
           {/* CTA Content */}
-          <div className= "text-center mb-12">
+          <div className= "text-center place-items-center mb-12">
             <h2 className= "text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Transform Your{" "}
               <span className= "text-secondary">Sports Program?</span>

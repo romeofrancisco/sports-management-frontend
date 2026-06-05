@@ -99,13 +99,13 @@ const filterGamesByDate = (games, todayString) => {
   const upcoming = gamesArray.filter(
     (game) =>
       new Date(game.date) >= today &&
-      ["scheduled", "upcoming"].includes(game.status)
+      ["scheduled", "upcoming"].includes(game.status),
   );
 
   const recent = gamesArray.filter(
     (game) =>
       new Date(game.date) < today &&
-      ["completed", "finished"].includes(game.status)
+      ["completed", "finished"].includes(game.status),
   );
 
   return { upcoming, recent };
@@ -115,11 +115,11 @@ const filterTrainingsByDate = (trainings, todayString) => {
   const trainingsArray = trainings?.results || trainings || [];
 
   const upcoming = trainingsArray.filter(
-    (training) => training.status === "upcoming"
+    (training) => training.status === "upcoming",
   );
 
   const recent = trainingsArray.filter(
-    (training) => training.status === "completed"
+    (training) => training.status === "completed",
   );
 
   return { upcoming, recent };
@@ -127,16 +127,16 @@ const filterTrainingsByDate = (trainings, todayString) => {
 
 // Error boundary component
 const TeamNotFound = ({ onBack }) => (
-  <div className= "min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2 flex items-center justify-center">
-    <div className= "text-center">
-      <h2 className= "text-2xl font-bold text-foreground mb-2">
+  <div className="min-h-screen bg-gradient-to-br from-background via-primary/2 to-secondary/2 flex items-center justify-center">
+    <div className="text-center">
+      <h2 className="text-2xl font-bold text-foreground mb-2">
         Team not found
       </h2>
-      <p className= "text-muted-foreground mb-4">
+      <p className="text-muted-foreground mb-4">
         The requested team could not be found.
       </p>
       <Button onClick={onBack} variant="outline">
-        <ArrowLeft className= "mr-2 h-4 w-4" />
+        <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Teams
       </Button>
     </div>
@@ -206,7 +206,7 @@ const TeamAnalyticsSection = ({
   const scoringData = getScoringData();
 
   return (
-    <div className= "space-y-6">
+    <div className="space-y-6">
       <ClickableChartArea
         onOpen={() =>
           openSummary({
@@ -220,18 +220,14 @@ const TeamAnalyticsSection = ({
           <TeamScoringBarChart
             data={scoringData}
             title="Scoring Performance Analysis"
-            subtitle={
-              scoringData.length > 0 && scoringAnalytics?.scoring_data
-                ? "Points scored vs conceded by period"
-                : "Points scored vs conceded in recent games"
-            }
+            subtitle={"Measures the team's scoring and defensive performance."}
           />
         </div>
       </ClickableChartArea>
-      <div className= "grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Player Availability Chart */}
         <ClickableChartArea
-          className= "col-span-2"
+          className="col-span-2"
           onOpen={() =>
             openSummary({
               chartType: "training",
@@ -245,7 +241,7 @@ const TeamAnalyticsSection = ({
               trainingEffectiveness,
               teamTrainings,
               attendanceTrends,
-              analytics
+              analytics,
             )}
             title="Training Session Analysis"
           />
@@ -294,7 +290,7 @@ const TeamSidebar = ({
   const { hasRole } = useRolePermissions();
 
   return (
-    <div className= "grid xl:block md:grid-cols-2 xl:col-span-1 gap-6 xl:space-y-6">
+    <div className="grid xl:block md:grid-cols-2 xl:col-span-1 gap-6 xl:space-y-6">
       {/* Hide QuickActions if user is player */}
       {/* {!hasRole("Player") && <QuickActions team={teamSlug} />} */}
       <TeamUpcomingGamesSection games={upcomingGames} />
@@ -359,7 +355,7 @@ const TeamDetails = () => {
   }
 
   return (
-    <div className= "min-h-screen p-1 md:p-6 space-y-6 bg-gradient-to-br from-background via-primary/2 to-secondary/2">
+    <div className="min-h-screen p-1 md:p-6 space-y-6 bg-gradient-to-br from-background via-primary/2 to-secondary/2">
       {/* Team Header */}
 
       <UniversityPageHeader
@@ -387,9 +383,9 @@ const TeamDetails = () => {
 
       {/* Main Content */}
 
-      <div className= "grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Primary Content */}
-        <div className= "xl:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-6">
           <TeamKeyMetrics data={teamDetails} />
           <TeamAnalyticsSection
             statistics={statistics}
