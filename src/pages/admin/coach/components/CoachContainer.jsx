@@ -26,7 +26,7 @@ const CoachContainer = () => {
   const [selectedCoach, setSelectedCoach] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [filter, setFilter] = useState({ search: "", sex: "", sport: "" });
+  const [filter, setFilter] = useState({ search: "", sex: "", sport: "", is_active: true });
   const [viewMode, setViewMode] = useState("cards"); // "cards" or "table"
 
   const [debouncedSearch] = useDebounce(filter.search, 500);
@@ -182,7 +182,7 @@ const CoachContainer = () => {
               No Coaches Found
             </h3>
             <p className= "text-muted-foreground max-w-md">
-              {filter.search || filter.sex || filter.sport
+              {filter.search || filter.sex || filter.sport || filter.is_active === false
                 ? "No coaches match your current filter criteria. Try adjusting your search or filters."
                 : "Get started by registering your first coach. They can then be assigned to manage teams and players."}
             </p>

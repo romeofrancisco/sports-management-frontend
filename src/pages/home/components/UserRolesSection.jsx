@@ -27,7 +27,7 @@ const UserRolesSection = () => {
   return (
     <section className= "py-16 lg:py-24" id="roles">
       <div className= "px-4">
-        <div className= "text-center mb-12">
+        <div className= "text-center place-items-center mb-12">
           <span className= "text-secondary font-semibold text-sm uppercase tracking-wider">For Everyone</span>
           <h2 className= "text-3xl lg:text-4xl font-bold text-foreground mt-2 mb-4">
             Built for <span className= "text-primary">Your Role</span>
@@ -41,7 +41,7 @@ const UserRolesSection = () => {
         <div className= "grid md:grid-cols-3 gap-8">
           {roles.map((role, index) => (
             <Card key={index} className= "card-hover-effect border-primary/10 hover:border-primary/30">
-              <CardHeader className= "text-center">
+              <CardHeader className= "text-center place-items-center">
                 <div className= "w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center mb-4">
                   <role.icon className= "w-10 h-10 text-white" />
                 </div>

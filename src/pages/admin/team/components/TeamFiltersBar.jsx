@@ -12,6 +12,7 @@ import {
   VenusAndMars,
   Users,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSports } from "@/hooks/useSports";
@@ -30,7 +31,11 @@ const TeamFiltersBar = ({
   viewMode,
   createTeam,
 }) => {
-  const hasActiveFilters = filter.search || filter.sport || filter.division;
+  const hasActiveFilters =
+    filter.search ||
+    filter.sport ||
+    filter.division ||
+    filter.is_active === false;
 
   const clearAllFilters = (e) => {
     e.preventDefault();
@@ -38,6 +43,7 @@ const TeamFiltersBar = ({
       search: "",
       sport: null,
       division: null,
+      is_active: true,
     });
   };
 
@@ -46,45 +52,50 @@ const TeamFiltersBar = ({
       search: "",
       sport: null,
       division: null,
+      is_active: true,
     };
     setFilter((prev) => ({ ...prev, [filterType]: defaultValues[filterType] }));
   };
 
+  const handleStatusChange = (checked) => {
+    setFilter((prev) => ({ ...prev, is_active: !!checked }));
+  };
+
   return (
-    <div className= "flex items-center gap-2 w-full">
-      <div className= "hidden md:block relative w-full">
-        <Search className= "size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+    <div className="flex items-center gap-2 w-full">
+      <div className="hidden md:block relative w-full">
+        <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
         <SearchFilter
           value={filter.search}
           onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
-          className= "w-full ps-7"
+          className="w-full ps-7"
           placeholder="Search teams..."
           hideLabel={true}
         />
       </div>
-      <Button className= "flex-1" onClick={createTeam}>
+      <Button className="flex-1" onClick={createTeam}>
         <Users />
         Register Team
       </Button>
       <FilterDropdown
         title="Filter"
         headerRight={
-          <div className= "flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-2">
             <Button
               variant={viewMode === "table" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("table")}
-              className= "flex items-center gap-2"
+              className="flex items-center gap-2"
             >
-              <Table2 className= "h-4 w-4" />
+              <Table2 className="h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
               size="icon"
               onClick={() => setViewMode("cards")}
-              className= "flex items-center gap-2"
+              className="flex items-center gap-2"
             >
-              <LayoutGrid className= "h-4 w-4" />
+              <LayoutGrid className="h-4 w-4" />
             </Button>
           </div>
         }
@@ -92,36 +103,54 @@ const TeamFiltersBar = ({
         onClear={clearAllFilters}
         disableClear={!hasActiveFilters}
       >
-        <DropdownMenuGroup className= "px-1 mb-3 block md:hidden">
-          <div className= "flex justify-between px-1 text-sm my-2">
+        <DropdownMenuSeparator className="block md:hidden" />
+        <DropdownMenuGroup className="px-1 mb-3">
+          <div className="flex justify-between items-center px-1 text-sm my-2">
+            <label
+              htmlFor="team-status-active"
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <Checkbox
+                id="team-status-active"
+                checked={filter.is_active !== false}
+                onCheckedChange={handleStatusChange}
+              />
+              <span>Active</span>
+            </label>
+          </div>
+          <p className="px-1 text-xs text-muted-foreground">
+            Checked shows active teams. Unchecked shows inactive teams.
+          </p>
+        </DropdownMenuGroup>
+        <DropdownMenuGroup className="px-1 mb-3 block md:hidden">
+          <div className="flex justify-between px-1 text-sm my-2">
             <span>Search</span>
             <button
               onClick={() => clearSpecificFilter("search")}
-              className= "text-primary cursor-pointer"
+              className="text-primary cursor-pointer"
             >
               Reset
             </button>
           </div>
-          <div className= "relative w-full">
-            <Search className= "size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+          <div className="relative w-full">
+            <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
             <SearchFilter
               value={filter.search}
               onChange={(val) =>
                 setFilter((prev) => ({ ...prev, search: val }))
               }
-              className= "w-full ps-7"
+              className="w-full ps-7"
               placeholder="Search teams..."
               hideLabel={true}
             />
           </div>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className= "block md:hidden" />
-        <DropdownMenuGroup className= "px-1 mb-3">
-          <div className= "flex justify-between px-1 text-sm my-2">
+        <DropdownMenuGroup className="px-1 mb-3">
+          <div className="flex justify-between px-1 text-sm my-2">
             <span>Sport</span>
             <button
               onClick={() => clearSpecificFilter("sport")}
-              className= "text-primary cursor-pointer"
+              className="text-primary cursor-pointer"
             >
               Reset
             </button>
@@ -129,17 +158,17 @@ const TeamFiltersBar = ({
           <FilterSport
             value={filter.sport}
             onChange={(val) => setFilter((prev) => ({ ...prev, sport: val }))}
-            className= "w-full"
+            className="w-full"
             hideLabel={true}
           />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup className= "px-1 mb-3">
-          <div className= "flex justify-between px-1 text-sm my-2">
+        <DropdownMenuGroup className="px-1 mb-3">
+          <div className="flex justify-between px-1 text-sm my-2">
             <span>Division</span>
             <button
               onClick={() => clearSpecificFilter("division")}
-              className= "text-primary cursor-pointer"
+              className="text-primary cursor-pointer"
             >
               Reset
             </button>
@@ -149,7 +178,7 @@ const TeamFiltersBar = ({
             onChange={(val) =>
               setFilter((prev) => ({ ...prev, division: val }))
             }
-            className= "w-full"
+            className="w-full"
             hideLabel={true}
           />
         </DropdownMenuGroup>

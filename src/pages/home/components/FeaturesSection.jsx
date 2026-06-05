@@ -51,7 +51,7 @@ const FeaturesSection = () => {
   return (
     <section className= "py-16 lg:py-24" id="features">
       <div className= "px-4">
-        <div className= "text-center mb-12">
+        <div className= "text-center place-items-center mb-12">
           <span className= "text-secondary font-semibold text-sm uppercase tracking-wider">
             Platform Features
           </span>

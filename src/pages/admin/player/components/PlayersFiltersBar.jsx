@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAcademicInfoForm } from "@/hooks/useAcademicInfo";
 
 const PlayersFiltersBar = ({
@@ -33,13 +34,13 @@ const PlayersFiltersBar = ({
   const { data: allAcademic } = useAcademicInfoForm();
   const { data: coursesForYear } = useAcademicInfoForm(
     filter.year_level ? { year_level: filter.year_level } : undefined,
-    { enabled: !!filter.year_level }
+    { enabled: !!filter.year_level },
   );
   const { data: sectionsForCourse } = useAcademicInfoForm(
     filter.year_level && filter.course
       ? { year_level: filter.year_level, course: filter.course }
       : undefined,
-    { enabled: !!filter.year_level && !!filter.course }
+    { enabled: !!filter.year_level && !!filter.course },
   );
 
   // Generate options from academic data
@@ -66,6 +67,7 @@ const PlayersFiltersBar = ({
     filter.sport ||
     filter.team ||
     filter.sex ||
+    filter.is_active === false ||
     filter.year_level ||
     filter.course ||
     filter.section;
@@ -76,6 +78,7 @@ const PlayersFiltersBar = ({
       sex: null,
       sport: null,
       team: null,
+      is_active: true,
       year_level: null,
       course: null,
       section: null,
@@ -93,6 +96,8 @@ const PlayersFiltersBar = ({
     // If clearing course, also clear section
     else if (filterType === "course") {
       updates.section = null;
+    } else if (filterType === "is_active") {
+      updates.is_active = true;
     }
 
     setFilter((prev) => ({ ...prev, ...updates }));
@@ -122,37 +127,44 @@ const PlayersFiltersBar = ({
     }));
   };
 
+  const handleStatusChange = (checked) => {
+    setFilter((prev) => ({
+      ...prev,
+      is_active: !!checked,
+    }));
+  };
+
   return (
-    <div className= "flex gap-2 items-center">
+    <div className="flex gap-2 items-center">
       {/* Search Filter - Full width on desktop, hidden on small (mobile uses dropdown) */}
-      <div className= "hidden md:block relative w-full">
-        <Search className= "size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+      <div className="hidden md:block relative w-full">
+        <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
         <SearchFilter
           value={filter.search}
           onChange={(val) => setFilter((prev) => ({ ...prev, search: val }))}
-          className= "w-full ps-7"
+          className="w-full ps-7"
           placeholder="Search player..."
           hideLabel={true}
         />
       </div>
-      <Button className= "flex-1" onClick={registerPlayer}>
+      <Button className="flex-1" onClick={registerPlayer}>
         <User />
         Register Player
       </Button>
       {/* Filters dropdown (replaces inert Filters button) */}
-      <div className= "flex items-center gap-2 ml-auto">
+      <div className="flex items-center gap-2 ml-auto">
         <FilterDropdown
           title="Filters"
           widthClass="w-72"
           onClear={clearAllFilters}
           disableClear={!hasActiveFilters}
           headerRight={
-            <div className= "flex md:hidden items-center gap-2">
+            <div className="flex md:hidden items-center gap-2">
               <Button
                 variant={viewMode === "table" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("table")}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <Table2 />
               </Button>
@@ -160,43 +172,62 @@ const PlayersFiltersBar = ({
                 variant={viewMode === "cards" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("cards")}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <LayoutGrid />
               </Button>
             </div>
           }
         >
-          <DropdownMenuGroup className= "block md:hidden px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between items-center px-1 text-sm my-2">
+              <label
+                htmlFor="player-status-active"
+                className="flex items-center gap-2 cursor-pointer select-none"
+              >
+                <Checkbox
+                  id="player-status-active"
+                  checked={filter.is_active !== false}
+                  onCheckedChange={handleStatusChange}
+                />
+                <span>Active</span>
+              </label>
+            </div>
+            <p className="px-1 text-xs text-muted-foreground">
+              Checked shows active players. Unchecked shows inactive players.
+            </p>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup className="block md:hidden px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Search</span>
               <button
                 onClick={() => clearSpecificFilter("search")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
               >
                 Reset
               </button>
             </div>
-            <div className= "relative w-full">
-              <Search className= "size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
+            <div className="relative w-full">
+              <Search className="size-4 text-muted-foreground absolute top-1/2 left-2 transform -translate-y-1/2" />
               <SearchFilter
                 value={filter.search}
                 onChange={(val) =>
                   setFilter((prev) => ({ ...prev, search: val }))
                 }
-                className= "w-full ps-7"
+                className="w-full ps-7"
                 placeholder="Search players..."
                 hideLabel={true}
               />
             </div>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuSeparator className=" md:hidden" />
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Sport</span>
               <button
                 onClick={() => clearSpecificFilter("sport")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
               >
                 Reset
               </button>
@@ -204,17 +235,17 @@ const PlayersFiltersBar = ({
             <FilterSport
               value={filter.sport}
               onChange={(val) => setFilter((prev) => ({ ...prev, sport: val }))}
-              className= "w-full"
+              className="w-full"
               hideLabel={true}
             />
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Team</span>
               <button
                 onClick={() => clearSpecificFilter("team")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
               >
                 Reset
               </button>
@@ -222,18 +253,18 @@ const PlayersFiltersBar = ({
             <FilterTeam
               value={filter.team}
               onChange={(val) => setFilter((prev) => ({ ...prev, team: val }))}
-              className= "w-full"
+              className="w-full"
               hideLabel={true}
               sportFilter={filter.sport}
             />
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Sex</span>
               <button
                 onClick={() => clearSpecificFilter("sex")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
               >
                 Reset
               </button>
@@ -241,17 +272,17 @@ const PlayersFiltersBar = ({
             <FilterSex
               value={filter.sex}
               onChange={(val) => setFilter((prev) => ({ ...prev, sex: val }))}
-              className= "w-full"
+              className="w-full"
               hideLabel={true}
             />
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Year Level</span>
               <button
                 onClick={() => clearSpecificFilter("year_level")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
               >
                 Reset
               </button>
@@ -260,7 +291,7 @@ const PlayersFiltersBar = ({
               value={filter.year_level || "all"}
               onValueChange={handleYearChange}
             >
-              <SelectTrigger className= "w-full">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Filter by year level..." />
               </SelectTrigger>
               <SelectContent>
@@ -274,12 +305,12 @@ const PlayersFiltersBar = ({
             </Select>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1 mb-3">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1 mb-3">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Course</span>
               <button
                 onClick={() => clearSpecificFilter("course")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
                 disabled={!filter.year_level}
               >
                 Reset
@@ -290,7 +321,7 @@ const PlayersFiltersBar = ({
               onValueChange={handleCourseChange}
               disabled={!filter.year_level}
             >
-              <SelectTrigger className= "w-full">
+              <SelectTrigger className="w-full">
                 <SelectValue
                   placeholder={
                     !filter.year_level
@@ -310,12 +341,12 @@ const PlayersFiltersBar = ({
             </Select>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup className= "px-1">
-            <div className= "flex justify-between px-1 text-sm my-2">
+          <DropdownMenuGroup className="px-1">
+            <div className="flex justify-between px-1 text-sm my-2">
               <span>Section</span>
               <button
                 onClick={() => clearSpecificFilter("section")}
-                className= "text-primary cursor-pointer"
+                className="text-primary cursor-pointer"
                 disabled={!filter.course}
               >
                 Reset
@@ -326,7 +357,7 @@ const PlayersFiltersBar = ({
               onValueChange={handleSectionChange}
               disabled={!filter.course}
             >
-              <SelectTrigger className= "w-full">
+              <SelectTrigger className="w-full">
                 <SelectValue
                   placeholder={
                     !filter.course
@@ -344,7 +375,7 @@ const PlayersFiltersBar = ({
                 ))}
               </SelectContent>
             </Select>
-            <div className= "h-3" />
+            <div className="h-3" />
           </DropdownMenuGroup>
         </FilterDropdown>
       </div>
