@@ -27,7 +27,7 @@ const TrainingSessionsList = () => {
   const [selectedSession, setSelectedSession] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [viewMode, setViewMode] = useState("cards"); // Default to cards view
+  const [viewMode, setViewMode] = useState("table"); // Default to cards view
   const [filter, setFilter] = useState({
     search: "",
     team: "",
@@ -46,8 +46,6 @@ const TrainingSessionsList = () => {
   );
   const sessions = data?.results || [];
   const totalSessions = data?.count || 0;
-
-  console.log("TrainingSessionsList render - sessions:", sessions);
 
   // Function to handle manage session navigation
   const handleManageSession = (session) => {

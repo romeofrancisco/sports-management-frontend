@@ -49,7 +49,7 @@ const CourseSectionsContainer = () => {
   };
 
   return (
-    <Card className="border-2 border-primary/20">
+    <Card className="gap-0 border-2 border-primary/20">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
         <div className="flex flex-col md:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ const CourseSectionsContainer = () => {
         </div>
         <CourseSectionFilter filter={filter} setFilter={setFilter} />
       </CardHeader>
-      <CardContent>
+    <CardContent className="p-0">
         <CourseSectionTable
           filter={filter}
           onUpdate={handleUpdateModal}

@@ -19,7 +19,7 @@ import { Table2, LayoutGrid } from "lucide-react";
 
 const TeamsContainer = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
+  const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [filter, setFilter] = useState({
@@ -62,7 +62,7 @@ const TeamsContainer = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
+    <Card className="gap-0 bg-gradient-to-br from-card via-card to-card/95 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl hover:border-primary/30 relative overflow-hidden">
       <CardHeader className="flex flex-col border-b-2 border-primary/20 justify-between gap-4 pb-5 bg-transparent">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -107,12 +107,12 @@ const TeamsContainer = () => {
           createTeam={handleCreateTeam}
         />
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         {isLoading ? (
           <TeamsListSkeleton viewMode={viewMode} pageSize={pageSize} />
         ) : teams && teams.length > 0 ? (
-          viewMode === "cards" ? (
-            <>
+          viewMode == "cards" ? (
+            <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {teams.map((team, index) => (
                   <TeamCard
@@ -132,7 +132,6 @@ const TeamsContainer = () => {
                 ))}
               </div>
 
-              {/* Pagination for cards view */}
               {totalTeams > 0 && (
                 <TablePagination
                   currentPage={currentPage}
@@ -148,7 +147,7 @@ const TeamsContainer = () => {
                   itemName="teams"
                 />
               )}
-            </>
+            </div>
           ) : (
             <TeamsTableView
               teams={teams}

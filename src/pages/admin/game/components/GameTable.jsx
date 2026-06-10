@@ -36,11 +36,11 @@ const GameTable = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const gameIdParam = searchParams.get("gameId");
-  
+
   const [selectedGame, setSelectedGame] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
+  const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
   const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [initialDateSet, setInitialDateSet] = useState(false);
@@ -86,7 +86,7 @@ const GameTable = () => {
   const { isLoading, isError, data } = useGames(
     apiFilter,
     currentPage,
-    pageSize
+    pageSize,
   );
 
   // Also fetch all games for date navigation
@@ -165,7 +165,8 @@ const GameTable = () => {
     const scheduledGames = games.filter((game) => game.status === "scheduled");
     const completedGames = games.filter((game) => game.status === "completed");
     const otherGames = games.filter(
-      (game) => !["in_progress", "scheduled", "completed"].includes(game.status)
+      (game) =>
+        !["in_progress", "scheduled", "completed"].includes(game.status),
     );
 
     return { liveGames, scheduledGames, completedGames, otherGames };
@@ -173,20 +174,20 @@ const GameTable = () => {
   const { liveGames, scheduledGames, completedGames, otherGames } =
     separateGamesByStatus(games);
   return (
-    <div className= "space-y-6">
+    <div className="space-y-6">
       {/* Filter Mode Toggle and Filter/Date Bar */}
-      <div className= "space-y-4">
+      <div className="space-y-4">
         {/* Mode Toggle */}
         {!isPlayer() && (
-          <div className= "flex items-center justify-between">
-            <div className= "flex items-center gap-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <Button
                 variant={filterMode === "date" ? "default" : "outline"}
                 size="sm"
                 onClick={handleFilterModeToggle}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
-                <Calendar className= "h-4 w-4" />
+                <Calendar className="h-4 w-4" />
                 Date View
               </Button>
 
@@ -194,9 +195,9 @@ const GameTable = () => {
                 variant={filterMode === "filter" ? "default" : "outline"}
                 size="sm"
                 onClick={handleFilterModeToggle}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
-                <Filter className= "h-4 w-4" />
+                <Filter className="h-4 w-4" />
                 Filter View
               </Button>
             </div>
@@ -213,7 +214,7 @@ const GameTable = () => {
             }}
           />
         ) : (
-          <div className= "bg-card rounded-xl shadow-md p-1">
+          <div className="bg-card rounded-xl shadow-md p-1">
             <DateNavigationBar
               selectedDate={selectedDate}
               onDateChange={(date) => {
@@ -224,28 +225,28 @@ const GameTable = () => {
               dateProperty="date"
               getDataCountForDate={getGamesCountForDate}
               countLabel="Game"
-              className= "overflow-x-auto"
+              className="overflow-x-auto"
             />
           </div>
         )}
       </div>
 
-      <Card className= "shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl">
+      <Card className="gap-0 shadow-xl border-2 border-primary/20 transition-all duration-300 hover:shadow-2xl">
         {/* View Mode Toggle Header */}
-        <CardHeader className= "pb-4 border-b-2 border-primary/20">
-          <div className= "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className= "flex items-center gap-2">
-              <div className= "bg-primary p-3 rounded-xl">
-                <Volleyball className= "size-7 text-primary-foreground" />
+        <CardHeader className="pb-4 border-b-2 border-primary/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="bg-primary p-3 rounded-xl">
+                <Volleyball className="size-7 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className= "flex items-center gap-2">
-                  <span className= "text-2xl font-bold text-foreground">
+                <CardTitle className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-foreground">
                     Games
                   </span>
-                  <Badge className= "h-6 text-[11px]">{totalGames} games</Badge>
+                  <Badge className="h-6 text-[11px]">{totalGames} games</Badge>
                 </CardTitle>
-                <p className= "text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isPlayer()
                     ? "View upcoming and past games for your teams."
                     : "Schedule, manage, and track games for your leagues."}
@@ -253,29 +254,29 @@ const GameTable = () => {
               </div>
             </div>
 
-            <div className= "flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Button
                 variant={viewMode === "table" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("table")}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
-                <Table2 className= "h-4 w-4" />
+                <Table2 className="h-4 w-4" />
                 Table
               </Button>
               <Button
                 variant={viewMode === "cards" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("cards")}
-                className= "flex items-center gap-2"
+                className="flex items-center gap-2"
               >
-                <LayoutGrid className= "h-4 w-4" />
+                <LayoutGrid className="h-4 w-4" />
                 Cards
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {/* Content based on view mode */}
           {viewMode === "table" ? (
             <>
@@ -286,14 +287,14 @@ const GameTable = () => {
                   columns={columns}
                   data={games}
                   loading={false}
-                  className= "text-xs md:text-sm"
+                  className="text-xs md:text-sm"
                   showPagination={false} // Disable built-in pagination
                   pageSize={pageSize} // Still pass pageSize for row rendering
                 />
               )}
             </>
           ) : (
-            <div className= "flex flex-col h-full min-h-[400px] space-y-8">
+            <div className="flex flex-col px-4 md:p-6 h-full min-h-[400px] space-y-8">
               {isLoading ? (
                 <>
                   <StatusSectionSkeleton title="Live Games" count={3} />
@@ -308,11 +309,11 @@ const GameTable = () => {
                     games={liveGames}
                     variant="default"
                   >
-                    <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {liveGames.map((game, index) => (
                         <div
                           key={game.id}
-                          className= "animate-in fade-in-50 duration-500"
+                          className="animate-in fade-in-50 duration-500"
                           style={{ animationDelay: `${index * 50}ms` }}
                         >
                           <GameCard game={game} onEditGame={handleEditGame} />
@@ -327,7 +328,7 @@ const GameTable = () => {
                     games={scheduledGames}
                     variant="default"
                   >
-                    <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {scheduledGames.map((game) => (
                         <GameCard
                           key={game.id}
@@ -344,7 +345,7 @@ const GameTable = () => {
                     games={completedGames}
                     variant="default"
                   >
-                    <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {completedGames.map((game) => (
                         <GameCard
                           key={game.id}
@@ -361,7 +362,7 @@ const GameTable = () => {
                     games={otherGames}
                     variant="default"
                   >
-                    <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                       {otherGames.map((game, index) => (
                         <GameCard
                           key={game.id}
@@ -374,18 +375,18 @@ const GameTable = () => {
 
                   {/* No games message */}
                   {games.length === 0 && (
-                    <div className= "flex-1 flex flex-col justify-center items-center text-center text-muted-foreground">
-                      <div className= "mb-4 flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
-                        <CalendarX className= "w-8 h-8 text-primary" />
+                    <div className="flex-1 flex flex-col justify-center items-center text-center text-muted-foreground">
+                      <div className="mb-4 flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
+                        <CalendarX className="w-8 h-8 text-primary" />
                       </div>
-                      <p className= "text-lg font-medium">No games found</p>
+                      <p className="text-lg font-medium">No games found</p>
                       {(isAdmin() || isCoach()) && (
-                        <p className= "text-sm">
+                        <p className="text-sm">
                           Try adjusting your filters or create a new game.
                         </p>
                       )}
                       {isPlayer() && !isAdmin() && !isCoach() && (
-                        <p className= "text-sm">
+                        <p className="text-sm">
                           No games available. Please check back later or contact
                           your coach for more information.
                         </p>
@@ -398,20 +399,20 @@ const GameTable = () => {
           )}
 
           {totalGames > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              pageSize={pageSize}
-              totalItems={totalGames}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-              isLoading={isLoading}
-              itemName="games"
-              pageSizeOptions={
-                viewMode === "cards" ? [12, 24, 36, 48] : [10, 25, 50, 100]
-              }
-            />
+            <div className="px-4 md:px-6">
+              <TablePagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalItems={totalGames}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                isLoading={isLoading}
+                itemName="games"
+                pageSizeOptions={[12, 24, 36, 48]}
+              />
+            </div>
           )}
-        </CardContent>{" "}
+        </CardContent>
       </Card>
 
       <GameModal

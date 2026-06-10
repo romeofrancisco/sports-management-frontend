@@ -13,6 +13,7 @@ import {
   Mars,
   Venus,
   RotateCcw,
+  ClipboardList,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -38,9 +39,9 @@ const ActionsCell = ({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className= "h-8 w-8 p-0">
-          <span className= "sr-only">Open menu</span>
-          <MoreHorizontal className= "h-4 w-4" />
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -72,7 +73,7 @@ const ActionsCell = ({
               onDeleteTeam(team);
               setOpen(false);
             }}
-            className= "text-destructive focus:text-destructive focus:bg-destructive/10"
+            className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash2 />
             Delete Team
@@ -83,7 +84,7 @@ const ActionsCell = ({
               onReactivateTeam(team);
               setOpen(false);
             }}
-            className= "text-green-600 focus:text-green-600 focus:bg-green-600/10"
+            className="text-green-600 focus:text-green-600 focus:bg-green-600/10"
           >
             <RotateCcw />
             Reactivate Team
@@ -97,7 +98,7 @@ const ActionsCell = ({
 const getColumns = (navigate, onUpdateTeam, onDeleteTeam, onReactivateTeam) => [
   {
     id: "team",
-    header: () => <h1 className= "ps-3">Team</h1>,
+    header: () => <h1 className="ps-3">Team</h1>,
     cell: ({ row }) => {
       const team = row.original;
       const hasHeadCoach = team.head_coach_name || team.head_coach?.full_name;
@@ -106,24 +107,24 @@ const getColumns = (navigate, onUpdateTeam, onDeleteTeam, onReactivateTeam) => [
       const hasAnyCoach = hasHeadCoach || hasAssistantCoach;
 
       return (
-        <div className= "flex gap-3 items-center ps-3">
-          <div className= "relative">
-            <Avatar className= "size-10 border-primary/20 border-2">
+        <div className="flex gap-3 items-center ps-3">
+          <div className="relative">
+            <Avatar className="size-10 border-primary/20 border-2">
               <AvatarImage src={team.logo} alt={team.name} />
-              <AvatarFallback className= "rounded-lg bg-accent font-bold">
+              <AvatarFallback className="rounded-lg bg-accent font-bold">
                 {team.name?.[0]}
               </AvatarFallback>
             </Avatar>
           </div>
-          <div className= "flex flex-col gap-0.5">
-            <span className= "font-medium">{team.name}</span>
-            <p className= "text-xs text-muted-foreground">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium">{team.name}</span>
+            <p className="text-xs text-muted-foreground">
               {team.abbreviation && team.abbreviation} -{" "}
-              <span className= "font-medium">
+              <span className="font-medium">
                 {getDivisionLabel(team.division)}
               </span>
             </p>
-            <div className= "flex items-center gap-1.5 mt-0.5">
+            <div className="flex items-center gap-1.5 mt-0.5">
               <Badge
                 variant={team.is_active ? "default" : "destructive"}
                 className={`h-4 px-1.5 text-[10px] ${
@@ -147,16 +148,16 @@ const getColumns = (navigate, onUpdateTeam, onDeleteTeam, onReactivateTeam) => [
     cell: ({ row }) => {
       const team = row.original;
       return (
-        <div className= "flex flex-col gap-1">
-          <div className= "flex items-center gap-1.5">
-            <Trophy className= "h-3.5 w-3.5 text-primary/80" />
-            <span className= "text-sm font-medium">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5 text-primary/80" />
+            <span className="text-sm font-medium">
               {team.sport?.name || team.sport_name || "—"}
             </span>
           </div>
-          <div className= "flex items-center gap-1.5">
-            <Users className= "h-3.5 w-3.5 text-muted-foreground" />
-            <span className= "text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">
               {team.player_count || team.players_count || 0} players
             </span>
           </div>
@@ -169,37 +170,43 @@ const getColumns = (navigate, onUpdateTeam, onDeleteTeam, onReactivateTeam) => [
     id: "coaches",
     header: "Coaches",
     cell: ({ row }) => {
-      const { first_name, last_name, full_name, email, profile, sex } =
-        row.original.head_coach_info;
-
       if (!row.original.head_coach_info) {
         return (
-          <span className= "text-muted-foreground text-sm">
-            No coach assigned
-          </span>
+          <div className="flex gap-1 items-center">
+            <Avatar className="size-8 border-primary/20 border-2">
+              <AvatarFallback className="rounded-lg bg-accent font-bold">
+                <ClipboardList className="h-4 w-4 text-muted-foreground" />
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-muted-foreground text-sm">
+              No coach assigned
+            </span>
+          </div>
         );
       }
 
+      const { full_name, email, profile, sex } = row.original.head_coach_info;
+
       return (
-        <div className= "flex flex-col gap-1">
-          <div className= "flex items-center gap-1">
-            <Avatar className= "size-8 border-primary/20 border-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            <Avatar className="size-8 border-primary/20 border-2">
               <AvatarImage src={profile} alt={full_name} />
-              <AvatarFallback className= "rounded-lg bg-accent font-bold">
+              <AvatarFallback className="rounded-lg bg-accent font-bold">
                 {full_name?.[0]}
               </AvatarFallback>
             </Avatar>
-            <div className= "flex flex-col gap-0.5">
-              <span className= "font-medium flex items-center">
+            <div className="flex flex-col gap-0.5">
+              <span className="font-medium flex items-center">
                 {sex === "male" && (
-                  <Mars className= "inline-block h-4 w-4 mr-1 text-blue-500" />
+                  <Mars className="inline-block h-4 w-4 mr-1 text-blue-500" />
                 )}
                 {sex === "female" && (
-                  <Venus className= "inline-block h-4 w-4 mr-1 text-pink-500" />
+                  <Venus className="inline-block h-4 w-4 mr-1 text-pink-500" />
                 )}
                 {full_name}
               </span>
-              <span className= "text-xs text-muted-foreground">{email}</span>
+              <span className="text-xs text-muted-foreground">{email}</span>
             </div>
           </div>
         </div>
@@ -244,32 +251,34 @@ const TeamsTableView = ({
     navigate,
     onUpdateTeam,
     onDeleteTeam,
-    onReactivateTeam
+    onReactivateTeam,
   );
 
+  console.log("Rendering TeamsTableView with teams:", teams);
+
   return (
-    <div className= "space-y-4">
-      {console.log(teams)}
+    <div className="space-y-4">
       <DataTable
         columns={columns}
         data={teams}
         isLoading={isLoading}
-        className= "border rounded-lg bg-card"
+        className="border rounded-lg bg-card"
         showPagination={false}
         pageSize={pageSize}
       />
-
-      {totalItems > 0 && (
-        <TablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={totalItems}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          isLoading={isLoading}
-          itemName="teams"
-        />
-      )}
+      <div className="px-6">
+        {totalItems > 0 && (
+          <TablePagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+            isLoading={isLoading}
+            itemName="teams"
+          />
+        )}
+      </div>
     </div>
   );
 };

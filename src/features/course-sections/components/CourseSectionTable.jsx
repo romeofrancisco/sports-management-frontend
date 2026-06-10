@@ -108,7 +108,7 @@ const CourseSectionTable = ({ filter, onUpdate, onDelete }) => {
     <>
       <DataTable data={results} columns={columns} loading={isLoading} showPagination={false} pageSize={pageSize} />
       {total > 0 && (
-        <div className="pt-4">
+        <div className="px-4 md:px-6">
           <TablePagination
             currentPage={currentPage}
             pageSize={pageSize}

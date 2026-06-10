@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 
 const PlayersContainer = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
+  const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [filter, setFilter] = useState({

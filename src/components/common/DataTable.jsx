@@ -184,7 +184,7 @@ const DataTable = ({
                   <TableRow>
                     <TableCell
                       colSpan={responsiveColumns.length}
-                      className="h-24 text-center"
+                      className="h-52 text-center"
                     >
                       No results.
                     </TableCell>

@@ -27,7 +27,7 @@ const CoachContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [filter, setFilter] = useState({ search: "", sex: "", sport: "", is_active: true });
-  const [viewMode, setViewMode] = useState("cards"); // "cards" or "table"
+  const [viewMode, setViewMode] = useState("table"); // "cards" or "table"
 
   const [debouncedSearch] = useDebounce(filter.search, 500);
   const debouncedFilter = { ...filter, search: debouncedSearch };
