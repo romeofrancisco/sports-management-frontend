@@ -167,6 +167,7 @@ const CoachContainer = () => {
                   setPageSize(newSize);
                   setCurrentPage(1);
                 }}
+                onUpdate={handleUpdateCoach}
                 onDelete={handleDeleteCoach}
                 onReactivate={handleReactivateCoach}
               />
