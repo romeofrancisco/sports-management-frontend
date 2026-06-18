@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { updateGameScores, updateGameStatus } from "@/store/slices/gameSlice";
+import { getStoredAccessToken } from "@/utils/authTokens";
 
 export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpdate = null) => {
   const websocketRef = useRef(null);
@@ -12,6 +13,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
+  const gameQueryKey = ['game', gameId];
 
   // Update the refs when callbacks change to avoid stale closures
   useEffect(() => {
@@ -32,9 +34,14 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
 
     // Use environment variable for WebSocket URL
     const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+    const accessToken = getStoredAccessToken();
 
     // WebSocket URL - no auth token is required for score updates
     let wsUrl = `${wsBaseUrl}/ws/games/${gameId}/`;
+
+    if (accessToken) {
+      wsUrl += `?token=${encodeURIComponent(accessToken)}`;
+    }
 
     const ws = new WebSocket(wsUrl);
 
@@ -43,7 +50,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
       
       if (data.type === "score_update") {        // Update React Query cache for game details
         queryClient.setQueryData(
-          ['game', gameId.toString()],
+          gameQueryKey,
           (oldData) => {
             if (!oldData) return oldData;
             
@@ -127,7 +134,7 @@ export const useGameScoreWebSocket = (gameId, onScoreUpdate = null, onStatusUpda
       if (data.type === "game_status_update") {
         // Update React Query cache for game status
         queryClient.setQueryData(
-          ['game', gameId.toString()],
+          gameQueryKey,
           (oldData) => {
             if (!oldData) return oldData;
             
