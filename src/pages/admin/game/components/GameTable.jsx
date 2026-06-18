@@ -40,7 +40,7 @@ const GameTable = () => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const [viewMode, setViewMode] = useState("table"); // "table" or "cards"
+  const [viewMode, setViewMode] = useState("cards"); // "table" or "cards"
   const [filterMode, setFilterMode] = useState("date"); // "date" or "filter"
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [initialDateSet, setInitialDateSet] = useState(false);
