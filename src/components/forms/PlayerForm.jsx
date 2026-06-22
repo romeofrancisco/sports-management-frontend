@@ -555,6 +555,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
             placeholder="Enter first name"
             control={control}
             errors={errors}
+            required="First name is required"
           />
           <ControlledInput
             name="last_name"
@@ -562,7 +563,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
             placeholder="Enter last name"
             control={control}
             errors={errors}
-            optional={true}
+            required="Last name is required"
           />
         </div>
 
@@ -575,6 +576,7 @@ const PlayerForm = ({ sports, onClose, player }) => {
           valueKey="value"
           labelKey="label"
           errors={errors}
+          required="Sex is required"
         />
 
         <ControlledDatePicker
