@@ -230,12 +230,7 @@ export const GameCard = React.memo(
             </Badge>
           );
         default:
-          return (
-            <Badge>
-              <Dumbbell />
-              Practice Game
-            </Badge>
-          );
+          return null;
       }
     };
 
@@ -287,11 +282,13 @@ export const GameCard = React.memo(
               </span>
             </div>
 
+          {console.log("Live Game Data:", liveGameData)}
+
             <div className="flex items-center  gap-1 text-sm">
               <Clock className="size-3 text-primary" />
               <span className="text-xs text-muted-foreground">
-                {liveGameData.start_time
-                  ? formatTo12HourTime(liveGameData.start_time)
+                {liveGameData.time
+                  ? formatTo12HourTime(liveGameData.time)
                   : "TBA"}
               </span>
             </div>

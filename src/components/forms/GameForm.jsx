@@ -152,6 +152,11 @@ const GameForm = ({
       time: data.time || null, // Keep time as HH:mm format
     };
 
+    if (isBracketGame) {
+      delete formattedData.home_team_id;
+      delete formattedData.away_team_id;
+    }
+
     const formData = convertToFormData(formattedData);
 
     const mutationFn = isEdit ? updateGame : createGame;
